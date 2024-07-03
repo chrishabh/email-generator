@@ -15,6 +15,9 @@ use App\Http\Controllers\EmailController;
 */
 
 Route::get('/', function () {
+    return view('index');
+});
+Route::get('/single-verification', function () {
     return view('email-generator');
 });
 
