@@ -527,170 +527,143 @@
   <section id="pricing" class="section-padding">
     <div class="container">
       <div class="section-header text-center">
-        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Pricing</h2>
-        <div class="shape wow fadeInDown" data-wow-delay="0.3s"></div>
+        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
+        <h5 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card required!</h5>
+        <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
       </div>
-      <div class="row">
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInLeft" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>5,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$9 <span style="color: grey;">Bouncee</span></li>
-              <li>$45 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$40 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+      <div class="row wow fadeInDown"  data-wow-delay="1.2s">
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img src="assets/pricing/Verification.png" alt=""></h4>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12 active">
-          <div class="table wow fadeInUp" id="active-tb" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>10,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$14 <span style="color: grey;">Bouncee</span></li>
-              <li>$80 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$50 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img src="assets/logo.png" alt=""></h4>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>25,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$28 <span style="color: grey;">Bouncee</span></li>
-              <li>$190 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$125 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img src="assets/pricing/NeverBounce.png" alt=""></h4>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>50,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$45 <span style="color: grey;">Bouncee</span></li>
-              <li>$375 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$250 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img src="assets/pricing/ZeroBounce.png" alt=""></h4>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>100,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$75 <span style="color: grey;">Bouncee</span></li>
-              <li>$425 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$400 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="1.4s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 3em;">
+            <h5 style="color: black;">5,000 Verifications</h5>
+            <div class="shape"></div>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>200,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$125 <span style="color: grey;">Bouncee</span></li>
-              <li>$850 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$800 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 3em;">
+            <button class="btn btn-common">  $ 9  </button>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>500,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$250 <span style="color: grey;">Bouncee</span></li>
-              <li>$1,800 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$1,500 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 3em;">
+            <button class="btn-comparision">  $ 40  </button>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>1,000,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$450 <span style="color: grey;">Bouncee</span></li>
-              <li>$2,750 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$3,000 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 3em;">
+            <button class="btn-comparision">  $ 45  </button>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>2,000,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$750 <span style="color: grey;">Bouncee</span></li>
-              <li>$5,500 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$6,000<span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="1.6s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">10,000 Verifications</h5>
+            <div class="shape"></div>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-xs-12">
-          <div class="table wow fadeInRight" data-wow-delay="1.2s">
-            <div class="icon-box">
-              <i class="lni-wallet"></i>
-            </div>
-            <div class="title">
-              <h3>5,000,000 Verification</h3>
-            </div>
-            <ul class="description">
-              <li>$1,450 <span style="color: grey;">Bouncee</span></li>
-              <li>$12,000 <span style="color: grey;">Zero Bounces</span></li>
-              <li>$10,000 <span style="color: grey;">Never Bounce</span></li>
-            </ul>
-            <button class="btn btn-common">Purchase Now</button>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 14  </button>
           </div>
-        </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 50  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 80  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown" data-wow-delay="1.8s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">25,000 Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 28  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 125  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 190  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown" data-wow-delay="2.0s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">50,000 Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 45 </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 250  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 375  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="2.2s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">100K Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 75  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 400  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 425  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="2.4s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">200K Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 125  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 800  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 850  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="2.6s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">500K Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 250  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 1500  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 1800  </button>
+          </div>
+      </div>
+      <div class="row wow fadeInDown"  data-wow-delay="2.6s">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <h5 style="color: black;">1M Verifications</h5>
+            <div class="shape"></div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
+            <button class="btn btn-common">  $ 450  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 3000  </button>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">  $ 2750  </button>
+          </div>
       </div>
     </div>
   </section>

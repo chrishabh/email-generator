@@ -72,6 +72,11 @@ a:not([href]):not([tabindex]) {
   line-height: 26px;
 }
 
+.price-logo{
+  position: relative;
+  padding: 0px;
+}
+
 .section-title {
   font-size: 30px;
   color: #222222;
@@ -111,6 +116,20 @@ a:not([href]):not([tabindex]) {
   cursor: pointer;
   font-weight: 400;
   color: #fff;
+  border-radius: 30px;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  display: inline-block;
+}
+
+.btn-comparision {
+  font-size: 14px;
+  padding: 10px 30px;
+  cursor: pointer;
+  font-weight: 400;
+  color: rgb(10, 93, 170);
   border-radius: 30px;
   -webkit-transition: all 0.2s linear;
   -moz-transition: all 0.2s linear;
@@ -762,11 +781,13 @@ hr {
   font-weight: 600;
   line-height: 60px;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 #hero-area .contents .header-button {
   margin-top: 20px;
   color: #222222;
+  align-items: center;
 }
 
 #hero-area .contents .header-button .btn {
