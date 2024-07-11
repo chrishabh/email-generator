@@ -25,6 +25,7 @@
   <!-- Responsive Style -->
   <link rel="stylesheet" href="css/responsive.css">
 
+
 </head>
 
 <body>
@@ -94,10 +95,10 @@
           <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
             <div class="contents">
               <h2 class="head-title">Email Verification Tool<br>Effortless, Swift, & Precise</h2>
-              <p style="color: black;">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
-              Each year, 27% of email addresses become invalid. If more than 12% of your emails are invalid, your delivery rate can drop below 39%. Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
+              <p style="color: black; text-align:center">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
+              Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
               <div class="header-button">
-                <a rel="nofollow" href="" class="btn btn-common">Start For Free</a>
+                <a rel="nofollow" href="/signup" class="btn btn-home-common">Start For Free</a>
               </div>
             </div>
           </div>
@@ -213,11 +214,11 @@
           <div class="about-wrapper wow fadeInLeft" data-wow-delay="0.3s">
             <div>
               <div class="site-heading">
-                <p class="mb-3" style="color: black;">Welcome to Your Trusted Email Verification Partner</p>
+                <p class="mb-3" style="color: black; text-align:center">Welcome to Your Trusted Email Verification Partner</p>
                 <h2 class="section-title">About Us</h2>
               </div>
               <div class="content">
-                <p>
+                <p style="color: black; text-align:center">
                   At bouncee, we are dedicated to helping businesses enhance their email marketing efforts by ensuring
                   their email lists are accurate, valid, and up-to-date. With years of experience and cutting-edge
                   technology, we provide top-notch email verification services that help our clients protect their
@@ -370,156 +371,227 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight animated" data-wow-delay="0.2s" style="visibility: visible;-webkit-animation-delay: 0.2s; -moz-animation-delay: 0.2s; animation-delay: 0.2s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/CEO.png" alt="">
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#CEO" data-toggle="modal" data-image="assets/team/CEO.png">
+                <img src="assets/team/CEO.png" alt="Michael Johnson">
+                <h5 style="color:black">Michael Johnson</h5>
             </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Michael Johnson</a></h3>
-                <p style="color: black;">CEO</p>
-              </div>
-              <p style="color: black;">As the CEO, Michael Johnson oversees the company's strategic direction and operations, ensuring alignment with the vision and goals. With over 20 years of experience in the tech industry, he drives innovation and growth, fostering a culture of excellence and integrity.</p>
-              <!-- <ul class="social-icons">
-                <li><a href="#"><i class="lni lni-facebook-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-twitter-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-instagram-filled" aria-hidden="true"></i></a></li>
-              </ul> -->
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#CTO" data-toggle="modal" data-image="assets/team/CTO.png">
+                <img src="assets/team/CTO.png" alt="David Thompson">
+                <h5 style="color:black">David Thompson</h5>
             </div>
-          </div>
-
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#CMO" data-toggle="modal" data-image="assets/team/CMO.png">
+                <img src="assets/team/CMO.png" alt="Michael Johnson">
+                <h5 style="color:black">Sarah Miller</h5>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#CFO" data-toggle="modal" data-image="assets/team/CFO.png">
+                <img src="assets/team/CFO.png" alt="David Thompson">
+                <h5 style="color:black">Emily Davis</h5>
+            </div>
         </div>
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight animated" data-wow-delay="0.4s" style="visibility: visible;-webkit-animation-delay: 0.4s; -moz-animation-delay: 0.4s; animation-delay: 0.4s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/CTO.png" alt="">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#LegalHead" data-toggle="modal" data-image="assets/team/Legal Head.png">
+                <img src="assets/team/Legal Head.png" alt="Michael Johnson">
+                <h5 style="color:black">Jessica Taylor</h5>
             </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">David Thompson</a></h3>
-                <p style="color: black;">CTO</p>
-              </div>
-              <p style="color: black;">David Thompson, our CTO, leads the technological advancements and development teams. His expertise in software engineering and cybersecurity ensures that our email validation systems are robust, secure, and cutting-edge.</p>
-              <!-- <ul class="social-icons">
-                <li><a href="#"><i class="lni lni-facebook-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-twitter-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-instagram-filled" aria-hidden="true"></i></a></li>
-              </ul> -->
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#FinanceHead" data-toggle="modal" data-image="assets/team/Finance Head.png">
+                <img src="assets/team/Finance Head.png" alt="David Thompson">
+                <h5 style="color:black">Olivia Brown</h5>
             </div>
-          </div>
-
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#ComplianceHead" data-toggle="modal" data-image="assets/team/Compliance Head.png">
+                <img src="assets/team/Compliance Head.png" alt="Michael Johnson">
+                <h5 style="color:black">James Anderson</h5>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 team-member" data-target="#ITHead" data-toggle="modal" data-image="assets/team/IT Head.png">
+                <img src="assets/team/IT Head.png" alt="David Thompson">
+                <h5 style="color:black">Christopher Lee</h5>
+            </div>
         </div>
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight" data-wow-delay="0.6s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.6s; -moz-animation-delay: 0.6s; animation-delay: 0.6s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/CMO.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Sarah Miller</a></h3>
-                <p style="color: black;">CMO</p>
-              </div>
-              <p style="color: black;">Sarah Miller, our CMO, spearheads the marketing strategies and brand positioning. With a knack for digital marketing and customer engagement, she drives brand awareness and growth through innovative campaigns and strategic partnerships.</p>
-              <!-- <ul class="social-icons">
-                <li><a href="#"><i class="lni lni-facebook-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-twitter-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-instagram-filled" aria-hidden="true"></i></a></li>
-              </ul> -->
-            </div>
-          </div>
-
-        </div>
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight" data-wow-delay="0.8s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.8s; -moz-animation-delay: 0.8s; animation-delay: 0.8s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/CFO.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Emily Davis</a></h3>
-                <p style="color: black;">CFO</p>
-              </div>
-              <p style="color: black;">As the CFO, Emily Davis manages the financial planning, risk management, and reporting. Her extensive background in finance and strategic planning ensures the company's financial health and sustainability.</p>
-              <!-- <ul class="social-icons">
-                <li><a href="#"><i class="lni lni-facebook-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-twitter-filled" aria-hidden="true"></i></a></li>
-                <li><a href="#"><i class="lni lni-instagram-filled" aria-hidden="true"></i></a></li>
-              </ul> -->
-            </div>
-          </div>
-
-        </div>
-
-        <div class="col-lg-6 col-md-12 col-xs-12">
-          <div class="team-item wow fadeInRight" data-wow-delay="0.6s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.6s; -moz-animation-delay: 0.6s; animation-delay: 0.6s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/Legal Head.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Jessica Taylor</a></h3>
-                <p style="color: black;">Legal Head</p>
-              </div>
-              <p style="color: black;">Jessica Taylor, our Legal Head, oversees all legal matters, ensuring compliance with regulations and mitigating risks. Her expertise in corporate law and her meticulous approach safeguard the company's interests and assets.</p>
-            </div>
-          </div>
-
-        </div>
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight" data-wow-delay="0.8s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.8s; -moz-animation-delay: 0.8s; animation-delay: 0.8s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/Finance Head.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Olivia Brown</a></h3>
-                <p style="color: black;">Finance Head</p>
-              </div>
-              <p style="color: black;">Olivia Brown, the Finance Head, is responsible for managing the company's financial operations and budgeting. Her strong analytical skills and attention to detail ensure efficient financial management and reporting.</p>
-            </div>
-          </div>
-
-        </div>
-        
-        <div class="col-lg-6 col-md-12 col-xs-12">
-          <div class="team-item wow fadeInRight" data-wow-delay="0.6s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.6s; -moz-animation-delay: 0.6s; animation-delay: 0.6s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/Compliance Head.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">James Anderson</a></h3>
-                <p style="color: black;">Compliance Head</p>
-              </div>
-              <p style="color: black;">James Anderson, our Compliance Head, ensures that all operations and procedures comply with regulatory requirements. His extensive knowledge in compliance and risk management helps maintain the highest standards of integrity and accountability.</p>
-            </div>
-          </div>
-
-        </div>
-        <div class="col-lg-6 col-md-12 col-xs-12">
-
-          <div class="team-item wow fadeInRight" data-wow-delay="0.8s" style="visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;-webkit-animation-delay: 0.8s; -moz-animation-delay: 0.8s; animation-delay: 0.8s;">
-            <div class="team-img">
-              <img class="img-fluid" src="assets/team/IT Head.png" alt="">
-            </div>
-            <div class="contetn">
-              <div class="info-text">
-                <h3><a href="#">Christopher Lee</a></h3>
-                <p style="color: black;">IT Head</p>
-              </div>
-              <p style="color: black;">Christopher Lee, the IT Head, oversees the information technology infrastructure and operations. His expertise in IT management and system architecture ensures that our technology is reliable, efficient, and secure.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
     </div>
+
+    
+    <!-- Modal for 360 Viewer -->
+    <div class="modal fade" id="CEO" tabindex="-1" role="dialog" aria-labelledby="CEOLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/CEO.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Michael Johnson</a></h3>
+                        <p style="color: black;">CEO</p>
+                      </div>
+                      <p style="color: black;">As the CEO, Michael Johnson oversees the company's strategic direction and operations, ensuring alignment with the vision and goals. With over 20 years of experience in the tech industry, he drives innovation and growth, fostering a culture of excellence and integrity.</p>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="CTO" tabindex="-1" role="dialog" aria-labelledby="CTOLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/CTO.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">David Thompson</a></h3>
+                        <p style="color: black;">CTO</p>
+                      </div>
+                      <p style="color: black;">David Thompson, our CTO, leads the technological advancements and development teams. His expertise in software engineering and cybersecurity ensures that our email validation systems are robust, secure, and cutting-edge.</p>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="CMO" tabindex="-1" role="dialog" aria-labelledby="CMOLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/CMO.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Sarah Miller</a></h3>
+                        <p style="color: black;">CMO</p>
+                      </div>
+                      <p style="color: black;">Sarah Miller, our CMO, spearheads the marketing strategies and brand positioning. With a knack for digital marketing and customer engagement, she drives brand awareness and growth through innovative campaigns and strategic partnerships.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="CFO" tabindex="-1" role="dialog" aria-labelledby="CFOLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/CFO.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Emily Davis</a></h3>
+                        <p style="color: black;">CFO</p>
+                      </div>
+                      <p style="color: black;">As the CFO, Emily Davis manages the financial planning, risk management, and reporting. Her extensive background in finance and strategic planning ensures the company's financial health and sustainability.</p> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="LegalHead" tabindex="-1" role="dialog" aria-labelledby="LegalHeadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/Legal Head.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Jessica Taylor</a></h3>
+                        <p style="color: black;">Legal Head</p>
+                      </div>
+                      <p style="color: black;">Jessica Taylor, our Legal Head, oversees all legal matters, ensuring compliance with regulations and mitigating risks. Her expertise in corporate law and her meticulous approach safeguard the company's interests and assets.</p>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="FinanceHead" tabindex="-1" role="dialog" aria-labelledby="FinanceHeadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/Finance Head.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Olivia Brown</a></h3>
+                        <p style="color: black;">Finance Head</p>
+                      </div>
+                      <p style="color: black;">Olivia Brown, the Finance Head, is responsible for managing the company's financial operations and budgeting. Her strong analytical skills and attention to detail ensure efficient financial management and reporting.</p>
+                        
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ComplianceHead" tabindex="-1" role="dialog" aria-labelledby="ComplianceHeadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/Compliance Head.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">James Anderson</a></h3>
+                        <p style="color: black;">Compliance Head</p>
+                      </div>
+                      <p style="color: black;">James Anderson, our Compliance Head, ensures that all operations and procedures comply with regulatory requirements. His extensive knowledge in compliance and risk management helps maintain the highest standards of integrity and accountability.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ITHead" tabindex="-1" role="dialog" aria-labelledby="ITHeadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="viewer1">
+                  <div class="team-item">
+                    <div class="team-img">
+                      <img class="img-fluid" src="assets/team/IT Head.png" alt="">
+                    </div>
+                    <div class="contetn">
+                      <div class="info-text">
+                        <h3><a href="#">Christopher Lee</a></h3>
+                        <p style="color: black;">IT Head</p>
+                      </div>
+                      <p style="color: black;">Christopher Lee, the IT Head, oversees the information technology infrastructure and operations. His expertise in IT management and system architecture ensures that our technology is reliable, efficient, and secure.</p> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
   </section>
   <!-- Team Section End -->
 
@@ -528,141 +600,141 @@
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
-        <h5 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card required!</h5>
+        <h6 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card required!</h6>
         <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="1.2s">
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img src="assets/pricing/Verification.png" alt=""></h4>
+          <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img src="assets/pricing/Verification Credits.png" alt=""></h4>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img src="assets/logo.png" alt=""></h4>
+            <h4 class="price-logo"><img class="img-fluid" src="assets/pricing/Logo_55.png" alt=""></h4>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img src="assets/pricing/NeverBounce.png" alt=""></h4>
+            <h4 class="price-logo"><img class="img-fluid" src="assets/pricing/neverbounce-logo-black-new.png" alt=""></h4>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img src="assets/pricing/ZeroBounce.png" alt=""></h4>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
+            <h4 class="price-logo"><img class="img-fluid" style="margin-bottom: 1em;" src="assets/pricing/ZeroBounce_55.png" alt=""></h4>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="1.4s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 3em;">
-            <h5 style="color: black;">5,000 Verifications</h5>
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 2em;">
+            <h5 style="color: black; ">5,000 Verifications</h5>
             <div class="shape"></div>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 3em;">
-            <button class="btn btn-common">  $ 9  </button>
+          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
+            <button class="btn btn-common" style="font-weight:bold">$9</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 3em;">
-            <button class="btn-comparision">  $ 40  </button>
+          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
+            <button class="btn-comparision">$40</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 3em;">
-            <button class="btn-comparision">  $ 45  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
+            <button class="btn-comparision">$45</button>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="1.6s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">10,000 Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 14  </button>
+            <button class="btn btn-common">$14</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 50  </button>
+            <button class="btn-comparision">$50</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 80  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$80</button>
           </div>
       </div>
       <div class="row wow fadeInDown" data-wow-delay="1.8s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">25,000 Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 28  </button>
+            <button class="btn btn-common">$28</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 125  </button>
+            <button class="btn-comparision">$125</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 190  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$190</button>
           </div>
       </div>
       <div class="row wow fadeInDown" data-wow-delay="2.0s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">50,000 Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 45 </button>
+            <button class="btn btn-common">$45</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 250  </button>
+            <button class="btn-comparision">$250</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 375  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$375</button>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="2.2s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">100K Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 75  </button>
+            <button class="btn btn-common">$75</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 400  </button>
+            <button class="btn-comparision">$400</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 425  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$425</button>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="2.4s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">200K Verifications</h5>
             <div class="shape"></div>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 125  </button>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+            <button class="btn btn-common">$125</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 800  </button>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="margin-top: 1em;">
+            <button class="btn-comparision">$800</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 850  </button>
+          <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6" style="margin-top: 1em;">
+            <button class="btn-comparision">$850</button>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="2.6s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">500K Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 250  </button>
+            <button class="btn btn-common">$250</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 1500  </button>
+            <button class="btn-comparision">$1500</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 1800  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$1800</button>
           </div>
       </div>
       <div class="row wow fadeInDown"  data-wow-delay="2.6s">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
+          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
             <h5 style="color: black;">1M Verifications</h5>
             <div class="shape"></div>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">  $ 450  </button>
+            <button class="btn btn-common">$450</button>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 3000  </button>
+            <button class="btn-comparision">$3000</button>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">  $ 2750  </button>
+          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
+            <button class="btn-comparision">$2750</button>
           </div>
       </div>
     </div>
@@ -959,7 +1031,7 @@
   <section id="contact" class="section-padding bg-gray">
     <div class="container">
       <div class="section-header text-center">
-        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Countact Us</h2>
+        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Contact Us</h2>
         <div class="shape wow fadeInDown" data-wow-delay="0.3s"></div>
       </div>
       <div class="row contact-form-area wow fadeInUp" data-wow-delay="0.3s">
@@ -970,8 +1042,8 @@
               <div class="row">
                 <div class="col-lg-10 col-md-10 col-xs-12 wow fadeInLeft" data-wow-delay="0.3s">
                   <div class="cta-text">
-                    <h4>Simple and Accurate Email Validation Tool</h4>
-                    <h5>Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services.</h5>
+                    <h4 style="color: black; text-align:center">Simple and Accurate Email Validation Tool</h4>
+                    <h5 style="color: black; text-align:center">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services.</h5>
                   </div>
                 </div>
               </div>
@@ -1077,6 +1149,8 @@
   <script src="js/jquery.counterup.min.js"></script>
   <script src="js/waypoints.min.js"></script>
   <script src="js/main.js"></script>
+  <!-- <script src="js/slim.min.js"></script> -->
+  <script src="js/three.min.js"></script>
 
 </body>
 

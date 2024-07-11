@@ -109,6 +109,6 @@
         return false;
       });
 
-  });      
+  });
 
 }(jQuery));

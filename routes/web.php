@@ -20,5 +20,12 @@ Route::get('/', function () {
 Route::get('/single-verification', function () {
     return view('email-generator');
 });
+Route::get('/signup', function () {
+    return view('signup');
+});
+
+Route::get('/signin', function () {
+    return view('signin');
+});
 
 Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');
