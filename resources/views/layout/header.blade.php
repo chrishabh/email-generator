@@ -69,7 +69,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/single-verification">
+              <a class="nav-link" href="/bulk-verification">
                 Bulk Verification
               </a>
             </li>
