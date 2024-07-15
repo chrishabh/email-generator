@@ -22,21 +22,13 @@
             <div class="topHeading alt">
                 <div class="row">
                     <div class="col-lg-7">
-                        <h1 class="wow fadeInUp head-main">Single email verification <br> <span>your email checking best
+                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Single email verification <br> <span>your email checking best
                                 friend</span></h1>
                         <p class="wow fadeInUp para">In today’s digital landscape, maintaining the integrity of your email
                             list is crucial for successful communication and marketing campaigns. Single email verification
-                            is a vital tool that helps ensure the email addresses you have are valid, active, and ready to
-                            receive your messages. This process involves verifying one email address at a time to determine
-                            its authenticity and deliverability.
-                            <br>By utilizing single email verification, you can significantly reduce bounce rates, protect
-                            your
-                            sender reputation, and improve overall email deliverability. Whether you’re sending out
-                            newsletters, promotional offers, or important updates, having a verified email address ensures
-                            your message reaches its intended recipient. This not only enhances your communication efforts
-                            but also optimizes your resources by avoiding the pitfalls of sending emails to invalid or
-                            inactive addresses. Embrace single email verification to maintain a clean, efficient, and
-                            effective email list.
+                            is a vital tool that helps ensure the email addresses you have are valid, active, and ready to receive your messages. This process involves verifying one email address at a time to determine its authenticity and deliverability.
+                            <br>By utilizing single email verification, you can significantly reduce bounce rates, protect your sender reputation, and improve overall email deliverability. Whether you’re sending out newsletters, promotional offers, or important updates, having a verified email address ensures
+                            your message reaches its intended recipient. This not only enhances your communication efforts but also optimizes your resources by avoiding the pitfalls of sending emails to invalid or inactive addresses. Embrace single email verification to maintain a clean, efficient, and effective email list.
                         </p>
                         <a href class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
                             data-wow-delay="0.7s">Sign up</a>
@@ -53,7 +45,7 @@
                             <video loop="" muted="" autoplay="" class="banner-video">
                                 <source src="singleEmailVerification-assets/img/verify.mp4" type="video/mp4">
                             </video>
-                            {{-- <img src="singleEmailVerification-assets/img/single-email.png" alt="Single email verification by MailTester.com"> --}}
+                            {{-- <img src="singleEmailVerification-assets/img/single-email.png" alt="Single email verification "> --}}
                         </div>
                     </div>
                 </div>
@@ -101,7 +93,8 @@
                             </span>
                             <div class="text">
                                 <h4>Real-time Email Verification</h4>
-                                <p style="color: black;">Instant results with a high accuracy rate.</p>
+                                <p style="color: black;">Instant results with a high accuracy</p>
+                                <p style="color: black; text-align:center"> rate.</p>
                             </div>
                         </div>
                         <div class="box-item wow fadeInLeft" data-wow-delay="0.4s">
