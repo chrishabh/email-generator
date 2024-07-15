@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('index');
 });
 Route::get('/single-verification', function () {
-    return view('email-generator');
+    return view('single-verification');
 });
 Route::get('/signup', function () {
     return view('signup');

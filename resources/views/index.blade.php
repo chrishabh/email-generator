@@ -1,93 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-  <title>Bouncee</title>
-  <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <!-- Icon -->
-  <link rel="stylesheet" href="fonts/line-icons.css">
-  <!-- Owl carousel -->
-  <link rel="stylesheet" href="css/owl.carousel.min.css">
-  <link rel="stylesheet" href="css/owl.theme.css">
-
-  <link rel="stylesheet" href="css/magnific-popup.css">
-  <link rel="stylesheet" href="css/nivo-lightbox.css">
-  <!-- Animate -->
-  <link rel="stylesheet" href="css/animate.css">
-  <!-- Main Style -->
-  <link rel="stylesheet" href="css/main.css">
-  <!-- Responsive Style -->
-  <link rel="stylesheet" href="css/responsive.css">
-
-
-</head>
-
-<body>
-
-  <!-- Header Area wrapper Starts -->
-  <header id="header-wrap">
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-md bg-inverse fixed-top scrolling-navbar">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <a href="index.php" class="navbar-brand"><img src="assets/logo.png" alt=""></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="lni-menu"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
-            <li class="nav-item active">
-              <a class="nav-link" href="#hero-area">
-                Home
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#services">
-                Services
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#team">
-                Team
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#pricing">
-                Pricing
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/single-verification">
-                Single Verification
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/single-verification">
-                Bulk Verification
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#testimonial">
-                Testimonial
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <!-- Navbar End -->
-
+@extends('layout.main')
+  <!-- Services Section Start -->
+@section('main-section')
+  @push('title')
+    <title>Bouncee</title>
+  @endpush
     <!-- Hero Area Start -->
     <div id="hero-area" class="hero-area-bg">
       <div class="container">
@@ -111,11 +27,6 @@
       </div>
     </div>
     <!-- Hero Area End -->
-
-  </header>
-  <!-- Header Area wrapper End -->
-
-  <!-- Services Section Start -->
   <section id="services" class="section-padding">
     <div class="container">
       <div class="section-header text-center">
@@ -238,7 +149,8 @@
   <!-- About Section End -->
 
   <!-- Features Section Start -->
-  <section id="features" class="section-padding">
+  <x-features/>
+  {{-- <section id="features" class="section-padding">
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Awesome Features</h2>
@@ -340,7 +252,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> --}}
   <!-- Features Section End -->
 
   <!-- Call To Action Section Start -->
@@ -596,7 +508,7 @@
   <!-- Team Section End -->
 
   <!-- Pricing section Start -->
-  <section id="pricing" class="section-padding">
+  {{-- <section id="pricing" class="section-padding">
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
@@ -738,11 +650,12 @@
           </div>
       </div>
     </div>
-  </section>
+  </section> --}}
   <!-- Pricing Table Section End -->
 
   <!-- Testimonial Section Start -->
-  <section id="testimonial" class="testimonial section-padding">
+  <x-testimonial />
+  {{-- <section id="testimonial" class="testimonial section-padding">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -1004,7 +917,7 @@
           </div>
         </div>
       </div>
-  </section>
+  </section> --}}
 
   <!-- Testimonial Section End -->
 
@@ -1059,99 +972,5 @@
       </div>
     </div>
   </section>
-  <!-- Contact Section End -->
 
-  <!-- Footer Section Start -->
-  <footer id="footer" class="footer-area section-padding">
-    <div class="container">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12">
-            <div class="widget">
-              <h3 class="footer-logo"><img src="assets/logo.png" alt=""></h3>
-              <div class="textwidget">
-                <p>Ensure your emails reach the right inbox with our accurate and efficient validation services. Reduce bounce rates and enhance deliverability effortlessly.</p>
-              </div>
-              <div class="social-icon">
-                <a class="facebook" href="#"><i class="lni-facebook-filled"></i></a>
-                <a class="twitter" href="#"><i class="lni-twitter-filled"></i></a>
-                <a class="instagram" href="#"><i class="lni-instagram-filled"></i></a>
-                <a class="linkedin" href="#"><i class="lni-linkedin-filled"></i></a>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-            <h3 class="footer-titel">Products</h3>
-            <ul class="footer-link">
-              <li><a href="#">Single Email Verification</a></li>
-              <li><a href="#">Bulk Email Verifiction</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-            <h3 class="footer-titel">Resources</h3>
-            <ul class="footer-link">
-              <li><a href="#">Payment Options</a></li>
-              <li><a href="#">Fee Schedule</a></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
-            <h3 class="footer-titel">Contact</h3>
-            <ul class="address">
-              <li>
-                <a href="#"><i class="lni-map-marker"></i>1234 Elm Street,<br>Suite 567
-                  Springfield, IL 62701</a>
-              </li>
-              <li>
-                <a href="#"><i class="lni-phone-handset"></i> Phone: +1 (801) 512 0616</a>
-              </li>
-              <li>
-                <a href="#"><i class="lni-envelope"></i> Email: contact@bouncee.net</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="copyright">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="copyright-content">
-              <p>Copyright © 2024 <a rel="nofollow" href="https://bouncee.net">Bouncee</a> All Right Reserved</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <!-- Footer Section End -->
-
-  <!-- Go to Top Link -->
-  <a href="#" class="back-to-top">
-    <i class="lni-arrow-up"></i>
-  </a>
-
-  <!-- Preloader -->
-  <div id="preloader">
-    <div class="loader" id="loader-1"></div>
-  </div>
-  <!-- End Preloader -->
-
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="js/jquery-min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/wow.js"></script>
-  <script src="js/jquery.nav.js"></script>
-  <script src="js/scrolling-nav.js"></script>
-  <script src="js/jquery.easing.min.js"></script>
-  <script src="js/jquery.counterup.min.js"></script>
-  <script src="js/waypoints.min.js"></script>
-  <script src="js/main.js"></script>
-  <!-- <script src="js/slim.min.js"></script> -->
-  <script src="js/three.min.js"></script>
-
-</body>
-
-</html>
+  @endsection
