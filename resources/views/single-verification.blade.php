@@ -22,13 +22,9 @@
             <div class="topHeading alt">
                 <div class="row">
                     <div class="col-lg-7  text-center">
-                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Single Email Verification<br> <span>your email checking best
+                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Single Email Verification<br> <span>Your email checking best
                                 friend</span></h1>
-                        <p class="wow fadeInUp para">In today’s digital landscape, maintaining the integrity of your email
-                            list is crucial for successful communication and marketing campaigns. Single email verification
-                            is a vital tool that helps ensure the email addresses you have are valid, active, and ready to receive your messages. This process involves verifying one email address at a time to determine its authenticity and deliverability.
-                            <br>By utilizing single email verification, you can significantly reduce bounce rates, protect your sender reputation, and improve overall email deliverability. Whether you’re sending out newsletters, promotional offers, or important updates, having a verified email address ensures
-                            your message reaches its intended recipient. This not only enhances your communication efforts but also optimizes your resources by avoiding the pitfalls of sending emails to invalid or inactive addresses. Embrace single email verification to maintain a clean, efficient, and effective email list.
+                        <p class="wow fadeInUp para">Maintaining the integrity of your email list is essential for successful marketing campaigns. Single email verification ensures email addresses are valid, active, and ready to receive messages, reducing bounce rates and protecting your sender reputation.
                         </p>
                         <a href class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
                             data-wow-delay="0.7s">Sign up</a>
