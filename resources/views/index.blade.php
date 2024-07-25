@@ -1,5 +1,9 @@
 @extends('layout.main')
   <!-- Services Section Start -->
+  @php
+    $headerData = array();
+    $headerData['whichPageRequest'] ='mainPage';
+@endphp
 @section('main-section')
   @push('title')
     <title>Bouncee</title>
