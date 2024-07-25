@@ -35,7 +35,7 @@
                                 friend</span></h1>
                         <p class="wow fadeInUp para">Maintaining the integrity of your email list is essential for successful marketing campaigns. Single email verification ensures email addresses are valid, active, and ready to receive messages, reducing bounce rates and protecting your sender reputation.
                         </p>
-                        <a href class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
+                        <a href='/signup' class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
                             data-wow-delay="0.7s">Sign up</a>
                         {{-- <div class="signup-container">
                             <form class="signup-form">

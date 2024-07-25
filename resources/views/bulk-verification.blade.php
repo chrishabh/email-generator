@@ -34,7 +34,7 @@
                         <p class="wow fadeInUp para">
                         Bulk email verification ensures large email lists are accurate and active, improving campaign efficiency. By filtering out invalid and risky addresses, it reduces bounce rates, enhances deliverability, and protects your sender reputation. This powerful tool helps your messages reach their intended audience, optimizing your marketing efforts and budget.
                         </p>
-                        <a href class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
+                        <a href='/signup' class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
                             data-wow-delay="0.7s">Sign Up Free</a>
                         {{-- <div class="signup-container">
                             <form class="signup-form">

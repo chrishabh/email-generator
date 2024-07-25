@@ -9,6 +9,16 @@ let fn= ()=>{
         }
     });
 
+    let url= ['/single-verification','/bulk-verification']
+    if(url.includes(currentUrl)){
+        const anchor = document.querySelector('a[href="#hero-area"]');
+        if(anchor){
+            anchor.addEventListener('click',()=>{
+                window.location.href='/';
+            })
+        }
+    }
+
 }
 
 window.addEventListener('load',fn)
