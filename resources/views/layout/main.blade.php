@@ -1,4 +1,4 @@
-@include('layout.header')
+@include('layout.header',['headerData' =>$headerData??null])
 
 @yield('main-section')
 

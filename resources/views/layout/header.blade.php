@@ -48,6 +48,7 @@
                 Home
               </a>
             </li>
+            @if($headerData['whichPageRequest'] != 'singlePage')
             <li class="nav-item">
               <a class="nav-link" href="#services">
                 Services
@@ -63,6 +64,7 @@
                 Pricing
               </a>
             </li>
+            @endif
             <li class="nav-item">
               <a class="nav-link" href="/single-verification">
                 Single Verification
@@ -75,13 +77,11 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#testimonial">
-                Testimonial
+                Sign In
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#contact">
-                Contact
-              </a>
+              <a rel="nofollow" href="/signup" class="btn btn-home-common py-2">Sign Up</a>
             </li>
           </ul>
         </div>

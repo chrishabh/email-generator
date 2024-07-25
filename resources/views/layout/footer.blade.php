@@ -91,6 +91,7 @@
 <!-- <script src="js/slim.min.js"></script> -->
 <script src="js/three.min.js"></script>
 
+@yield('specificScript')
 </body>
 
 </html>

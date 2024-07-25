@@ -32,4 +32,4 @@ Route::get('/signin', function () {
     return view('signin');
 });
 
-Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');
+// Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');

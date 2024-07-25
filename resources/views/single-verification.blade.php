@@ -1,5 +1,11 @@
 @extends('layout.main')
 
+
+@php
+    $headerData = array();
+    $headerData['whichPageRequest'] ='singlePage';
+@endphp
+
 @section('main-section')
     @push('title')
         <title>Single Email Verification | Bouncee</title>
@@ -7,7 +13,10 @@
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">
     @endpush
-    <section class="hero-section ani_has_move_parallax header-ver-1">
+    @section('specificScript')
+        <script src="singleEmailVerification-assets/js/singleVerification.js" type="text/javascript"></script>
+    @endsection
+    <section class="hero-section ani_has_move_parallax header-ver-1" id="singleVerification">
         <div class="right-shape-area">
             <div class="group-shape ani_move_parallax_el">
                 <span class="shape-1 shape"><img src="singleEmailVerification-assets/img/line.svg" alt></span>

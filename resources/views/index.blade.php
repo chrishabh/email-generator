@@ -651,8 +651,8 @@
       </div>
     </div>
   </section> --}}
+  <x-price /> 
   <!-- Pricing Table Section End -->
-
   <!-- Testimonial Section Start -->
   <x-testimonial />
   {{-- <section id="testimonial" class="testimonial section-padding">
