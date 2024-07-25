@@ -29,28 +29,13 @@
             <div class="topHeading alt">
                 <div class="row">
                     <div class="col-lg-7 text-center">
-                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Bulk email verification for <br> an
+                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Bulk Email Verification for <br> an
                             effective email campaign</h1>
                         <p class="wow fadeInUp para">
-                            In the world of digital marketing, the quality of your email list can make or break your
-                            campaigns. Bulk email verification is a comprehensive solution designed to validate large lists
-                            of email addresses, ensuring they are accurate, active, and ready to receive your
-                            communications. This process involves checking each email address in your database against
-                            multiple verification protocols to filter out invalid, inactive, and risky addresses.
-                            <br>
-                            Using bulk email verification, you can significantly improve the efficiency and effectiveness of
-                            your email marketing efforts. By ensuring that your emails are only sent to valid addresses, you
-                            reduce bounce rates, enhance deliverability, and protect your sender reputation. This not only
-                            maximizes the impact of your campaigns but also optimizes your marketing budget by preventing
-                            wastage on undeliverable emails.
-                            <br>
-                            Whether you’re managing a large-scale marketing campaign, maintaining subscriber lists, or
-                            conducting outreach, bulk email verification helps maintain the integrity of your email data.
-                            Embrace this powerful tool to ensure your messages reach their intended audience, drive
-                            engagement, and achieve your marketing goals with precision and confidence.
+                        Bulk email verification ensures large email lists are accurate and active, improving campaign efficiency. By filtering out invalid and risky addresses, it reduces bounce rates, enhances deliverability, and protects your sender reputation. This powerful tool helps your messages reach their intended audience, optimizing your marketing efforts and budget.
                         </p>
                         <a href class="btn btn-success wow fadeInUp signup-btn" data-wow-duration="1s"
-                            data-wow-delay="0.7s">Contact Us</a>
+                            data-wow-delay="0.7s">Sign Up Free</a>
                         {{-- <div class="signup-container">
                             <form class="signup-form">
                                 <input type="email" class="form-control" placeholder="Email address"
