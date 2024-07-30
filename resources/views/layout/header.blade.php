@@ -76,14 +76,25 @@
                                 Bulk Verification
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/signin">
-                                Sign In
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a rel="nofollow" href="/signup" class="btn btn-home-common py-2">Sign Up</a>
-                        </li>
+                        @if(auth()->check())
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    {{auth()->user()->name}}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="nofollow" href="/logout" class="btn btn-home-common py-2">Log out</a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="/signin">
+                                    Sign In
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="nofollow" href="/signup" class="btn btn-home-common py-2">Sign Up</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
             </div>

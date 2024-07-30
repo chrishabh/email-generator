@@ -12776,16 +12776,21 @@ img.addtocart {
   margin-bottom: 0px !important;
 }
 
-#successBlock{
-  background-color: green !important;
+.block-message{
   transition: opacity 0.5s ease-out; 
   opacity: 1;
 }
-
-#successBlock.fade-out {
-  opacity: 0; 
+#successBlock{
+  background-color: green !important;
+  
+} 
+#alertBlock{
+  background-color: red !important; 
 }
 
-.icon-eye.toggle_pass{
-  top:25px !important;
+#successBlock.fade-out,#alertBlock.fade-out {
+  opacity: 0; 
+}
+.signin-icon-eye{
+  top: 50px !important;
 }

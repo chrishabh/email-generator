@@ -17,9 +17,11 @@
               <h2 class="head-title">Email Verification Tool<br>Effortless, Swift, & Precise</h2>
               <p style="color: black; text-align:center">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
               Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
-              <div class="header-button">
-                <a rel="nofollow" href="/signup" class="btn btn-home-common">Start For Free</a>
-              </div>
+              @if(!auth()->check())
+                <div class="header-button">
+                  <a rel="nofollow" href="/signup" class="btn btn-home-common">Start For Free</a>
+                </div>
+              @endif
             </div>
           </div>
           <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">

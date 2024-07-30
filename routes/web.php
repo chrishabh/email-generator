@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
@@ -20,10 +21,14 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
-Route::post('/signup',[RegisterController::class,'signup']);
-
-Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+Route::middleware('guest')->group(function(){
+    Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
+    Route::post('/signup',[RegisterController::class,'signup']); 
+    Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+    Route::post('/signin',[LoginController::class,'login']);
+});
+ 
+Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 Route::get('/single-verification', function () {
     return view('single-verification');
 });
