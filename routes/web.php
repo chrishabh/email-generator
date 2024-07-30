@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 
@@ -17,6 +19,11 @@ use App\Http\Controllers\EmailController;
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
+Route::post('/signup',[RegisterController::class,'signup']);
+
+Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
 Route::get('/single-verification', function () {
     return view('single-verification');
 });
@@ -24,12 +31,6 @@ Route::get('/single-verification', function () {
 Route::get('/bulk-verification', function () {
     return view('bulk-verification');
 });
-Route::get('/signup', function () {
-    return view('signup');
-});
-
-Route::get('/signin', function () {
-    return view('signin');
-});
+ 
 
 // Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');

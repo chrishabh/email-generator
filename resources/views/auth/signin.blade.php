@@ -3,10 +3,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Signup | Bouncee</title>
+    <title>Signin | Bouncee</title>
   <!-- <script type="text/javascript" async="" src="signup-assets/js/mixpannel-2-latest.min.js"></script> -->
   <script src="signup-assets/js/jquery-min.js"></script>
   <script src="signup-assets/js/script-min.js"></script>
+  <script src="signup-assets/js/auth.js" type="text/javascript"></script>
   
   <link rel="stylesheet" href="signup-assets/css/poppins.css">
 
@@ -14,9 +15,9 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+//   gtag('js', new Date());
 
-  gtag('config', 'UA-79575131-1');
+//   gtag('config', 'UA-79575131-1');
 </script>
 
 
@@ -30,14 +31,14 @@
               <div class="sidebar-signup">
    <div>
       <div class="div-block-148">
-         <h1>Get started in a minute<br></h1>
+         <h1>Welcome back<br></h1>
          <p class="signup-intro" style="text-align: center;">Email verification is a powerful tool for your business.<br></p>
       </div>
       <div class="div-block-148">
          <div class="text-block-56">Clean all records matching our intelligent Spam-trap<br> indicators</div>
          <div class="text-block-56">Checks to see if an email address from a disposable email provider, such as Mailinator exist <br></div>
-         <div class="text-block-56">Any email address containing invalid syntax is<br> instantly removed</div>
-         <div class="text-block-56">Eliminates all email addresses matching our complainers database<br></div>
+         <div class="text-block-56">Any email address containing invalid syntax is <br>instantly removed</div>
+         <div class="text-block-56">Eliminates all email addresses matching our <br>complainers database<br></div>
       </div>
    </div>
 </div>
@@ -45,41 +46,26 @@
     </div>
     <div class="col-form">
         <div class="col-form--center">
-            <a href="" class="logo"><img src="signup-assets/asset/logo.png" alt=""></a>
-            
-       
+            <a href="" class="logo img-fluid"><img src="signup-assets/asset/logo.png" alt=""></a>
+            @if(session()->has('success'))
+            <div class="alert" id="successBlock">
+                {{session('success')}}
+            </div>  
+            @endif
              <div class="sign-form">
                 <div class="title">
-                    Sign Up to your acounts
+                    Login to your acount
                 </div>
-                                   <form method="post" accept-charset="utf-8" class="" action="/signup"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>                   <div class="sign-inp-row">
-                   <!-- Custom select structure -->
-
-				 <select class="nbemails" name="nbemails" onchange="" onclick="return false;" id="" placehodlder="" required="">
-				         <option value="" disabled="" selected="">How many emails do you want to verify ?</option>
-                    <option value="1 to 100 emails">1 to 100 emails</option>
-                    <option value="100 to 5.000 emails">100 to 5.000 emails</option>
-                    <option value="5.000 to 50.000 emails">5.000 to 50.000 emails</option>
-                    <option value="50.000 to 200.000 emails">50.000 to 200.000 emails</option>
-                    <option value="200.000 to 1M emails">200.000 to 1M emails</option>
-                    <option value="More than 1M emails">More than 1M emails</option>
-                      </select>
+                <form method="post" accept-charset="utf-8" class="form-inner" action="/signin"><div style="display:none;"><input type="hidden" name="_method" value="POST"></div>                <div class="sign-inp-row">
+                  <label for="">Your work email</label>
+                    <input type="email" name="username" required="required" class="" placeholder="Email" id="username">                </div>
                 <div class="sign-inp-row">
-                      <input type="text" name="fullname" placeholder="Your name" required="required" class="" maxlength="77" id="fullname">                </div>
-                <div class="sign-inp-row">
-                    <input type="email" name="username" placeholder="Your email" required="required" class="" maxlength="50" id="username">                </div>
-               
-                <div class="sign-inp-row pass pass_field">
-                    <input type="password" name="password" placeholder="Type your password" id="pass_change" required="required" class="" maxlength="25">                    <div class="icon-eye toggle_pass"></div>
-                </div>
-                <!-- <p>
-                    By signing up, you confirm that you’ve read
-                and accepted our <a href="">User Notice</a> and <a href="">Privacy Policy.</a>
-                </p> -->
+                  <label for="">Enter your password</label>
+                      <input type="password" name="password" required="required" class="" placeholder="Password" id="password">                </div>
 
-                <button class="btn fullwidth" type="submit" style="margin-top: 4em;">Sign Up</button>
+                <button class="btn fullwidth" type="submit"  style="margin-top: 4em;">Login to your account</button>
                 <div class="sign-form--foot">
-                    <a href="/signin">Already have an account? Log in</a>
+                    <a href="/recovery">Can’t login?</a> <a href="/signup"> Sign up for new user?</a>
                 </div>
             </div></form>
             <!-- <script>

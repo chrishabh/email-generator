@@ -1748,3 +1748,8 @@ textarea {
 .social-icon .google:hover {
   background: #CE332A;
 }
+
+
+.btn-home-common:hover{
+  color:#fff !important;
+}

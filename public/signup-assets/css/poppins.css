@@ -12758,3 +12758,34 @@ img.addtocart {
 }
 
 /* Edited */
+
+
+
+.sign-container .validation-error {
+  border: 2px solid red !important;
+}
+
+.sign-container .vError{
+  color: red;
+  font-size: 0.7em;
+  padding: 0.5em 0 0 0;
+  line-height: 1.4em;
+}
+
+.sign-inp-row .nbemails{
+  margin-bottom: 0px !important;
+}
+
+#successBlock{
+  background-color: green !important;
+  transition: opacity 0.5s ease-out; 
+  opacity: 1;
+}
+
+#successBlock.fade-out {
+  opacity: 0; 
+}
+
+.icon-eye.toggle_pass{
+  top:25px !important;
+}
