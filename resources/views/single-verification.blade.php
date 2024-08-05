@@ -67,8 +67,8 @@
                         <img src="singleEmailVerification-assets/img/enter-email.png" alt="Enter Email">
                     </div> --}}
                     <div class="card">
-                        <input type="text" class="email-input" placeholder="Enter Your Email">
-                        <a href="{{auth()->check() ?'#': '/signup'}}" class="validate-button">VALIDATE</a>
+                        <input type="text" class="email-input" disabled placeholder="Enter Your Email">
+                        <a class="validate-button">VALIDATE</a>
                     </div>
                 </div>
                 <div class="col-lg-10">
