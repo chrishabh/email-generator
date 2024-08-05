@@ -12,6 +12,7 @@
     <script src="signup-assets/js/auth.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="signup-assets/css/poppins.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
     <script>
