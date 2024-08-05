@@ -28,7 +28,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-                <button class="btn btn-common" style="font-weight:bold">$9</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="9">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$9</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$9</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
                 <button class="btn-comparision">$40</button>
@@ -43,7 +51,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$14</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="14">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$14</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$14</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$50</button>
@@ -58,7 +74,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$28</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="28">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$28</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$28</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$125</button>
@@ -73,7 +97,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$45</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="45">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$45</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$45</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$250</button>
@@ -88,7 +120,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$75</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="75">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$75</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$75</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$400</button>
@@ -103,7 +143,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-                <button class="btn btn-common">$125</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="125">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$125</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$125</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="margin-top: 1em;">
                 <button class="btn-comparision">$800</button>
@@ -118,7 +166,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$250</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="250">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$250</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$250</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$1500</button>
@@ -133,7 +189,15 @@
                 <div class="shape"></div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-                <button class="btn btn-common">$450</button>
+            @if(auth()->check())
+                <form action="{{ route('create.Order') }}" method="POST">
+                @csrf
+                    <input type="hidden" name="input_value" id="input_value"  value="450">
+                    <button  type="submit" class="btn btn-common" style="font-weight:bold" >$450</button>
+                </form>
+            @else
+            <button class="btn btn-common" style="font-weight:bold" >$450</button>
+            @endif
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$3000</button>

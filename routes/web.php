@@ -50,7 +50,7 @@ Route::get('/bulk-verification', function () {
 // });
 
 Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');;
-Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');;
+Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
 
 
 // Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');
