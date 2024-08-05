@@ -175,18 +175,21 @@ body{
     position: absolute;
     bottom: 0px;
     margin: 0;
-    border-radius: 50px;
+    /* border-radius: 50px; */
     width: 30vw;
     text-align: center;
     box-shadow: 0px 1px 5px -1px #000000d4;
     transition: background-color 0.3s ease;
 }
 .Htw .validate-button:hover{
-    border: 2px solid #007bff;
+    /* border: 2px solid #007bff;
     background-color: white;
     color: black;
 
-    box-shadow: 0px 1px 5px -1px #000000d4;
+    box-shadow: 0px 1px 5px -1px #000000d4; */
+
+
+    color: white;
 }
 
 .Htw .card{

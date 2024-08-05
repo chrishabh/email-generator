@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BulkUploadImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmailController extends Controller
 {
@@ -75,4 +77,24 @@ class EmailController extends Controller
         }
        
     }
+
+    function uploadBulkData(Request $request){ 
+        $request->validate([
+            'bulkUploadData' => 'required|mimes:xlsx,xls',
+        ]); 
+        try {
+            if(Excel::import(new BulkUploadImport, $request->file('bulkUploadData'))){
+                return response()->json(['success' => 'data imported successfully!']);
+            }
+            else{
+                return response()->json(['error' =>  'something went wrong with this.']);
+            }
+            // return redirect()->back()->with('success', 'Import successful!');
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+            // return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
 }
