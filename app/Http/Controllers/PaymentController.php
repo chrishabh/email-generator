@@ -39,11 +39,17 @@ class PaymentController extends Controller
         $receipt = "bouncee_".$timestamp;
         $currency = 'USD';
         
-        $order = $this->razorpay->order->create([
-            'receipt' => $receipt,
-            'amount' => $pack_amount*100, // amount in paise
-            'currency' => $currency
-        ]);
+        $order_exists = Order::checkOrderExists(Auth::User()->id,$pack_amount);
+        if(!empty($order_exists)){
+            $order['id'] = $order_exists->order_id;
+        }else{
+            $order = $this->razorpay->order->create([
+                'receipt' => $receipt,
+                'amount' => $pack_amount*100, // amount in paise
+                'currency' => $currency
+            ]);
+        }
+        
 
         $bind_data = [
             'orderId' => $order['id'],

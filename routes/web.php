@@ -17,40 +17,38 @@ use App\Http\Controllers\PaymentController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+try{
 
-Route::get('/', function () {
-    return view('index');
+    Route::get('/', function () {
+        return view('index');
+    });
+    
+    Route::middleware('guest')->group(function(){
+            Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
+            Route::post('/signup',[RegisterController::class,'signup']); 
+            Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+            Route::post('/signin',[LoginController::class,'login']); 
+    });
+    
+    Route::middleware('auth:web')->group(function(){
+            Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
+            Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
+      
+    });
+     
+    Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
+    Route::get('/single-verification', function () {
+        return view('single-verification');
+    });
+    
+    Route::get('/bulk-verification', function () {
+        return view('bulk-verification');
+    });
+
+}catch (\Exception $e) {
+    return view('something-went-wrong');
+}
+
+Route::fallback(function () {
+    return view('route-not-found');
 });
-
-Route::middleware('guest')->group(function(){
-    Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
-    Route::post('/signup',[RegisterController::class,'signup']); 
-    Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
-    Route::post('/signin',[LoginController::class,'login']);
-});
- 
-Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
-Route::get('/single-verification', function () {
-    return view('single-verification');
-});
-
-Route::get('/bulk-verification', function () {
-    return view('bulk-verification');
-});
-// Route::get('/signup', function () {
-//     return view('auth/signup');
-// });
-
-// Route::get('/payment', function () {
-//     return view('payment');
-// });
-
-// Route::get('/signin', function () {
-//     return view('auth/signin');
-// });
-
-Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');;
-Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
-
-
-// Route::post('/generate-email', [EmailController::class, 'generateEmail'])->name('generateEmail');

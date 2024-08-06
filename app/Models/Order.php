@@ -23,4 +23,9 @@ class Order extends Model
         }
         return false;
     }
+
+    public static function checkOrderExists($user_id,$amount)
+    {
+        return Order::whereNull('deleted_at')->where('user_id',$user_id)->where('amount',$amount)->where('status','Created')->first();
+    }
 }
