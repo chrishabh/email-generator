@@ -37,7 +37,7 @@ class PaymentController extends Controller
         $pack_amount = $request->input('input_value');
         $timestamp = Carbon::now()->timestamp;
         $receipt = "bouncee_".$timestamp;
-        $currency = 'INR';
+        $currency = 'USD';
         
         $order = $this->razorpay->order->create([
             'receipt' => $receipt,
