@@ -56,11 +56,11 @@
 
     </header>
 <body style="
-    background-image: url(../assets/dark-payment-bg.png);
+    background-image: url(../assets/verification-screen-bg.png);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    min-height: 400px;
+    min-height: 550px;
     position: relative;
     overflow: hidden;
     padding: 10px 0 10px;

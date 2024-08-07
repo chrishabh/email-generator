@@ -35,7 +35,7 @@ class SignInService{
             ];
             Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
             VerificationCode::addVerificationCode($verification_data);
-            return  redirect()->intended('/verify');
+            return  redirect()->intended('/verification');
         }else{
             return redirect()->back()->withErrors([
                 'credentialsError' => 'The provided credentials do not match our records.'
