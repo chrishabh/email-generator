@@ -4,6 +4,9 @@
 namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Models\VerificationCode;
+use App\Notifications\ConfirmationCode;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Validation\ValidationException;
 
@@ -23,7 +26,16 @@ class SignInService{
         }
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 
-            return  redirect()->intended('/');;
+            $otp = mt_rand(100000,999999);
+            $verification_data = [
+                'user_id' => Auth::User()->id,
+                'email' =>  $credentials['email'],
+                'verification_code' => $otp,
+                'verification_type' => 'SIGN_IN',
+            ];
+            Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
+            VerificationCode::addVerificationCode($verification_data);
+            return  redirect()->intended('/verify');
         }else{
             return redirect()->back()->withErrors([
                 'credentialsError' => 'The provided credentials do not match our records.'

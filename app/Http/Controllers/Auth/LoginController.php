@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SignInFormRequest;
 use App\Models\User;
+use App\Models\VerificationCode;
 use App\Services\Auth\SignInService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -43,5 +45,40 @@ class LoginController extends Controller
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
         }
          
+    }
+
+
+    public static function verification(Request $request)
+    {
+        $verification_code = $request->input('verification_code');
+
+        $verification_data = VerificationCode::getVerificationCode(Auth::User()->id,Auth::User()->email);
+ 
+        if(empty($verification_data)){
+            return redirect()->back()->withErrors([
+                'verification_code' => 'Invalid Verification Request.'
+            ])->withInput();
+        }
+
+        if (Carbon::parse($verification_data->created_at)->addMinutes(env('TIME_OUT_FOR_VERIFYING_THE_EMAIL'))->isPast()) {
+            VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email);
+            return redirect()->back()->withErrors([
+                'verification_code' => 'The verification code you provided has expired.'
+            ])->withInput();
+        }
+
+        if($verification_data->verification_code == $verification_code && $verification_data->email == Auth::User()->email)
+        {
+            VerificationCode::updateVerificationStatus(Auth::User()->id,Auth::User()->email,$verification_code);
+            return  redirect()->intended('/');
+        }else{
+            return redirect()->back()->withErrors([
+                'verification_code' => 'The verification code you entered is incorrect.'
+            ])->withInput();
+        }
+
+        return redirect()->back()->withErrors([
+            'verification_code' => 'Something went wrong.'
+        ])->withInput();
     }
 }

@@ -25,8 +25,7 @@
     <link rel="stylesheet" href="css/responsive.css">
 
     @stack('styles')
-    <title>Razorpay Payment | Bouncee</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Verification | Bouncee</title>
 </head>
 <header id="header-wrap">
         <!-- Navbar Start -->
@@ -43,7 +42,7 @@
                     <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
-                                    {{auth()->user()->name}}
+                                {{auth()->user()->name}}
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -66,72 +65,35 @@
     overflow: hidden;
     padding: 10px 0 10px;
 ">
+
 <div class="invoice-box" style="
     background: whitesmoke;">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td class="title">
-                            <a href="index.php" class="navbar-brand"><img src="assets/Razorpay.svg" alt=""></a>
-                            </td>
-                            <td>
-                                Order #: {{$orderId}}<br>
-                                Created: {{$created_at}}<br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr class="information">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td>
-                            {{$prefill_name}}<br>
-                            {{$prefill_email}}
-                            </td>
-                            <td>
-                                Company Name<br>
-                                {{$company_name}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr class="heading">
-                <td>Item</td>
-                <td>Price</td>
-            </tr>
-           
-                <tr class="item">
-                    <td>{{number_format($credits)}} Verifications</td>
-                    <td>${{ number_format($amount/100, 2) }}</td>
-                </tr>
-           
-            <tr class="total">
-                <td></td>
-                <td>Total: ${{ number_format($amount/100, 2) }}</td>
-            </tr>
-            
-        </table>
-        <form action="/handle-payment" method="POST">
-                @csrf
-                <script
-                    src="https://checkout.razorpay.com/v1/checkout.js"
-                    data-key="{{ config('razorpay.key') }}"
-                    data-amount="{{$amount}}"
-                    data-currency="{{$currency}}"
-                    data-order_id="{{$orderId}}"
-                    data-buttontext="Pay with Razorpay"
-                    data-name="{{$company_name}}"
-                    data-description="{{$description}}"
-                    data-prefill.name="{{$prefill_name}}"
-                    data-prefill.email="{{$prefill_email}}"
-                    data-theme.color="#F37254"
-                ></script>
-            </form>
+        <div class="verification-header text-center">
+            <h2>Enter Verification Code</h2>
+            <p>Please enter the verification code sent to your email.</p>
+        </div>
+        @if (session()->has('success'))
+            <div class="alert alert-success">
+            {{ session('success') }}
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form method="POST" action="{{ route('verification.code') }}">
+            @csrf
+            <div class="form-group">
+                <label for="verification_code">Verification Code</label>
+                <input style="width: 20em;" type="text" class="form-control" id="verification_code" name="verification_code" required>
+            </div>
+            <button type="submit" class="btn btn-primary verification-button">Verify Code</button>
+        </form>
     </div>
 </body>
 </html>

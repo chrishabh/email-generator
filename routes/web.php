@@ -33,6 +33,7 @@ try{
     Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
+            Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
       
     });
      
@@ -43,6 +44,10 @@ try{
     
     Route::get('/bulk-verification', function () {
         return view('bulk-verification');
+    });
+
+    Route::get('/verification', function () {
+        return view('verify');
     });
 
 }catch (\Exception $e) {

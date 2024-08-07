@@ -164,6 +164,13 @@ a:not([href]):not([tabindex]) {
   background: rgba(61, 96, 244, 0.3);
 }
 
+.verification-header {
+  margin-bottom: 20px;
+}
+.verification-button {
+  margin-top: 20px;
+}
+
 .razorpay-payment-button{
   font-size: 14px;
   padding: 10px 30px;
