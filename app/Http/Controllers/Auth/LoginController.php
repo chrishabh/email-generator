@@ -42,7 +42,7 @@ class LoginController extends Controller
         } catch (\Throwable $th) {
             // Handle other types of exceptions
             \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
-            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+            return redirect()->back()->with('error', 'Login failed: ' . $th->getMessage());
         }
          
     }
@@ -70,7 +70,10 @@ class LoginController extends Controller
         if($verification_data->verification_code == $verification_code && $verification_data->email == Auth::User()->email)
         {
             VerificationCode::updateVerificationStatus(Auth::User()->id,Auth::User()->email,$verification_code);
-            return  redirect()->intended('/');
+            if(Auth::check() && Auth::User()->role=='user')
+                return  redirect()->intended('/single');
+            else return  redirect()->intended('/');
+            
         }else{
             return redirect()->back()->withErrors([
                 'verification_code' => 'The verification code you entered is incorrect.'

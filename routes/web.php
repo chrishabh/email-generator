@@ -42,6 +42,12 @@ try{
         return view('single-verification');
     });
     
+    Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
+    Route::post('/single',[EmailController::class,'generateEmail'])->name('single');
+    
+    Route::get('/bulk', function () {
+        return view('verify/bulk');
+    });
     Route::get('/bulk-verification', function () {
         return view('bulk-verification');
     });

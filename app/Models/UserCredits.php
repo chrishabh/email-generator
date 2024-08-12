@@ -36,4 +36,9 @@ class UserCredits extends Model
             ]);
         }
     }
+
+    public static function getCreditPoint($user_id){
+        return self::where('user_id',$user_id)->whereNull('deleted_at')->orderBy('id', 'desc')->first();
+    }
+
 }

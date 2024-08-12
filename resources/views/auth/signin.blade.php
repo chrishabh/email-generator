@@ -61,6 +61,11 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                @if (session()->has('error'))
+                    <div class="alert block-message" id="alertBlock">
+                        {{ session('error') }}
+                    </div>
+                @endif
                  
                 @error('credentialsError')
                     <div class="alert block-message" id="alertBlock">
@@ -71,11 +76,12 @@
                     <div class="title">
                         Login to your acount
                     </div>
+
                     <form method="POST" accept-charset="utf-8" class="form-inner" id='signinForm' action="{{ route('signin') }}">
                         @csrf
                         <div class="sign-inp-row">
                             <label for="">Your work email</label>
-                            <input type="email" name="emailL" class="{{ $errors->has('emailL') ? 'validation-error' : '' }}" placeholder="Email"  id="email" {{ old('emailL') }}>
+                            <input type="email" name="emailL" class="{{ $errors->has('emailL') ? 'validation-error' : '' }}" placeholder="Email"  id="email" value={{ old('emailL') }}>
                             <div class="vError" id="emailError">
                                 @error('emailL')
                                    {{ $message }}  

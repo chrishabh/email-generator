@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Imports\BulkUploadImport;
+use App\Models\UserCredits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EmailController extends Controller
 {
     public function generateEmail(Request $request)
     {
-        $request->validate([
+        $rules = [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'domain' => 'required|string|max:255',
-        ]);
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        
+        if($validator->fails())
+            return redirect()->back()->withErrors($validator)->withInput();
 
         $firstName = strtolower($request->input('first_name'));
         $lastName = strtolower($request->input('last_name'));
@@ -57,7 +64,8 @@ class EmailController extends Controller
                 $validEmails[] = $email;
             }
         }
-        return back()->with('validEmails', $validEmails);
+
+        return redirect()->back()->with(compact('possibleEmails'));
     }
 
     private function isValidEmail($email)
@@ -96,5 +104,22 @@ class EmailController extends Controller
             // return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    function singleEmailPage(Request $request){
+        $creditPoint =0;
+        $headerData = array(); 
+        if(Auth::check()){ 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            if($data){
+                $creditPoint =$data->credits;
+                
+            }
+        }
+            
+        $headerData['creditPoint'] = $creditPoint; 
+        return view('verify.single')->with(compact('headerData'));
+    }
+
+
 
 }

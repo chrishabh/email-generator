@@ -48,7 +48,7 @@ function validatePassword(value,isSignin=false){
     let passErrorMess = '';
     let pattern         = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if(isSignin)  passErrorMess     = (value === '') ? '*This Field is required.' : '';
-    else passErrorMess     = (value === '') ? '*This Field is required.' : '' || value.length<8? `*Must be at least 8 characters.` : '' || !pattern.test(value) ? '*Password must include at least one lowercase letter, one uppercase letter, one number, and one special character.':'';
+    else passErrorMess= (value === '') ? '*This Field is required.' : '' || value.length<8? `*Must be at least 8 characters.` : '' || !pattern.test(value) ? '*Password must include at least one lowercase letter, one uppercase letter, one number, and one special character.':'';
     return passErrorMess;
 }
 
@@ -58,7 +58,7 @@ const validateForm = function(attrName,isSignInValidation=false){
         validateField(getSignupFormValue(attrName.name), document.getElementById('nameError'), validateName);    
     }
     validateField(getSignupFormValue(attrName.email), document.getElementById('emailError'), validateEmail);
-    validateField(getSignupFormValue(attrName.password), document.getElementById('passwordError'), validatePassword,isSignInValidation);
+    validateField(getSignupFormValue(attrName.password), document.getElementById('passwordError'),(value)=> validatePassword(value,isSignInValidation));
     
 }
 

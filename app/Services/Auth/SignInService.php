@@ -15,7 +15,7 @@ class SignInService{
     static function signIn($credentials,$request){
          
         // Check if the email exists in the database
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $credentials['email'])->first(); 
         if(!$user){
             return redirect()->back()->withErrors([
                 'email' => '*The provided email does not exist in our records. Please register if you don\'t have an account.'
@@ -23,7 +23,7 @@ class SignInService{
             // throw ValidationException::withMessages([
             //     'email'=>['*The provided email does not exist in our records. Please register if you don\'t have an account.']
             // ]);
-        }
+        } 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 
             $otp = mt_rand(100000,999999);

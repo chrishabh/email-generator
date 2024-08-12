@@ -1,0 +1,220 @@
+:root{
+    --card-padding: 1.5rem 2rem;
+    --valid-gradient:linear-gradient(104deg, #0b81acc4, #10e434e6);
+    --success-color:#0f9a27e6;
+}
+#single--verification{
+    padding: 100px 0 50px 0;
+}
+
+#single--verification .validate-heading h2{ 
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+
+}
+#single--verification .validate-heading h2::after{
+    content: "";
+    background-color: #3B7CE8;
+    width: 25px;
+    height: 4px;
+    border-radius: 0;
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+}
+
+
+#single--verification .single-card{
+    border-radius: 3px;
+    min-height: 300px;
+    box-shadow:  var(--common-box-shadow);
+    padding: var(--card-padding);
+}
+
+#single--verification .card-title i::before,.correct-email .fa-light::before{
+    font-family: 'Font Awesome 5 Free';
+    font-size: 30px;
+    color: var(--accent-color);
+}
+
+#single--verification  .card-title.card-row{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+#single--verification .card-title .title-content{
+    margin-left: 1em;
+}
+
+#single--verification .card-title .title-content h2{
+    font-weight: 600;
+    font-size: 18px;
+}
+
+#single--verification .card-title .title-content p{
+    color: #999;
+    font-size: 13px;
+    padding: 5px 0 0 0;
+}
+#single--verification .single-card-head{
+    font-weight: 600;
+    padding: 40px 0 0 0;
+    font-size: 16px;
+    color: var(--accent-color);
+}
+
+#single--verification .emailCheck{
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: .8rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #dde2ec;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 20px;
+}
+#single--verification .grid-col{
+    display: grid;
+    grid-template-columns: 1fr;
+}
+#single--verification .emailCheck:hover,
+#single--verification .emailCheck:focus{
+    border: 2px solid var(--accent-color);
+}
+
+#single--verification .emailCheck.mt-25{
+    margin-top: 25px;
+}
+#single--verification .submit-verification-btn{
+    margin-block: 20px;
+    background-color: var(--accent-color);
+    box-shadow: var(--common-box-shadow);
+}
+ 
+#single--verification .right-card-head{
+    font-weight: 600;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    padding-bottom: 18px;
+}
+
+#single--verification .correct-email{
+    display: flex;
+    margin-block: 1em;
+    align-items: center;
+    /* justify-content: space-evenly; */
+    gap: 10px;
+
+    /* height: 50% */
+}
+
+
+#single--verification .bg-success-valid{
+    background: var(--valid-gradient);
+    margin-inline: 4em;
+}
+
+.correct-email h2,
+.correct-email .fa-light::before{ 
+    color: var(--success-color);
+    font-size: 14px;
+}
+.fa-light::before{
+    font-weight: 600;
+}
+
+.correct-email{
+    border: 2px solid var( --success-color);
+    padding: 12px 12px;
+    border-radius: 20px;
+    box-shadow: var(--common-box-shadow);
+}
+.validation-block-error{
+    border: var(--validation-border-error) !important;
+}
+.validation-span-error{
+    color: red;
+    font-size: 10px;
+    padding: 2px 2px 0;
+}
+.outer-layer{
+    height: 400px;
+    overflow: hidden;
+}
+.inner-layer{
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.inner-layer::-webkit-scrollbar {
+    width: 12px;
+}
+
+.inner-layer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.inner-layer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.inner-layer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+ /* large device (Desktop  992px to 1199px) */
+@media (max-width:1199px){
+
+}
+
+ /* medium device (table, 768px to 991px) */
+@media (max-width:991px){
+
+}
+
+/* small device (phone, 576px to 767px) */
+@media(max-width:767px){
+
+}
+
+ /* extra small device (phone less than 575px) */
+@media(max-width:575px){
+    #single--verification .card-title.card-row{
+        text-align: start;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        margin: 0;
+        justify-content: start; 
+    }
+    #single--verification .card-title.card-row .title-content p{
+        line-height:16px;
+    }
+
+    #single--verification .submit-verification-btn{
+        margin-inline: auto;
+    }
+
+    .right-card-head{
+        text-align: center;
+    }
+    .correct-email{
+        flex-direction: column;
+    }
+    #single--verification .grid-col{
+        margin-block-start: 2em;
+    }
+     
+}
