@@ -23,11 +23,31 @@
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/header1/style.css') }}">    
     <script src="{{ asset('assets/header1/index.js') }}" type="text/javascript"></script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     @stack('styles')
 
 </head>
 
 <body>
+    @php
+    // Retrieve the logged-in user's name
+    $fullName = Auth::user()->name;
+
+    // Check if the name contains at least two parts
+    $nameParts = explode(' ', $fullName);
+    $name ='';
+    if (count($nameParts) < 2) {
+        $firstName = $nameParts[0];
+        $name      = strtoupper($firstName); 
+    }else{
+        $firstName = $nameParts[0];
+        $lastName = $nameParts[count($nameParts) - 1]; 
+        // Get the first and last capital letters
+        $firstCapitalLetter = strtoupper($firstName[0]);
+        $lastCapitalLetter = strtoupper($lastName[strlen($lastName) - 1]); 
+        $name              = $firstCapitalLetter.''.$lastCapitalLetter;
+    }
+    @endphp
     <!-- Header Area wrapper Starts -->
     <div id="mobileMenu" class="mobile-menu">
         <ul class="main-menu"> 
@@ -62,7 +82,7 @@
                 <div class="mainheader--right">
                     <div class="credit-info">
                         <span class="creditBalnce"> Credit Balance</span>
-                        <div class="credit-info--tag"> 
+                        <div class="credit-info--tag" id="creditPoint"> 
                             @if (isset($headerData) && $headerData['creditPoint'])
                                 {{ $headerData['creditPoint']}}      
                             @endif
@@ -70,7 +90,7 @@
                     </div>
                     <div class="user-info">
                         <div class="avatar">
-                            <span class="avatar-text">AS</span>
+                            <span class="avatar-text">{{$name}}</span>
                         </div>
                         <div class="header-dropdown">
                             <div id="myDropdown" class="dropdown-content">

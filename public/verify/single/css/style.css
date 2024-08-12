@@ -86,8 +86,8 @@
     display: grid;
     grid-template-columns: 1fr;
 }
-#single--verification .emailCheck:hover,
-#single--verification .emailCheck:focus{
+#single--verification .hover-border:hover,
+#single--verification .hover-border:focus{
     border: 2px solid var(--accent-color);
 }
 
@@ -173,6 +173,19 @@
 .inner-layer::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    padding: 1.8em 1em 0 !important;
+    font-weight: 300 !important;
+    font-size: 1em !important;
+    font-family: 'poppins' !important;
+    line-height: 1.3em!important; 
+}
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
+    background-color: var(--accent-color) !important;
+}
+
  /* large device (Desktop  992px to 1199px) */
 @media (max-width:1199px){
 

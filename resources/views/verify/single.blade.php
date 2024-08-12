@@ -2,7 +2,11 @@
  
 @section('main-section')
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('verify/single/css/style.css') }}">    
+        <link rel="stylesheet" href="{{ asset('verify/single/css/style.css') }}">     
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+        <script src="{{ asset('verify/single/script.js') }}" type="text/javascript"></script> 
+          
     @endpush
     
     <section class="single-area" id="single--verification">
@@ -23,25 +27,25 @@
                         <h3 class="single-card-head">Enter Details to get the correct Email</h3>
                         <form  method="POST" accept-charset="utf-8" class="form-inner" id='signinForm' action="{{ route('single') }}">
                             @csrf
-                            <input type="text" class="emailCheck mt-25 {{$errors->has('first_name') ? 'validation-block-error':''}}" placeholder="Enter first name" name="first_name" value={{old('first_name')}} >
+                            <input type="text" class="emailCheck hover-border mt-25 {{$errors->has('first_name') ? 'validation-block-error':''}}" placeholder="Enter first name" name="first_name" value={{old('first_name')}} >
                             <span class="{{ $errors->has('first_name') ? 'validation-span-error':''}}" id="fNameError">
                                 @error('first_name')
                                     {{ $message }}  
                                 @enderror
                             </span>
-                            <input type="text" class="emailCheck {{$errors->has('last_name') ? 'validation-block-error':''}}" placeholder="Enter last name" name="last_name" value="{{old('last_name')}}" >
+                            <input type="text" class="emailCheck hover-border {{$errors->has('last_name') ? 'validation-block-error':''}}" placeholder="Enter last name" name="last_name" value="{{old('last_name')}}" >
                             <span class="{{ $errors->has('last_name') ? 'validation-span-error':''}}" id="lNameError">
                                 @error('last_name')
                                     {{ $message }}  
                                 @enderror
                             </span>
-                            <input type="text" class="emailCheck {{$errors->has('domain') ? 'validation-block-error':''}}" placeholder="Enter domain name" name="domain"  value="{{old('domain')}}" >
+                            <input type="text" class="emailCheck hover-border {{$errors->has('domain') ? 'validation-block-error':''}}" placeholder="Enter domain name" name="domain"  value="{{old('domain')}}" >
                             <span class="{{ $errors->has('domain') ? 'validation-span-error':''}}" id="domainError">
                                 @error('domain')
                                     {{ $message }}  
                                 @enderror
                             </span>
-                            <button class="btn submit-verification-btn" type="submit" onclick="verify3()">Check</button>
+                            <button class="btn submit-verification-btn"  id="CheckButon">Check</button>
                         </form>
                     </div>  
                 </div>
@@ -74,4 +78,5 @@
         </div>    
     </section> 
     <section class="mt-25"></section>
+ 
 @endsection

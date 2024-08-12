@@ -1,24 +1,21 @@
-let fn =function(){
-    
-    let avatar= document.querySelector('.user-info .avatar') 
-    if(avatar){
-        avatar.addEventListener('mouseenter',showDropDown)
-    } 
-    window.addEventListener('mousemove',hideDropDown); 
-    
-    mobileMenu();
-}
+ 
 
-function showDropDown(event){
-   document.getElementById('myDropdown').classList.add('show')
+function showDropDown(event,isDropdownVisible,dropdown,avatar,dropdowns){
+    event.stopPropagation();
+    isDropdownVisible = true;
+    dropdown.classList.add('show');
+    return isDropdownVisible
+
 }
-function hideDropDown(event){
-    let avatar= document.querySelector('.user-info .avatar')
-    let dropdowns = document.querySelectorAll('.dropdown-content');
-    let IsHoverinDropDown = Array.from(dropdowns).some((dropdown)=>dropdown.contains(event.target))
-    if(!IsHoverinDropDown && !avatar.contains(event.target)){
-        document.getElementById('myDropdown').classList.remove('show')  
+function hideDropDown(event,isDropdownVisible,dropdown,avatar,dropdowns){
+    let isHoverinDropDown = Array.from(dropdowns).some((dropdown) => dropdown.contains(event.target));
+    let isClickInsideAvatar = avatar.contains(event.target);
+    if (!isHoverinDropDown && !isClickInsideAvatar && isDropdownVisible) {
+        dropdown.classList.remove('show');
+        isDropdownVisible = false;
+         
     }
+    return isDropdownVisible
 }
 
 
@@ -47,4 +44,20 @@ function mobileMenu(){
 }
 
 
-document.addEventListener('DOMContentLoaded',fn)
+document.addEventListener('DOMContentLoaded',()=>{
+    var isDropdownVisible = false;
+    var dropdown = document.getElementById('myDropdown');
+    var avatar = document.querySelector('.user-info .avatar');
+    var dropdowns = document.querySelectorAll('.header-dropdown');
+
+    if(avatar){
+        avatar.addEventListener('mouseenter', (e)=>{
+            isDropdownVisible = showDropDown(e,isDropdownVisible,dropdown,avatar,dropdowns)
+        });
+    }
+    document.addEventListener('mousemove',(e)=>{
+        isDropdownVisible = hideDropDown(e,isDropdownVisible,dropdown,avatar,dropdowns)
+    });
+    
+    mobileMenu();
+})
