@@ -116,6 +116,12 @@
     font-size: 16px;
     margin-right: 4px;
 }
+
+.info-line--right .icon-clock::before{
+    content: "\f017";
+    font-weight: 500;
+    font-family: 'Font Awesome 5 Free';
+}
 .info-line--right .transparent{
     border: 1px solid #f1f1f5;
     color: #696974;
@@ -214,10 +220,18 @@
     /* line-height: normal; */
     font-family:  'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
-.uploader{
-    height: 156px;
+.uploader,.filepond--drop-label{
+    height: 156px !important;
     border: 1px dashed #1a1946;
-    border-radius: 10px;
+    border-radius: 10px ;
+    background-color: white;
+}
+
+
+
+
+.filepond--drop-label.filepond--drop-label label{
+    font-size: 0.85em !important;
 }
 .filepond--root .filepond--browser {
     position: absolute;
@@ -267,3 +281,8 @@
 .import-btn:hover{
     color: #fafafb;
 }
+
+.filepond--credits{
+    display: none !important;
+}
+

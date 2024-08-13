@@ -20,7 +20,33 @@ function updateProgress(percentage) {
 // });
 
 
+// $(function(){
+  
+//     // First register any plugins
+//     FilePond.registerPlugin(
+//         FilePondPluginImagePreview,
+//         FilePondPluginImageExifOrientation,
+//         FilePondPluginFileValidateSize,
+//         FilePondPluginImageEdit
+//       );
+      
+//     // // Turn input element into a pond
+//     $('.my-pond').filepond();
 
+//     // // Set allowMultiple property to true
+//     // $('.my-pond').filepond('allowMultiple', true);
+  
+//     // // Listen for addfile event
+//     $('.my-pond').on('FilePond:addfile', function(e) {
+//         console.log('file added event', e);
+//     });
+
+//     // // Manually add a file using the addfile method
+//     // $('.my-pond').first().filepond('addFile', 'index.html').then(function(file){
+//     //   console.log('file added', file);
+//     // });
+  
+//   });
 
 // $('.uploader').filepond({
 //     allowRevert: false,
@@ -81,3 +107,91 @@ function updateProgress(percentage) {
 // $('#uploadbtn').on('click', function() {
 //     $('.filepond--browser').trigger('click');
 // });
+
+
+
+
+
+
+
+$(document).ready(function() {
+    // Register FilePond plugins
+    $('#alertBox').hide();
+    FilePond.registerPlugin(
+        FilePondPluginImagePreview,
+        FilePondPluginImageExifOrientation,
+        FilePondPluginFileValidateSize,
+        FilePondPluginImageEdit
+    );
+
+    // Turn input element into a pond
+    $('.my-pond').filepond({
+        server: {
+            process: {
+                url: '/upload',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                onload: (response) => {
+                    try {
+                        const responseObj = JSON.parse(response) 
+                        if(responseObj.error){
+                            console.log((responseObj.error));
+                            showError(responseObj.error);
+                        }else{
+                            $('#alertContent').text(responseObj.success); 
+                                $('#alertBox').css({
+                                    'background-color': '#28a745', // Green background color
+                                    'color': '#fff', // White text color
+                                    'border-color': '#28a745' // Green border color
+                                }).show();
+                            setTimeout(function() {
+                                $('#alertBox').hide();  
+                            }, 10000);
+                             
+                        }
+                             
+                    } catch (error) {
+                        console.log((error));
+                        showError(error);
+                    }
+                    // console.log('File uploaded successfully:', response);
+                },
+                onerror: (response) => {
+                    showError('Error: ' + (response.error || 'An unknown error occurred'));
+                    console.error('Error uploading file:', response);
+                }
+            },
+            load: {
+                url: '/load',
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            }
+        },
+        // allowMultiple: true,
+        labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>',
+        
+    });
+
+    // Trigger file input click when custom button is clicked
+    $('#custom-button').on('click', function() {
+        $('.my-pond').click();
+    });
+});
+
+function showError(message) {
+    $('#alertContent').text(message); 
+    $('#alertBox').css({
+        'background-color': '#dc3545', // Green background color
+        'color': '#fff', // White text color
+        'border-color': '#dc3545' // Green border color
+    }).show();
+    setTimeout(function() {
+        $('#alertBox').hide();  
+        window.location.reload();
+    }, 10000);
+                             
+}

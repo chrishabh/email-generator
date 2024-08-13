@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\PaymentController;
 
 /*
@@ -38,16 +39,20 @@ try{
     });
      
     Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
+
+
+    Route::post('/upload', [EmailController::class, 'uploadBulkData']);
+    Route::post('/revert', [FileUploadController::class, 'revert']);
+    Route::get('/load', [FileUploadController::class, 'load']);
+
     Route::get('/single-verification', function () {
         return view('single-verification');
     });
     
     Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
-    Route::post('/single',[EmailController::class,'generateEmail'])->name('single');
+    Route::post('/single',[EmailController::class,'generateEmail']);
     
-    Route::get('/bulk', function () {
-        return view('verify/bulk');
-    });
+    Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
     Route::get('/bulk-verification', function () {
         return view('bulk-verification');
     });
@@ -55,6 +60,7 @@ try{
     Route::get('/verification', function () {
         return view('verify');
     });
+ 
 
 }catch (\Exception $e) {
     return view('something-went-wrong');

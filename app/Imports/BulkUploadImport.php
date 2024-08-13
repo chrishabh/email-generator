@@ -22,60 +22,74 @@ class BulkUploadImport implements ToCollection, WithHeadingRow
         'lastname',
         'domain'
     ];
+    protected $requestData;
+    public function __construct($data){
+        $this->requestData = $data;
+    }
 
     public function collection(Collection $rows)
     {
         // Validate headers
-        $headerRow   = $rows->first();
-        $headers     = array_keys($headerRow->toArray());
-        $isInsertAll = false;
-        if ($this->validateHeaders($headers)) {
-            // $rows->shift();
-            $insertArray=[];
-            foreach ($rows as $key=>$row) {
-                $arr = array();
-                $data = $row->toArray(); 
-                // Validate each row data
-                $validator = Validator::make($data, [
-                    'firstname' => 'required',
-                    'lastname'  => 'required',
-                    'domain'    => 'required',
-                ]);
-    
-                if($validator->fails()) {
-                    Log::error('Validation failed: ', $validator->errors()->toArray());
-                    continue; // Skip the row if validation fails
-                }
-     
-                // Save the valid data to the database
-                $arr =array(
-                    'firstName'  => $data['firstname'],
-                    'lastName'   => $data['lastname'],
-                    'domain'     => $data['domain'],
-                    'importedBy' => '1',
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                );
-                array_push($insertArray,$arr);
-            }
+        // $headerRow   = $rows->first();
+        // $headers     = array_keys($headerRow->toArray());
+        // $isInsertAll = false;
+        // if($rows) {
+        //     // $rows->shift();
+        //     $insertArray=[];
+        //     foreach ($rows as $row) {
+        //         $arr = array();
+        //         pp($row);
+        //         // $data = $row->toArray(); 
+        //         $email = $row[0] ?? null;
+                 
+        //             pp($email);
+        //         // Save the valid data to the database
+        //         // $arr =array(
+        //         //     'firstName'  => $data['firstname'],
+        //         //     'lastName'   => $data['lastname'],
+        //         //     'domain'     => $data['domain'],
+        //         //     'importedBy' => '1',
+        //         //     'created_at' => Carbon::now(),
+        //         //     'updated_at' => Carbon::now(),
+        //         // );
+        //         array_push($insertArray,$arr);
+        //     }
 
-            if(DB::table('bulk_upload_email_file_data')->insert($insertArray)){
-                $isInsertAll =true;
-            }else{
-                $isInsertAll =false; 
-            }
-             
-            return $isInsertAll;
-        } else {
-            throw new ValidationException('Invalid header row. Please ensure your file has the correct headers.');
+        //     // if(DB::table('bulk_upload_email_file_data')->insert($insertArray)){
+        //     //     $isInsertAll =true;
+        //     // }else{
+        //     //     $isInsertAll =false; 
+        //     // }
+
+        //     $currentDate = Carbon::now()->format('Y-m-d');
+        //     $timestamp = Carbon::now()->format('Ymd_His'); 
+        //     // Define the user ID
+        //     $userId = Auth::user()->id;
+        //     $originalFilename = pathinfo($this->requestData->getClientOriginFileName(),PATHINFO_FILENAME);
+        //     $extension        = $this->requestData->getClientOriginalExtension();
+        //     $fileName         = "{$originalFilename}_{$currentDate}_{$timestamp}.{$extension}";
+        //     $path             = "bulkUpload/{$currentDate}/{$userId}/{$fileName}";
+        //     $filePath         = $this->requestData->storeAs('public/' . $path);
+
+        //     return true;
+        // }else {
+        //     throw new ValidationException('Invalid header row. Please ensure your file has the correct headers.');
+        // }
+
+        foreach ($rows as $index => $row) {
+            // Skip the header row if it exists
+             echo $row;
+            
         }
+        pp('s');
+
     }
     
  
-    protected function validateHeaders(array $headers)
-    {
-        return $headers === $this->validHeaders;
-    }
+    // protected function validateHeaders(array $headers)
+    // {
+    //     return $headers === $this->validHeaders;
+    // }
 
     // public function validateHeaders(array $headers)
     // {
