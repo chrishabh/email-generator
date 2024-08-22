@@ -1,3 +1,4 @@
+
 @if(auth()->check() && auth()->user()->role == 'user' && (request()->path()=='single' || request()->path()=='bulk') ) 
     @include('layout.header1',['headerData' =>$headerData??null])
 @else 

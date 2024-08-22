@@ -29,7 +29,17 @@ try{
             Route::post('/signup',[RegisterController::class,'signup']); 
             Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
             Route::post('/signin',[LoginController::class,'login']); 
+
+
+           
     });
+
+    Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
+    Route::post('/single',[EmailController::class,'generateEmail']);
+    Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
+    Route::post('/upload', [EmailController::class, 'uploadBulkData']);
+    Route::get('/check-file-status', [EmailController::class, 'getAllData']);
+    Route::post('/export-data', [EmailController::class, 'exportData']);
     
     Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
@@ -41,18 +51,14 @@ try{
     Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 
 
-    Route::post('/upload', [EmailController::class, 'uploadBulkData']);
+    
     Route::post('/revert', [FileUploadController::class, 'revert']);
     Route::get('/load', [FileUploadController::class, 'load']);
 
     Route::get('/single-verification', function () {
         return view('single-verification');
     });
-    
-    Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
-    Route::post('/single',[EmailController::class,'generateEmail']);
-    
-    Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
+     
     Route::get('/bulk-verification', function () {
         return view('bulk-verification');
     });

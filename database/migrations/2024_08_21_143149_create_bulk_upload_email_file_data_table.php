@@ -15,13 +15,15 @@ class CreateBulkUploadEmailFileDataTable extends Migration
     {
         Schema::create('bulk_upload_email_file_data', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('file_id'); 
+            $table->foreign('file_id')->references('id')->on('uploaded_and_download_file_names')->onDelete('cascade');;
             $table->string('email')->nullable();
             $table->enum('isValidEmail', [0, 1])->default(0);
             $table->enum('type', ['single', 'bulk'])->nullable();
             $table->unsignedBigInteger('importedBy');
-            $table->string('fileName')->nullable();
+            $table->enum('status',['invalid','valid'])->nullable();
             $table->timestamps();
-            $table->softDeletes();  
+            $table->softDeletes(); 
         });
     }
 

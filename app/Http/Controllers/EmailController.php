@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Imports\BulkUploadImport;
 use App\Models\BulkUploadEmailFileData;
+use App\Models\uploadedAndDownloadFileName;
 use App\Models\UserCredits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -67,7 +69,7 @@ class EmailController extends Controller
                 $validEmails[] = $email;
             }
         }
-
+        UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,1);
         return redirect()->back()->with(compact('possibleEmails'));
     }
 
@@ -99,19 +101,31 @@ class EmailController extends Controller
                 $creditPoint =$data->credits;
                 
             }
-            $data = BulkUploadEmailFileData::getBulkData(Auth::user()->id);
-            // pp($data);
+            // $data = BulkUploadEmailFileData::getBulkData(Auth::user()->id);
+            $userid= Auth::user()->id;
+
+            $data = uploadedAndDownloadFileName::getAllData($userid );
+            
             if(!empty($data)){
                 foreach($data as $key=>$value){  
-                    $fileNameWithExtension = basename($value['fileName']); 
-                    $fileName              = pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
-                    $parts                 = explode('_', $fileName);  
-                    $fileName              = $parts[0];  
-                    $fileExtension         = pathinfo($fileNameWithExtension, PATHINFO_EXTENSION); // Get file extension
-                    $fileName              = $fileName.'...'.$fileExtension;
-                    $dataArr['fileName']   = $fileName;
-                    $dataArr['created_at'] = ($value['created_at'])? Carbon::parse($value['created_at'])->format('n/j/y, g:i A'):null; 
-                    $dataArr['total']      =  $value['total']; 
+                    $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
+                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
+                    $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? null;
+                    $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? null;
+                    $fileNameWithExtension         =  basename($value->fileName); 
+                    $fileName                      =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
+                    $parts                         =  explode('_', $fileName);  
+                    $fileName                      =  $parts[0];  
+                    $fileExtension                 =  pathinfo($fileNameWithExtension, PATHINFO_EXTENSION); // Get file extension
+                    $fileName                      =  $fileName.'...'.$fileExtension;
+                    $dataArr['fileName']           =  $fileName;
+                    $dataArr['created_at']         =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
+                    $dataArr['totalValidEmail']    =  $validEmailCount; 
+                    $dataArr['totalInvalidEmail']  =  $invalidEmailCount; 
+                    $dataArr['total']              =  $invalidEmailCount +$validEmailCount; 
+                    $dataArr['verificationStatus'] =  $value->verificationStatus; 
+                    $dataArr['userId']             =  $value->user_id; 
+                    $dataArr['fileId']             =  $value->id; 
                     array_push($fileData,$dataArr);
                 }
             }
@@ -127,7 +141,8 @@ class EmailController extends Controller
                 'filepond' => 'required|file|mimes:csv,txt',
             ]);
              
-            $file = $request->file('filepond');
+            $file     = $request->file('filepond');
+            $rowCount = 0;
 
             if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
                 $header = fgetcsv($handle); // Try to read the first line (header)
@@ -136,10 +151,21 @@ class EmailController extends Controller
                     $response = response()->json(['error' => 'The file is not a valid CSV file.']);
                     $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
                     return $response;
+                } 
+                while (($row = fgetcsv($handle)) !== FALSE) {
+                    $rowCount++;
                 }
-            
                 fclose($handle);
             } 
+
+            $userCredit = UserCredits::getCreditPoint(Auth::user()->id);
+            $creditPoints = ($userCredit) ? $userCredit->credits :0;
+            if ($rowCount > $creditPoints) {
+                $response = response()->json(['error' => 'You should not have enough credit score to validate the email.']);
+                $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+                return $response;
+            }
+
             $handle            = fopen($file->getRealPath(), 'r');
             $currentDate       = Carbon::now()->format('Y-m-d');
             $timestamp         = Carbon::now()->format('Ymd_His');  
@@ -148,26 +174,37 @@ class EmailController extends Controller
             $originalFilename  = $file->getClientOriginalName();
             $originalFilename  = pathinfo($originalFilename, PATHINFO_FILENAME);
             $extension        = $request->file('filepond')->getClientOriginalExtension();
-            $fileName         = "{$originalFilename}_{$currentDate}_{$timestamp}.{$extension}";
+            $fileName         = "{$originalFilename}_{$userId}_{$timestamp}.{$extension}";
             $path             = "bulkUpload/{$currentDate}/{$userId}/{$fileName}";
+            $instanceOfUp     = new uploadedAndDownloadFileName();
+
+
             // Read the CSV file line by line
-            $insertArray=[];
+            $insertArray = [];
+            $fileId      = $instanceOfUp->insertDataAndgetId(array(
+                'user_id'              =>  $userId,
+                'fileName'             =>  $fileName,
+                'uploadedFileLocation' =>  'public/'.$path,
+                'created_at'           => Carbon::now()
+               ));
             while (($row = fgetcsv($handle)) !== FALSE) {
                 $arr = array();
                 
                 // Ensure the row is not empty and contains at least one column
                 if (isset($row[0])) {
                     $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
-                    $arr   =  array(
-                                'email'     => $email,
-                                'importedBy' => $userId,
-                                'type'       =>'bulk',
-                                'fileName'   => $path,
-                                'created_at' => Carbon::now(),
-                                'updated_at' => Carbon::now(),
-                            );
-
-                    array_push($insertArray,$arr);
+                   if($fileId){
+                        $arr   =  array(
+                            'email'     => $email,
+                            'file_id'    => $fileId,
+                            'importedBy' => $userId,
+                            'type'       =>'bulk', 
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
+                        ); 
+                        array_push($insertArray,$arr);
+                   }
+                     
                    
                 }
             }
@@ -203,7 +240,8 @@ class EmailController extends Controller
         $headerData = array(); 
         if(Auth::check()){ 
             $data = UserCredits::getCreditPoint(Auth::user()->id); 
-            if($data){
+           
+            if(!empty($data)){
                 $creditPoint =$data->credits;
                 
             }
@@ -211,6 +249,46 @@ class EmailController extends Controller
             
         $headerData['creditPoint'] = $creditPoint; 
         return view('verify.single')->with(compact('headerData'));
+    }
+
+
+    function getAllData(Request $request){;
+
+        // $userID = Auth::user()->id;
+        $userID = 1;
+        $data = uploadedAndDownloadFileName::getAllData($userID);
+        return response()->json(['success' => 'data import successfully!','data'=>$data])->header('Content-Type', 'application/json; charset=UTF-8');
+    }
+
+    function exportData(Request $request){
+        $rules = [
+            'fileId'    => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
+        }
+
+        $data =uploadedAndDownloadFileName::getDownloadPath($request['fileId'],Auth::user()->id);
+        // pp(storage_path('app/'.$data->uploadedFileLocation));
+        if($data){
+            $filePath = storage_path('app/'.$data->uploadedFileLocation);
+            // $filePath = storage_path('app/' . $file->file_path); // Adjust path based on your file storage
+
+            // Check if the file exists
+            if (file_exists($filePath)) {
+                return response()->download($filePath,'filename.csv', [
+                    'Content-Type' => 'text/csv',
+                ]);
+            } else {
+                return response()->json(['error' => 'File not found'], 404);
+            }
+        // return response()->json(['downloadFileLocation' => $fileUrl]);// Storage::url($data->uploadedFileLocation);
+            // return response()->download(storage_path('app/'.$data->uploadedFileLocation));
+            // return response()->json(['downloadFileLocation' => storage_path('app/'.$data->uploadedFileLocation)], 200)->header('Content-Type', 'application/json; charset=UTF-8');;
+        }else {
+            return response()->json(['error' => 'File not found'], 404)->header('Content-Type', 'application/json; charset=UTF-8');;
+        }
     }
 
 

@@ -51,8 +51,8 @@
     <!-- Header Area wrapper Starts -->
     <div id="mobileMenu" class="mobile-menu">
         <ul class="main-menu"> 
-            <li class="current"><a href="/verify/single">Single Verification</a></li> 
-            <li class=""><a href="/verify">List Verification</a></li>
+            <li class="current"><a href="/single">Single Verification</a></li> 
+            <li class=""><a href="/bulk">List Verification</a></li>
             <li><a href="/pricing">Pricing</a></li> 
         </ul>
         <div class="credit-info">
@@ -74,8 +74,8 @@
                         <img src="{{ asset('/assets/logo.png') }}" alt="">
                     </a>
                     <ul class="main-menu">
-                        <li class="current"><a href="/verify/single">Single Verification</a></li>
-                        <li class=""><a href="/verify">List Verification</a></li>
+                        <li class="current"><a href="/single">Single Verification</a></li>
+                        <li class=""><a href="/bulk">List Verification</a></li>
                         <li><a href="/pricing">Pricing</a></li>
                     </ul>
                 </div>
@@ -83,7 +83,7 @@
                     <div class="credit-info">
                         <span class="creditBalnce"> Credit Balance</span>
                         <div class="credit-info--tag" id="creditPoint"> 
-                            @if (isset($headerData) && $headerData['creditPoint'])
+                            @if (isset($headerData['creditPoint']))
                                 {{ $headerData['creditPoint']}}      
                             @endif
                         </div>

@@ -17,6 +17,7 @@ body{
     --accent--backgroun-color: #3F51B5;
     --font-awesome-family:  'Font Awesome 5 Free'; 
     --success-color:#0f9a27e6;
+    --error-color:red;
     --theme-background-gradient:linear-gradient(135deg,#1e3c729e, #2a3898);
     --validation-border-error:  1px solid red;
 

@@ -9,105 +9,26 @@ function updateProgress(percentage) {
     const progressValue = percentage * 3.6;
     
     // Update the CSS variable for progress
-    document.getElementById('progress-mask-full').style.setProperty('--progress', `${progressValue}deg`);
-    document.getElementById('percentage-text').textContent = `${percentage}%`;
+    let maskFull=document.getElementById('progress-mask-full');
+    maskFull.style.setProperty('--progress', `${progressValue}deg`);
+
+    let progressText = document.getElementById('percentage-text');
+    progressText.textContent = `${percentage}%`;
 }
-
-
-
-// $('.uploader').filepond({
-//     allowMultiple: true,
-// });
-
-
-// $(function(){
-  
-//     // First register any plugins
-//     FilePond.registerPlugin(
-//         FilePondPluginImagePreview,
-//         FilePondPluginImageExifOrientation,
-//         FilePondPluginFileValidateSize,
-//         FilePondPluginImageEdit
-//       );
-      
-//     // // Turn input element into a pond
-//     $('.my-pond').filepond();
-
-//     // // Set allowMultiple property to true
-//     // $('.my-pond').filepond('allowMultiple', true);
-  
-//     // // Listen for addfile event
-//     $('.my-pond').on('FilePond:addfile', function(e) {
-//         console.log('file added event', e);
-//     });
-
-//     // // Manually add a file using the addfile method
-//     // $('.my-pond').first().filepond('addFile', 'index.html').then(function(file){
-//     //   console.log('file added', file);
-//     // });
-  
-//   });
-
-// $('.uploader').filepond({
-//     allowRevert: false,
-//     acceptedFileTypes: ['text/csv', 'application/vnd.ms-excel','text/plain','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-//     server: {
-//         process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-//             // fieldName is the name of the input field
-//             // file is the actual file object to send
-//             const formData = new FormData();
-//             formData.append(fieldName, file, file.name);
-
-//             const request = new XMLHttpRequest();
-//             request.open('POST', '/devcom/uploader/');
-
-//             // Should call the progress method to update the progress to 100% before calling load
-//             // Setting computable to false switches the loading indicator to infinite mode
-//             request.upload.onprogress = (e) => {
-//                 progress(e.lengthComputable, e.loaded, e.total);
-//             };
-
-//             // Should call the load method when done and pass the returned server file id
-//             // this server file id is then used later on when reverting or restoring a file
-//             // so your server knows which file to return without exposing that info to the client
-//             request.onload = function () {
-//                 if (request.status >= 200 && request.status < 300) {
-//                     // the load method accepts either a string (id) or an object
-//                     // console.log(request.response);
-//                     load(request.responseText);
-
-//                     $(".ver-list").prepend(request.response);
-//                    // $( ".verif-item:first" ).click();
-
-//                     setTimeout(function(){ $('.uploader').first().filepond('removeFile'); }, 2000);
-//                     //
-
-//                 } else {
-//                     // Can call the error method if something is wrong, should exit after
-//                     error('oh no');
-//                 }
-//             };
-
-//             request.send(formData);
-
-//             // Should expose an abort method so the request can be cancelled
-//             return {
-//                 abort: () => {
-//                     // This function is entered if the user has tapped the cancel button
-//                     request.abort();
-
-//                     // Let FilePond know the request has been cancelled
-//                     abort();
-//                 },
-//             };
-//         },
-//     },
-// });
-
-// $('#uploadbtn').on('click', function() {
-//     $('.filepond--browser').trigger('click');
-// });
-
+ 
+ 
+function fetchFileStatus(){
+    // $.ajax({
+    //     url: '/check-file-status',
+    //     method: 'GET',
+    //     success: function(response) {
+    //         console.log(response)
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error('Error fetching file status:', error);
+    //     }
+    // });
+}
 
 
 
@@ -117,6 +38,12 @@ function updateProgress(percentage) {
 $(document).ready(function() {
     // Register FilePond plugins
     $('#alertBox').hide();
+    // Execute the function every 1 minute
+    setInterval(fetchFileStatus, 10000);
+
+    // Initial fetch on page load
+    fetchFileStatus();
+    updateProgress(50);
     FilePond.registerPlugin(
         FilePondPluginImagePreview,
         FilePondPluginImageExifOrientation,
@@ -194,4 +121,59 @@ function showError(message) {
         window.location.reload();
     }, 10000);
                              
+}
+
+
+function downloadCsvFile(event,fileid){
+    event.preventDefault(); 
+    $.ajax({
+        url: '/export-data', // Your route to handle the file download
+        type: 'POST',
+        data:{
+            fileId:fileid
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), 
+        },
+        xhrFields: {
+            responseType: 'blob' // Ensure the response type is a Blob (binary large object)
+        },
+        success: function(response) {
+            console.log(response); 
+            
+            // // Create a link element to trigger the download
+            // var a = document.createElement('a');
+            // var url = window.URL.createObjectURL(response);
+            // a.href = url;
+            // a.download = 'filename.ext'; // Specify your file's default name
+            // document.body.appendChild(a);
+            // a.click();
+            // document.body.removeChild(a);
+            // window.URL.revokeObjectURL(url); // Clean up the URL object
+
+
+            if (response.error) {
+                console.error(response.error);
+            }else{
+                if (response instanceof Blob) {
+                    // Create a link element to trigger the download
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(response);
+                    a.href = url;
+                    a.download = 'bulk data.csv'; // Specify your file's default name
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url); // Clean up the URL object
+                } else {
+                    console.error('Response is not a Blob:', response);
+                }
+            }
+             
+        },
+        error: function(xhr) {
+            console.error('An error occurred:', xhr.responseText);
+        }
+    });
+    
 }

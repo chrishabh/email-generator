@@ -195,10 +195,10 @@
 }
 
 .percentage {
-    font-size: 0.9rem; /* Adjusted font size */
+    font-size: 0.75rem; /* Adjusted font size */
     font-weight: bold;
     color: #333;
-    background-color:#fff;
+    /* background-color:#fff; */
 }
 
 
@@ -286,3 +286,52 @@
     display: none !important;
 }
 
+
+.info-line--right .text-green{
+    color: var(--success-color);
+}
+.info-line--right .text-red{
+    color: var(--error-color);
+}
+
+
+.info-line--right .val{
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.1px;
+    margin-top: 14px;
+}
+
+.info-line--right .stat-col{
+    text-align: center;
+    /* position: relative; */
+    font-size: 14px;
+    color: #696974;
+    letter-spacing: 0.1px;
+    /* padding: 0 30px; */
+}
+
+.info-line--right .stat-col:before {
+    right: 0;
+    width: 1px;
+    height: 50px;
+    background-color: #e2e2ea;
+}
+
+.fa-solid.fa-download{ 
+    font-family: var(--font-awesome-family); 
+}
+.download-icon{
+    font-weight: 600; 
+    color: var(--success-color);
+    font-size: 23px;
+    text-align: center;
+    border: 2px solid var(--success-color);
+    border-radius: 40px;
+    padding: 10px 26px;
+    box-shadow: var(--common-box-shadow);
+}
+.download-icon:hover{
+    cursor: pointer;
+}

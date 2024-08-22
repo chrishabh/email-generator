@@ -1,13 +1,13 @@
 let init =function(){
     const value =parseInt(document.getElementById('creditPoint').innerText,10)
-    if(value<0) 
+    if(value<=0) 
         disableFormField()
     else  inputValidation({'last_name':'last_name','first_name':'first_name','domain':'domain'})
 
     document.getElementById('CheckButon').addEventListener('click', function(e) {
         e.preventDefault();
         const value =parseInt(document.getElementById('creditPoint').innerText,10)
-        if(value<0){
+        if(value<=0){
             triggerSweetAlert()
         }else{
             e.preventDefault()

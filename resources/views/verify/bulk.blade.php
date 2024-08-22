@@ -43,9 +43,40 @@
                         <button class="btn-submit">Search</button>
                     </div>
                     <div class="upload-file--list">
+
                         @if (isset($fileData) && !empty($fileData))
                             @foreach ($fileData as $key=>$value )
-                                <div class="info-line flex" id="list_57678">
+                                @if ($value['verificationStatus']=='verified')
+                                    <div class="info-line flex" id="list_{{$value['fileId']}}" data-attribute="{{$value['fileId']}}">
+                                        <div class="info-line--left col-md-5">
+                                            <div class="img-cont">
+                                                <img src="{{ asset('assets/doc.svg') }}" alt="">
+                                            </div>
+                                            <div class="title-wrap">
+                                                <div class="title"><a href="javascript:void(0)"> {{ $value['fileName']}}</a></div>
+                                                <div class="meta"><span class="txt-green"> {{ $value['total']}} Emails </span>- {{$value['created_at']}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="info-line--right row col-md-6 col-offset-1 align-items-center ">
+                                            <div class="col-md-4 stat-col">
+                                                Valid Emails
+                                                <div class="text-green val">{{$value['totalValidEmail']}}</div>
+                                            </div>
+                                            <div class="col-md-5 stat-col">
+                                                Invalid Emails
+                                                <div class="text-red val">{{$value['totalInvalidEmail']}}</div>
+ 
+                                            </div>
+                                            <div class="col-md-3 text-center">
+                                                <meta name="csrf-token" content="{{ csrf_token() }}">
+                                                <i class="fa-solid fa-download download-icon" onclick="downloadCsvFile(event,{{$value['fileId']}})"></i>
+                                            </div>
+            
+            
+                                        </div>
+                                    </div>    
+                                @endif
+                                <div class="info-line flex" id="list_{{$value['fileId']}}" data-attribute="{{$value['fileId']}}">
                                     <div class="info-line--left col-md-5">
                                         <div class="img-cont">
                                             <img src="{{ asset('assets/doc.svg') }}" alt="">
