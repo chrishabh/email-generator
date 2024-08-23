@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Imports\BulkUploadImport;
+use App\Jobs\ExportVerifiedEmailsJob;
+use App\Jobs\VerifyEmailsJob;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\uploadedAndDownloadFileName;
 use App\Models\UserCredits;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -104,10 +107,18 @@ class EmailController extends Controller
             // $data = BulkUploadEmailFileData::getBulkData(Auth::user()->id);
             $userid= Auth::user()->id;
 
-            $data = uploadedAndDownloadFileName::getAllData($userid );
-            
-            if(!empty($data)){
-                foreach($data as $key=>$value){  
+           $fileData = self::getDataOfFileWithState('',$userid);
+        }
+          
+        $headerData['creditPoint'] = $creditPoint; 
+        return view('verify.bulk')->with(compact('headerData','fileData'));
+    }
+
+    private function getDataOfFileWithState($fileId='',$userid){
+        $data = uploadedAndDownloadFileName::getAllData($fileId,$userid );
+        $fileData =array();
+        if(!empty($data)){
+            foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
                     $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? null;
@@ -127,12 +138,9 @@ class EmailController extends Controller
                     $dataArr['userId']             =  $value->user_id; 
                     $dataArr['fileId']             =  $value->id; 
                     array_push($fileData,$dataArr);
-                }
             }
         }
-          
-        $headerData['creditPoint'] = $creditPoint; 
-        return view('verify.bulk')->with(compact('headerData','fileData'));
+        return $fileData;
     }
     function uploadBulkData(Request $request){       
         try { 
@@ -252,13 +260,13 @@ class EmailController extends Controller
     }
 
 
-    function getAllData(Request $request){;
+    // function getAllData(Request $request){;
 
-        // $userID = Auth::user()->id;
-        $userID = 1;
-        $data = uploadedAndDownloadFileName::getAllData($userID);
-        return response()->json(['success' => 'data import successfully!','data'=>$data])->header('Content-Type', 'application/json; charset=UTF-8');
-    }
+    //     // $userID = Auth::user()->id;
+    //     $userID = 1;
+    //     $data = uploadedAndDownloadFileName::getAllData($userID);
+    //     return response()->json(['success' => 'data import successfully!','data'=>$data])->header('Content-Type', 'application/json; charset=UTF-8');
+    // }
 
     function exportData(Request $request){
         $rules = [
@@ -270,12 +278,8 @@ class EmailController extends Controller
         }
 
         $data =uploadedAndDownloadFileName::getDownloadPath($request['fileId'],Auth::user()->id);
-        // pp(storage_path('app/'.$data->uploadedFileLocation));
         if($data){
-            $filePath = storage_path('app/'.$data->uploadedFileLocation);
-            // $filePath = storage_path('app/' . $file->file_path); // Adjust path based on your file storage
-
-            // Check if the file exists
+            $filePath = storage_path('app/'.$data->uploadedFileLocation); 
             if (file_exists($filePath)) {
                 return response()->download($filePath,'filename.csv', [
                     'Content-Type' => 'text/csv',
@@ -283,12 +287,24 @@ class EmailController extends Controller
             } else {
                 return response()->json(['error' => 'File not found'], 404);
             }
-        // return response()->json(['downloadFileLocation' => $fileUrl]);// Storage::url($data->uploadedFileLocation);
-            // return response()->download(storage_path('app/'.$data->uploadedFileLocation));
-            // return response()->json(['downloadFileLocation' => storage_path('app/'.$data->uploadedFileLocation)], 200)->header('Content-Type', 'application/json; charset=UTF-8');;
         }else {
-            return response()->json(['error' => 'File not found'], 404)->header('Content-Type', 'application/json; charset=UTF-8');;
+            return response()->json(['error' => 'File not found'], 404)->header('Content-Type', 'application/json; charset=UTF-8');
         }
+    }
+
+
+    function startVerification(Request $request){
+        $rules = [
+            'fileId'    => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
+        }
+        
+        VerifyEmailsJob::dispatch($request['fileId']);
+        return response()->json(['sucess'=>'ok','status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],Auth::user()->id)],200)->header('Content-Type', 'application/json; charset=UTF-8');
+
     }
 
 

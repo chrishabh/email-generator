@@ -43,7 +43,7 @@ $(document).ready(function() {
 
     // Initial fetch on page load
     fetchFileStatus();
-    updateProgress(50);
+    // updateProgress(50);
     FilePond.registerPlugin(
         FilePondPluginImagePreview,
         FilePondPluginImageExifOrientation,
@@ -176,4 +176,49 @@ function downloadCsvFile(event,fileid){
         }
     });
     
+}
+
+
+function simulateProgress() {
+    // let value = 0;
+    let progressValue = 0;
+    const interval = setInterval(() => {
+        if (progressValue < 95) { // Simulate progress to 95%
+            progressValue += Math.ceil(Math.random() * 5); // Increment progress randomly
+            updateProgress(progressValue);
+        } else {
+            clearInterval(interval); // Stop progress simulation
+        }
+    }, 200);
+    
+    return interval;
+}
+
+function startVerification(event,fileId){
+    event.preventDefault();
+    const progressInterval = simulateProgress();
+    fetch('/start-verification',{
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': $('meta[name="verification-csrf-token"]').attr('content'), 
+        },
+        body:JSON.stringify({fileId}) 
+    }).then(response=>{
+        if(!response.ok) throw new Error('Network response was not ok ' + response.statusText)
+        return response.json(); 
+             
+    }).then(data=>{
+             
+        if(data.data[0].verificationStatus=='verified'){
+            // let divElement = document.getElementById(`list_${fileId}`)
+            // clearInterval(progressInterval);
+            updateProgress(100);
+            window.location.reload(); 
+        }else{
+            console.log(data.data[0]);   
+        }
+    }).catch(error=>{
+        console.log('Error of verification',error)
+    })
 }

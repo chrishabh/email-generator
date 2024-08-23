@@ -40,6 +40,7 @@ try{
     Route::post('/upload', [EmailController::class, 'uploadBulkData']);
     Route::get('/check-file-status', [EmailController::class, 'getAllData']);
     Route::post('/export-data', [EmailController::class, 'exportData']);
+    Route::post('/start-verification', [EmailController::class, 'startVerification']);
     
     Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');

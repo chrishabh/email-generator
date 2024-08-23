@@ -76,6 +76,7 @@
                                         </div>
                                     </div>    
                                 @endif
+                                @if ($value['verificationStatus']=='pending')
                                 <div class="info-line flex" id="list_{{$value['fileId']}}" data-attribute="{{$value['fileId']}}">
                                     <div class="info-line--left col-md-5">
                                         <div class="img-cont">
@@ -107,12 +108,13 @@
                                             {{-- <button class="btn btn-primary mt-4" onclick="updateProgress(75)">Set Progress to 75%</button> --}}
                                         </div>
                                         <div class="col-md-5">
-                                            <a href="" class="btn orange transparent pen">On Progress</a>
+                                            <meta name="verification-csrf-token" content="{{ csrf_token() }}">
+                                            <a href="" class="btn orange transparent pen strt-verification" onclick="startVerification(event,{{$value['fileId']}})">Start Verification</a>
                                         </div>
         
-        
                                     </div>
-                                </div>
+                                </div> 
+                                @endif
                         @endforeach
                         @endif
                          
