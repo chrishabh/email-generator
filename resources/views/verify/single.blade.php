@@ -55,17 +55,21 @@
                         <div class="outer-layer">
                             <div class="inner-layer">
                                 @if (session('possibleEmails'))
-                                @foreach (session('possibleEmails') as $email)
-                                    <div class="correct-email">
-                                        <div class="col-md-8"> 
-                                            <h2> <i class="fa-light fa-check"></i>  {{$email}}</h2>
-                                        </div>
-                                        <div class="col-md-2 col-offset-2"> 
-                                            <div class="credit-info--tag bg-success-valid">Valid </div>
-                                        </div> 
-                                    </div>  
-                                @endforeach
-                             @endif
+                                    @foreach (session('possibleEmails') as $email)
+                                        <div class="correct-email">
+                                            <div class="col-md-8"> 
+                                                <h2> <i class="fa-light fa-check"></i>  {{$email}}</h2>
+                                            </div>
+                                            <div class="col-md-2 col-offset-2"> 
+                                                <div class="credit-info--tag bg-success-valid">Valid </div>
+                                            </div> 
+                                        </div>  
+                                    @endforeach
+                                    @else
+                                    <div class="no-content-parent"> 
+                                        <img class="no-content" src="{{ asset('verify/single/image/1.png') }}" alt="no content" srcset="">
+                                    </div> 
+                                @endif
                             </div>
                              
                         </div>

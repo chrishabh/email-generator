@@ -34,6 +34,7 @@
     min-height: 300px;
     box-shadow:  var(--common-box-shadow);
     padding: var(--card-padding);
+    background-color: #fafafb;
 }
 
 #single--verification .card-title i::before,.correct-email .fa-light::before{
@@ -184,6 +185,13 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 }
 div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
     background-color: var(--accent-color) !important;
+}
+
+.no-content-parent {
+    text-align: center;
+}
+.no-content-parent .no-content{
+    width: 50%;
 }
 
  /* large device (Desktop  992px to 1199px) */
