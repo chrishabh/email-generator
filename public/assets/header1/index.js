@@ -59,5 +59,20 @@ document.addEventListener('DOMContentLoaded',()=>{
         isDropdownVisible = hideDropDown(e,isDropdownVisible,dropdown,avatar,dropdowns)
     });
     
+    activeNavigation()
     mobileMenu();
 })
+
+
+function activeNavigation(){
+    const menuLinks = document.querySelectorAll('.main-menu li'); 
+    const currentPath = window.location.pathname; 
+    menuLinks.forEach(link => {
+        const linkPath = link.querySelector('a').getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('current');
+        } else {
+            link.classList.remove('current');
+        }
+    });
+}

@@ -72,7 +72,8 @@ class EmailController extends Controller
                 $validEmails[] = $email;
             }
         }
-        UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,1);
+        
+        UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,count($validEmails));
         return redirect()->back()->with(compact('possibleEmails'));
     }
 
