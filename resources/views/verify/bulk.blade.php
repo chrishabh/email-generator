@@ -17,8 +17,7 @@
     
 
 
-        
-        <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+         
         <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
         <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
         <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
@@ -142,7 +141,7 @@
 
                                     <meta name="csrf-token" content="{{ csrf_token() }}">
                                     <input type="file" class="my-pond" name="filepond"/>
-                                <a href="javascript:void(0)" class="import-btn btn" id="uploadbtn">Import list</a>
+                                <a href="javascript:void(0)" class="import-btn" id="uploadbtn">Import list</a>
                             </form>
                         </div>
                     </div>

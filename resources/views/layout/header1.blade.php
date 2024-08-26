@@ -9,6 +9,7 @@
         <title>Bouncee</title>
     {{-- @endpush --}}
     
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="shortcut icon" href="{{ asset('bouncee-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
@@ -22,8 +23,7 @@
     <!-- Responsive Style -->
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/header1/style.css') }}">    
-    <script src="{{ asset('assets/header1/index.js') }}" type="text/javascript"></script>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="{{ asset('assets/header1/index.js') }}" type="text/javascript"></script> 
     @stack('styles')
 
 </head>

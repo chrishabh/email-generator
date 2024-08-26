@@ -52,7 +52,58 @@ $(document).ready(function() {
     );
 
     // Turn input element into a pond
-    $('.my-pond').filepond({
+    // $('.my-pond').filepond({
+    //     server: {
+    //         process: {
+    //             url: '/upload',
+    //             method: 'POST',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //             onload: (response) => {
+    //                 try {
+    //                     const responseObj = JSON.parse(response) 
+    //                     if(responseObj.error){
+    //                         console.log((responseObj.error));
+    //                         showError(responseObj.error);
+    //                     }else{
+    //                         $('#alertContent').text(responseObj.success); 
+    //                             $('#alertBox').css({
+    //                                 'background-color': '#28a745', // Green background color
+    //                                 'color': '#fff', // White text color
+    //                                 'border-color': '#28a745' // Green border color
+    //                             }).show();
+    //                         setTimeout(function() {
+    //                             $('#alertBox').hide();  
+    //                         }, 10000);
+                             
+    //                     }
+                             
+    //                 } catch (error) {
+    //                     console.log((error));
+    //                     showError(error);
+    //                 }
+    //                 // console.log('File uploaded successfully:', response);
+    //             },
+    //             onerror: (response) => {
+    //                 showError('Error: ' + (response.error || 'An unknown error occurred'));
+    //                 console.error('Error uploading file:', response);
+    //             }
+    //         },
+    //         load: {
+    //             url: '/load',
+    //             method: 'GET',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }
+    //         }
+    //     },
+    //     // allowMultiple: true,
+    //     labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>',
+        
+    // });
+
+    const pond = FilePond.create(document.querySelector('.my-pond'), {
         server: {
             process: {
                 url: '/upload',
@@ -62,28 +113,26 @@ $(document).ready(function() {
                 },
                 onload: (response) => {
                     try {
-                        const responseObj = JSON.parse(response) 
-                        if(responseObj.error){
-                            console.log((responseObj.error));
+                        const responseObj = JSON.parse(response);
+                        if (responseObj.error) {
+                            console.log(responseObj.error);
                             showError(responseObj.error);
-                        }else{
-                            $('#alertContent').text(responseObj.success); 
-                                $('#alertBox').css({
-                                    'background-color': '#28a745', // Green background color
-                                    'color': '#fff', // White text color
-                                    'border-color': '#28a745' // Green border color
-                                }).show();
+                        } else {
+                            $('#alertContent').text(responseObj.success);
+                            $('#alertBox').css({
+                                'background-color': '#28a745',
+                                'color': '#fff',
+                                'border-color': '#28a745'
+                            }).show();
                             setTimeout(function() {
-                                $('#alertBox').hide();  
+                                $('#alertBox').hide();
+                                window.location.reload();
                             }, 10000);
-                             
                         }
-                             
                     } catch (error) {
-                        console.log((error));
+                        console.log(error);
                         showError(error);
                     }
-                    // console.log('File uploaded successfully:', response);
                 },
                 onerror: (response) => {
                     showError('Error: ' + (response.error || 'An unknown error occurred'));
@@ -98,14 +147,12 @@ $(document).ready(function() {
                 }
             }
         },
-        // allowMultiple: true,
-        labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>',
-        
+        labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
     });
 
     // Trigger file input click when custom button is clicked
-    $('#custom-button').on('click', function() {
-        $('.my-pond').click();
+    $('#uploadbtn').on('click', function() {
+        pond.browse();
     });
 });
 
