@@ -463,6 +463,10 @@ a.back-to-top:hover, a.back-to-top:focus {
   padding: 60px 0;
 }
 
+.auth-footer-padding {
+  padding: 20px 0;
+}
+
 hr {
   border-top: 1px dotted #ddd;
 }

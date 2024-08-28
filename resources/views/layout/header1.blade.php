@@ -44,7 +44,7 @@
         $lastName = $nameParts[count($nameParts) - 1]; 
         // Get the first and last capital letters
         $firstCapitalLetter = strtoupper($firstName[0]);
-        $lastCapitalLetter = strtoupper($lastName[strlen($lastName) - 1]); 
+        $lastCapitalLetter = strtoupper($lastName[0]); 
         $name              = $firstCapitalLetter.''.$lastCapitalLetter;
     }
     @endphp

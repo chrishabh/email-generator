@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\UserCredits;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -110,5 +111,22 @@ class PaymentController extends Controller
             // Payment failed
             return view('payment-failed',$bind_data);
         }
+    }
+
+    public static function getPricing()
+    {
+        $creditPoint =0;
+        $headerData = array(); 
+        if(Auth::check()){ 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+           
+            if(!empty($data)){
+                $creditPoint =$data->credits;
+                
+            }
+        }
+            
+        $headerData['creditPoint'] = $creditPoint; 
+        return view('verify.pricing')->with(compact('headerData'));
     }
 }

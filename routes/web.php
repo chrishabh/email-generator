@@ -46,6 +46,7 @@ try{
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
             Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
+            Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
       
     });
      
@@ -67,7 +68,6 @@ try{
     Route::get('/verification', function () {
         return view('verify');
     });
- 
 
 }catch (\Exception $e) {
     return view('something-went-wrong');

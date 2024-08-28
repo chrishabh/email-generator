@@ -63,7 +63,7 @@
             <br><br>
             If you need assistance, please <a href="rishabh.bouncee@yopmail.com">contact us</a>.
         </div>
-        <a href="/" class="button">Try Again</a>
+        <a href="/pricing" class="button">Try Again</a>
     </div>
 </body>
 </html>

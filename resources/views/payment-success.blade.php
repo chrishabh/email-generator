@@ -65,7 +65,7 @@
             <br><br>
             If you have any questions, feel free to <a href="rishabh.bouncee@yopmail.com">contact us</a>.
         </div>
-        <a href="/" class="button">Return to Homepage</a>
+        <a href="/pricing" class="button">Return to Homepage</a>
     </div>
 </body>
 </html>

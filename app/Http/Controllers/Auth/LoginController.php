@@ -70,7 +70,7 @@ class LoginController extends Controller
         if($verification_data->verification_code == $verification_code && $verification_data->email == Auth::User()->email)
         {
             VerificationCode::updateVerificationStatus(Auth::User()->id,Auth::User()->email,$verification_code);
-            if(Auth::check() && Auth::User()->role=='user')
+            if(Auth::check())
                 return  redirect()->intended('/single');
             else return  redirect()->intended('/');
             
