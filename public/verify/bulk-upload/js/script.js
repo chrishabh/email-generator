@@ -171,58 +171,42 @@ function showError(message) {
 }
 
 
-function downloadCsvFile(event,fileid){
-    event.preventDefault(); 
-    $.ajax({
-        url: '/export-data', // Your route to handle the file download
-        type: 'POST',
-        data:{
-            fileId:fileid
-        },
+function downloadCsvFile(event, fileid) {
+    event.preventDefault();
+
+    fetch('/export-data', {
+        method: 'POST',
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
-        xhrFields: {
-            responseType: 'blob' // Ensure the response type is a Blob (binary large object)
-        },
-        success: function(response) {
-            console.log(response); 
-            
-            // // Create a link element to trigger the download
-            // var a = document.createElement('a');
-            // var url = window.URL.createObjectURL(response);
-            // a.href = url;
-            // a.download = 'filename.ext'; // Specify your file's default name
-            // document.body.appendChild(a);
-            // a.click();
-            // document.body.removeChild(a);
-            // window.URL.revokeObjectURL(url); // Clean up the URL object
-
-
-            if (response.error) {
-                console.error(response.error);
-            }else{
-                if (response instanceof Blob) {
-                    // Create a link element to trigger the download
-                    var a = document.createElement('a');
-                    var url = window.URL.createObjectURL(response);
-                    a.href = url;
-                    a.download = 'bulk data.csv'; // Specify your file's default name
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url); // Clean up the URL object
-                } else {
-                    console.error('Response is not a Blob:', response);
-                }
-            }
-             
-        },
-        error: function(xhr) {
-            console.error('An error occurred:', xhr.responseText);
+        body: JSON.stringify({ fileId: fileid }) // Send the fileId as JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.blob(); // Expect the response to be a Blob
+    })
+    .then(blob => {
+        if (blob) {
+            // Create a link element to trigger the download
+            const a = document.createElement('a');
+            const url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'bulk data.csv'; // Specify your file's default name
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url); // Clean up the URL object
+        } else {
+            console.error('Response is not a Blob:', blob);
+        }
+    })
+    .catch(error => {
+        console.error('An error occurred:', error.message);
     });
-    
+
 }
 
 
