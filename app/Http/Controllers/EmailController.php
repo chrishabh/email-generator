@@ -40,24 +40,24 @@ class EmailController extends Controller
         $possibleEmails = [
             "{$firstName}.{$lastName}@{$domain}",
             "{$firstName}{$lastName}@{$domain}",
-            "{$firstName}_{$lastName}@{$domain}",
-            "{$lastName}.{$firstName}@{$domain}",
-            "{$lastName}{$firstName}@{$domain}",
-            "{$lastName}_{$firstName}@{$domain}",
+            // "{$firstName}_{$lastName}@{$domain}",
+            // "{$lastName}.{$firstName}@{$domain}",
+            // "{$lastName}{$firstName}@{$domain}",
+            // "{$lastName}_{$firstName}@{$domain}",
             substr($firstName,0,1)."{$lastName}@{$domain}",
             "{$lastName}".substr($firstName,0,1)."@{$domain}",
-            "{$firstName}@{$domain}",
-            "{$lastName}@{$domain}",
-            substr($firstName,0,1).".{$lastName}@{$domain}",
-            "{$lastName}.".substr($firstName,0,1)."@{$domain}",
-            substr($firstName,0,1)."_{$lastName}@{$domain}",
-            "{$lastName}_".substr($firstName,0,1)."@{$domain}",
-            substr($lastName,0,1)."{$firstName}@{$domain}",
-            "{$firstName}".substr($lastName,0,1)."@{$domain}",
-            substr($lastName,0,1).".{$firstName}@{$domain}",
-            "{$firstName}.".substr($lastName,0,1)."@{$domain}",
-            substr($lastName,0,1)."_{$firstName}@{$domain}",
-            "{$firstName}_".substr($lastName,0,1)."@{$domain}",
+            // "{$firstName}@{$domain}",
+            // "{$lastName}@{$domain}",
+            // substr($firstName,0,1).".{$lastName}@{$domain}",
+            // "{$lastName}.".substr($firstName,0,1)."@{$domain}",
+            // substr($firstName,0,1)."_{$lastName}@{$domain}",
+            // "{$lastName}_".substr($firstName,0,1)."@{$domain}",
+            // substr($lastName,0,1)."{$firstName}@{$domain}",
+            // "{$firstName}".substr($lastName,0,1)."@{$domain}",
+            // substr($lastName,0,1).".{$firstName}@{$domain}",
+            // "{$firstName}.".substr($lastName,0,1)."@{$domain}",
+            // substr($lastName,0,1)."_{$firstName}@{$domain}",
+            // "{$firstName}_".substr($lastName,0,1)."@{$domain}",
             "{$firstName}-{$lastName}@{$domain}",
             "{$lastName}-{$firstName}@{$domain}",
             substr($lastName,0,1). substr($firstName,0,1)."@{$domain}",
@@ -95,12 +95,12 @@ class EmailController extends Controller
     
             $data = $response->json();
             $log = [
-                'user_id' => '1',
+                'user_id' => Auth::User()->id,
                 'email' => $email,
                 'result' => json_encode($data)
             ];
             EmailVerificationLog::addLog($log);
-            return isset($data['reason']) && $data['reason'] === 'Deliverable';
+            return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
         }else{
             return true;
         }
