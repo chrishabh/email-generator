@@ -4,6 +4,7 @@
 namespace App\Services\Auth;
 
 use App\Models\User;
+use App\Models\UserCredits;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterService{
@@ -16,6 +17,7 @@ class RegisterService{
             'role'                     => $request->role??'user',
             'no_of_email_verification' => $request->no_of_email_verification,
         ]); 
+        UserCredits::initialFreeCredit(User::getUserId($request->email));
         if($user){
             return redirect()->route('signin')->with('success', 'Registration successful! Please login.');
         }

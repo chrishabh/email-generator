@@ -3469,9 +3469,9 @@ margin-right: 0;
  
  
 @media only screen and (max-width: 1450px) {
-.creditBalnce {
+/* .creditBalnce {
 display: none;
-}
+} */
 .layout-sidebarLeft--content {
 width: calc(100% - 300px);
 }

@@ -3,6 +3,7 @@
 @section('main-section')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('verify/single/css/style.css') }}">     
+        <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
         <script src="{{ asset('verify/single/script.js') }}" type="text/javascript"></script> 

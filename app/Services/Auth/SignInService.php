@@ -33,8 +33,14 @@ class SignInService{
                 'verification_code' => $otp,
                 'verification_type' => 'SIGN_IN',
             ];
-            Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
-            VerificationCode::addVerificationCode($verification_data);
+            try{
+                Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
+                VerificationCode::addVerificationCode($verification_data);
+            } catch (\Throwable $th) {
+                // Handle other types of exceptions
+                \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
+                return redirect()->back()->with('error', 'Login failed: ' . $th->getMessage());
+            }
             return  redirect()->intended('/verification');
         }else{
             return redirect()->back()->withErrors([

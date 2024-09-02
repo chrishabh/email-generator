@@ -8,6 +8,7 @@
         <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
         <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
 
+        <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
 
         <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
         <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">

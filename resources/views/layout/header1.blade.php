@@ -52,8 +52,8 @@
     <div id="mobileMenu" class="mobile-menu">
         <ul class="main-menu"> 
             <li class="current"><a href="/single">Single Verification</a></li> 
-            <li class=""><a href="/bulk">List Verification</a></li>
-            <li><a href="/pricing">Pricing</a></li> 
+            <li class=""><a href="/bulk">Bulk Verifications</a></li>
+            <li><a href="/pricing">Buy Credits</a></li> 
         </ul>
         <div class="credit-info">
             Credit Balance
@@ -75,8 +75,8 @@
                     </a>
                     <ul class="main-menu">
                         <li class="current"><a href="/single">Single Verification</a></li>
-                        <li class=""><a href="/bulk">List Verification</a></li>
-                        <li><a href="/pricing">Pricing</a></li>
+                        <li class=""><a href="/bulk">Bulk Verifications</a></li>
+                        <li><a href="/pricing">Buy Credits</a></li>
                     </ul>
                 </div>
                 <div class="mainheader--right">

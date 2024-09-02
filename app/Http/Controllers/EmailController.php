@@ -6,6 +6,7 @@ use App\Imports\BulkUploadImport;
 use App\Jobs\ExportVerifiedEmailsJob;
 use App\Jobs\VerifyEmailsJob;
 use App\Models\BulkUploadEmailFileData;
+use App\Models\EmailVerificationLog;
 use App\Models\uploadedAndDownloadFileName;
 use App\Models\UserCredits;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -77,18 +78,29 @@ class EmailController extends Controller
         return redirect()->back()->with(compact('possibleEmails'));
     }
 
+    public function testThirdPartyAPI(){
+        $this->isValidEmail("ch.rishabh8527@gmail.com");
+    }
+
     private function isValidEmail($email)
     {
         if(env('KICKBOX_API_FLAG')){
             $apiKey = env('KICKBOX_API_KEY'); // Replace with your Kickbox API key
-            $response = Http::get("https://api.kickbox.com/v2/verify", [
-                'email' => $email,
-                'apikey' => $apiKey,
+            $response = Http::get('https://api.debounce.io/v1/', [
+                // 'query' => [
+                    'api' => $apiKey,
+                    'email' => $email,
+                // ]
             ]);
     
             $data = $response->json();
-    
-            return isset($data['result']) && $data['result'] === 'deliverable';
+            $log = [
+                'user_id' => '1',
+                'email' => $email,
+                'result' => json_encode($data)
+            ];
+            EmailVerificationLog::addLog($log);
+            return isset($data['reason']) && $data['reason'] === 'Deliverable';
         }else{
             return true;
         }
