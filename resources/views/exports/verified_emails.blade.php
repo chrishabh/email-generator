@@ -2,6 +2,9 @@
     <thead>
         <tr>
             <th>EMAIL</th>
+            @php
+                pp($isExport);
+            @endphp
             @if ($isExport)
                 <th>RESULT</th>
                 <th>REASON</th>

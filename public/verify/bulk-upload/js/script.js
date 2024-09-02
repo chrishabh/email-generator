@@ -39,7 +39,7 @@ $(document).ready(function() {
     // Register FilePond plugins
     $('#alertBox').hide();
     // Execute the function every 1 minute
-    // setInterval(fetchFileStatus, 10000);
+    disableDownloadButton();
 
     // Initial fetch on page load
     fetchFileStatus();
@@ -171,9 +171,14 @@ function showError(message) {
 }
 
 
-function downloadCsvFile(event, fileid) {
+function downloadCsvFile(event, fileid,totalValidEmail,c) {
     event.preventDefault();
-
+    if(totalValidEmail<1){ 
+        c.style.cursor = 'not-allowed'; 
+        c.style.filter = 'grayscale(100%)';
+        c.style.opacity = '0.5';
+        return;
+    }
     fetch('/export-data', {
         method: 'POST',
         headers: {
@@ -252,4 +257,19 @@ function startVerification(event,fileId){
     }).catch(error=>{
         console.log('Error of verification',error)
     })
+}
+
+
+
+function disableDownloadButton(){
+    const icons = document.querySelectorAll('.download-icon');
+        icons.forEach(icon => {
+            const dataAttributeValue = icon.getAttribute('data-valid');
+            if(dataAttributeValue<1){
+                icon.style.cursor = 'not-allowed'; 
+                icon.style.filter = 'grayscale(100%)';
+                icon.style.opacity = '0.5'; 
+            }
+          });
+         
 }

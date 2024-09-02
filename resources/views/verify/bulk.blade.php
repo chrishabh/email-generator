@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <meta name="csrf-token" content="{{ csrf_token() }}">
-                                                <i class="fa-solid fa-download download-icon" onclick="downloadCsvFile(event,{{$value['fileId']}})"></i>
+                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['totalValidEmail']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['totalValidEmail']}},this)"></i>
                                             </div>
             
             
