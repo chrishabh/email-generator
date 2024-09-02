@@ -48,7 +48,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
                 if($verifiedEmailData){
                     $fileName = $value->fileName;
                     $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName";
-                    Excel::store(new BulkUploadExport($verifiedEmailData ), $filePath); 
+                    Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath); 
                 }
                  
             }

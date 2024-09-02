@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\EmailController;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\uploadedAndDownloadFileName;
 use App\Models\UserCredits;
@@ -50,18 +51,27 @@ class VerifyEmailsJob implements ShouldQueue
             $count   = 1;
             $counter = 1;
             $isUpdateData =false;
+            
+            $emailController = new EmailController();
             foreach($data as $key=>$value){
                 $dataArray=[];
-                $value->bulk_email_id;
-                $isValidEmail = $counter % 2 == 1;
-                if($isValidEmail){
+                if(EmailController::isValidEmail($value->email)){
                     $dataArray['isValidEmail'] = '1';
                     $dataArray['status']       = 'valid';
-                }
-                else{
+                }else{
                     $dataArray['isValidEmail'] = '0';
                     $dataArray['status']       = 'invalid';
                 }
+
+                // $isValidEmail = $counter % 2 == 1;
+                // if($isValidEmail){
+                //     $dataArray['isValidEmail'] = '1';
+                //     $dataArray['status']       = 'valid';
+                // }
+                // else{
+                //     $dataArray['isValidEmail'] = '0';
+                //     $dataArray['status']       = 'invalid';
+                // }
         
                 if(BulkUploadEmailFileData::updateData($dataArray,$value->bulk_email_id)){
                     $isUpdateData = true;

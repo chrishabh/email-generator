@@ -55,8 +55,8 @@
                         <h3 class="right-card-head">Analysis Results</h3>
                         <div class="outer-layer">
                             <div class="inner-layer">
-                                @if (session('possibleEmails'))
-                                    @foreach (session('possibleEmails') as $email)
+                                @if (session('validEmails'))
+                                    @foreach (session('validEmails') as $email)
                                         <div class="correct-email">
                                             <div class="col-md-8"> 
                                                 <h2> <i class="fa-light fa-check"></i>  {{$email}}</h2>

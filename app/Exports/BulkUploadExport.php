@@ -9,15 +9,18 @@ class BulkUploadExport implements FromView
 {
     
     protected $emails;
-    public function __construct($emails)
+    protected $isExport;
+    public function __construct($emails,$isExport=false)
     {
         $this->emails = $emails;
+        $this->isExport = $isExport;
     }
     
     public function view(): View
     {
         return view('exports.verified_emails', [
-            'emails' => $this->emails
+            'emails' => $this->emails,
+            'isExport'=> $this->isExport
         ]);
     }
 

@@ -39,7 +39,7 @@ $(document).ready(function() {
     // Register FilePond plugins
     $('#alertBox').hide();
     // Execute the function every 1 minute
-    setInterval(fetchFileStatus, 10000);
+    // setInterval(fetchFileStatus, 10000);
 
     // Initial fetch on page load
     fetchFileStatus();
@@ -194,7 +194,7 @@ function downloadCsvFile(event, fileid) {
             const a = document.createElement('a');
             const url = window.URL.createObjectURL(blob);
             a.href = url;
-            a.download = 'bulk data.csv'; // Specify your file's default name
+            a.download = 'dobounce.csv'; 
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -220,7 +220,7 @@ function simulateProgress() {
         } else {
             clearInterval(interval); // Stop progress simulation
         }
-    }, 200);
+    }, 500);
     
     return interval;
 }
@@ -243,7 +243,7 @@ function startVerification(event,fileId){
              
         if(data.data[0].verificationStatus=='verified'){
             // let divElement = document.getElementById(`list_${fileId}`)
-            // clearInterval(progressInterval);
+            clearInterval(progressInterval);
             updateProgress(100);
             window.location.reload(); 
         }else{

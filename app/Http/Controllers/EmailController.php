@@ -52,12 +52,12 @@ class EmailController extends Controller
             // "{$lastName}.".substr($firstName,0,1)."@{$domain}",
             // substr($firstName,0,1)."_{$lastName}@{$domain}",
             // "{$lastName}_".substr($firstName,0,1)."@{$domain}",
-            // substr($lastName,0,1)."{$firstName}@{$domain}",
-            // "{$firstName}".substr($lastName,0,1)."@{$domain}",
-            // substr($lastName,0,1).".{$firstName}@{$domain}",
-            // "{$firstName}.".substr($lastName,0,1)."@{$domain}",
-            // substr($lastName,0,1)."_{$firstName}@{$domain}",
-            // "{$firstName}_".substr($lastName,0,1)."@{$domain}",
+            substr($lastName,0,1)."{$firstName}@{$domain}",
+            "{$firstName}".substr($lastName,0,1)."@{$domain}",
+            substr($lastName,0,1).".{$firstName}@{$domain}",
+            "{$firstName}.".substr($lastName,0,1)."@{$domain}",
+            substr($lastName,0,1)."_{$firstName}@{$domain}",
+            "{$firstName}_".substr($lastName,0,1)."@{$domain}",
             "{$firstName}-{$lastName}@{$domain}",
             "{$lastName}-{$firstName}@{$domain}",
             substr($lastName,0,1). substr($firstName,0,1)."@{$domain}",
@@ -73,16 +73,16 @@ class EmailController extends Controller
                 $validEmails[] = $email;
             }
         }
-        
-        UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,count($validEmails));
-        return redirect()->back()->with(compact('possibleEmails'));
+
+        UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,count($possibleEmails));
+        return redirect()->back()->with(compact('validEmails'));
     }
 
     public function testThirdPartyAPI(){
         $this->isValidEmail("ch.rishabh8527@gmail.com");
     }
 
-    private function isValidEmail($email)
+    public static function isValidEmail($email)
     {
         if(env('KICKBOX_API_FLAG')){
             $apiKey = env('KICKBOX_API_KEY'); // Replace with your Kickbox API key
@@ -97,12 +97,13 @@ class EmailController extends Controller
             $log = [
                 'user_id' => Auth::User()->id,
                 'email' => $email,
-                'result' => json_encode($data)
+                'result' => json_encode($data),
+                // 'created_at'=>Carbon::now()
             ];
             EmailVerificationLog::addLog($log);
             return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
         }else{
-            return true;
+            return false;
         }
        
     }
@@ -134,8 +135,8 @@ class EmailController extends Controller
             foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
-                    $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? null;
-                    $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? null;
+                    $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
+                    $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
                     $fileNameWithExtension         =  basename($value->fileName); 
                     $fileName                      =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
                     $parts                         =  explode('_', $fileName);  
@@ -195,7 +196,7 @@ class EmailController extends Controller
             $originalFilename  = $file->getClientOriginalName();
             $originalFilename  = pathinfo($originalFilename, PATHINFO_FILENAME);
             $extension        = $request->file('filepond')->getClientOriginalExtension();
-            $fileName         = "{$originalFilename}_{$userId}_{$timestamp}.{$extension}";
+            $fileName         = "{$originalFilename}_debounce_{$userId}_{$timestamp}.{$extension}";
             $path             = "bulkUpload/{$currentDate}/{$userId}/{$fileName}";
             $instanceOfUp     = new uploadedAndDownloadFileName();
 
@@ -220,8 +221,7 @@ class EmailController extends Controller
                             'file_id'    => $fileId,
                             'importedBy' => $userId,
                             'type'       =>'bulk', 
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
+                            'created_at' => Carbon::now()
                         ); 
                         array_push($insertArray,$arr);
                    }
@@ -241,15 +241,7 @@ class EmailController extends Controller
                 }
 
             }
-            
-
-            // if(Excel::import(new BulkUploadImport($request->file('filepond')), $request->file('filepond'))){
-            //     return response()->json(['success' => 'data imported successfully!']);
-            // }
-            // else{
-            //     return response()->json(['error' =>  'something went wrong with this.']);
-            // }
-            // return redirect()->back()->with('success', 'Import successful!');
+        
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()])->header('Content-Type', 'application/json; charset=UTF-8');

@@ -8,14 +8,15 @@ let init =function(){
         e.preventDefault();
         const value =parseInt(document.getElementById('creditPoint').innerText,10)
         if(value<=0){
-            triggerSweetAlert()
+            triggerSweetAlert('You cannot verify any emails as you currently have zero credits. To proceed with email verification, you need to purchase credits. Do you want to proceed?')
         }else{
             e.preventDefault()
             validateForm({'last_name':'last_name','first_name':'first_name','domain':'domain'});
             const hasErrors =document.querySelectorAll('.validation-error').length>0
             if(!hasErrors){
-                const form = document.getElementById('signinForm');
-                form.submit();
+                 triggerSweetAlert('Are you sure to want to check the details?',true)
+                // const form = document.getElementById('signinForm');
+                // form.submit();
             }
         }
     });
@@ -68,16 +69,24 @@ function validateName(value){
     return value=='' ? '*This Field is required.':'';
 }
 
-function  triggerSweetAlert(){
+function  triggerSweetAlert(text,isForm=false){
         Swal.fire({
-        title: "You cannot verify any emails as you currently have zero credits. To proceed with email verification, you need to purchase credits. Do you want to proceed?",
+        title: text,
         showCancelButton: true,
         cancelButtonText:'No',
         confirmButtonText: "Yes", 
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
-        disableFormField()
+        if(!isForm)
+            disableFormField()
         if (result.isConfirmed) {
+            console.log('SDDD');
+            
+            if(isForm){
+                const form = document.getElementById('signinForm');
+                disableFormField()
+                form.submit();
+            }
             // window.location.href='/'
         }
     });
