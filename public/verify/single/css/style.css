@@ -189,10 +189,81 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
 
 .no-content-parent {
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 70vh;
 }
 .no-content-parent .no-content{
     width: 50%;
 }
+
+
+
+
+
+/* /loader */
+ .Buttonloader{
+    margin-inline-start: 14px;
+ }
+.Buttonloader {
+    width: 50px;
+    aspect-ratio: 1;
+    display:grid;
+    -webkit-mask: conic-gradient(from 15deg,#0000,#000);
+    animation: l26 1s infinite steps(12);
+  }
+  .Buttonloader,
+  .Buttonloader:before,
+  .Buttonloader:after{
+    background:
+      radial-gradient(closest-side at 50% 12.5%,
+       #fff 96%,#0000) 50% 0/20% 80% repeat-y,
+      radial-gradient(closest-side at 12.5% 50%,
+       #fff 96%,#0000) 0 50%/80% 20% repeat-x;
+  }
+  .Buttonloader:before,
+  .Buttonloader:after {
+    content: "";
+    grid-area: 1/1;
+    transform: rotate(30deg);
+  }
+  .Buttonloader:after {
+    transform: rotate(60deg);
+  }
+  
+  @keyframes l26 {
+    100% {transform:rotate(1turn)}
+  }
+
+
+  /* HTML: <div class="loader"></div> */
+  .analLoader{
+    visibility: hidden;
+  }
+.analLoader {
+    width: 55px;
+    aspect-ratio: 1;
+    --g1:conic-gradient(from  90deg at 3px  3px ,#0000 90deg,#3F51B5 0);
+    --g2:conic-gradient(from -90deg at 22px 22px,#0000 90deg,#3F51B5 0);
+    background:var(--g1),var(--g1),var(--g1), var(--g2),var(--g2),var(--g2);
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    animation: l7 1.5s infinite;
+  }
+  @keyframes l7 {
+    0%   {background-position:0    0   ,0 100%,100% 100% }
+    25%  {background-position:100% 0   ,0 100%,100% 100% }
+    50%  {background-position:100% 0   ,0 0   ,100% 100% }
+    75%  {background-position:100% 0   ,0 0   ,0    100% }
+    100% {background-position:100% 100%,0 0   ,0    100% }
+  }
+
+
+
+
+
 
  /* large device (Desktop  992px to 1199px) */
 @media (max-width:1199px){

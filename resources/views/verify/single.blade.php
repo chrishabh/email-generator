@@ -46,7 +46,8 @@
                                     {{ $message }}  
                                 @enderror
                             </span>
-                            <button class="btn submit-verification-btn"  id="CheckButon">Check</button>
+                            {{-- <span class="Buttonloader"></span> --}}
+                            <button class="btn submit-verification-btn"  id="CheckButon">Check  </button>
                         </form>
                     </div>  
                 </div>
@@ -67,8 +68,9 @@
                                         </div>  
                                     @endforeach
                                     @else
-                                    <div class="no-content-parent"> 
-                                        <img class="no-content" src="{{ asset('verify/single/image/1.png') }}" alt="no content" srcset="">
+                                    <div class="no-content-parent">
+                                        <div class="analLoader" id="AnalLoader"> </div> 
+                                        <img class="no-content" id="analImage" src="{{ asset('verify/single/image/1.png') }}" alt="no content" srcset="">
                                     </div> 
                                 @endif
                             </div>

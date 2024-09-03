@@ -2,9 +2,6 @@
     <thead>
         <tr>
             <th>EMAIL</th>
-            @php
-                pp($isExport);
-            @endphp
             @if ($isExport)
                 <th>RESULT</th>
                 <th>REASON</th>
@@ -19,7 +16,7 @@
     <tbody>
         @foreach($emails as $email)
             @php
-              $domain = explode('@', $email)[1];  
+              $domain = explode('@', $email['email'])[1];  
             @endphp
             <tr>
                 <td>{{$email['email']}}</td>

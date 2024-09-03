@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentController;
+use App\Jobs\ExportVerifiedEmailsJob;
 use App\Jobs\VerifyEmailsJob;
 
 /*
@@ -19,7 +20,8 @@ use App\Jobs\VerifyEmailsJob;
 
 
 Route::get('/getVerify',function(){
-    VerifyEmailsJob::dispatch();
+    // VerifyEmailsJob::dispatch();
+    ExportVerifiedEmailsJob::dispatch(7);
 });
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
