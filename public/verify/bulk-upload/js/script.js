@@ -149,6 +149,15 @@ $(document).ready(function() {
         },
         labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
     });
+    const value =parseInt(document.getElementById('creditPoint').innerText,10)
+    if(value<=0) {
+        pond.setOptions({
+            allowBrowse: false,
+            allowDrop: false,
+            allowPaste: false
+        });
+        $('#uploadbtn').prop('disabled', true);
+    }
 
     // Trigger file input click when custom button is clicked
     $('#uploadbtn').on('click', function() {
