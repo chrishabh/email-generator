@@ -36,7 +36,7 @@ class VerifyEmailsJob implements ShouldQueue
      */
     public function handle()
     {
-        $user_id = Auth::user()->id;   
+        $user_id = Auth::user()->id;  
         $data    = uploadedAndDownloadFileName::getPendingFileDataBasedOnCurrentUser($this->fileId,$user_id,'pending');
         // Once all emails are verified, generate an export file
         $this->verifyEmail($data,$user_id);
@@ -47,7 +47,7 @@ class VerifyEmailsJob implements ShouldQueue
     {
         // Implement your email verification logic here
         if($data){
-            $count   = 1;
+            $count   = 0;
             $counter = 1;
             $isUpdateData =false;
             

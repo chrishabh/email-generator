@@ -38,7 +38,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
      */
     public function handle()
     {
-        $user_id = Auth::user()->id;
+        $user_id = Auth::user()->id; 
         $allUploadedFiles = uploadedAndDownloadFileName::getFileIdsBasedOnCurrentUser($this->fileId,$user_id,'verified');
         if(!empty($allUploadedFiles)){
             $currentDate       = Carbon::now()->format('Y-m-d');
@@ -47,7 +47,8 @@ class ExportVerifiedEmailsJob implements ShouldQueue
                 if($verifiedEmailData){
                     $fileName = $value->fileName;
                     $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName";
-                    Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath); 
+                    Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath);
+                    uploadedAndDownloadFileName::updateData(['downloadFileLocation'=>$filePath,'downloadFileName'=>$fileName],$this->fileId);
                 }
                  
             }
