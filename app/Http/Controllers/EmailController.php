@@ -75,6 +75,7 @@ class EmailController extends Controller
         }
 
         UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,count($possibleEmails));
+
         return redirect()->back()->with(compact('validEmails'));
     }
 
@@ -103,6 +104,13 @@ class EmailController extends Controller
             EmailVerificationLog::addLog($log);
             return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
         }else{
+            $log = [
+                'user_id' => Auth::User()->id,
+                'email' => $email,
+                'result' => "Flag off.",
+                // 'created_at'=>Carbon::now()
+            ];
+            EmailVerificationLog::addLog($log);
             return false;
         }
        

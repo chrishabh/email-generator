@@ -84,7 +84,6 @@ function  triggerSweetAlert(text,isForm=false){
             
             if(isForm){
                 const form = document.getElementById('signinForm');
-                disableFormField() 
                 document.getElementById('analImage').style.display   = 'none';
                 document.getElementById('AnalLoader').style.visibility='visible'; 
                 form.submit();
