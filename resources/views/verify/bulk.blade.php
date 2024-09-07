@@ -87,7 +87,7 @@
                                             <div class="meta"><span class="txt-green"> {{ $value['total']}} Emails </span>- {{$value['created_at']}}</div>
                                         </div>
                                     </div>
-                                    <div class="info-line--right row col-md-6 col-offset-1 align-items-center ">
+                                    <div class="info-line--right row col-md-7 col-offset-1 align-items-center ">
                                         <div class="col-md-5">
                                             <span class="time-tag"><span class="icon-clock"></span>few minutes</span>
                                         </div>
@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <meta name="verification-csrf-token" content="{{ csrf_token() }}">
-                                            <a href="" class="btn orange transparent pen strt-verification" onclick="startVerification(event,{{$value['fileId']}})">Start Verification</a>
+                                            <a href="" class="startverification-btn" onclick="startVerification(event,{{$value['fileId']}})">Start Verification</a>
                                         </div>
         
                                     </div>

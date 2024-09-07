@@ -200,6 +200,7 @@ function downloadCsvFile(event, fileid,totalValidEmail,c) {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+        filename = response.headers.get('filename');
         return response.blob(); // Expect the response to be a Blob
     })
     .then(blob => {
@@ -208,7 +209,7 @@ function downloadCsvFile(event, fileid,totalValidEmail,c) {
             const a = document.createElement('a');
             const url = window.URL.createObjectURL(blob);
             a.href = url;
-            a.download = 'dobounce.csv'; 
+            a.download = filename; 
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

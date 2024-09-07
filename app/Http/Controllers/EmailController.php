@@ -204,7 +204,7 @@ class EmailController extends Controller
             $originalFilename  = $file->getClientOriginalName();
             $originalFilename  = pathinfo($originalFilename, PATHINFO_FILENAME);
             $extension        = $request->file('filepond')->getClientOriginalExtension();
-            $fileName         = "{$originalFilename}_debounce_{$userId}_{$timestamp}.{$extension}";
+            $fileName         = "{$originalFilename}_bounce_{$userId}_{$timestamp}.{$extension}";
             $path             = "bulkUpload/{$currentDate}/{$userId}/{$fileName}";
             $instanceOfUp     = new uploadedAndDownloadFileName();
 
@@ -242,7 +242,7 @@ class EmailController extends Controller
                 if(DB::table('bulk_upload_email_file_data')->insert($insertArray)){ 
                     $filePath         = $file->storeAs('public/',$path); 
                     // return back()->withErrors(['success' => 'data import successfully!','path'=>$filePath]); 
-                    return response()->json(['success' => 'data import successfully!','path'=>$filePath])->header('Content-Type', 'application/json; charset=UTF-8');
+                    return response()->json(['success' => 'File imported successfully!','path'=>$filePath])->header('Content-Type', 'application/json; charset=UTF-8');
                 }else{
                     return response()->json(['error' => 'something went wrong while importing the data.'])->header('Content-Type', 'application/json; charset=UTF-8');
                     // return response()->json(['error' =>  'something went wrong while importing the data.']);
@@ -296,6 +296,7 @@ class EmailController extends Controller
             if (file_exists($filePath)) {
                 return response()->download($filePath,'filename.csv', [
                     'Content-Type' => 'text/csv',
+                    'filename' => $data->downloadFileName,
                 ]);
             } else {
                 return response()->json(['error' => 'File not found'], 404);
