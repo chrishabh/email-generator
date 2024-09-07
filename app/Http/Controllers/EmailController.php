@@ -292,7 +292,7 @@ class EmailController extends Controller
 
         $data =uploadedAndDownloadFileName::getDownloadPath($request['fileId'],Auth::user()->id);
         if($data){
-            $filePath = storage_path('app/'.$data->uploadedFileLocation); 
+            $filePath = storage_path('app/'.$data->downloadFileLocation); 
             if (file_exists($filePath)) {
                 return response()->download($filePath,'filename.csv', [
                     'Content-Type' => 'text/csv',
