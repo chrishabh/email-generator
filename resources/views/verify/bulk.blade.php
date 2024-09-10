@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="info-line--right row col-md-7 col-offset-1 align-items-center ">
                                         <div class="col-md-5">
-                                            <span class="time-tag"><span class="icon-clock"></span>few minutes</span>
+                                            <span class="time-tag"><span class="icon-clock"></span>start to processing</span>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="neumorphic-progress-circle">

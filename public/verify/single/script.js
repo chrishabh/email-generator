@@ -2,7 +2,7 @@ let init =function(){
     const value =parseInt(document.getElementById('creditPoint').innerText,10)
     if(value<=0) 
         disableFormField()
-    else  inputValidation({'last_name':'last_name','first_name':'first_name','domain':'domain'})
+    else  inputValidation({'domain':'domain'})
 
     document.getElementById('CheckButon').addEventListener('click', function(e) {
         e.preventDefault();
@@ -11,7 +11,7 @@ let init =function(){
             triggerSweetAlert('You cannot verify any emails as you currently have zero credits. To proceed with email verification, you need to purchase credits. Do you want to proceed?')
         }else{
             e.preventDefault()
-            validateForm({'last_name':'last_name','first_name':'first_name','domain':'domain'});
+            validateForm({'domain':'domain'});
             const hasErrors =document.querySelectorAll('.validation-error').length>0
             if(!hasErrors){
                  triggerSweetAlert('Are you sure to want to check the details?',true)
@@ -24,13 +24,6 @@ let init =function(){
 
 
 function inputValidation(attrName){
-    getFormValue(attrName.first_name).addEventListener('input',debouncing((event)=>{
-        validateField(event.target, document.getElementById('fNameError'),validateName)
-    },100))
-
-    getFormValue(attrName.last_name).addEventListener('input',debouncing((event)=>{
-        validateField(event.target, document.getElementById('lNameError'),validateName)
-    },100))
     getFormValue(attrName.domain).addEventListener('input',debouncing((event)=>{
         validateField(event.target, document.getElementById('domainError'),validateName);
     },100))
@@ -45,8 +38,8 @@ function debouncing(func,delay){
 
 }
 function validateForm(attrName){
-    validateField(getFormValue(attrName.first_name), document.getElementById('fNameError'), validateName);
-    validateField(getFormValue(attrName.last_name), document.getElementById('lNameError'),validateName);
+    // validateField(getFormValue(attrName.first_name), document.getElementById('fNameError'), validateName);
+    // validateField(getFormValue(attrName.last_name), document.getElementById('lNameError'),validateName);
     validateField(getFormValue(attrName.domain), document.getElementById('domainError'),validateName);
     
 }
@@ -66,7 +59,11 @@ function validateField(ipElement,errorElement,validateFunction){
 }
 
 function validateName(value){
-    return value=='' ? '*This Field is required.':'';
+    // return value=='' ? '*This Field is required.':'';
+    const emailRe     = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let emailErrorMes = '';
+    emailErrorMes = (value==='')?'*This Field is required.':'' || !emailRe.test(value) ? '*Invalid email address.':'';
+    return emailErrorMes
 }
 
 function  triggerSweetAlert(text,isForm=false){
@@ -77,16 +74,16 @@ function  triggerSweetAlert(text,isForm=false){
         confirmButtonText: "Yes", 
     }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
-        if(!isForm)
-            disableFormField()
+        // if(!isForm)
+        //     disableFormField()
         if (result.isConfirmed) {
-            console.log('SDDD');
-            
+                       
             if(isForm){
                 const form = document.getElementById('signinForm');
                 document.getElementById('analImage').style.display   = 'none';
                 document.getElementById('AnalLoader').style.visibility='visible'; 
                 form.submit();
+                disableFormField()
             }
             // window.location.href='/'
         }
@@ -94,11 +91,12 @@ function  triggerSweetAlert(text,isForm=false){
 }
 
 function disableFormField(){
-    let attrName= {'last_name':'last_name','first_name':'first_name','domain':'domain'};
-    getFormValue(attrName.first_name).setAttribute('disabled',true);
-    getFormValue(attrName.first_name).classList.remove('hover-border')
-    getFormValue(attrName.last_name).setAttribute('disabled',true);
-    getFormValue(attrName.last_name).classList.remove('hover-border')
+    // let attrName= {'last_name':'last_name','first_name':'first_name','domain':'domain'};
+    let attrName= {'domain':'domain'};
+    // getFormValue(attrName.first_name).setAttribute('disabled',true);
+    // getFormValue(attrName.first_name).classList.remove('hover-border')
+    // getFormValue(attrName.last_name).setAttribute('disabled',true);
+    // getFormValue(attrName.last_name).classList.remove('hover-border')
     getFormValue(attrName.domain).setAttribute('disabled',true);
     getFormValue(attrName.domain).classList.remove('hover-border')
     document.getElementById('CheckButon').setAttribute('disabled',true);

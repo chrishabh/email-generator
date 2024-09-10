@@ -75,7 +75,7 @@
                     <div class="Htw-main">
                         <div class="wow fadeInRight">
                             <h2 class="hiw">How it works</h2>
-                            <p><span>1.</span> Enter the email address you want to verify.
+                            <p><span>1.</span> <span style="font-size: 1.04em;color: #fff;position: relative;">Enter the email address you want to verify.</span> 
                             </p>
                             <p class="odd"><span>2.</span>The system performs various checks, including syntax, domain,
                                 and mailbox checks. </p>

@@ -54,7 +54,7 @@ function validatePassword(value,isSignin=false){
 
 const validateForm = function(attrName,isSignInValidation=false){
     if(!isSignInValidation){
-        validateField(getSignupFormValue(attrName.no_of_email_verification,false,true), document.getElementById('NES'), validateEmailNumber);
+        // validateField(getSignupFormValue(attrName.no_of_email_verification,false,true), document.getElementById('NES'), validateEmailNumber);
         validateField(getSignupFormValue(attrName.name), document.getElementById('nameError'), validateName);    
     }
     validateField(getSignupFormValue(attrName.email), document.getElementById('emailError'), validateEmail);
@@ -65,9 +65,9 @@ const validateForm = function(attrName,isSignInValidation=false){
 
 const inputValidation = function(attrName,isSignin=false){
 if(!isSignin){
-    getSignupFormValue(attrName.no_of_email_verification,false,true).addEventListener('change',((event)=>{
-        validateField(event.target, document.getElementById('NES'),validateEmailNumber)
-    }))
+    // getSignupFormValue(attrName.no_of_email_verification,false,true).addEventListener('change',((event)=>{
+    //     validateField(event.target, document.getElementById('NES'),validateEmailNumber)
+    // }))
     getSignupFormValue(attrName.name).addEventListener('input',debouncing((event)=>{
         validateField(event.target, document.getElementById('nameError'),validateName)
     },100))
@@ -83,11 +83,13 @@ if(!isSignin){
 
 const signupFormValidation = function(){
     // input validation
-    inputValidation({'no_of_email_verification':'no_of_email_verification','name':'name','email':'email','password':'password'})
+    // 'no_of_email_verification':'no_of_email_verification'
+    inputValidation({'name':'name','email':'email','password':'password'})
     let signUpBtn = document.getElementById('signUpBtn')
     signUpBtn.addEventListener('click',(event)=>{
         event.preventDefault()
-        validateForm({'no_of_email_verification':'no_of_email_verification','name':'name','email':'email','password':'password'});
+        // 'no_of_email_verification':'no_of_email_verification',
+        validateForm({'name':'name','email':'email','password':'password'});
         const hasErrors =document.querySelectorAll('.validation-error').length>0
         if(!hasErrors){
             const form = document.getElementById('signUpForm');

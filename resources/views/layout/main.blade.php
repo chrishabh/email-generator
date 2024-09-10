@@ -1,5 +1,5 @@
 
-@if(auth()->check() && (auth()->user()->role == 'user' || auth()->user()->role == 'admin') && (request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing') ) 
+@if(auth()->check() && (auth()->user()->role == 'user' || auth()->user()->role == 'admin') && (request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder') ) 
     @include('layout.header1',['headerData' =>$headerData??null])
 @else 
     @include('layout.header',['headerData' =>$headerData??null])
