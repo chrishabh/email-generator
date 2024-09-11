@@ -25,7 +25,7 @@
                                 <p>Perform single email verification with deep analysis result.</p>
                             </div>
                         </div>
-                        <h3 class="single-card-head">Enter Details to get the correct Email</h3>
+                        <h3 class="single-card-head">Enter email to check 
                         <form  method="POST" accept-charset="utf-8" class="form-inner" id='signinForm' action="{{ route('check-email') }}">
                             @csrf
                             {{-- <input type="text" class="emailCheck hover-border mt-25 {{$errors->has('first_name') ? 'validation-block-error':''}}" placeholder="Enter first name" name="first_name" value={{old('first_name')}} >

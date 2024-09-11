@@ -157,7 +157,7 @@ body{
     color: var(--accent-color);
     cursor: pointer;
     margin-top: 5px;
-    animation: shakea 8s infinite;
+    animation: shakea 4s infinite;
 }
 .buy-option a{
     color: var(--accent-color);

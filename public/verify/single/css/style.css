@@ -4,6 +4,7 @@
     --invalid-gradient:linear-gradient(104deg, #0b81acc4, #f4072cc4);
     --success-color:#0f9a27e6;
     --danger-color:#9a0f10;
+    --dull-color: #92929d;
 }
 #single--verification{
     padding: 100px 0 50px 0;
@@ -254,9 +255,9 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
 
 
   /* HTML: <div class="loader"></div> */
-  .analLoader{
+  /* .analLoader{
     visibility: hidden;
-  }
+  } */
 /* .analLoader {
     width: 55px;
     aspect-ratio: 1;
@@ -288,21 +289,147 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
 
 
  /* ######################LEAD FINDER CSS START HERE ################## */
-#leadFinder .lead-finder-form .box-shadow{
+
+.lead-finder{
+    padding: 56px 0 50px 0 !important;
+}
+ #leadFinder .lead-finder-form .box-shadow{
     box-shadow: var(--common-box-shadow);
 }
 #leadFinder .top-section-lead .fa-user-plus{
     font-family: 'Font Awesome 5 Free';
-    font-size: 30px;
+    font-size: 3em;
     color: var(--accent-color);
+    font-weight: bold;
+
 }
 #leadFinder .top-section-lead .top-head{
     font-weight: bold;
-    font-size: 4em; 
+    font-size: 1.5em;
     font-family: 'poppins';
     padding-bottom: 0.6em;
 }
 
+#leadFinder .top-section-lead .top-para{
+    color:var(--dull-color);
+}
+#leadFinder .top-section-lead{
+    margin: 1.5em 0 5em 0;
+}
+
+#leadFinder .lead-finder-btn{
+    border-radius: 7px;
+    box-shadow: var(--common-box-shadow);
+    background: var(--theme-background-gradient);
+    font-weight: 400;
+}
+
+#leadFinder .border-bottom-line{
+    border-bottom: 2px solid #e2e2ea;
+    padding-bottom: 2em;
+    padding-block: 0.8em;
+    margin-block: 1em;
+}
+#leadFinder .lead-heading--requsted{
+    font-size: 1.3em;
+    color: var(--accent-color);
+    font-weight: 500;
+    padding-bottom: 1.3em;
+    font-family: 'poppins';
+}
+
+#leadFinder .second-lead-card{
+    box-shadow:  0 -1px 8px rgba(0, 0, 0, 0.2);
+    
+}
+#leadFinder .second-lead-card .box-shadow-custom{
+    box-shadow: var(--common-box-shadow);
+}
+
+#leadFinder .second-lead-card .bg-grad{
+   background: var(--theme-background-gradient);
+   color: #fff;
+   font-weight: bold;
+}
+
+#leadFinder .second-lead-card .lead-badges{
+    width: 37%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    display: inline-block;
+    display: grid;
+    grid-template-columns: auto 1fr; 
+    border-radius: 15px;
+    padding-left: 1px;
+    box-shadow: var(--common-box-shadow);
+}
+
+#leadFinder .second-lead-card .lead-badges .no-content{
+    width: 17px;
+}
+#leadFinder .second-lead-card .copy-btn{
+    background: white;
+    border: 2px solid #212529;
+    padding: 3px 10px;
+    color: #92929d;
+    font-weight: 100;
+    font-size: 10px;
+    border-radius: 4px;
+    box-shadow: var(--common-box-shadow);
+    transition: border 0.3s ease, transform 0.3s ease;
+}
+#leadFinder .second-lead-card .copy-btn:hover{
+    border: 2px solid #92929d; 
+    color: #212529;
+    transform: scale(1.05);
+}
+ 
+
+
+#leadFinder .lead-finder-btn.copied {
+    background-color: #28a745; /* Green color for success */
+}
+
+/* Custom scrollbar styling for WebKit browsers */
+.table-wrapper::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+  }
+  
+  .table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background of the scrollbar track */
+    border-radius: 10px; /* Rounded corners for the track */
+  }
+  
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+    border: 2px solid #f1f1f1; /* Adds border around the thumb for a better look */
+  }
+  
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker color on hover for the scrollbar thumb */
+  }
+
+
+
+  .loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* Ensure it is above all other content */
+}
+.loader {
+    text-align: center;
+    color: white;
+}
 
 
   /* Bounce animation */
