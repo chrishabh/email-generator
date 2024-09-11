@@ -255,9 +255,9 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
 
 
   /* HTML: <div class="loader"></div> */
-  /* .analLoader{
+  .analLoader{
     visibility: hidden;
-  } */
+  }
 /* .analLoader {
     width: 55px;
     aspect-ratio: 1;
