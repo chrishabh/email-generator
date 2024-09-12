@@ -99,7 +99,7 @@ class EmailController extends Controller
             }
             if ($stopValidationCheckbox=='1'){
                 if(!$isFirstValidEmailFound){
-                   if(true){ 
+                   if($this->isValidEmail($email)){ 
                         $dataArray['status'] = 'valid';
                         $isFirstValidEmailFound = true;
                    } else{
@@ -130,8 +130,7 @@ class EmailController extends Controller
 
     public static function isValidEmail($email)
     {
-        // return true;
-        if(env('KICKBOX_API_FLAG')){
+        if(env('KICKBOX_API_FLAG',false)){
             $apiKey = env('KICKBOX_API_KEY'); // Replace with your Kickbox API key
             $response = Http::get('https://api.debounce.io/v1/', [
                 // 'query' => [
@@ -200,11 +199,12 @@ class EmailController extends Controller
                     $dataArr['fileName']           =  $fileName;
                     $dataArr['created_at']         =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
                     $dataArr['totalValidEmail']    =  $validEmailCount; 
-                    $dataArr['totalInvalidEmail']  =  $invalidEmailCount; 
-                    $dataArr['total']              =  $invalidEmailCount +$validEmailCount; 
+                    $dataArr['totalInvalidEmail']  =  $invalidEmailCount;
+                    $dataArr['total']              =  !empty($countOfValidAndInvalidEmails)?((empty($countOfValidAndInvalidEmails[0]['status']))?$countOfValidAndInvalidEmails[0]['total_count'] : $validEmailCount +$invalidEmailCount):0; 
                     $dataArr['verificationStatus'] =  $value->verificationStatus; 
                     $dataArr['userId']             =  $value->user_id; 
                     $dataArr['fileId']             =  $value->id; 
+                    $dataArr['isDownloadFileLocation'] =  (empty($value->downloadFileLocation) ||  ($value->downloadFileLocation==null) ) ? '0' : '1'; 
                     array_push($fileData,$dataArr);
             }
         }

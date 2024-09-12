@@ -182,7 +182,7 @@ function showError(message) {
 
 function downloadCsvFile(event, fileid,totalValidEmail,c) {
     event.preventDefault();
-    if(totalValidEmail<1){ 
+    if(totalValidEmail==0){ 
         c.style.cursor = 'not-allowed'; 
         c.style.filter = 'grayscale(100%)';
         c.style.opacity = '0.5';
@@ -240,8 +240,11 @@ function simulateProgress() {
     return interval;
 }
 
-function startVerification(event,fileId){
+function startVerification(event,element,fileId){
     event.preventDefault();
+    element.setAttribute('disabled', 'disabled');
+    element.textContent = 'Verifying...';
+    return;
     const progressInterval = simulateProgress();
     fetch('/start-verification',{
         method:'POST',
@@ -266,6 +269,8 @@ function startVerification(event,fileId){
         }
     }).catch(error=>{
         console.log('Error of verification',error)
+        element.removeAttribute('disabled');
+        element.textContent = 'Start Verification'; // Reset button text
     })
 }
 
@@ -275,7 +280,7 @@ function disableDownloadButton(){
     const icons = document.querySelectorAll('.download-icon');
         icons.forEach(icon => {
             const dataAttributeValue = icon.getAttribute('data-valid');
-            if(dataAttributeValue<1){
+            if(dataAttributeValue==0){
                 icon.style.cursor = 'not-allowed'; 
                 icon.style.filter = 'grayscale(100%)';
                 icon.style.opacity = '0.5'; 

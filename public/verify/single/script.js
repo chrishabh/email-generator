@@ -119,8 +119,10 @@ function  triggerSweetAlert(text,isForm=false,url=''){
                        
             if(isForm){
                 if(url=='lead-finder'){
+                    const fullScreenLoader = document.getElementById('loaderLeadFinder')
+                    fullScreenLoader.style.display = 'flex';
                     const form = document.getElementById('lead-form');
-                    form.submit(); 
+                    form.submit();
 
                 }else{
                     const form = document.getElementById('signinForm');
@@ -174,13 +176,17 @@ const getFormValue=function(fieldName,isValue=false){
 
 
 
-function copyContent(event){
-    const copyText = document.getElementById("copiedEmail");
-    const copyButton = document.getElementById("copyButton");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
+function copyContent(email){
+    const copyButton            = document.getElementById("copyButton")
+    const tempTextarea          = document.createElement("textarea");
+    tempTextarea.value          = email;
+    tempTextarea.style.position = "absolute"; // Position it off-screen
+    tempTextarea.style.left     = "-9999px"; // Make sure it's out of the visible area
 
-    navigator.clipboard.writeText(copyText.value).then(() => {
+    document.body.appendChild(tempTextarea); // Append to the document
+    tempTextarea.select(); //
+    // copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(email).then(() => {
         // Change button text and style
         copyButton.textContent = "Copied!";
         copyButton.classList.add("copied");
@@ -195,4 +201,6 @@ function copyContent(event){
     });
 }
 
+
+ 
 document.addEventListener('DOMContentLoaded',init)

@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <meta name="csrf-token" content="{{ csrf_token() }}">
-                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['totalValidEmail']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['totalValidEmail']}},this)"></i>
+                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},this)"></i>
                                             </div>
             
             
@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <meta name="verification-csrf-token" content="{{ csrf_token() }}">
-                                            <a href="" class="startverification-btn" onclick="startVerification(event,{{$value['fileId']}})">Start Verification</a>
+                                            <a href="" class="startverification-btn" onclick="startVerification(event,this,{{$value['fileId']}})">Start Verification</a>
                                         </div>
         
                                     </div>
