@@ -241,11 +241,15 @@ function simulateProgress() {
 }
 
 function startVerification(event,element,fileId){
-    event.preventDefault();
-    element.setAttribute('disabled', 'disabled');
-    element.textContent = 'Verifying...';
-    return;
-    const progressInterval = simulateProgress();
+    event.preventDefault()
+    if(element.getAttribute('data-disabled')=='true') return;
+
+    element.setAttribute('data-disabled',true);
+    element.textContent           = 'Verifying...';
+    element.style.backgroundColor = '#d1d1d1';
+    element.style.color           = '#ffffff';
+    element.style.cursor          = 'not-allowed'; 
+    const progressInterval        = simulateProgress();
     fetch('/start-verification',{
         method:'POST',
         headers: {
@@ -268,9 +272,12 @@ function startVerification(event,element,fileId){
             console.log(data.data[0]);   
         }
     }).catch(error=>{
-        console.log('Error of verification',error)
-        element.removeAttribute('disabled');
+        console.log('Error of verification',error) 
+        element.setAttribute('data-disabled');
         element.textContent = 'Start Verification'; // Reset button text
+        element.style.backgroundColor = ''; // Reset background color
+        element.style.color = ''; // Reset text color
+        element.style.cursor = ''; // Reset cursor
     })
 }
 
