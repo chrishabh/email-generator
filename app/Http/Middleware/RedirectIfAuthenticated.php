@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check() && Auth::guard($guard)->user()->role=='user') {
-                return redirect('/single');
+                return redirect()->intended('single');
             }
             // else if(!Auth::guard($guard)->check() && !Auth::guard($guard)->user()){
             //     return redirect('/signin');  

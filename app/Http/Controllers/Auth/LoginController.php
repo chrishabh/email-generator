@@ -53,7 +53,6 @@ class LoginController extends Controller
         $verification_code = $request->input('verification_code');
 
         $verification_data = VerificationCode::getVerificationCode(Auth::User()->id,Auth::User()->email);
- 
         if(empty($verification_data)){
             return redirect()->back()->withErrors([
                 'verification_code' => 'Invalid Verification Request.'

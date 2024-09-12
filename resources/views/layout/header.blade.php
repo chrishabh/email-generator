@@ -49,7 +49,7 @@
                                 Home
                             </a>
                         </li>
-                        @if (isset($headerData) && $headerData['whichPageRequest'] != 'singlePage')
+                        @if (isset($headerData) && !empty($headerData) && $headerData['whichPageRequest'] != 'singlePage')
                             <li class="nav-item">
                                 <a class="nav-link" href="#services">
                                     Services
