@@ -1,12 +1,41 @@
 <section id="pricing" class="section-padding">
-    <div class="container">
+<style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pricing-table th, .pricing-table td {
+            padding: 10px;
+            text-align: center;
+        }
+        .pricing-table th {
+            /* background-color: #333; */
+            color: #fff;
+        }
+        .pricing-table td {
+            border: 1px solid #ccc;
+        }
+        .starter { background-color: #f79b00; color: white; }
+        .basic { background-color: #d64d26; color: white; }
+        .standard { background-color: #00a9b5; color: white; }
+        .premium { background-color: #76923c; color: white; }
+        .credit { background-color: #76923c; color: white; }
+        .check { color: green; font-size: 20px; }
+        .cross { color: red; font-size: 20px; }
+        .price { font-size: 24px; font-weight: bold; }
+        .verification { font-size: 24px; font-weight: bold; }
+    </style>
+<div class="container">
         <div class="section-header text-center">
             <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
             <h6 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card
                 required!</h6>
             <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
         </div>
-        <div class="row wow fadeInDown" data-wow-delay="1.2s">
+        <!-- <div class="row wow fadeInDown" data-wow-delay="1.2s">
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
                 <h4 class="price-logo"><img src="assets/pricing/Verification Credits.png" alt=""></h4>
             </div>
@@ -205,6 +234,75 @@
             <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
                 <button class="btn-comparision">$2750</button>
             </div>
-        </div>
+        </div> -->
+
+        <table class="pricing-table wow fadeInDown" data-wow-delay="1.2s">
+            <thead>
+                <tr class="wow fadeInDown" data-wow-delay="1.4s">
+                    <th class="verification credit">Verifications Credits</th>
+                    <th class="price starter">bouncee</th>
+                    <th class="price basic">NeverBounce</th>
+                    <th class="price standard">Zero bounce</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="wow fadeInDown" data-wow-delay="1.5s">
+                    <td class="verification credit">2,000 Verifications</td>
+                    <td class="price starter">$5.00</td>
+                    <td class="price basic">$10.00</td>
+                    <td class="price standard">$14.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.6s">
+                    <td class="verification credit">5,000 Verifications</td>
+                    <td class="price starter">$9.00</td>
+                    <td class="price basic">$40.00</td>
+                    <td class="price standard">$45.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.7s">
+                    <td class="verification credit">10,000 Verifications</td>
+                    <td class="price starter">$14.00</td>
+                    <td class="price basic">$50.00</td>
+                    <td class="price standard">$80.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.8s">
+                    <td class="verification credit">25,000 Verifications</td>
+                    <td class="price starter">$28.00</td>
+                    <td class="price basic">$125.00</td>
+                    <td class="price standard">$190.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.9s">
+                    <td class="verification credit">50,000 Verifications</td>
+                    <td class="price starter">$45.00</td>
+                    <td class="price basic">$250.00</td>
+                    <td class="price standard">$375.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.10s">
+                    <td class="verification credit">100K Verifications</td>
+                    <td class="price starter">$75.00</td>
+                    <td class="price basic">$400.00</td>
+                    <td class="price standard">$425.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.11s">
+                    <td class="verification credit">200K Verifications</td>
+                    <td class="price starter">$125.00</td>
+                    <td class="price basic">$800.00</td>
+                    <td class="price standard">$850.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.12s">
+                    <td class="verification credit">500K Verifications</td>
+                    <td class="price starter">$250.00</td>
+                    <td class="price basic">$1,500.00</td>
+                    <td class="price standard">$1,800.00</td>
+                </tr>
+                <tr class="wow fadeInDown" data-wow-delay="1.13s">
+                    <td class="verification credit">1M Verifications</td>
+                    <td class="price starter">$450.00</td>
+                    <td class="price basic">$3,000.00</td>
+                    <td class="price standard">$2,750.00</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
+
 </section>
