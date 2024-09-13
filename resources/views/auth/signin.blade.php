@@ -67,6 +67,13 @@
                         {{ session('error') }}
                     </div>
                 @endif
+
+                @if (Cookie::has('error_message'))
+                    <div class="alert block-message" id="alertBlock">
+                        {{ Cookie::get('error_message') }}
+                        {{ Cookie::queue(Cookie::forget('error_message')) }}
+                    </div>
+                @endif
                  
                 @error('credentialsError')
                     <div class="alert block-message" id="alertBlock">

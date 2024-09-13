@@ -18,7 +18,7 @@ class VerificationCode extends Model
 
     public static function getVerificationCode($user_id,$email)
     {
-        return VerificationCode::whereNull('deleted_at')->where('user_id',$user_id)->where('email',$email)->where('verification_status','New')->where('verification_type','SIGN_IN')->first();
+        return VerificationCode::whereNull('deleted_at')->where('user_id',$user_id)->where('email',$email)->where('verification_status','New')->where('verification_type','SIGN_IN')->orderBy('created_at','DESC')->first();
     }
 
     public static function expireVerificationStatus($user_id,$email)

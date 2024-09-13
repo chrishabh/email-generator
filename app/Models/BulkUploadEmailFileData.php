@@ -25,7 +25,7 @@ class BulkUploadEmailFileData extends Model
     }
 
     static function getFileEmails($fileId,$userId){
-        return self::select('email')->where('file_id',$fileId)->where('importedBy',$userId)->where('status','valid')->where('type','bulk')->get()->toArray();
+        return self::select('email','status')->where('file_id',$fileId)->where('importedBy',$userId)->whereIn('status',['valid','invalid'])->where('type','bulk')->get()->toArray();
     }
 
     static function getCountOfValidAndInvalidEmails($fileId,$userId){

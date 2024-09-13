@@ -26,7 +26,7 @@ class RegisterFormRequest extends FormRequest
         return [
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'no_of_email_verification'  => ['required'],
+            // 'no_of_email_verification'  => ['required'],
             // 'password' => ['required'],
             'password' => ['required','string','min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'],
             'role'     => ['in:user,admin'],

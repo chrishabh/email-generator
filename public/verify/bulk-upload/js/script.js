@@ -182,7 +182,7 @@ function showError(message) {
 
 function downloadCsvFile(event, fileid,totalValidEmail,c) {
     event.preventDefault();
-    if(totalValidEmail<1){ 
+    if(totalValidEmail==0){ 
         c.style.cursor = 'not-allowed'; 
         c.style.filter = 'grayscale(100%)';
         c.style.opacity = '0.5';
@@ -240,9 +240,16 @@ function simulateProgress() {
     return interval;
 }
 
-function startVerification(event,fileId){
-    event.preventDefault();
-    const progressInterval = simulateProgress();
+function startVerification(event,element,fileId){
+    event.preventDefault()
+    if(element.getAttribute('data-disabled')=='true') return;
+
+    element.setAttribute('data-disabled',true);
+    element.textContent           = 'Verifying...';
+    element.style.backgroundColor = '#d1d1d1';
+    element.style.color           = '#ffffff';
+    element.style.cursor          = 'not-allowed'; 
+    const progressInterval        = simulateProgress();
     fetch('/start-verification',{
         method:'POST',
         headers: {
@@ -265,7 +272,12 @@ function startVerification(event,fileId){
             console.log(data.data[0]);   
         }
     }).catch(error=>{
-        console.log('Error of verification',error)
+        console.log('Error of verification',error) 
+        element.setAttribute('data-disabled');
+        element.textContent = 'Start Verification'; // Reset button text
+        element.style.backgroundColor = ''; // Reset background color
+        element.style.color = ''; // Reset text color
+        element.style.cursor = ''; // Reset cursor
     })
 }
 
@@ -275,7 +287,7 @@ function disableDownloadButton(){
     const icons = document.querySelectorAll('.download-icon');
         icons.forEach(icon => {
             const dataAttributeValue = icon.getAttribute('data-valid');
-            if(dataAttributeValue<1){
+            if(dataAttributeValue==0){
                 icon.style.cursor = 'not-allowed'; 
                 icon.style.filter = 'grayscale(100%)';
                 icon.style.opacity = '0.5'; 

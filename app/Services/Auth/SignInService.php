@@ -26,6 +26,9 @@ class SignInService{
         } 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 
+            // $request->session()->regenerateToken();
+            
+            session(['lastActivityTime'=>time()]);
             $otp = mt_rand(100000,999999);
             $verification_data = [
                 'user_id' => Auth::User()->id,

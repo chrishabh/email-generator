@@ -18,11 +18,8 @@ use App\Jobs\VerifyEmailsJob;
 |
 */
 
-
-Route::get('/getVerify',function(){
-    // VerifyEmailsJob::dispatch();
-    ExportVerifiedEmailsJob::dispatch(7);
-});
+Route::get('/lead',[EmailController::class,'generateEmail']);
+Route::get('/getVerify',[EmailController::class,'generateEmail']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

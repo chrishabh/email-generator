@@ -47,20 +47,31 @@
         $lastCapitalLetter = strtoupper($lastName[0]); 
         $name              = $firstCapitalLetter.''.$lastCapitalLetter;
     }
+
+
+    $creditClass ='credit-color-50L';
+    $creditPoint=0;
+    if (isset($headerData)){
+        $creditPoint = $headerData['creditPoint'];
+        if($creditPoint>=100)  $creditClass ='credit-color-100p';  
+        else if($creditPoint<50) $creditClass ='credit-color-50L'; 
+        else $creditClass = 'credit-color-100M'; 
+    }  
     @endphp
     <!-- Header Area wrapper Starts -->
     <div id="mobileMenu" class="mobile-menu">
         <ul class="main-menu"> 
             <li class="current"><a href="/single">Single Verification</a></li> 
+            <li class="current"><a href="/lead-finder">Lead Finder</a></li> 
             <li class=""><a href="/bulk">Bulk Verifications</a></li>
             <li><a href="/pricing">Buy Credits</a></li> 
         </ul>
         <div class="credit-info">
             Credit Balance
-            <div class="credit-info--tag"> 
-                @if (isset($headerData) && $headerData['creditPoint'])
-                  {{ $headerData['creditPoint']}}      
-                @endif
+                   
+            <div class="credit-info--tag {{ $creditClass }}"> 
+                {{$creditPoint}}  
+                {{-- <div class="buy-option">Buy More Credits</div> --}}
             </div>
         </div>
         <a href="" class="icon-notification btn-notification active">
@@ -75,18 +86,21 @@
                     </a>
                     <ul class="main-menu">
                         <li class="current"><a href="/single">Single Verification</a></li>
+                        <li class="current"><a href="/lead-finder">Lead Finder</a></li>
                         <li class=""><a href="/bulk">Bulk Verifications</a></li>
                         <li><a href="/pricing">Buy Credits</a></li>
                     </ul>
                 </div>
                 <div class="mainheader--right">
                     <div class="credit-info">
-                        <span class="creditBalnce"> Credit Balance</span>
-                        <div class="credit-info--tag" id="creditPoint"> 
-                            @if (isset($headerData['creditPoint']))
-                                {{ $headerData['creditPoint']}}      
-                            @endif
+                        <div class="credit--row">
+                            <span class="creditBalnce"> Credit Balance</span>
+                            <div class="credit-info--tag {{ $creditClass }}" id="creditPoint"> 
+                                {{$creditPoint}}  
+                            </div>
                         </div>
+                        
+                        <div class="buy-option"><a href="/pricing">Buy now</a></div>
                     </div>
                     <div class="user-info">
                         <div class="avatar">

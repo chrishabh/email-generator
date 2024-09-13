@@ -15,59 +15,65 @@ use App\Http\Controllers\PaymentController;
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| contains the "web" middleware group. Now  create something great!
 |
 */
 try{
 
-    Route::get('/', function () {
-        return view('index');
-    });
     
-    Route::middleware('guest')->group(function(){
-            Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
-            Route::post('/signup',[RegisterController::class,'signup']); 
-            Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
-            Route::post('/signin',[LoginController::class,'login']); 
+    
+    Route::middleware(['guest','session.timeout'])->group(function(){
 
+        Route::get('/', function () {
+            return view('index');
+        });
+
+        Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
+        Route::post('/signup',[RegisterController::class,'signup']); 
+        Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+        Route::post('/signin',[LoginController::class,'login']); 
+        Route::get('/single-verification', function () {
+            return view('single-verification');
+        });
+             
+        Route::get('/bulk-verification', function () {
+            return view('bulk-verification');
+        });
+    
 
            
     });
 
-    Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
-    Route::post('/single',[EmailController::class,'generateEmail']);
-    Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
-    Route::post('/upload', [EmailController::class, 'uploadBulkData']);
-    Route::get('/check-file-status', [EmailController::class, 'getAllData']);
-    Route::post('/export-data', [EmailController::class, 'exportData']);
-    Route::post('/start-verification', [EmailController::class, 'startVerification']);
-    
-    Route::middleware('auth:web')->group(function(){
+    Route::middleware(['restrict.access','session.timeout'])->group(function(){
+        Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
+        Route::post('/check-email',[EmailController::class,'checkEmailIsValidInvalid'])->name('check-email');
+        Route::get('/lead-finder',[EmailController::class,'leadFinder'])->name('lead-finder');
+        Route::post('/lead-finder',[EmailController::class,'generateEmail']);
+        Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
+        Route::post('/upload', [EmailController::class, 'uploadBulkData']);
+        Route::get('/check-file-status', [EmailController::class, 'getAllData']);
+        Route::post('/export-data', [EmailController::class, 'exportData']);
+        Route::post('/start-verification', [EmailController::class, 'startVerification']);
+        Route::get('/verification', function () {
+            return view('verify');
+        });
+        Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
             Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
       
+        });
+         
     });
      
     Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 
-
     
-    Route::post('/revert', [FileUploadController::class, 'revert']);
-    Route::get('/load', [FileUploadController::class, 'load']);
+    // Route::post('/revert', [FileUploadController::class, 'revert']);
+    // Route::get('/load', [FileUploadController::class, 'load']);
 
-    Route::get('/single-verification', function () {
-        return view('single-verification');
-    });
-     
-    Route::get('/bulk-verification', function () {
-        return view('bulk-verification');
-    });
-
-    Route::get('/verification', function () {
-        return view('verify');
-    });
+ 
 
 }catch (\Exception $e) {
     return view('something-went-wrong');

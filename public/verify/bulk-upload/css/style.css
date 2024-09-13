@@ -105,11 +105,14 @@
     font-size: 14px;
     color: #fc5a5a;
     letter-spacing: 0.1px;
-    display: inline-block;
+    display: block;
     background-color: rgba(252, 90, 90, 0.1);
-    padding: 7px 9px;
+    padding: 13px 8px;
     border-radius: 5px;
     position: relative;
+    font-size: 12px;
+    display: block;
+    text-align: center;
 }
 
 .info-line--right .icon-clock{

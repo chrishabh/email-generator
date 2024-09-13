@@ -66,7 +66,7 @@
 
                 <div class="sign-form">
                     <div class="title">
-                        Sign Up to your acounts
+                        Sign Up to your accounts
                     </div>
                     <form method="POST" accept-charset="utf-8" id="signUpForm" action="{{ route('signup') }}">
                         @csrf

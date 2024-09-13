@@ -5,8 +5,7 @@
             @if ($isExport)
                 <th>RESULT</th>
                 <th>REASON</th>
-                <th>STATUS CODE </th>
-                <th>STATUS CODE </th>
+                <th>STATUS CODE </th> 
                 <th>ROLE </th>
                 <th>FREE </th> 
                 <th>DOMAIN </th>
@@ -21,11 +20,11 @@
             <tr>
                 <td>{{$email['email']}}</td>
                 @if ($isExport)
-                    <td>Safe to Send</td>
+                    <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td>
+                    <td>{{($email['status']=='valid')? 'Deliverable':'Invalid' }}</td>
                     <td>5</td>
                     <td>No</td>
-                    <td>Yes</td>
-                    <td>Yes</td>
+                    <td>Yes</td> 
                     <td>{{ $domain}}</td>  
                 @endif
                

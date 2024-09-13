@@ -69,7 +69,7 @@
                                             </div>
                                             <div class="col-md-3 text-center">
                                                 <meta name="csrf-token" content="{{ csrf_token() }}">
-                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['totalValidEmail']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['totalValidEmail']}},this)"></i>
+                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},this)"></i>
                                             </div>
             
             
@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="info-line--right row col-md-7 col-offset-1 align-items-center ">
                                         <div class="col-md-5">
-                                            <span class="time-tag"><span class="icon-clock"></span>few minutes</span>
+                                            <span class="time-tag"><span class="icon-clock"></span>start to processing</span>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="neumorphic-progress-circle">
@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <meta name="verification-csrf-token" content="{{ csrf_token() }}">
-                                            <a href="" class="startverification-btn" onclick="startVerification(event,{{$value['fileId']}})">Start Verification</a>
+                                            <a href="" class="startverification-btn" onclick="startVerification(event,this,{{$value['fileId']}})">Start Verification</a>
                                         </div>
         
                                     </div>
