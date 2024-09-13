@@ -1,0 +1,72 @@
+
+#profile-page .avatar{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 50px;
+    background: var(--theme-background-gradient);
+    box-shadow: var(--common-box-shadow); 
+}
+
+
+#profile-page .edit-icon i{
+    font-family: 'Font Awesome 5 Free';
+    font-size: 18px;
+    color: var(--accent-color);
+}
+
+#profile-page .edit-icon i:hover{
+    cursor: pointer;
+}
+
+#profile-page .custom-boxshadow{
+    box-shadow: var(--common-box-shadow);
+}
+
+#profile-page .bg-with-grad{
+    background: var(--theme-background-gradient);
+}
+#profile-page .bg-with-grad:hover{
+    background: var( --theme-background-gradient-hover);
+}
+
+#profile-page .card-bg-grey{
+    background-color: #fafafb;
+}
+
+#profile-page .btn-cancel {
+    background-color: #607D8B;
+    color: white;
+    border: none;
+}
+
+#profile-page .btn-cancel:hover {
+    background-color: #455A64; /* Darker shade on hover */
+}
+
+#profile-page .p-inline-2{
+    padding-inline: 2em;
+}
+#profile-page .edit-avatar-overlay{
+    margin-inline:auto;
+    margin-block-start: 12px;
+    width: 30%;
+    text-align: center;
+} 
+#profile-page .hide-btn{
+   visibility: hidden;
+}
+#profile-page .show-btn{
+   visibility: visible;
+}
+
+
+

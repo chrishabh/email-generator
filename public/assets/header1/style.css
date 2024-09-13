@@ -19,6 +19,7 @@ body{
     --success-color:#0f9a27e6;
     --error-color:red;
     --theme-background-gradient:linear-gradient(135deg,#1e3c729e, #2a3898);
+    --theme-background-gradient-hover: linear-gradient(135deg, #1e3c729e, #253de1);
     --validation-border-error:  1px solid red;
 
 }

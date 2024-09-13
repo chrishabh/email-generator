@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\User\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,8 @@ try{
         Route::get('/verification', function () {
             return view('verify');
         });
+
+
         Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
@@ -65,8 +68,11 @@ try{
       
         });
          
+        
+        Route::get('/profile',[ProfileController::class,'getProfilePage']);
+
     });
-     
+
     Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 
     
