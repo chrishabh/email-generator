@@ -5,7 +5,7 @@
       
     @endpush
    <!-- <div class="flex"> -->
-   <x-price /> 
+   <x-auth-pricing /> 
    <!-- </div> -->
  
 @endsection

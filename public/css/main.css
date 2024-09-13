@@ -463,6 +463,15 @@ a.back-to-top:hover, a.back-to-top:focus {
   padding: 60px 0;
 }
 
+.pricing-sub-header{
+  color:#000
+}
+
+.auth-pricing-sub-header{
+  margin-top: 0.5rem;
+  color:#000
+}
+
 .auth-footer-padding {
   padding: 20px 0;
 }

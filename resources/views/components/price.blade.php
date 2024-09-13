@@ -31,7 +31,7 @@
 <div class="container">
         <div class="section-header text-center">
             <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
-            <h6 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card
+            <h6 class="pricing-sub-header wow fadeInDown" data-wow-delay="0.4s">Try first, decide later, No credit card
                 required!</h6>
             <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
         </div>
