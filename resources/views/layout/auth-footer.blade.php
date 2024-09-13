@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright-content">
-                        <p>Copyright © 2024 <a rel="nofollow" href="https://bouncee.net">Bouncee</a> All Right Reserved
+                        <p>Copyright © 2024 <a rel="nofollow" href="https://bouncee.net">bouncee</a> All Right Reserved
                         </p>
                     </div>
                 </div>

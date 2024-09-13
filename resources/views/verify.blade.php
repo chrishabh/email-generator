@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="css/responsive.css">
 
     @stack('styles')
-    <title>Verification | Bouncee</title>
+    <title>Verification | bouncee</title>
 </head>
 <header id="header-wrap">
         <!-- Navbar Start -->

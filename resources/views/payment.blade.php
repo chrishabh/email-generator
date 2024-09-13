@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="css/responsive.css">
 
     @stack('styles')
-    <title>Razorpay Payment | Bouncee</title>
+    <title>Razorpay Payment | bouncee</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <header id="header-wrap">

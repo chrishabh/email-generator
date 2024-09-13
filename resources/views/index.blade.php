@@ -6,7 +6,7 @@
 @endphp
 @section('main-section')
   @push('title')
-    <title>Bouncee</title>
+    <title>bouncee</title>
   @endpush
     <!-- Hero Area Start -->
     <div id="hero-area" class="hero-area-bg">
@@ -15,7 +15,7 @@
           <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
             <div class="contents">
               <h2 class="head-title">Email Verification Tool<br>Effortless, Swift, & Precise</h2>
-              <p style="color: black; text-align:center">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
+              <p style="color: black; text-align:center">Over 1 Million users trust bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
               Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
               @if(!auth()->check())
                 <div class="header-button">
@@ -962,7 +962,7 @@
                 <div class="col-lg-10 col-md-10 col-xs-12 wow fadeInLeft" data-wow-delay="0.3s">
                   <div class="cta-text">
                     <h4 style="color: black; text-align:center">Simple and Accurate Email Validation Tool</h4>
-                    <h5 style="color: black; text-align:center">Over 1 Million users trust Bouncee for their real-time email validation and email cleaning services.</h5>
+                    <h5 style="color: black; text-align:center">Over 1 Million users trust bouncee for their real-time email validation and email cleaning services.</h5>
                   </div>
                 </div>
               </div>

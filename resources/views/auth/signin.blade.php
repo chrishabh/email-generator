@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>SignIn | Bouncee</title>
+    <title>SignIn | bouncee</title>
     <!-- <script type="text/javascript" async="" src="signup-assets/js/mixpannel-2-latest.min.js"></script> -->
     <script src="signup-assets/js/jquery-min.js"></script>
     <script src="signup-assets/js/script-min.js"></script>

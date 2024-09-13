@@ -5,7 +5,7 @@
 @endphp
 @section('main-section')
     @push('title')
-        <title>Bulk Email Email Verification | Bouncee</title>
+        <title>Bulk Email Email Verification | bouncee</title>
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">
@@ -29,8 +29,8 @@
             <div class="topHeading alt">
                 <div class="row">
                     <div class="col-lg-7 text-center">
-                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Bulk Email Verification for <br> an
-                            effective email campaign</h1>
+                        <h1 class="wow fadeInUp head-main" style="text-align: center;">Bulk Email Verification  <br><span>For an
+                            effective email campaign </span></h1>
                         <p class="wow fadeInUp para">
                         Bulk email verification ensures large email lists are accurate and active, improving campaign efficiency. By filtering out invalid and risky addresses, it reduces bounce rates, enhances deliverability, and protects your sender reputation. This powerful tool helps your messages reach their intended audience, optimizing your marketing efforts and budget.
                         </p>

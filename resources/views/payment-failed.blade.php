@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Failed | Bouncee</title>
+    <title>Payment Failed | bouncee</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,7 +61,7 @@
             <br><br>
             Transaction ID: <strong>#{{$trnasaction_id}}</strong>
             <br><br>
-            If you need assistance, please <a href="rishabh.bouncee@yopmail.com">contact us</a>.
+            If you need assistance, please <a href="support@bouncee.net">contact us</a>.
         </div>
         <a href="/pricing" class="button">Try Again</a>
     </div>

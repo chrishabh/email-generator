@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12">
                     <div class="widget">
-                        <h3 class="footer-logo"><img src="assets/logo.png" alt=""></h3>
+                        <h3 class="footer-logo"><img  style="height: 70px; width: 200px;" src="assets/logo.png" alt=""></h3>
                         <div class="textwidget">
                             <p>Ensure your emails reach the right inbox with our accurate and efficient validation
                                 services. Reduce bounce rates and enhance deliverability effortlessly.</p>
@@ -43,7 +43,7 @@
                             <a href="#"><i class="lni-phone-handset"></i> Phone: +1 (801) 512 0616</a>
                         </li>
                         <li>
-                            <a href="#"><i class="lni-envelope"></i> Email: contact@bouncee.net</a>
+                            <a href="#"><i class="lni-envelope"></i> Email: support@bouncee.net</a>
                         </li>
                     </ul>
                 </div>
@@ -55,7 +55,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="copyright-content">
-                        <p>Copyright © 2024 <a rel="nofollow" href="https://bouncee.net">Bouncee</a> All Right Reserved
+                        <p>Copyright © 2024 <a rel="nofollow" href="https://bouncee.net">bouncee</a> All Right Reserved
                         </p>
                     </div>
                 </div>

@@ -40,7 +40,7 @@
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
-                    <span><i class="lni-star-half"></i></span>
+                    <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-half"></i></span>
                   </div>
                 </div>
@@ -70,7 +70,7 @@
             <div class="item">
               <div class="testimonial-item">
                 <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
+                  <img src="assets/testimonial/img4.jpg" alt="">
                 </div>
                 <div class="info">
                   <h2><a href="#">Jessica Wilson</a></h2>
@@ -81,7 +81,7 @@
                   <div class="star-icon mt-3">
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
-                    <span><i class="lni-star-half"></i></span>
+                    <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-half"></i></span>
                     <span><i class="lni-star-half"></i></span>
                   </div>
@@ -91,7 +91,7 @@
             <div class="item">
               <div class="testimonial-item">
                 <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
+                  <img src="assets/testimonial/img5.jpg" alt="">
                 </div>
                 <div class="info">
                   <h2><a href="#">David Johnson</a></h2>
@@ -102,8 +102,8 @@
                   <div class="star-icon mt-3">
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                    <span><i class="lni-star-half"></i></span>
+                    <span><i class="lni-star-filled"></i></span>
+                    <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-half"></i></span>
                   </div>
                 </div>
@@ -112,7 +112,7 @@
             <div class="item">
               <div class="testimonial-item">
                 <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
+                  <img src="assets/testimonial/img6.jpg" alt="">
                 </div>
                 <div class="info">
                   <h2><a href="#">Emily Martinez</a></h2>
@@ -123,136 +123,9 @@
                   <div class="star-icon mt-3">
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
-                </div>
-                <div class="info">
-                  <h2><a href="#">James Taylor</a></h2>
-                  <h3><a href="#">E-commerce Manager</a></h3>
-                </div>
-                <div class="content">
-                  <p class="description">The accuracy of the single email validation is outstanding. It has helped us maintain a high level of customer satisfaction.</p>
-                  <div class="star-icon mt-3">
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-filled"></i></span>
                     <span><i class="lni-star-half"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                    <span><i class="lni-star-half"></i></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
-                  <div class="info">
-                    <h2><a href="#">Sarah Davis</a></h2>
-                    <h3><a href="#">Product Manager</a></h3>
-                  </div>
-                  <div class="content">
-                    <p class="description">We rely on the bulk email validation for our large email lists. It's efficient and ensures our messages reach the intended recipients.</p>
-                    <div class="star-icon mt-3">
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
-                  <div class="info">
-                    <h2><a href="#">Chris Anderson</a></h2>
-                    <h3><a href="#">IT Manager</a></h3>
-                  </div>
-                  <div class="content">
-                    <p class="description">The email validation service has significantly reduced our bounce rates and improved our email deliverability. It's a must-have tool.</p>
-                    <div class="star-icon mt-3">
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
-                  <div class="info">
-                    <h2><a href="#">Olivia Thomas</a></h2>
-                    <h3><a href="#">HR Manager</a></h3>
-                  </div>
-                  <div class="content">
-                    <p class="description">The accuracy and speed of the email validation service are impressive. It has helped us maintain a clean and efficient email list.</p>
-                    <div class="star-icon mt-3">
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img3.jpg" alt="">
-                  <div class="info">
-                    <h2><a href="#">Daniel Garcia</a></h2>
-                    <h3><a href="#">Business Development Director</a></h3>
-                  </div>
-                  <div class="content">
-                    <p class="description">Bulk email validation has streamlined our email marketing efforts. It's a reliable service that we highly recommend.</p>
-                    <div class="star-icon mt-3">
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <div class="testimonial-item">
-                <div class="img-thumb">
-                  <img src="assets/testimonial/img4.jpg" alt="">
-                </div>
-                  <div class="info">
-                    <h2><a href="#">Megan Harris</a></h2>
-                    <h3><a href="#">CEO</a></h3>
-                  </div>
-                  <div class="content">
-                    <p class="description">This email validation service has been invaluable for our business. The single and bulk validations are both incredibly effective and user-friendly.</p>
-                    <div class="star-icon mt-3">
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-filled"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                      <span><i class="lni-star-half"></i></span>
-                    </div>
                   </div>
                 </div>
               </div>

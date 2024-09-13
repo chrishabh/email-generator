@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Success | Bouncee</title>
+    <title>Payment Success | bouncee</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,7 +63,7 @@
             <br>
             Amount: <strong>${{$amount_paied/100}}</strong>
             <br><br>
-            If you have any questions, feel free to <a href="rishabh.bouncee@yopmail.com">contact us</a>.
+            If you have any questions, feel free to <a href="support@bouncee.net">contact us</a>.
         </div>
         <a href="/pricing" class="button">Return to Homepage</a>
     </div>

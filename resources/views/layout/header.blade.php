@@ -44,13 +44,13 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
-                        <li class="nav-item active">
+                    <!-- <li class="nav-item active">
                             <a class="nav-link" href="#hero-area">
                                 Home
                             </a>
-                        </li>
+                        </li> -->
                         @if (isset($headerData) && !empty($headerData) && $headerData['whichPageRequest'] != 'singlePage')
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="#services">
                                     Services
                                 </a>
@@ -59,13 +59,14 @@
                                 <a class="nav-link" href="#team">
                                     Team
                                 </a>
-                            </li>
+                            </li> -->
+                        @endif
                             <li class="nav-item">
                                 <a class="nav-link" href="#pricing">
                                     Pricing
                                 </a>
                             </li>
-                        @endif
+                     
                         <li class="nav-item">
                             <a class="nav-link" href="/single-verification">
                                 Single Verification
