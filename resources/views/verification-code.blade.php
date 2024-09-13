@@ -68,7 +68,7 @@
             <p>If you did not request this code, please ignore this email.</p>
         </div>
         <div class="footer">
-            &copy; 2024 <a rel="nofollow" href="https://bouncee.net">Bouncee</a>. All rights reserved.
+            &copy; 2024 <a rel="nofollow" href="https://bouncee.net">bouncee</a>. All rights reserved.
         </div>
     </div>
 </body>

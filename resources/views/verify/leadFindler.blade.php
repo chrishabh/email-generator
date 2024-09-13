@@ -2,7 +2,7 @@
 
 @section('main-section')
     @push('title')
-    <title> Lead Finder | Bouncee</title>
+    <title> Lead Finder | bouncee</title>
     @endpush
     @push('styles')
         <link rel="stylesheet" href="{{ asset('verify/single/css/style.css') }}">

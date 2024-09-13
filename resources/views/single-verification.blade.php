@@ -8,7 +8,7 @@
 
 @section('main-section')
     @push('title')
-        <title>Single Email Verification | Bouncee</title>
+        <title>Single Email Verification | bouncee</title>
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

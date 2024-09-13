@@ -56,7 +56,7 @@ class PaymentController extends Controller
             'orderId' => $order['id'],
             'amount' => $pack_amount*100,
             'currency' => $currency,
-            'company_name' => "Bouncee",
+            'company_name' => "bouncee",
             'description' => '',
             'prefill_name' => Auth::User()->name,
             'prefill_email' => Auth::User()->email,
@@ -69,7 +69,7 @@ class PaymentController extends Controller
             'user_id' => Auth::User()->id,
             'amount' => $pack_amount,
             'currency' => $currency,
-            'company_name' => "Bouncee",
+            'company_name' => "bouncee",
             'prefill_name' => Auth::User()->name,
             'prefill_email' => Auth::User()->email,
         ]);
