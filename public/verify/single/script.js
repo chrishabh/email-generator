@@ -138,7 +138,7 @@ function  triggerSweetAlert(text,isForm=false,url=''){
                         elem.style.display='none';
                     let form1 = document.getElementById('AnalLoader');
                     if(form1)
-                        form1.style.visibility='visible'; 
+                        form1.style.display='block'; 
                     form.submit();
                 }
                 
