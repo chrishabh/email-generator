@@ -25,6 +25,7 @@ class PaymentController extends Controller
     {
 
         $verification_credits = [
+            '5' => 2000,
             '9' => 5000,
             '14' => 10000,
             '28' => 25000,
@@ -92,6 +93,7 @@ class PaymentController extends Controller
         ];
 
         $verification_credits = [
+            '5' => 2000,
             '9' => 5000,
             '14' => 10000,
             '28' => 25000,

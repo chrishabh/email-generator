@@ -129,7 +129,7 @@
                     data-description="{{$description}}"
                     data-prefill.name="{{$prefill_name}}"
                     data-prefill.email="{{$prefill_email}}"
-                    data-theme.color="#F37254"
+                    data-theme.color="#0000FF"
                 ></script>
             </form>
     </div>
