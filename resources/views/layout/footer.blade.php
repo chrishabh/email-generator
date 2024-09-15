@@ -21,15 +21,14 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                     <h3 class="footer-titel">Products</h3>
                     <ul class="footer-link">
-                        <li><a href="#">Single Email Verification</a></li>
-                        <li><a href="#">Bulk Email Verifiction</a></li>
+                        <li><a href="/single-verification">Single Email Verification</a></li>
+                        <li><a href="/bulk-verification">Bulk Email Verifiction</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
                     <h3 class="footer-titel">Resources</h3>
                     <ul class="footer-link">
-                        <li><a href="#">Payment Options</a></li>
-                        <li><a href="#">Fee Schedule</a></li>
+                        <li><a href="#pricing">Payment Options</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
