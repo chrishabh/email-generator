@@ -84,7 +84,8 @@ class EmailController extends Controller
         $leadPCEmailLogsArray    = array();
         $count                   = 0;
         $isFirstValidEmailFound  =  false;
-        foreach ($possibleEmails as $email) {
+        $index                   = null;
+        foreach ($possibleEmails as $key => $email) {
             $dataArray =array();
             $dataArray['email']          = $email;
             $dataArray['lead_finder_id'] = $lastLeadId;
@@ -102,6 +103,7 @@ class EmailController extends Controller
                    if($this->isValidEmail($email)){ 
                         $dataArray['status'] = 'valid';
                         $isFirstValidEmailFound = true;
+                        $index = $key;
                    } else{
                         $dataArray['status'] = 'invalid';
                    } 
@@ -111,9 +113,28 @@ class EmailController extends Controller
                     $dataArray['status'] = 'aborted';
                 }
             }
-
             array_push($leadPCEmailLogsArray,$dataArray);
+            if($key!=null && $isFirstValidEmailFound) break;
         }
+
+
+
+        // After the loop is broken, mark all emails after the valid one as 'aborted' without a loop
+        if ($stopValidationCheckbox=='1' && $index !== null) {
+            $remainingEmails = array_splice($possibleEmails, $index + 1); 
+            
+            $abortedEmails = array_map(function($email) use ($lastLeadId) {
+                return [
+                    'email'          => $email,
+                    'lead_finder_id' => $lastLeadId,
+                    'status'         => 'aborted' // Mark as 'aborted'
+                ];
+            }, $remainingEmails);
+
+            // Merge aborted emails into the main array
+            $leadPCEmailLogsArray = array_merge($leadPCEmailLogsArray, $abortedEmails);
+        }
+        
         $logsPCTable = new LeadFinderPCEmailLogs();
         if($logsPCTable->insertDataAndgetId($leadPCEmailLogsArray)){
             UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,$count);

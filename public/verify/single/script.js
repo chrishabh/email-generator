@@ -126,8 +126,19 @@ function  triggerSweetAlert(text,isForm=false,url=''){
 
                 }else{
                     const form = document.getElementById('signinForm');
-                    document.getElementById('analImage').style.display   = 'none';
-                    document.getElementById('AnalLoader').style.visibility='visible'; 
+                    // Select all elements with the class 'correct-email'
+                    let correctEmailElements = document.querySelectorAll('.correct-email');
+
+                    // Loop through each element and remove it
+                    correctEmailElements.forEach(element => {
+                        element.remove();
+                    });
+                    let elem   = document.getElementById('analImage')
+                    if(elem)
+                        elem.style.display='none';
+                    let form1 = document.getElementById('AnalLoader');
+                    if(form1)
+                        form1.style.visibility='visible'; 
                     form.submit();
                 }
                 
@@ -176,8 +187,8 @@ const getFormValue=function(fieldName,isValue=false){
 
 
 
-function copyContent(email){
-    const copyButton            = document.getElementById("copyButton")
+function copyContent(elem,email){
+    // const copyButton            = document.getElementById("copyButton")
     const tempTextarea          = document.createElement("textarea");
     tempTextarea.value          = email;
     tempTextarea.style.position = "absolute"; // Position it off-screen
@@ -188,13 +199,13 @@ function copyContent(email){
     // copyText.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(email).then(() => {
         // Change button text and style
-        copyButton.textContent = "Copied!";
-        copyButton.classList.add("copied");
+        elem.textContent = "Copied!";
+        elem.classList.add("copied");
 
         // Revert button text after a delay
         setTimeout(() => {
-            copyButton.textContent = "COPY";
-            copyButton.classList.remove("copied");
+            elem.textContent = "COPY";
+            elem.classList.remove("copied");
         }, 2000); // 2-second delay before reverting
     }).catch(err => {
         console.error('Failed to copy text: ', err);

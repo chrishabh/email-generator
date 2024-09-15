@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {{-- @stack('title') --}}
         <title>bouncee</title>
+          @stack('title')
     {{-- @endpush --}}
     
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">

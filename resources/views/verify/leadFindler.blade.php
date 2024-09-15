@@ -148,7 +148,7 @@
                                                             </div>
                                                         @endif
                                                     </td>
-                                                    <td><button type="button" class="btn  copy-btn" id="copyButton" onclick="copyContent('{{$value['email']}}')">COPY</button></td>
+                                                    <td><button type="button" class="btn  copy-btn" id="copyButton" onclick="copyContent(this,'{{$value['email']}}')">COPY</button></td>
                                                 </tr>
                                                 @php
                                                     $sno++;  

@@ -78,7 +78,12 @@
                                         <div class="analLoader" id="AnalLoader"> </div>
                                         <img class="no-content" id="analImage" src="{{ asset('verify/single/image/1.png') }}" alt="no content" srcset="">
                                     </div> 
+
+                                     
                                 @endif
+                                <div class="no-content-parent">
+                                    <div class="analLoader" id="AnalLoader"> </div>
+                                </div>
                             </div>
                              
                         </div>
