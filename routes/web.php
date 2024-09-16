@@ -28,12 +28,7 @@ try{
         Route::get('/', function () {
             return view('index');
         });
-        Route::get('/profile', function () {
-            return view('comming-soon');
-        });
-        Route::get('/setting', function () {
-            return view('comming-soon');
-        });
+    
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
@@ -63,7 +58,12 @@ try{
         Route::get('/verification', function () {
             return view('verify');
         });
-
+        Route::get('/profile', function () {
+            return view('comming-soon');
+        });
+        Route::get('/setting', function () {
+            return view('comming-soon');
+        });
 
         Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
@@ -75,7 +75,7 @@ try{
         });
          
         
-        Route::get('/profile',[ProfileController::class,'getProfilePage']);
+        // Route::get('/profile',[ProfileController::class,'getProfilePage']);
 
     });
 
