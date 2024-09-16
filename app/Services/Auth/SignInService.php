@@ -6,6 +6,7 @@ namespace App\Services\Auth;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Notifications\ConfirmationCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Validation\ValidationException;
@@ -32,6 +33,7 @@ class SignInService{
                 'email' =>  $credentials['email'],
                 'verification_code' => $otp,
                 'verification_type' => 'SIGN_IN',
+                'created_at' => Carbon::now()
             ];
             // try{
                 Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
