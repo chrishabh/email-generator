@@ -25,10 +25,7 @@ class SignInService{
             // ]);
         } 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); 
-            // $request->session()->regenerateToken();
-            
-            session(['lastActivityTime'=>time()]);
+          
             $otp = mt_rand(100000,999999);
             $verification_data = [
                 'user_id' => Auth::User()->id,
@@ -39,6 +36,10 @@ class SignInService{
             // try{
                 Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
                 VerificationCode::addVerificationCode($verification_data);
+                $request->session()->regenerate(); 
+                // $request->session()->regenerateToken();
+                
+                session(['lastActivityTime'=>time()]);
             // } catch (\Throwable $th) {
             //     // Handle other types of exceptions
             //     \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
