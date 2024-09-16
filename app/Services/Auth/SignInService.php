@@ -36,10 +36,7 @@ class SignInService{
             // try{
                 Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
                 VerificationCode::addVerificationCode($verification_data);
-                $request->session()->regenerate(); 
-                // $request->session()->regenerateToken();
-                
-                session(['lastActivityTime'=>time()]);
+              
             // } catch (\Throwable $th) {
             //     // Handle other types of exceptions
             //     \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
