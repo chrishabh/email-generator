@@ -40,6 +40,10 @@ class EmailController extends Controller
         $firstName              = strtolower($request->input('first_name'));
         $lastName               = strtolower($request->input('last_name'));
         $domain                 = strtolower($request->input('domain'));
+        if (preg_match('/^(http:\/\/|https:\/\/|www\.)/', $domain)) { 
+            $domain = preg_replace('/^(http:\/\/|https:\/\/|www\.)/', '', $domain);
+            $domain = explode('/', $domain)[0];
+        }
         $stopValidationCheckbox = strtolower($request->input('stopValidationCheckbox'));
 
         $possibleEmails = [

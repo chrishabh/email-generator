@@ -21,9 +21,35 @@ let init =function(){
             const hasErrors =document.querySelectorAll('.validation-error').length>0
             if(!hasErrors){
                let msg =  (url==='lead-finder') ? 'Are you sure to want to find the email address?':'Are you sure to want to check the details?'
-                 triggerSweetAlert(msg,true,url)
+                //  triggerSweetAlert(msg,true,url)
                 // const form = document.getElementById('signinForm');
                 // form.submit();
+
+                if(url=='lead-finder'){
+                    const fullScreenLoader = document.getElementById('loaderLeadFinder')
+                    fullScreenLoader.style.display = 'flex';
+                    const form = document.getElementById('lead-form');
+                    form.submit();
+
+                }else{
+                    const form = document.getElementById('signinForm');
+                    // Select all elements with the class 'correct-email'
+                    let correctEmailElements = document.querySelectorAll('.correct-email');
+
+                    // Loop through each element and remove it
+                    correctEmailElements.forEach(element => {
+                        element.remove();
+                    });
+                    let elem   = document.getElementById('analImage')
+                    if(elem)
+                        elem.style.display='none';
+                    let form1 = document.getElementById('AnalLoader');
+                    if(form1)
+                        form1.style.display='block'; 
+                    form.submit();
+                }
+                
+                disableFormField(url)
             }
         }
     });

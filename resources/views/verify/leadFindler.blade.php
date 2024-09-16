@@ -82,7 +82,7 @@
                                         <div class="form-check">
                                             <input type="hidden" name="stopValidationCheckbox" value="0" />
                                             <input class="form-check-input mt-0" type="checkbox" id="gridCheck" name="stopValidationCheckbox" value="1" 
-                                            {{ old('stopValidationCheckbox') ? 'checked' : '' }} />
+                                            {{ old('stopValidationCheckbox',1) ? 'checked' : '' }} />
                                             <label class="form-check-label" for="gridCheck"> Pause the validation process
                                                 when the first valid email address is found.
                                             </label>
