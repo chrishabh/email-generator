@@ -46,7 +46,7 @@
             <!-- Countdown timer will go here -->
         </div>
         <div class="contact">
-            <p>If you have any questions, please contact us at <a href="mailto:info@example.com">info@example.com</a></p>
+            <p>If you have any questions, please contact us at <a href="mailto:support@bouncee.net">support@bouncee.net</a></p>
         </div>
     </div>
 
