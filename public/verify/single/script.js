@@ -57,7 +57,6 @@ let init =function(){
 
 
 function inputValidation(attrName ,url){
-    console.log(url);
     if(url=='lead-finder'){
         getFormValue(attrName.first_name).addEventListener('input',debouncing((event)=>{
             validateField(event.target, document.getElementById('fNameError'),validateName)

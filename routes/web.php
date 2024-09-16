@@ -85,6 +85,6 @@ try{
     return view('something-went-wrong');
 }
 
-Route::fallback(function () {
-    return view('route-not-found');
-});
+// Route::fallback(function () {
+//     return view('route-not-found');
+// });
