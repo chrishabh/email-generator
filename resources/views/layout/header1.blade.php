@@ -109,7 +109,7 @@
                         </div>
                         <div class="header-dropdown">
                             <div id="myDropdown" class="dropdown-content">
-                                <a href="/setting">Profile</a>
+                                <a href="/profile">Profile</a>
                                 <a href="/setting">Setting</a>
                                 <div class="dropdown-divider" id="dive"></div>
                                 <a href="/logout" id="out">Sign Out</a>

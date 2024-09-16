@@ -28,7 +28,12 @@ try{
         Route::get('/', function () {
             return view('index');
         });
-
+        Route::get('/profile', function () {
+            return view('comming-soon');
+        });
+        Route::get('/setting', function () {
+            return view('comming-soon');
+        });
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
