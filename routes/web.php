@@ -65,6 +65,7 @@ try{
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
             Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
+            Route::get('/resend-code', [LoginController::class, 'resendCode'])->name('resend.code');
       
         });
          

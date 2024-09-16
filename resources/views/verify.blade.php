@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -7,8 +7,8 @@
 
     @stack('styles')
     <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
- <!-- Bootstrap CSS -->
- <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Icon -->
     <link rel="stylesheet" href="fonts/line-icons.css">
     <!-- Owl carousel -->
@@ -26,74 +26,169 @@
 
     @stack('styles')
     <title>Verification | bouncee</title>
+    <style>
+        .verification-box {
+            background: white;
+            box-shadow: inset;
+            padding: 20px;
+            max-width: 400px;
+            margin: 130px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .verification-button {
+            width: 100%;
+            background-color: rgb(10, 93, 170);
+        }
+        #resendButton {
+            margin-top: 20px;
+            background-color: "grey";
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+        }
+        #resendButton.enabled {
+            cursor: pointer;
+            background-color: rgb(10, 93, 170);
+        }
+    </style>
 </head>
+
 <header id="header-wrap">
-        <!-- Navbar Start -->
-        <nav class="navbar navbar-expand-md bg-inverse fixed-top scrolling-navbar" style="
-    background: whitesmoke;">
-            <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <a href="index.php" class="navbar-brand"><img src="assets/logo.png" alt=""></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+    <nav class="navbar navbar-expand-md bg-inverse fixed-top scrolling-navbar" style="background: whitesmoke;">
+        <div class="container">
+            <a href="index.php" class="navbar-brand"><img src="assets/logo.png" alt=""></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="lni-menu"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                {{auth()->user()->name}}
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a rel="nofollow" href="/logout" class="btn btn-home-common py-2">Log out</a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Navbar End -->
-
-    </header>
-<body style="
-    background-image: url(../assets/verification-screen-bg.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 550px;
-    position: relative;
-    overflow: hidden;
-    padding: 10px 0 10px;
-">
-
-<div class="invoice-box" style="
-    background: whitesmoke;">
-        <div class="verification-header text-center">
-            <h2>Enter Verification Code</h2>
-            <p>Please enter the verification code sent to your email.</p>
-        </div>
-        @if (session()->has('success'))
-            <div class="alert alert-success">
-            {{ session('success') }}
-            </div>
-        @endif
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                <i class="lni-menu"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto w-100 justify-content-end clearfix">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            {{auth()->user()->name}}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a rel="nofollow" href="/logout" class="btn btn-home-common py-2">Log out</a>
+                    </li>
                 </ul>
             </div>
-        @endif
-        <form method="POST" action="{{ route('verification.code') }}">
-            @csrf
-            <div class="form-group">
-                <label for="verification_code">Verification Code</label>
-                <input style="width: 20em;" type="text" class="form-control" id="verification_code" name="verification_code" required>
-            </div>
-            <button type="submit" class="btn btn-primary verification-button">Verify Code</button>
-        </form>
+        </div>
+    </nav>
+</header>
+
+<body style="background-image: url(../assets/verification-screen-bg.png); background-position: center center; background-repeat: no-repeat; background-size: cover; min-height: 550px; position: relative; overflow: hidden; padding: 10px 0 10px;">
+
+<div class="verification-box">
+    <div class="verification-header text-center">
+        <h2>Enter Verification Code</h2>
+        <p style="color:black">Please enter the verification code sent to your email.</p>
     </div>
+    
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('verification.code') }}">
+        @csrf
+        <div class="form-group">
+            <label for="verification_code" style="color:black">Verification Code</label>
+            <input type="text" class="form-control" id="verification_code" name="verification_code" required>
+        </div>
+        <button type="submit" class="btn btn-primary verification-button">Verify Code</button>
+    </form>
+
+    <p class="mt-4" style="color:black">Resend OTP in <span id="timer">600</span> seconds</p>
+    <button id="resendButton" disabled>Resend OTP</button>
+
+<script>
+    let timerElement = document.getElementById("timer");
+    let resendButton = document.getElementById("resendButton");
+
+    // Timer in seconds
+ 
+    let countdownTime = 600;
+
+    // Start the countdown
+    let countdownInterval = setInterval(function() {
+        countdownTime--;
+        timerElement.textContent = countdownTime;
+
+        // Enable the "Resend OTP" button once the timer hits 0
+        if (countdownTime <= 0) {
+            clearInterval(countdownInterval);
+            resendButton.disabled = false;
+            resendButton.classList.add("enabled");
+            resendButton.textContent = "Resend OTP";
+            resendButton.style.cursor = "pointer";
+            resendButton.style.backgroundColor = "#0A5DAA";
+        }
+    }, 1000);
+
+    // Resend OTP function when button is clicked
+    resendButton.addEventListener("click", function() {
+        if (!resendButton.disabled) {
+            fetch('/resend-code', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); 
+             
+            }).then(data=>{
+                     console.log(data.message);
+                if(data.message == "OTP Resent Successful!"){
+                    alert(data.message);
+                    // Reset the countdown timer
+                    countdownTime = 600;
+                    resendButton.disabled = true;
+                    resendButton.classList.remove("enabled");
+                    resendButton.textContent = "Resend OTP";
+                    resendButton.style.cursor = "not-allowed";
+                    resendButton.style.backgroundColor = "grey";
+                    timerElement.textContent = countdownTime;
+                    countdownInterval = setInterval(function() {
+                        countdownTime--;
+                        timerElement.textContent = countdownTime;
+                        if (countdownTime <= 0) {
+                            clearInterval(countdownInterval);
+                            resendButton.disabled = false;
+                            resendButton.classList.add("enabled");
+                            resendButton.textContent = "Resend OTP";
+                            resendButton.style.cursor = "pointer";
+                            resendButton.style.backgroundColor = "#0A5DAA";
+                        }
+                    }, 1000);
+                }else{
+                    alert(data.message); 
+                }
+            }).catch(error => {
+                console.error('An error occurred:', error.message);
+            });
+           
+        }
+    });
+</script>
+
 </body>
 </html>

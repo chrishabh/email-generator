@@ -5,9 +5,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SignInFormRequest;
 use App\Models\User;
 use App\Models\VerificationCode;
+use App\Notifications\ConfirmationCode;
 use App\Services\Auth\SignInService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
@@ -87,4 +89,24 @@ class LoginController extends Controller
             'verification_code' => 'Something went wrong.'
         ])->withInput();
     }
+
+    public static function resendCode()
+    {
+        if(VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email)){
+            $otp = mt_rand(100000,999999);
+            $verification_data = [
+                'user_id' => Auth::User()->id,
+                'email' =>  Auth::User()->email,
+                'verification_code' => $otp,
+                'verification_type' => 'SIGN_IN',
+                'created_at' => Carbon::now()
+            ];
+           
+            Notification::route('mail', Auth::User()->email)->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
+            VerificationCode::addVerificationCode($verification_data);
+            return  response()->json(['message' => "OTP Resent Successful!"]);
+        }
+        return  response()->json(['message' => "Something Went Wrong!"]);
+    }
+
 }
