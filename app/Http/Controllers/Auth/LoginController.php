@@ -22,7 +22,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        try{
+        // try{
              
             $SigninFormRequest = new SignInFormRequest(); 
             $validator         = Validator::make($request->all(),$SigninFormRequest->rules());
@@ -35,15 +35,15 @@ class LoginController extends Controller
                 'password' => $request->input('passwordL'),
             ];
             return SignInService::signIn($credentials,$request);
-        }catch (ValidationException $e) {
-            // Handle validation exceptions specifically
-            return redirect()->back()->withErrors($e->errors())->withInput();
+        // }catch (ValidationException $e) {
+        //     // Handle validation exceptions specifically
+        //     return redirect()->back()->withErrors($e->errors())->withInput();
             
-        } catch (\Throwable $th) {
-            // Handle other types of exceptions
-            \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
-            return redirect()->back()->with('error', 'Login failed: ' . $th->getMessage());
-        }
+        // } catch (\Throwable $th) {
+        //     // Handle other types of exceptions
+        //     \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
+        //     return redirect()->back()->with('error', 'Login failed: ' . $th->getMessage());
+        // }
          
     }
 
