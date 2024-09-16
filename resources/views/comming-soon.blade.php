@@ -55,7 +55,7 @@
         const countdownElement = document.getElementById('countdown');
 
         // Set the date we're counting down to
-        const countDownDate = new Date("2024-12-31T23:59:59").getTime();
+        const countDownDate = new Date("2024-09-22T23:59:59").getTime();
 
         // Update the count down every 1 second
         const x = setInterval(function() {
@@ -67,7 +67,7 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            countdownElement.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            countdownElement.innerHTML = days + " Days - " + hours + " Hours - " + minutes + " m - " + seconds + "s.";
 
             if (distance < 0) {
                 clearInterval(x);
