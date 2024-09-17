@@ -36,14 +36,15 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-
-                    <div class="form-search">
-                        <i class="fa-thin fa-magnifying-glass"></i>
-                            <meta name="search-csrf-token" content="{{ csrf_token() }}">
-                            <input type="text" name="searchContent" placeholder="Search your completed list"  />
-                            <img onclick="cancelFilter(this,event)" class="position-absolute cross-image" id="crossImage" src="{{asset('verify/bulk-upload/cross.svg')}}" alt="cancel"/>
-                            <button class="btn-submit" id="searchButton">Search</button>
-                    </div>
+                    @if (isset($fileData) && !empty($fileData))
+                        <div class="form-search">
+                            <i class="fa-thin fa-magnifying-glass"></i>
+                                <meta name="search-csrf-token" content="{{ csrf_token() }}">
+                                <input type="text" name="searchContent" placeholder="Search your completed list"  />
+                                <img onclick="cancelFilter(this,event)" class="position-absolute cross-image" id="crossImage" src="{{asset('verify/bulk-upload/cross.svg')}}" alt="cancel"/>
+                                <button class="btn-submit" id="searchButton">Search</button>
+                        </div>
+                    @endif
                     <div class="upload-file--list">
 
                         @if (isset($fileData) && !empty($fileData))
@@ -118,6 +119,8 @@
                                 </div> 
                                 @endif
                         @endforeach
+                        @else
+                            <h1 class="no-data-found">No Data Found!!</h1>
                         @endif
                          
                          
