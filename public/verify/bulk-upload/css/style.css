@@ -371,3 +371,27 @@
    
     transform: scale(1.05);
 }
+
+#upload--bulk .cross-image{
+    right: 140px;
+    top: 9px;
+    display: none;
+    width: 20px;
+}
+#upload--bulk .cross-image:hover{
+    cursor: pointer;
+}
+
+#upload--bulk .filter-search-disable-button{
+    background-color:grey;
+    cursor: not-allowed;
+    opacity: 0.6; 
+}
+
+#upload--bulk .no-data-found{
+    text-align: center;
+    font-size: 2em;
+    border: 2px dashed #b5b5be;
+    padding: 1em 2em;
+    color: #b5b5be;
+}

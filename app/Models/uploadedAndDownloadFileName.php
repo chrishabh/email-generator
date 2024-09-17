@@ -36,7 +36,7 @@ class uploadedAndDownloadFileName extends Model
         return DB::table('uploaded_and_download_file_names')->select('fileName','id','verificationStatus')->where('verificationStatus',$verificationStatus)->where('id',$file_id)->where('user_id',$user_id)->get();
     }
 
-    public static function getAllData($file_id='',$user_id){
+    public static function getAllData($file_id='',$user_id,$searchContent=''){
         // return DB::table('uploaded_and_download_file_names as ud')->select('ud.fileName','ud.id','bu.file_id','bu.id as bulk_email_id', 'bu.email', 'bu.isValidEmail', 'bu.type', 'bu.status')
         //     ->leftJoin('bulk_upload_email_file_data as bu', function($join) {
         //     $join->on('ud.id', '=', 'bu.file_id')
@@ -44,12 +44,18 @@ class uploadedAndDownloadFileName extends Model
         // })->where('ud.user_id', '=',$user_id)->where('bu.type','bulk')->get();
 
         // $query = "SELECT * FROM uploaded_and_download_file_names as f left join bulk_upload_email_file_data ba on f.id=ba.file_id and f.user_id=ba.importedBy WHERE type='bulk' AND f.user_id=1";
-        $query= DB::table('uploaded_and_download_file_names')->where('user_id',$user_id)->orderByDesc('id');
+        $query= DB::table('uploaded_and_download_file_names')->where('user_id',$user_id);
+        if(!empty($searchContent)){
+            $query->where(function ($query) use ($searchContent) {
+                $query->where('fileName', 'LIKE', "%$searchContent%")->orWhere('downloadFileName', 'LIKE', "%$searchContent%");
+            });
+        }
+ 
         if($file_id){
             $query->where('id',$file_id);
         }
 
-        return $query->get()->toArray();
+        return $query->orderByDesc('id')->get()->toArray();
 
     }
     public static function getDownloadPath($file_id,$user_id){

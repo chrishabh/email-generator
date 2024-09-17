@@ -163,7 +163,86 @@ $(document).ready(function() {
     $('#uploadbtn').on('click', function() {
         pond.browse();
     });
+
+
+    let searchButton =document.getElementById('searchButton');
+    searchButton.addEventListener('click',searchFormData)
 });
+
+
+function searchFormData(event){
+    event.preventDefault(); 
+    const inputElem = document.querySelector('input[name="searchContent"]');
+    const cancel = document.getElementById('crossImage');
+    const inputElemValue = inputElem.value;
+
+    if (inputElemValue != "") {
+        cancel.style.display = 'block';
+        inputElem.disabled = true;
+        this.disabled = true;
+        applyDisabledStyles(this);
+        fetchRequest(inputElemValue);
+
+    } else {
+        cancel.style.display = 'none';
+    }
+
+}
+
+function fetchRequest(inputElemValue,isReset=false){
+    $('#preloader').fadeIn();
+        // AJAX call 
+    let body={
+        searchContent:inputElemValue,
+        ...(isReset && {isReset:true})
+    }
+    fetch("/bulk", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="search-csrf-token"]').getAttribute('content')
+            },
+            body:JSON.stringify(body)   
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Populate the data inside the upload-file--list div
+        const uploadFileListDiv = document.querySelector('.upload-file--list');
+        uploadFileListDiv.innerHTML = data.html;  
+        $('#preloader').fadeOut();
+    })
+    .catch(error => {
+        $('#preloader').fadeOut();
+        console.error('Error:', error);
+    })
+}
+function cancelFilter(elem,event){
+    event.preventDefault()
+    const inputElem      = document.querySelector(`input[name="searchContent"]`)
+    const searchButton   =  document.getElementById('searchButton')
+    const inputElemValue = inputElem.value 
+    if(inputElemValue!=""){
+        inputElem.value=''
+        inputElem.disabled=false
+        fetchRequest('',true);
+        elem.style.display='none'
+        searchButton.disabled=false
+        resetStyles(searchButton) 
+    }
+}
+
+
+
+// Function to apply disabled styles
+function applyDisabledStyles(button) {
+     
+    button.classList.add('filter-search-disable-button')
+}
+
+// Function to reset to initial styles
+function resetStyles(button) {
+    button.classList.remove('filter-search-disable-button')
+}
 
 function showError(message) {
     $('#alertContent').text(message); 

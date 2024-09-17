@@ -215,9 +215,25 @@ class EmailController extends Controller
         $headerData['creditPoint'] = $creditPoint; 
         return view('verify.bulk')->with(compact('headerData','fileData'));
     }
+    
+    function searchBar(Request $request){
+        $searchBar = $request->input('searchContent');
+        $isReset   = $request->input('isReset');
+        $fileData  = array();
+        $userid    = Auth::user()->id;
+        if(isset($searchBar) && !empty($searchBar)){
+            $searContent  = $request->input('searchContent');
+            $fileData  = self::getDataOfFileWithState('',$userid,$searContent);
+        }
+        if(isset($isReset) && !empty($isReset) && $isReset) $fileData   = self::getDataOfFileWithState('',$userid);
+        $html = view('partials.file_list', compact('fileData'))->render(); 
+        $response  = response()->json(["success"=>"ok",'html' => $html],200); 
+        $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+        return $response;
+    }
 
-    private function getDataOfFileWithState($fileId='',$userid){
-        $data = uploadedAndDownloadFileName::getAllData($fileId,$userid );
+    private function getDataOfFileWithState($fileId='',$userid,$searchContent=''){
+        $data = uploadedAndDownloadFileName::getAllData($fileId,$userid,$searchContent );
         $fileData =array();
         if(!empty($data)){
             foreach($data as $key=>$value){  

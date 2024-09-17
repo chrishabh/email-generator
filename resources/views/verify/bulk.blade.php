@@ -39,8 +39,10 @@
 
                     <div class="form-search">
                         <i class="fa-thin fa-magnifying-glass"></i>
-                        <input type="email" placeholder="Search your completed list" id="filenameInput" autocomplete="off">
-                        <button class="btn-submit">Search</button>
+                            <meta name="search-csrf-token" content="{{ csrf_token() }}">
+                            <input type="text" name="searchContent" placeholder="Search your completed list"  />
+                            <img onclick="cancelFilter(this,event)" class="position-absolute cross-image" id="crossImage" src="{{asset('verify/bulk-upload/cross.svg')}}" alt="cancel"/>
+                            <button class="btn-submit" id="searchButton">Search</button>
                     </div>
                     <div class="upload-file--list">
 

@@ -51,6 +51,7 @@ try{
         Route::get('/lead-finder',[EmailController::class,'leadFinder'])->name('lead-finder');
         Route::post('/lead-finder',[EmailController::class,'generateEmail']);
         Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
+        Route::post('/bulk', [EmailController::class,'searchBar']);
         Route::post('/upload', [EmailController::class, 'uploadBulkData']);
         Route::get('/check-file-status', [EmailController::class, 'getAllData']);
         Route::post('/export-data', [EmailController::class, 'exportData']);
