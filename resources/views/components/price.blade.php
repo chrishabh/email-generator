@@ -249,8 +249,8 @@
                 <tr class="wow fadeInDown" data-wow-delay="1.5s">
                     <td class="verification credit">2,000 Verifications</td>
                     <td class="price starter">$5.00</td>
-                    <td class="price basic">$10.00</td>
-                    <td class="price standard">$14.00</td>
+                    <td class="price basic">$16.00</td>
+                    <td class="price standard">$20.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.6s">
                     <td class="verification credit">5,000 Verifications</td>
