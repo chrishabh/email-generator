@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -46,5 +48,15 @@ class User extends Authenticatable
     public static function getUserId($email)
     {
         return User::where('email', $email)->first()->id;
+    }
+
+    public static function getUserdata($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public static function updatePassword($email,$password,$ip)
+    {
+        return User::where('email', $email)->update(['password'=> Hash::make($password),'password_updated_at' => Carbon::now(), 'password_update_ip'=>$ip ]);
     }
 }

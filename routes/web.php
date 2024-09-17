@@ -32,7 +32,9 @@ try{
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
-        Route::post('/signin',[LoginController::class,'login']); 
+        Route::post('/signin',[LoginController::class,'login']);
+        Route::get('/recovery',[LoginController::class,'showResetForm'])->name('recovery');
+        Route::post('/recovery',[LoginController::class,'resetPassword']); 
         Route::get('/single-verification', function () {
             return view('single-verification');
         });
@@ -40,7 +42,7 @@ try{
         Route::get('/bulk-verification', function () {
             return view('bulk-verification');
         });
-    
+
 
            
     });
