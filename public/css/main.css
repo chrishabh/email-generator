@@ -194,6 +194,10 @@ a:not([href]):not([tabindex]) {
   display: inline-block;
 }
 
+.checkbox-text{
+  color: #000;
+}
+
 .btn-comparision {
   font-size: 14px;
   width: 100px;

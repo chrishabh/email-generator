@@ -50,63 +50,63 @@ class LoginController extends Controller
     }
 
 
-    public static function verification(Request $request)
-    {
-        $verification_code = $request->input('verification_code');
+    // public static function verification(Request $request)
+    // {
+    //     $verification_code = $request->input('verification_code');
 
-        $verification_data = VerificationCode::getVerificationCode(Auth::User()->id,Auth::User()->email);
-        if(empty($verification_data)){
-            return redirect()->back()->withErrors([
-                'verification_code' => 'Invalid Verification Request.'
-            ])->withInput();
-        }
+    //     $verification_data = VerificationCode::getVerificationCode(Auth::User()->id,Auth::User()->email);
+    //     if(empty($verification_data)){
+    //         return redirect()->back()->withErrors([
+    //             'verification_code' => 'Invalid Verification Request.'
+    //         ])->withInput();
+    //     }
 
-        if (Carbon::parse($verification_data->created_at)->addMinutes(env('TIME_OUT_FOR_VERIFYING_THE_EMAIL'))->isPast()) {
-            VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email);
-            return redirect()->back()->withErrors([
-                'verification_code' => 'The verification code you provided has expired.'
-            ])->withInput();
-        }
+    //     if (Carbon::parse($verification_data->created_at)->addMinutes(env('TIME_OUT_FOR_VERIFYING_THE_EMAIL'))->isPast()) {
+    //         VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email);
+    //         return redirect()->back()->withErrors([
+    //             'verification_code' => 'The verification code you provided has expired.'
+    //         ])->withInput();
+    //     }
 
-        if($verification_data->verification_code == $verification_code && $verification_data->email == Auth::User()->email)
-        {
-            VerificationCode::updateVerificationStatus(Auth::User()->id,Auth::User()->email,$verification_code);
-            if(Auth::check()){
-                $request->session()->regenerate(); 
-                session(['lastActivityTime'=>time()]);
-                return  redirect()->intended('/single');
-            }
+    //     if($verification_data->verification_code == $verification_code && $verification_data->email == Auth::User()->email)
+    //     {
+    //         VerificationCode::updateVerificationStatus(Auth::User()->id,Auth::User()->email,$verification_code);
+    //         if(Auth::check()){
+    //             $request->session()->regenerate(); 
+    //             session(['lastActivityTime'=>time()]);
+    //             return  redirect()->intended('/single');
+    //         }
                 
-            else return  redirect()->intended('/');
+    //         else return  redirect()->intended('/');
             
-        }else{
-            return redirect()->back()->withErrors([
-                'verification_code' => 'The verification code you entered is incorrect.'
-            ])->withInput();
-        }
+    //     }else{
+    //         return redirect()->back()->withErrors([
+    //             'verification_code' => 'The verification code you entered is incorrect.'
+    //         ])->withInput();
+    //     }
 
-        return redirect()->back()->withErrors([
-            'verification_code' => 'Something went wrong.'
-        ])->withInput();
-    }
+    //     return redirect()->back()->withErrors([
+    //         'verification_code' => 'Something went wrong.'
+    //     ])->withInput();
+    // }
 
-    public static function resendCode()
-    {
-        if(VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email)){
-            $otp = mt_rand(100000,999999);
-            $verification_data = [
-                'user_id' => Auth::User()->id,
-                'email' =>  Auth::User()->email,
-                'verification_code' => $otp,
-                'verification_type' => 'SIGN_IN',
-                'created_at' => Carbon::now()
-            ];
+    // public static function resendCode()
+    // {
+    //     if(VerificationCode::expireVerificationStatus(Auth::User()->id,Auth::User()->email)){
+    //         $otp = mt_rand(100000,999999);
+    //         $verification_data = [
+    //             'user_id' => Auth::User()->id,
+    //             'email' =>  Auth::User()->email,
+    //             'verification_code' => $otp,
+    //             'verification_type' => 'SIGN_IN',
+    //             'created_at' => Carbon::now()
+    //         ];
            
-            Notification::route('mail', Auth::User()->email)->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
-            VerificationCode::addVerificationCode($verification_data);
-            return  response()->json(['message' => "OTP Resent Successful!"]);
-        }
-        return  response()->json(['message' => "Something Went Wrong!"]);
-    }
+    //         Notification::route('mail', Auth::User()->email)->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
+    //         VerificationCode::addVerificationCode($verification_data);
+    //         return  response()->json(['message' => "OTP Resent Successful!"]);
+    //     }
+    //     return  response()->json(['message' => "Something Went Wrong!"]);
+    // }
 
 }

@@ -26,26 +26,28 @@ class SignInService{
             // ]);
         } 
         if (Auth::attempt($credentials)) {
-          
-            $otp = mt_rand(100000,999999);
-            $verification_data = [
-                'user_id' => Auth::User()->id,
-                'email' =>  $credentials['email'],
-                'verification_code' => $otp,
-                'verification_type' => 'SIGN_IN',
-                'created_at' => Carbon::now()
-            ];
-            try{
-                Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
-                VerificationCode::addVerificationCode($verification_data);
-                return  redirect()->intended('/verification');
-            } catch (\Throwable $th) {
-                // Handle other types of exceptions
-                \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
-                return redirect()->back()->withErrors([
-                    'credentialsError' => 'Something Went Wrong!'
-                ])->withInput();
-            }
+            $request->session()->regenerate(); 
+            session(['lastActivityTime'=>time()]);
+            return  redirect()->intended('/single');
+            // $otp = mt_rand(100000,999999);
+            // $verification_data = [
+            //     'user_id' => Auth::User()->id,
+            //     'email' =>  $credentials['email'],
+            //     'verification_code' => $otp,
+            //     'verification_type' => 'SIGN_IN',
+            //     'created_at' => Carbon::now()
+            // ];
+            // try{
+            //     Notification::route('mail', $credentials['email'])->notify(new ConfirmationCode('Email Verification',['otp_code'=>$otp],'verification-code'));
+            //     VerificationCode::addVerificationCode($verification_data);
+            //     return  redirect()->intended('/verification');
+            // } catch (\Throwable $th) {
+            //     // Handle other types of exceptions
+            //     \Illuminate\Support\Facades\Log::error('Login failed: ' . $th->getMessage());
+            //     return redirect()->back()->withErrors([
+            //         'credentialsError' => 'Something Went Wrong!'
+            //     ])->withInput();
+            // }
         }else{
             return redirect()->back()->withErrors([
                 'credentialsError' => 'The provided credentials do not match our records.'
