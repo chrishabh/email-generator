@@ -126,14 +126,21 @@
 
 #single--verification .bg-success-valid{
     background: var(--valid-gradient);
-    margin-inline: 4em;
+    /* margin-inline: 4em; */
 }
 
 #single--verification .bg-danger-valid{
     background: var(--invalid-gradient);
-    margin-inline: 4em;
+    /* margin-inline: 4em; */
 }
 
+
+#single--verification .status--div {
+    padding: 9px 15px;
+    text-align: center;
+    border-radius: 30px;
+    color: white;
+}
 .correct-email.valid-email h2,
 .correct-email.valid-email .fa-light::before{ 
     color: var(--success-color);

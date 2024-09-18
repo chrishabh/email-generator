@@ -69,8 +69,8 @@
                                         <div class="col-md-8"> 
                                             <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
                                         </div>
-                                        <div class="col-md-2 col-offset-2"> 
-                                            <div class="credit-info--tag  {{$status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
+                                        <div class="col-md-3 col-offset-1 px-0"> 
+                                            <div class="status--div  {{$status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
                                         </div> 
                                     </div>  
                                     @else
