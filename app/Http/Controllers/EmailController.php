@@ -150,6 +150,7 @@ class EmailController extends Controller
                     }else{
                         $status = 'invalid';
                     }
+                    UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,1);
                 }
                 if ($stopValidationCheckbox=='1'){
                     if($this->isValidEmail($email)){ 
@@ -502,12 +503,12 @@ class EmailController extends Controller
                 
             $email =  $request->input('domain'); 
             $status = $this->isValidEmail($email,true);
-
             $arrayData =[
                 'email'   => $email,
                 'user_id' => Auth::user()->id,
                 'status'  => $status ? strtolower($status):NULL
             ];
+            UserCredits::updateCreditsWhenEmailGetsVerify($arrayData['user_id'],1);
             $singleVerification = new singleVerification;
             $singleVerification->insertDataAndgetId($arrayData);
             $validEmails = $arrayData;
