@@ -65,12 +65,12 @@
                                         $status = $data['status'];
                                         $email  = $data['email'];
                                     @endphp
-                                    <div class="correct-email {{$status=='valid'?'valid-email':'invalid-email'}}">
+                                    <div class="correct-email {{$status=='deliverable'?'valid-email':'invalid-email'}}">
                                         <div class="col-md-8"> 
                                             <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
                                         </div>
                                         <div class="col-md-2 col-offset-2"> 
-                                            <div class="credit-info--tag  {{$status=='valid' ? 'bg-success-valid' :'bg-danger-valid'}}">{{$status}}</div>
+                                            <div class="credit-info--tag  {{$status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
                                         </div> 
                                     </div>  
                                     @else

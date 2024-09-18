@@ -501,15 +501,13 @@ class EmailController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
                 
             $email =  $request->input('domain'); 
+            $status = $this->isValidEmail($email,true);
+
             $arrayData =[
                 'email'   => $email,
                 'user_id' => Auth::user()->id,
-                'status'  => 'invalid'
+                'status'  => $status ? strtolower($status):NULL
             ];
-            $status = $this->isValidEmail($email);
-            if($status){
-                $arrayData['status'] = 'valid'; 
-            }
             $singleVerification = new singleVerification;
             $singleVerification->insertDataAndgetId($arrayData);
             $validEmails = $arrayData;
