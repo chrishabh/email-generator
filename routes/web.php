@@ -52,6 +52,7 @@ try{
         Route::post('/check-email',[EmailController::class,'checkEmailIsValidInvalid'])->name('check-email');
         Route::get('/lead-finder',[EmailController::class,'leadFinder'])->name('lead-finder');
         Route::post('/lead-finder',[EmailController::class,'generateEmail']);
+        Route::post('/email-verification',[EmailController::class,'emailVerification'])->name('email-verification');
         Route::get('/bulk', [EmailController::class,'bulkPage'])->name('bulk');
         Route::post('/bulk', [EmailController::class,'searchBar']);
         Route::post('/upload', [EmailController::class, 'uploadBulkData']);

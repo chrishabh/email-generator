@@ -12,6 +12,7 @@
         <script src="{{ asset('verify/single/script.js') }}" type="text/javascript"></script> 
     @endpush
 
+    <meta name="asset-base-url" content="{{ asset('')}}">
     <section class="single-area lead-finder" id="single--verification">
         <div id="leadFinder">
             <div class="container1">
@@ -39,6 +40,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             @csrf
+                                            {{-- <meta name="lead-csrf-token" content="{{ csrf_token() }}"> --}}
                                             <label for="inputEmail4">First Name</label>
                                             {{-- <input type="email" class="form-control" id="inputEmail4" placeholder="Email">  --}}
                                             <input type="text"
@@ -80,7 +82,6 @@
                                     </div>
                                     <div class="form-group checkbox--finder">
                                         <div class="form-check">
-                                            <input type="hidden" name="stopValidationCheckbox" value="0" />
                                             <input class="form-check-input mt-0" type="checkbox" id="gridCheck" name="stopValidationCheckbox" value="1" 
                                             {{ old('stopValidationCheckbox',1) ? 'checked' : '' }} />
                                             <label class="form-check-label" for="gridCheck"> Pause the validation process
@@ -96,71 +97,86 @@
                         </div>
                     </div>
                 </div>
-                @php               
-                    $data   = session('validEmails');
-                    $sno    = 1;
-                    if(!empty($data)){
-                        $data = $data['lead_finder_p_c_email_logs'];
-                    }
-                @endphp
-                @if(!empty($data))
-                    <div class="second-lead-card single-card mt-4">
-                        <div class="row mx-0">
-                            <div class="col-md-12 col-sm-12">
-                                <h2 class="lead-heading--requsted font-weight-bold">Result</h2>
-                                <div class="table-wrapper">
-                                    <table class="table table-hover box-shadow-custom">
-                                        <thead>
-                                            <tr class="bg-grad">
-                                                <th scope="col">ROW</th>
-                                                <th scope="col">EMAIL ADDRESS</th>
-                                                <th scope="col">STATUS</th>
-                                                <th scope="col">ACTIONS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class=" table-bordered scrollable-tbody">
-                                            @foreach($data as $k=>$value)
-                                                <tr>
-                                                    <th scope="row">{{$sno}}.</th>
-                                                    {{-- <td>  <input type="text"  id="copiedEmail" value="{{$value['email']}}" readonly></td> --}}
-                                                    <td id="copiedEmail">{{$value['email']}}</td>
-                                                    <td>
-                                                        @if($value['status']=='invalid')
-                                                            <div class="badge badge-danger lead-badges">
-                                                                <img class="no-content"
-                                                                    src="{{ asset('verify/single/image/invalid.svg') }}" alt="no content"
-                                                                    srcset="">
-                                                                <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
-                                                            </div>
-                                                        @elseif ($value['status']=='valid')
-                                                            <div class="badge badge-success lead-badges">
-                                                                <img class="no-content"
-                                                                    src="{{ asset('verify/single/image/valid.svg') }}" alt="no content"
-                                                                    srcset="">
-                                                                <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
-                                                            </div>
-                                                        @elseif ($value['status']=='aborted')
-                                                            <div class="badge badge-dark lead-badges">
-                                                                <img class="no-content"
-                                                                    src="{{ asset('verify/single/image/aborted.svg') }}" alt="no content"
-                                                                    srcset="">
-                                                                <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                    <td><button type="button" class="btn  copy-btn" id="copyButton" onclick="copyContent(this,'{{$value['email']}}')">COPY</button></td>
+                <div id="table-content-wrapper">
+                    <meta name="table-content-token" content="{{ csrf_token() }}">
+                    @php               
+                        $originalData = $data   = session('validEmails');
+                        $sno    = 1;
+                        if(!empty($data)){
+                            $data = $data['lead_finder_p_c_email_logs'];
+                        }
+                    @endphp
+                    @if(!empty($data))
+                        <div class="second-lead-card single-card mt-4">
+                            <div class="row mx-0">
+                                <div class="col-md-12 col-sm-12">
+                                    <h2 class="lead-heading--requsted font-weight-bold">Results</h2>
+                                    <div class="table-wrapper">
+                                        <table class="table table-hover box-shadow-custom">
+                                            <thead>
+                                                <tr class="bg-grad">
+                                                    <th scope="col">ROW</th>
+                                                    <th scope="col">EMAIL ADDRESS</th>
+                                                    <th scope="col">STATUS</th>
+                                                    <th scope="col">ACTIONS</th>
                                                 </tr>
-                                                @php
-                                                    $sno++;  
-                                                @endphp
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            @php
+                                                $json_e = json_encode($originalData);
+                                            @endphp 
+                                            <tbody class=" table-bordered scrollable-tbody" data-table="{{$json_e}}">
+                                                @foreach($data as $k=>$value)
+                                                    <tr>
+                                                        <th scope="row">{{$sno}}.</th>
+                                                        {{-- <td>  <input type="text"  id="copiedEmail" value="{{$value['email']}}" readonly></td> --}}
+                                                        <td id="copiedEmail">{{$value['email']}}</td>
+                                                        <td id="emailId-{{$value['id']}}">
+                                                            @if($value['status']=='invalid')
+                                                                <div class="badge badge-danger lead-badges">
+                                                                    <img class="no-content"
+                                                                        src="{{ asset('verify/single/image/invalid.svg') }}" alt="no content"
+                                                                        srcset="">
+                                                                    <span class="font-weight-normal text-uppercase" id="status-{{$value['id']}}">{{$value['status']}}</span>
+                                                                </div>
+                                                            @elseif ($value['status']=='valid')
+                                                                <div class="badge badge-success lead-badges">
+                                                                    <img class="no-content"
+                                                                        src="{{ asset('verify/single/image/valid.svg') }}" alt="no content"
+                                                                        srcset="">
+                                                                    <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
+                                                                </div>
+                                                            @elseif ($value['status']=='aborted')
+                                                                <div class="badge badge-dark lead-badges">
+                                                                    <img class="no-content"
+                                                                        src="{{ asset('verify/single/image/aborted.svg') }}" alt="no content"
+                                                                        srcset="">
+                                                                    <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
+                                                                </div>
+                                                            @elseif ($value['status']=='aborted')
+                                                                <div class="badge badge-dark lead-badges">
+                                                                    <img class="no-content"
+                                                                        src="{{ asset('verify/single/image/aborted.svg') }}" alt="no content"
+                                                                        srcset="">
+                                                                    <span class="font-weight-normal text-uppercase">{{$value['status']}}</span>
+                                                                </div>
+                                                            @elseif ($value['status']==null)
+                                                                <div id="spinner"></div>
+                                                            @endif
+                                                        </td>
+                                                        <td><button type="button" class="btn  copy-btn" id="copyButton-{{$value['id']}}" onclick="copyContent(this,event,'{{$value['email']}}')">COPY</button></td>
+                                                    </tr>
+                                                    @php
+                                                        $sno++;  
+                                                    @endphp
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
 
