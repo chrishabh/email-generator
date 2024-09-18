@@ -150,7 +150,6 @@ class EmailController extends Controller
                     }else{
                         $status = 'invalid';
                     }
-                    UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,1);
                 }
                 if ($stopValidationCheckbox=='1'){
                     if($this->isValidEmail($email)){ 
