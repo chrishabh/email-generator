@@ -385,11 +385,34 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
     color: #212529;
     transform: scale(1.05);
 }
+#leadFinder .second-lead-card .copy-btn.disable-btn{
+    cursor: not-allowed;
+    background-color: #cccccc;
+    border: 1px solid #999999;
+}
+#leadFinder .second-lead-card .copy-btn.disable-btn:hover{
+    border: 1px solid #999999; 
+}
  
 
 
 #leadFinder .lead-finder-btn.copied {
     background-color: #28a745; /* Green color for success */
+}
+
+#leadFinder #spinner{
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid var(--accent-color);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    animation: spin 2s linear infinite;
+    text-align: center;
+    margin: 0 auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Custom scrollbar styling for WebKit browsers */
@@ -400,7 +423,7 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
     overflow-y: auto; /* Enables vertical scrolling */
     overflow-x: hidden; /* Hides horizontal scrolling if any */
     border: 1px solid #ddd; /* Border around the table wrapper */
-    padding: 10px; /* Adds some padding */
+    /* padding: 10px; Adds some padding */
     background-color: #ffffff; /* Background color for the table wrapper */
     border-radius: 8px; /* Rounded corners for the table wrapper */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */

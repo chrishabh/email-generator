@@ -103,60 +103,82 @@ class EmailController extends Controller
             $dataArray =array();
             $dataArray['email']          = $email;
             $dataArray['lead_finder_id'] = $lastLeadId;
-
-            if($stopValidationCheckbox=='0'){
-                if($this->isValidEmail($email)){
-                    $dataArray['status'] = 'valid';
-                }else{
-                    $dataArray['status'] = 'invalid';
-                }  
-                $count++;
-            }
-            if ($stopValidationCheckbox=='1'){
-                if(!$isFirstValidEmailFound){
-                   if($this->isValidEmail($email)){ 
-                        $dataArray['status'] = 'valid';
-                        $isFirstValidEmailFound = true;
-                        $index = $key;
-                   } else{
-                        $dataArray['status'] = 'invalid';
-                   } 
-                   $count++;
-                }
-                else{
-                    $dataArray['status'] = 'aborted';
-                }
-            }
+            $dataArray['status']         = NULL;
             array_push($leadPCEmailLogsArray,$dataArray);
-            if($key!=null && $isFirstValidEmailFound) break;
         }
 
-
-
-        // After the loop is broken, mark all emails after the valid one as 'aborted' without a loop
-        if ($stopValidationCheckbox=='1' && $index !== null) {
-            $remainingEmails = array_splice($possibleEmails, $index + 1); 
-            
-            $abortedEmails = array_map(function($email) use ($lastLeadId) {
-                return [
-                    'email'          => $email,
-                    'lead_finder_id' => $lastLeadId,
-                    'status'         => 'aborted' // Mark as 'aborted'
-                ];
-            }, $remainingEmails);
-
-            // Merge aborted emails into the main array
-            $leadPCEmailLogsArray = array_merge($leadPCEmailLogsArray, $abortedEmails);
-        }
         
         $logsPCTable = new LeadFinderPCEmailLogs();
-        if($logsPCTable->insertDataAndgetId($leadPCEmailLogsArray)){
-            UserCredits::updateCreditsWhenEmailGetsVerify(Auth::user()->id,$count);
-        }
+        $logsPCTable->insertDataAndgetId($leadPCEmailLogsArray);
 
         $validEmails = LeadFinder::with('leadFinderPCEmailLogs')->find($lastLeadId)->toArray();
-     
-        return redirect()->back()->with(compact('validEmails'));
+        // $response = response()->json(['success'=>'ok','result'=>$validEmails],200);
+        // $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+
+             
+        return redirect()->back()->with(compact('validEmails'))->withInput();
+        // return $response;
+    }
+
+    public function emailVerification(Request $request){
+        try{
+            $rules = [
+                'fileId'             => 'required',
+                'isValidationPause'  => 'required',
+                'emailId'            => 'required',
+            ];
+    
+            $validator = Validator::make($request->all(), $rules); 
+            if($validator->fails()){
+                $response = response()->json(['success'=>'ok','error'=>$validator],401);  
+                $response->headers->set('Content-Type', 'application/json; charset=UTF-8'); 
+                return $response;
+            }
+    
+            $fileId                  = strtolower($request->input('fileId'));
+            $stopValidationCheckbox  = strtolower($request->input('isValidationPause'));
+            $emailId                 = strtolower($request->input('emailId'));
+            $data                    = LeadFinderPCEmailLogs::getEmailDataBasedOnId($emailId,$fileId);
+            $status                  = null;
+            $isAbortAll              = false;
+            if(!empty($data)){
+                $email = $data['email'];
+                $id    = $data['id'];
+                if($stopValidationCheckbox=='0'){
+                    if($this->isValidEmail($email)){
+                        $status= 'valid';
+                    }else{
+                        $status = 'invalid';
+                    }
+                }
+                if ($stopValidationCheckbox=='1'){
+                    if($this->isValidEmail($email)){ 
+                        $status = 'valid';
+                   } else{
+                        $status = 'invalid';
+                   } 
+                }
+    
+                $ob1 = new LeadFinderPCEmailLogs; 
+                if($ob1->insertDataAndgetId(['status'=>$status],$id)){
+                    if($status=='valid' && $stopValidationCheckbox=='1'){
+                        $toId = LeadFinderPCEmailLogs::getLastIdOfPCTable($fileId);
+                        if($id!=null){
+                            if(LeadFinderPCEmailLogs::whereBetween('id', [$id, $toId])->update([ 'status' => 'aborted'])){
+                                $isAbortAll = true;
+                            }
+                        }
+                    }
+                }  
+
+                return response()->json(['result'=>['status'=>$status,'isAbortAll' => $isAbortAll , 'emailId' => $emailId , 'fileId' =>$fileId ]])->header('Content-Type','application/json; charset=UTF-8');
+            }
+        }catch(\Exception $e){ 
+            \Illuminate\Support\Facades\Log::error('lead finder error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage(),'status'=>'ok'])->header('Content-Type', 'application/json; charset=UTF-8');  
+        }
+         
+
     }
 
     public function testThirdPartyAPI(){
