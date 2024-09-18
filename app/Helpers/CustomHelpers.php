@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Notifications\ConfirmationCode;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Hash;
 
 function pp($arr, $die = "true")
@@ -132,5 +134,17 @@ function getDebounceCreditBalance()
         return $return['balance'];
     }else{
         return 0;
+    }
+}
+
+function notifyCreditBalance($credits,$user_name)
+{
+    if(env('API_PLATFORM') == "bouncify"){
+        $avilable_cresits = getBouncifyCreditBalance()-$credits;
+        Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('Credit Purchase Notification',['ADMIN_NAME'=>env('ADMIN_NAME'),'name'=>$user_name,'credits'=>$credits,'balance_credits'=>$avilable_cresits,'PLATFORM'=> 'Bouncify'],'admin-credits-notification'));
+
+    }elseif(env('API_PLATFORM') == "debouncee"){
+        $avilable_cresits = getDebounceCreditBalance()-$credits;
+        Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('Credit Purchase Notification',['ADMIN_NAME'=>env('ADMIN_NAME'),'name'=>$user_name,'credits'=>$credits,'balance_credits'=>$avilable_cresits,'PLATFORM'=> 'Debounce'],'admin-credits-notification'));
     }
 }

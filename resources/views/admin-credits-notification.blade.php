@@ -28,14 +28,13 @@
                   <br>
                   <p style="text-align: center;color:#5e7282;margin: 0;font-size: 22px;font-weight: bolder;">This is to notify you that the {{$name}} has successfully purchased {{$credits}} credits on your Bouncee application.</p>
                   <br>
-                  <p style="text-align: center;color:#ff0000;margin: 0;font-size: 22px;font-weight: bolder;">Now you need to add the {{$balance_credits}} credits in you API.</p>
+                  <p style="text-align: center;color:#ff0000;margin: 0;font-size: 22px;font-weight: bolder;">Now you need to add the {{$balance_credits}} credits in your {{$PLATFORM}} API.</p>
                </td>
            
             <tr>
                <td>
                   <p style="text-align: center;color:#5e7282;margin: .5em 0;margin-top: 2rem;">Thank You!</p>
                   <p style="text-align: center;color:#5e7282;margin: 1.5px;font-weight: bolder;"><b>bouncee</b></p>
-                  <p style="text-align: center;color:#5e7282;margin-bottom: 3.5em;"><b>{{$REALTIME}}</b></p>
                </td>
             </tr>
          </tbody>

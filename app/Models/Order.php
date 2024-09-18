@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
@@ -19,7 +20,10 @@ class Order extends Model
         $return = Order::whereNull('deleted_at')->where('order_id',$order_id)->where('user_id',$user_id)->update(['status'=>'Paid']);
 
         if($return){
-            return UserCredits::updateCredits($order_id,$user_id,$credits);
+            if(UserCredits::updateCredits($order_id,$user_id,$credits)){
+                notifyCreditBalance($credits,Auth::User()->name);
+                return 1;
+            }
         }
         return false;
     }
