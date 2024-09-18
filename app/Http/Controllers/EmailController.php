@@ -160,39 +160,82 @@ class EmailController extends Controller
     }
 
     public function testThirdPartyAPI(){
+        return getDebounceCreditBalance();
         $this->isValidEmail("ch.rishabh8527@gmail.com");
     }
 
-    public static function isValidEmail($email)
+    public static function isValidEmail($email,$get_response = false)
     {
-        if(env('KICKBOX_API_FLAG',false)){
-            $apiKey = env('KICKBOX_API_KEY'); // Replace with your Kickbox API key
-            $response = Http::get('https://api.debounce.io/v1/', [
-                // 'query' => [
-                    'api' => $apiKey,
+        if(env('API_PLATFORM') == "bouncify"){
+            if(env('KICKBOX_API_FLAG',false)){
+
+                $data = singlebouncify($email);
+                
+                $log = [
+                    'user_id' => Auth::User()->id,
                     'email' => $email,
-                // ]
-            ]);
-    
-            $data = $response->json();
-            $log = [
-                'user_id' => Auth::User()->id,
-                'email' => $email,
-                'result' => json_encode($data),
-                // 'created_at'=>Carbon::now()
-            ];
-            EmailVerificationLog::addLog($log);
-            return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
+                    'result' => json_encode($data),
+                    'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                if($get_response){
+                    return $data['result'];
+                }
+                return isset($data['result']) && $data['result'] === 'deliverable';
+            }else{
+                $log = [
+                    'user_id' => Auth::User()->id,
+                    'email' => $email,
+                    'result' => "Bouncify Flag off.",
+                    'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                return false;
+            }
+
+        }elseif(env('API_PLATFORM') == "debouncee"){
+            if(env('KICKBOX_API_FLAG',false)){
+                $apiKey = env('KICKBOX_API_KEY'); // Replace with your Kickbox API key
+                $response = Http::get('https://api.debounce.io/v1/', [
+                    // 'query' => [
+                        'api' => $apiKey,
+                        'email' => $email,
+                    // ]
+                ]);
+        
+                $data = $response->json();
+                $log = [
+                    'user_id' => Auth::User()->id,
+                    'email' => $email,
+                    'result' => json_encode($data),
+                    // 'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                if($get_response){
+                    return $data['debounce']['reason'];
+                }
+                return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
+            }else{
+                $log = [
+                    'user_id' => Auth::User()->id,
+                    'email' => $email,
+                    'result' => "Debouncee Flag off.",
+                     'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                return false;
+            }
         }else{
             $log = [
                 'user_id' => Auth::User()->id,
                 'email' => $email,
-                'result' => "Flag off.",
-                // 'created_at'=>Carbon::now()
+                'result' => "API Flag off.",
+                 'created_at'=>Carbon::now()
             ];
             EmailVerificationLog::addLog($log);
             return false;
         }
+      
        
     }
 
