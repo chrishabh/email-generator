@@ -12,7 +12,7 @@
     
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="shortcut icon" href="{{ asset('bouncee-logo.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('assets/bouncee-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <!-- Icon -->
     <link rel="stylesheet" href="{{ asset('fonts/line-icons.css') }}">
