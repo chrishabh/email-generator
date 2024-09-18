@@ -1,34 +1,104 @@
 <section id="pricing" class="section-padding">
-<style>
+    <style>
         body {
             font-family: Arial, sans-serif;
         }
+
         .pricing-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
         }
-        .pricing-table th, .pricing-table td {
-            padding: 10px;
+
+        .pricing-table th,
+        .pricing-table td {
+            padding: 14px;
             text-align: center;
         }
+
         .pricing-table th {
             /* background-color: #333; */
             color: #fff;
         }
+
         .pricing-table td {
             border: 1px solid #ccc;
         }
-        .starter { background-color: #76923c; color: white; }
-        .basic { background-color: #d64d26; color: white; }
-        .standard { background-color: #f79b00; color: white; }
-        .premium { background-color: #76923c; color: white; }
-        .credit { background-color: #00a9b5; color: white; }
-        .check { color: green; font-size: 20px; }
-        .cross { color: red; font-size: 20px; }
-        .price { font-size: 24px; font-weight: bold; }
-        .verification { font-size: 24px; font-weight: bold; }
+
+        .starter {
+            background-color: #76923c;
+            color: white;
+            border-collapse: separate;
+            /* Use separate to allow rounding */
+            border-spacing: 0;
+            /* Remove any space between table cells */
+            border-radius: 12px;
+            /* Round all four corners */
+            overflow: hidden;
+            transform: scale(1.4);
+        }
+
+        .basic {
+            background-color: #d64d26;
+            color: white;
+            border-collapse: separate;
+            /* Use separate to allow rounding */
+            border-spacing: 0;
+            /* Remove any space between table cells */
+            border-radius: 12px;
+            /* Round all four corners */
+            overflow: hidden;
+        }
+
+        .standard {
+            background-color: #f79b00;
+            color: white;
+            border-collapse: separate;
+            /* Use separate to allow rounding */
+            border-spacing: 0;
+            /* Remove any space between table cells */
+            border-radius: 12px;
+            /* Round all four corners */
+            overflow: hidden;
+        }
+
+        .premium {
+            background-color: #76923c;
+            color: white;
+        }
+
+        .credit {
+            background-color: #00a9b5;
+            color: white;
+        }
+
+        .check {
+            color: green;
+            font-size: 20px;
+        }
+
+        .cross {
+            color: red;
+            font-size: 20px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .verification {
+            font-size: 24px;
+            font-weight: bold;
+            border-collapse: separate;
+            /* Use separate to allow rounding */
+            border-spacing: 0;
+            /* Remove any space between table cells */
+            border-radius: 12px;
+            /* Round all four corners */
+            overflow: hidden;
+        }
     </style>
-<div class="container">
+    <div class="container">
         <div class="section-header text-center">
             <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
             <h6 class="pricing-sub-header wow fadeInDown" data-wow-delay="0.4s">Try first, decide later, No credit card
@@ -240,9 +310,9 @@
             <thead>
                 <tr class="wow fadeInDown" data-wow-delay="1.4s">
                     <th class="verification credit">Verifications Credits</th>
-                    <th class="price starter">bouncee</th>
+                    <th class="price starter">Bouncee</th>
                     <th class="price basic">NeverBounce</th>
-                    <th class="price standard">Zero bounce</th>
+                    <th class="price standard">ZeroBounce</th>
                 </tr>
             </thead>
             <tbody>
@@ -307,12 +377,12 @@
             <!-- <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2> -->
             <!-- <h6 class="pricing-sub-header wow fadeInDown" data-wow-delay="0.4s">Try first, decide later, No credit card
                 required!</h6> -->
-                <div class="header-button" style="margin-top:2rem;">
-                  <a rel="nofollow" href="/signup" class="btn btn-home-common">Sign up now and get 100 FREE Credits</a>
-                </div>
-                <p class="checkbox-text" >
-                <img decoding="async" src="assets/checkmark.png" width="15px" height="15px"> No monthly payment, no upfront fee, credits never expire. <br> <img class="checkbox-text" decoding="async" src="assets/checkmark.png" width="15px" height="15px" > All prices include taxes and fees.
-                </p>
+            <div class="header-button" style="margin-top:2rem;">
+                <a rel="nofollow" href="/signup" class="btn btn-home-common">Sign up now and get 100 FREE Credits</a>
+            </div>
+            <p class="checkbox-text">
+                <img decoding="async" src="assets/checkmark.png" width="15px" height="15px"> No monthly payment, no upfront fee, credits never expire. <br> <img class="checkbox-text" decoding="async" src="assets/checkmark.png" width="15px" height="15px"> All prices include taxes and fees.
+            </p>
         </div>
     </div>
 
