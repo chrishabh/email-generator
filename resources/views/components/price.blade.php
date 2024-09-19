@@ -34,7 +34,7 @@
             border-radius: 12px;
             /* Round all four corners */
             overflow: hidden;
-            transform: scale(1.4);
+            transform: scale(1.2);
         }
 
         .basic {
