@@ -318,55 +318,55 @@
             <tbody>
                 <tr class="wow fadeInDown" data-wow-delay="1.5s">
                     <td class="verification credit">2,000 Verifications</td>
-                    <td class="price starter">$5.00</td>
+                    <td class="price starter">$5.00/₹418.29</td>
                     <td class="price basic">$16.00</td>
                     <td class="price standard">$20.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.6s">
                     <td class="verification credit">5,000 Verifications</td>
-                    <td class="price starter">$9.00</td>
+                    <td class="price starter">$9.00/₹<?php echo 83.66*7 ?></td>
                     <td class="price basic">$40.00</td>
                     <td class="price standard">$45.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.7s">
                     <td class="verification credit">10,000 Verifications</td>
-                    <td class="price starter">$14.00</td>
+                    <td class="price starter">$14.00/₹<?php echo 83.66*14 ?></td>
                     <td class="price basic">$50.00</td>
                     <td class="price standard">$80.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.8s">
                     <td class="verification credit">25,000 Verifications</td>
-                    <td class="price starter">$28.00</td>
+                    <td class="price starter">$28.00/₹<?php echo 83.66*28 ?></td>
                     <td class="price basic">$125.00</td>
                     <td class="price standard">$190.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.9s">
                     <td class="verification credit">50,000 Verifications</td>
-                    <td class="price starter">$45.00</td>
+                    <td class="price starter">$45.00/₹<?php echo 83.66*45 ?></td>
                     <td class="price basic">$250.00</td>
                     <td class="price standard">$375.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.10s">
                     <td class="verification credit">100K Verifications</td>
-                    <td class="price starter">$75.00</td>
+                    <td class="price starter">$75.00/₹<?php echo 83.66*75 ?></td>
                     <td class="price basic">$400.00</td>
                     <td class="price standard">$425.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.11s">
                     <td class="verification credit">200K Verifications</td>
-                    <td class="price starter">$125.00</td>
+                    <td class="price starter">$125.00/₹<?php echo 83.66*125 ?></td>
                     <td class="price basic">$800.00</td>
                     <td class="price standard">$850.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.12s">
                     <td class="verification credit">500K Verifications</td>
-                    <td class="price starter">$250.00</td>
+                    <td class="price starter">$250.00/₹<?php echo 83.66*250 ?></td>
                     <td class="price basic">$1,500.00</td>
                     <td class="price standard">$1,800.00</td>
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.13s">
                     <td class="verification credit">1M Verifications</td>
-                    <td class="price starter">$450.00</td>
+                    <td class="price starter">$450.00/₹<?php echo 83.66*450 ?></td>
                     <td class="price basic">$3,000.00</td>
                     <td class="price standard">$2,750.00</td>
                 </tr>
