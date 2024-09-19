@@ -166,7 +166,8 @@ $(document).ready(function() {
 
 
     let searchButton =document.getElementById('searchButton');
-    searchButton.addEventListener('click',searchFormData)
+    if(searchButton)
+        searchButton.addEventListener('click',searchFormData)
 });
 
 
