@@ -33,6 +33,7 @@
     @php
     // Retrieve the logged-in user's name
     $fullName = Auth::user()->name;
+    $role = Auth::user()->role;
 
     // Check if the name contains at least two parts
     $nameParts = explode(' ', $fullName);
@@ -110,7 +111,11 @@
                         <div class="header-dropdown">
                             <div id="myDropdown" class="dropdown-content">
                                 <a href="/profile">Profile</a>
-                                <a href="/setting">Setting</a>
+                                @if($role == 'user')
+                                    <a href="/payment-history">Payment History</a>
+                                @else 
+                                    <a href="/settings">Settings</a>
+                                @endif
                                 <div class="dropdown-divider" id="dive"></div>
                                 <a href="/logout" id="out">Sign Out</a>
                             </div>

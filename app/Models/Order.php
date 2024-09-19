@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,18 @@ use Illuminate\Support\Facades\Auth;
 class Order extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    protected $dateFormat = 'Y-m-d';
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y H:m:s');
+    }
 
     public static function createOrder($data = [])
     {
@@ -31,5 +44,10 @@ class Order extends Model
     public static function checkOrderExists($user_id,$amount)
     {
         return Order::whereNull('deleted_at')->where('user_id',$user_id)->where('amount',$amount)->where('status','Created')->first();
+    }
+
+    public static function getOrderDetails($user_id)
+    {
+        return Order::select('order_id','prefill_name','status','amount','created_at')->whereNull('deleted_at')->where('user_id',$user_id)->get();
     }
 }

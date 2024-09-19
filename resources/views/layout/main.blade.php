@@ -1,5 +1,5 @@
 
-@if(request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile')
+@if(request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history')
     @include('layout.header1',['headerData' =>$headerData??null])
 @else 
     @include('layout.header',['headerData' =>$headerData??null])

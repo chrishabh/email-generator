@@ -132,4 +132,31 @@ class PaymentController extends Controller
         $headerData['creditPoint'] = $creditPoint; 
         return view('verify.pricing')->with(compact('headerData'));
     }
+
+    public static function getPaymentHistory()
+    {
+        $payment_data = Order::getOrderDetails(Auth::User()->id);
+
+        if(count($payment_data)>0){
+            $payment_data =  $payment_data->toArray();
+        }else{
+            $payment_data = [];
+        }
+
+        $creditPoint =0;
+        $headerData = array(); 
+        if(Auth::check()){ 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+           
+            if(!empty($data)){
+                $creditPoint =$data->credits;
+                
+            }
+        }
+            
+        $headerData['creditPoint'] = $creditPoint; 
+        $headerData['paymentData'] = $payment_data; 
+
+        return view('verify.payment-history')->with(compact('headerData'));
+    }
 }
