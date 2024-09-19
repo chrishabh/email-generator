@@ -68,5 +68,68 @@
    visibility: visible;
 }
 
+ 
 
+#profile-page .loader-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+
+#profile-page .loader-overlay .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 0.3rem solid rgba(0, 0, 0, 0.1); /* Light border */
+    border-top: 0.3rem solid var(--accent-color); /* Blue border */
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* Continuous spin */
+}
+
+/* Keyframes for the spinner animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+#profile-page .input-field-error{
+    border: 1px solid red;
+}
+
+
+#profile-page .password-error{
+   font-size: 0.8em;
+}
+
+
+
+#profile-page .position-relative {
+    position: relative;
+}
+
+#profile-page .password-toggle-icon {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    font-size: 1rem;
+}
+
+#profile-page .password-toggle-icon:hover {
+    color: #000;
+}
 

@@ -19,6 +19,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+    protected $table ='users';
     protected $fillable = [
         'name',
         'email',
@@ -58,5 +60,13 @@ class User extends Authenticatable
     public static function updatePassword($email,$password,$ip)
     {
         return User::where('email', $email)->update(['password'=> Hash::make($password),'password_updated_at' => Carbon::now(), 'password_update_ip'=>$ip ]);
+    }
+
+
+    static function insertDataAndgetId($array,$id=null){
+        if(!empty($id))  $status = self::where('id',$id)->update($array);
+        else
+        $status = self::insert($array);
+        return $status;
     }
 }
