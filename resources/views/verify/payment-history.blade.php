@@ -1,15 +1,14 @@
 @extends('layout.main')
- 
+
 @section('main-section')
-    @push('styles')
-      
-    @endpush
-   <!-- <div class="flex"> -->
-   <section id="payment-history" >
-<link rel="stylesheet" href="css/payment-history.css">
+@push('styles')
+
+@endpush
+<!-- <div class="flex"> -->
+<section id="payment-history">
+    <link rel="stylesheet" href="css/payment-history.css">
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
         }
@@ -85,9 +84,12 @@
             font-weight: bold;
         }
 
-
-
-        
+        .no-records {
+            display: block;
+            /* Hidden initially */
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
     <div class="container ">
         <div class="content-box">
@@ -96,11 +98,11 @@
             <div class="row ">
                 <div class="col-sm-12">
                     <div class="element-wrapper">
-                    <div class="section-header text-center">
-            <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Paymet History</h2>
+                        <div class="section-header text-center">
+                            <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Paymet History</h2>
 
-            <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
-        </div>
+                            <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
+                        </div>
                         <div class="element-box-tp " style="cursor: default;">
                             <div class="table-responsive">
                                 <table class="table table-padded">
@@ -117,20 +119,20 @@
                                             </th>
                                             <th>
                                                 Price
-                                            </th> 
+                                            </th>
                                             <th>
                                                 Created At
-                                            </th> 
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @php               
-                       
+                                        @php
+
                                         if(!empty($headerData)){
-                                            $data = $headerData['paymentData'];
+                                        $data = $headerData['paymentData'];
                                         }
-                                    @endphp
-                                    @foreach($data as $k=>$value)
+                                        @endphp
+                                        @foreach($data as $k=>$value)
                                         <tr>
                                             <td class="nowrap">
                                                 <span>{{$value['order_id']}}</span>
@@ -142,15 +144,21 @@
                                                 <span class="text-success">{{$value['status']}}</span>
                                             </td>
                                             <td class="cell-with-media">
-                                                <span >$ {{$value['amount']}}</span>
+                                                <span>$ {{$value['amount']}}</span>
                                             </td>
                                             <td class="cell-with-media">
                                                 <span>{{$value['created_at']}}</span>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                        @endforeach
                                     </tbody>
+
                                 </table>
+                                @if(empty($data))
+                                <div class="no-records" id="noRecords">
+                                    <img src="{{ asset('assets/No-record-found.gif') }}" alt="no content" srcset="">
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -160,6 +168,6 @@
     </div>
 
 </section>
-   <!-- </div> -->
- 
+<!-- </div> -->
+
 @endsection
