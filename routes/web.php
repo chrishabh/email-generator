@@ -65,9 +65,7 @@ try{
         Route::get('/profile', function () {
             return view('comming-soon');
         });
-        Route::get('/setting', function () {
-            return view('comming-soon');
-        });
+      
 
         Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
@@ -75,6 +73,7 @@ try{
             Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
             Route::get('/resend-code', [LoginController::class, 'resendCode'])->name('resend.code');
+            Route::get('/payment-history', [PaymentController::class, 'getPaymentHistory'])->name('payment.history');
       
         });
          
