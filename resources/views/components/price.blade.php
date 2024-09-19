@@ -324,7 +324,7 @@
                 </tr>
                 <tr class="wow fadeInDown" data-wow-delay="1.6s">
                     <td class="verification credit">5,000 Verifications</td>
-                    <td class="price starter">$9.00/₹<?php echo 83.66*7 ?></td>
+                    <td class="price starter">$9.00/₹<?php echo 83.66*9 ?></td>
                     <td class="price basic">$40.00</td>
                     <td class="price standard">$45.00</td>
                 </tr>
