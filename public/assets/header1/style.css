@@ -81,7 +81,6 @@ body{
     transition: opacity 0.3s ease, visibility 0.3s ease;
     transform: translateY(-10px); */
     transition: all 0.3s ease;
-    visibility: visible; 
     transform: translateY(0);
     display: block;
     position: absolute;
