@@ -57,7 +57,6 @@ let init =function(){
     });
 
     let data = document.querySelector('[data-table]');
-    console.log(data);
     if(data && data!=null ){
         let tableData  = data.dataset.table;
         getVerificationEmailStatus(JSON.parse(tableData));   
