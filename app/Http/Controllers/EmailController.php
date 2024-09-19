@@ -141,6 +141,7 @@ class EmailController extends Controller
             $data                    = LeadFinderPCEmailLogs::getEmailDataBasedOnId($emailId,$fileId);
             $status                  = null;
             $isAbortAll              = false;
+            $user_id                 = Auth::user()->id;
             if(!empty($data)){
                 $email = $data['email'];
                 $id    = $data['id'];
@@ -150,13 +151,15 @@ class EmailController extends Controller
                     }else{
                         $status = 'invalid';
                     }
+                    UserCredits::updateCreditsWhenEmailGetsVerify($user_id,1);
                 }
                 if ($stopValidationCheckbox=='1'){
                     if($this->isValidEmail($email)){ 
                         $status = 'valid';
-                   } else{
+                   }else{
                         $status = 'invalid';
                    } 
+                   UserCredits::updateCreditsWhenEmailGetsVerify($user_id,1);
                 }
     
                 $ob1 = new LeadFinderPCEmailLogs; 
