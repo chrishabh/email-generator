@@ -74,9 +74,10 @@ class RegisterController extends Controller
                 'created_at' =>  Carbon::now(),
                 ];
                 $link = url("/bouncee-verification")."/".$token;
+                UserVerification::whereNull('deleted_at')->where('user_id',$user_data->id)->update(['deleted_at'=>Carbon::now()]);
                 if(UserVerification::createVerificationToken($verification_link)){
                     Notification::route('mail', $user_data->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$user_data->name,'verification_link'=>$link],'verification-template'));
-
+                   
                     return redirect()->route('signin')->with('success', "Please check your inbox, junk, or spam folder for a verification email. Once you verify your email, you'll be able to log in.");
                 }        
             }else{
