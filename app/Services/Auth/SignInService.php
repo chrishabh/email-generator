@@ -25,6 +25,11 @@ class SignInService{
             //     'email'=>['*The provided email does not exist in our records. Please register if you don\'t have an account.']
             // ]);
         } 
+        if($user->email_verified == '0'){
+            return redirect()->back()->withErrors([
+                'email' => 'Your email has not been verified. Please complete the email verification process to log in.'
+            ])->withInput();
+        }
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 
             session(['lastActivityTime'=>time()]);
