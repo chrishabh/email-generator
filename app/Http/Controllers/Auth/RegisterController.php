@@ -67,6 +67,7 @@ class RegisterController extends Controller
                 $timestamp = Carbon::now()->timestamp;
                 $str = '?userid=' . $user_data->id . '?email=' .$user_data->email .'?timestamp'.$timestamp. '?uniquecode=' . bin2hex($bytes);
                 $token = (base64_encode($str));
+                $token = str_replace('/', '',  $token);
                 $verification_link = [
                 'user_id' => $user_data->id,
                 'url_token' => $token,
