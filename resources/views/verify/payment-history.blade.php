@@ -99,7 +99,7 @@
                 <div class="col-sm-12">
                     <div class="element-wrapper">
                         <div class="section-header text-center">
-                            <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Paymet History</h2>
+                            <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Payment History</h2>
 
                             <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
                         </div>
