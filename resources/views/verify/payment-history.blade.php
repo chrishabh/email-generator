@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="css/payment-history.css">
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
         .pricing-table {
             width: 100%;
             border-collapse: collapse;
