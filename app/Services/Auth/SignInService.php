@@ -26,9 +26,8 @@ class SignInService{
             // ]);
         } 
         if($user->email_verified == '0'){
-            return redirect()->back()->withErrors([
-                'email' => 'Your email has not been verified. Please complete the email verification process to log in.'
-            ])->withInput();
+            return redirect()->back()->with('error','Your email has not been verified. Please complete the email verification process to log in.'
+            );
         }
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 

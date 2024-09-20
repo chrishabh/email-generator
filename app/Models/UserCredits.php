@@ -58,7 +58,7 @@ class UserCredits extends Model
 
     public static function initialFreeCredit($user_id)
     {
-        return UserCredits::insert([
+        UserCredits::insert([
             'order_id' => "Initial_Sign-up_credits",
             'user_id' => $user_id,
             'credits' => "100"

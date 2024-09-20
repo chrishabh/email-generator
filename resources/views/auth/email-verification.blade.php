@@ -63,8 +63,12 @@
                     </div>
                 @endif
                 @if (session()->has('error'))
-                    <div class="alert block-message" id="alertBlock">
-                        {{ session('error') }}
+                    <div class="alert alert-danger" id="alertBlock">
+                        @if (session()->has('error'))
+                            <!-- <div class="alert block-message" id="alertBlock"> -->
+                                {{ session('error') }}
+                            <!-- </div> -->
+                        @endif
                     </div>
                 @endif
 
@@ -157,11 +161,30 @@
 
     <style>
         .alert-success {
-            background: linear-gradient(-110deg, #46cda6 0%, #3bb8e1 100%);
+            padding: 20px;
+            background-color: #4CAF50; /* Success green */
+            color: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         alert-danger {
+            padding: 20px;
             background-color: #f44336;
+            color: white;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
         .alert {
@@ -169,6 +192,23 @@
             background-color: #f44336;
             color: white;
             margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .alert .close-btn {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .alert .close-btn:hover {
+            color: #ffcccb;
         }
 
         .closebtn {

@@ -32,7 +32,7 @@ class RegisterController extends Controller
 
     public function signup(Request $request)
     {
-        try {
+         try {
             $registerFormRequest = new RegisterFormRequest(); 
             $validator           = Validator::make($request->all(),$registerFormRequest->rules()); 
             if ($validator->fails()) {
@@ -61,7 +61,7 @@ class RegisterController extends Controller
             $ip = $request->ip();
             if(!empty($user_data)){
                 if($user_data->email_verified == '1'){
-                    return redirect()->back()->withErrors("Email is already Verified!");
+                    return redirect()->back()->with("error","Email is already Verified!");
                 }
                 $bytes = random_bytes(16);
                 $timestamp = Carbon::now()->timestamp;
@@ -81,7 +81,7 @@ class RegisterController extends Controller
                     return redirect()->route('signin')->with('success', "Please check your inbox, junk, or spam folder for a verification email. Once you verify your email, you'll be able to log in.");
                 }        
             }else{
-                return redirect()->back()->withErrors("The email you entered is not registered. Please sign up first to proceed with the email verification proccess.")->withInput();
+                return redirect()->back()->with('error',"The email you entered is not registered. Please sign up first to proceed with the email verification proccess.");
             }
         }catch (ValidationException $e) {
             // Handle validation exceptions specifically
