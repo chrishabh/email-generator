@@ -35,13 +35,11 @@ class RegisterService{
         $link = url("/bouncee-verification")."/".$token;
         if(UserVerification::createVerificationToken($verification_link)){
             Notification::route('mail', $request->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$request->name,'verification_link'=>$link],'verification-template'));
-
+            UserCredits::initialFreeCredit(User::getUserId($request->email));
             return redirect()->route('signin')->with('success', "Registration successful! Please check your inbox, junk, or spam folder for a verification email. Once you verify your email, you'll be able to log in.");
 
         }
         
         return redirect()->route('signin')->with('success', 'Something went wrong! Please try again.');
-
-        // UserCredits::initialFreeCredit(User::getUserId($request->email));
     }
 }
