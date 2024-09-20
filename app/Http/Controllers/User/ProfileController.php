@@ -32,6 +32,23 @@ class ProfileController extends Controller
         return view('personal.profile')->with(compact('headerData','userData'));
     }
 
+    function getSettingPage(Request $request){
+        $creditPoint =0;
+        $headerData = array(); 
+        if(Auth::check()){ 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+           
+            if(!empty($data)){
+                $creditPoint =$data->credits;
+                
+            }
+            $userData  = Auth::user();
+        }
+            
+        $headerData['creditPoint'] = $creditPoint;  
+        return view('personal.settings')->with(compact('headerData','userData'));
+    }
+
 
 
    // Update Personal Info

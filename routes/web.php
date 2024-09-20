@@ -69,12 +69,13 @@ try{
             Route::get('/', [ProfileController::class,'getProfilePage']); 
             Route::post('/update', [ProfileController::class, 'updatePersonalInfo']);
             Route::post('/work-experience/update', [ProfileController::class, 'updateWorkExperience']); 
-            Route::post('/password/update', [ProfileController::class, 'updatePassword']);   
+            Route::post('/password/update', [ProfileController::class, 'updatePassword']); 
         });
+        Route::get('/settings', [ProfileController::class,'getSettingPage']);   
 
-        Route::get('/setting', function () {
-            return view('comming-soon');
-        });
+        // Route::get('/setting', function () {
+        //     return view('comming-soon');
+        // });
 
         Route::middleware('auth:web')->group(function(){
             Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
