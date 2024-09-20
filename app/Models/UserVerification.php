@@ -21,7 +21,8 @@ class UserVerification extends Model
 
         if($return){
             $time = UserVerification::select('created_at','user_id')->whereNull('deleted_at')->where('url_token',$token)->first();
-            if(User::getUserdata($time->user_id)['email_verified'] == '1'){
+          
+            if(User::getUserdataById($time->user_id)->email_verified == '1'){
                 return response()->view('already-email-verified');
             }
             if(Carbon::parse($time->created_at)->addMinutes(env('EMAIL_VERIFICATION_TIME',60))->isPast()){
