@@ -57,6 +57,11 @@ class User extends Authenticatable
         return User::where('email', $email)->first();
     }
 
+    public static function getUserdataById($user_id)
+    {
+        return User::where('id', $user_id)->first();
+    }
+
     public static function updatePassword($email,$password,$ip)
     {
         return User::where('email', $email)->update(['password'=> Hash::make($password),'password_updated_at' => Carbon::now(), 'password_update_ip'=>$ip ]);
@@ -68,5 +73,10 @@ class User extends Authenticatable
         else
         $status = self::insert($array);
         return $status;
+    }
+
+    public static function verifyUser($user_id)
+    {
+        return User::whereNull('deleted_at')->where('id',$user_id)->update(['email_verified'=>'1','email_verified_at'=> Carbon::now()]);
     }
 }

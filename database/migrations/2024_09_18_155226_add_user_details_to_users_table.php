@@ -22,6 +22,7 @@ class AddUserDetailsToUsersTable extends Migration
             $table->string('profile_picture_location')->nullable()->after('work_experience_description');
             $table->string('profile_picture_name')->nullable()->after('profile_picture_location');
             $table->enum('is_password_update_from_profile_screen',['0','1'])->default('0')->after('confirm_password');
+            $table->enum('email_verified',['0','1'])->default('0')->after('email');
         });
     }
 

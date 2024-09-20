@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>SignIn | bouncee</title>
+    <title>Email Verification | bouncee</title>
     <!-- <script type="text/javascript" async="" src="signup-assets/js/mixpannel-2-latest.min.js"></script> -->
     <script src="signup-assets/js/jquery-min.js"></script>
     <script src="signup-assets/js/script-min.js"></script>
@@ -36,7 +36,7 @@
             <div class="sidebar-signup">
                 <div>
                     <div class="div-block-148">
-                        <h1>Welcome back<br></h1>
+                        <h1>Rest Password<br></h1>
                         <p class="signup-intro" style="text-align: center;">Email verification is a powerful tool for
                             your business.<br></p>
                     </div>
@@ -63,8 +63,12 @@
                     </div>
                 @endif
                 @if (session()->has('error'))
-                    <div class="alert block-message" id="alertBlock">
-                        {{ session('error') }}
+                    <div class="alert alert-danger" id="alertBlock">
+                        @if (session()->has('error'))
+                            <!-- <div class="alert block-message" id="alertBlock"> -->
+                                {{ session('error') }}
+                            <!-- </div> -->
+                        @endif
                     </div>
                 @endif
 
@@ -82,10 +86,10 @@
                 @enderror  
                 <div class="sign-form">
                     <div class="title">
-                        Login to your acount
+                        Email Verification
                     </div>
 
-                    <form method="POST" accept-charset="utf-8" class="form-inner" id='signinForm' action="{{ route('signin') }}">
+                    <form method="POST" accept-charset="utf-8" class="form-inner" id='resetPassword' action="{{ route('verification') }}">
                         @csrf
                         <div class="sign-inp-row">
                             <label for="">Your work email</label>
@@ -96,24 +100,11 @@
                                @enderror
                             </div>
                         </div>
-                        <div class="sign-inp-row pass pass_field">
-                            <label for="">Enter your password</label>
-                            <input type="password" name="passwordL" class="{{ $errors->has('passwordL') ? 'validation-error' : '' }}" placeholder="Password" id="password">
-                            <div class="icon-eye toggle_pass signin-icon-eye"></div>
-                            <div class="vError" id="passwordError">
-                                @error('passwordL')
-                                   {{ $message }}  
-                               @enderror
-                            </div>
-                        </div>
 
-
-                        <button class="btn fullwidth" type="submit" style="margin-top: 4em;" id="signIn">Login to your
-                            account</button>
+                        <button class="btn fullwidth" type="submit" style="margin-top: 4em;" id="sendVerification">Send Email Verification</button>
                         <div class="sign-form--foot">
-                            <a href="/recovery">Can’t login?</a> <a href="/signup"> Sign up for new user?</a><br>
+                            <a href="/signin">Log In</a> or <a href="/signup">Sign up for new user?</a>
                         </div>
-                        <div class="sign-form--foot-verification"><a style="margin-top: 3em;" href="/verification">Email Verification?</a></div>
                 </div>
                 </form>
                 <!-- <script>
