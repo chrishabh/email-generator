@@ -26,6 +26,7 @@ class RegisterService{
         $timestamp = Carbon::now()->timestamp;
         $str = '?userid=' . $user . '?email=' . $request->email .'?timestamp'.$timestamp. '?uniquecode=' . bin2hex($bytes);
         $token = (base64_encode($str));
+        $token = str_replace('/', '',  $token);
         $verification_link = [
           'user_id' => $user,
           'url_token' => $token,
