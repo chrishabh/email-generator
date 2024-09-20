@@ -21,7 +21,7 @@ use App\Http\Controllers\User\ProfileController;
 */
 try{
 
-    Route::get('/bouncee-verification/{hash}', [RegisterController::class,'test'])->middleware('user.email.verification');
+    Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 
         Route::get('/', function () {
