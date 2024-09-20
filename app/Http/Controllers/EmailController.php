@@ -488,10 +488,104 @@ class EmailController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
         }
-        
-        VerifyEmailsJob::dispatch($request['fileId']);
+        if(envparam('IS_BULK_EMAIL_VERIFIED_THROUGH_BOUNCIFY_BULK_API')=='1'){ 
+            $response = self::verifyEmailByBouncifyJob($request['fileId']);
+        }else{
+            VerifyEmailsJob::dispatch($request['fileId']);
+        }
         return response()->json(['sucess'=>'ok','status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],Auth::user()->id)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
+    }
+
+    private static function verifyEmailByBouncifyJob($fileId){ 
+        $user_id = Auth::user()->id;
+        $data    = uploadedAndDownloadFileName::getDataFromTable($fileId,$user_id,'pending');
+        if(!empty($data)){
+            $uploadFileLocation  =  storage_path('app/'.$data['uploadedFileLocation']); 
+            if(!empty($uploadFileLocation)){
+                $response  = bulkBouncify($uploadFileLocation,$fileId);
+                if($response && $response['success']){
+                    $job_id = $response['job_id'];
+                    echo $job_id;
+                    if(uploadedAndDownloadFileName::updateData(['job_id'=>$job_id],$fileId)){
+                        $interval               = 10; //check every $interval second
+                        $isVerficationCompleted = false;
+                        do {
+                            // Call the bulkJobStatus function
+                            $response = bulkJobStatus($job_id, $fileId);
+                
+                            // Log the response and status
+                            if ($response['success']) {
+                                $status = $response['status'];
+                                // Check if the job is completed
+                                if ($status == 'completed') {
+                                    $isVerficationCompleted =true;
+                                    break;
+                                }
+                            } else {
+                                $isVerficationCompleted = false;
+                                break;
+                            }
+                
+                            // Wait for the specified interval before checking again
+                            sleep($interval);
+                
+                        } while (true);
+
+
+                        if($isVerficationCompleted){
+                            $response  = bulkDownload($job_id,$fileId);
+                            if($response && $response['success']){
+                                 
+                                $lines = explode("\n", $response['data']);
+
+                                // Initialize an array to hold the result
+                                $result = [];
+                                
+                                // Loop through each line
+                                foreach ($lines as $line) {
+                                    // Parse the line as CSV
+                                    $result[] = str_getcsv($line);
+                                }
+                                print_r($result);
+                            }
+                        }
+                    }
+                }
+                return $response;
+                 
+            }
+        }
+
+    }
+
+
+
+    function checkJobStatusPeriodically($job_id, $fileId, $interval = 10)
+    {
+        do {
+            // Call the bulkJobStatus function
+            $response = bulkJobStatus($job_id, $fileId);
+
+            // Log the response and status
+            if ($response['success']) {
+                $status = $response['status'];
+                echo "Current Status: $status\n";
+
+                // Check if the job is completed
+                if ($status == 'completed') {
+                    echo "Job completed successfully!\n";
+                    break;
+                }
+            } else {
+                echo "Error: " . $response['message'] . "\n";
+                break;
+            }
+
+            // Wait for the specified interval before checking again
+            sleep($interval);
+
+        } while (true);
     }
 
     function checkEmailIsValidInvalid(Request $request){

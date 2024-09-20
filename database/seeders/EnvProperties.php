@@ -22,6 +22,7 @@ class EnvProperties extends Seeder
             ,('debounce_key','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_KEY','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_SECRET','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+            ,('IS_BULK_EMAIL_VERIFIED_THROUGH_BOUNCIFY_BULK_API','0','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ");
         } 
         if (env('APP_ENV') == "local") {
@@ -31,6 +32,7 @@ class EnvProperties extends Seeder
             ,('debounce_key','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_KEY','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_SECRET','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+            ,('IS_BULK_EMAIL_VERIFIED_THROUGH_BOUNCIFY_BULK_API','0','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ");
         } 
         if (env('APP_ENV') == "staging") {
@@ -40,6 +42,7 @@ class EnvProperties extends Seeder
             ,('debounce_key','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_KEY','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ,('RAZORPAY_SECRET','','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+            ,('IS_BULK_EMAIL_VERIFIED_THROUGH_BOUNCIFY_BULK_API','0','N',NULL,1,NULL,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
             ");
         } 
         

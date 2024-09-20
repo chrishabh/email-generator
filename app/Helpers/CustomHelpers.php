@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Notifications\ConfirmationCode;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Hash;
 
@@ -67,13 +68,12 @@ function envparam($key = null, $default = null)
     return $configVal;
 }
 
-function bulkBouncify($path){
-    $apiKey = envparam('bulk_bouncify_key');
-
-    $curl = curl_init();
-    
+function bulkBouncify($path,$fileId){
+    $apiKey = envparam('bulk_bouncify_key'); 
+    $curl   = curl_init(); 
+    $url    = "https://api.bouncify.io/v1/bulk?apikey=$apiKey";
     curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://api.bouncify.io/v1/bulk?apikey=$apiKey",
+      CURLOPT_URL => $url,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
@@ -90,15 +90,49 @@ function bulkBouncify($path){
 
     curl_close($curl);
 
-    if($httpcode == 200){
-        
-        $return = json_decode($response, true);
-        patchBulkBouncify($return['job_id']);
-        return $return;
+    // Log data in database
+    $logData = [
+        'job_id'            => null,
+        'file_id'           => $fileId,
+        'file_name'         => basename($path),
+        'which_api'         => 'BOUNCIFY_BULK_GET_JOB_ID_API',
+        'url'               => $url,
+        'request'           => json_encode(['local_file' => basename($path)]), // Store request data
+        'response'          => $response, // Store response data
+        'api_status_code'   => $httpcode, // Store response data
+        'created_at'        => now()
+    ];
+    // Insert log with null job_id
+    $logId = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+
+    if($httpcode == 201){ 
+        $return            = json_decode($response, true);
+        if($return['job_id']){
+            $logData['job_id'] = $return['job_id']; // Store the job_id from response
+
+            // Update the log with job_id
+            DB::table('bulk_api_request_response_logs')->where('id', $logId)->update(['job_id' => $return['job_id']]); 
+            
+            sleep(10);
+            $responsePatch     = patchBulkBouncify($return['job_id'],$fileId);
+            if($responsePatch['success']){
+                $customResponse['success']  =  true;
+                $customResponse['httpCode'] =   $httpcode;
+                $customResponse['message']  =  $return['message'];
+                $customResponse['job_id']   =  $return['job_id'];
+            }else{
+                $customResponse             = $responsePatch;
+                $customResponse['job_id']   = $return['job_id'];
+            }   
+        }  
 
     }else{
-        $response['results'] = 'Something went Wrong!';
+        $customResponse['success']      =   false;
+        $customResponse['httpCode']     =   $httpcode;
+        $customResponse['message']      =  'Something went Wrong with creating the jobid api!';
     }
+
+    return $customResponse;
 // Response example.
 // {
 //     "job_id": "r374aki32rnatv868nntpxloc7dkilszc3eu",
@@ -108,15 +142,14 @@ function bulkBouncify($path){
 
 }
 
-function patchBulkBouncify($job_id)
+function patchBulkBouncify($job_id,$fileId)
 {
-    $apiKey = envparam('bulk_bouncify_key');
-
-    $curl = curl_init();
-
+    $apiKey  = envparam('bulk_bouncify_key'); 
+    $curl    = curl_init();
+    $url     = "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey";
     curl_setopt_array($curl, array(
 
-    CURLOPT_URL => "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey",
+    CURLOPT_URL =>  $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -124,21 +157,40 @@ function patchBulkBouncify($job_id)
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => 'PATCH',
+      CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+    CURLOPT_POSTFIELDS => json_encode(['action' => 'start']),
     ));
 
-    $response = curl_exec($curl);
-
+    $response = curl_exec($curl); 
     $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    
+    
+    // Log data in database
+    $logData = [
+        'job_id'            => $job_id,
+        'file_id'           => $fileId,
+        'which_api'         => 'BOUNCIFY_BULK_PATCH_API',
+        'url'               => $url,
+        'request'           => json_encode(['action' => 'start']), // Store request data
+        'response'          => $response, // Store response data
+        'api_status_code'   => $httpcode, // Store response data
+        'created_at'        => now()
+    ];
 
-    curl_close($curl);
-
-    if($httpcode == 200){
-        return json_decode($response, true);
+    // Insert log with null job_id
+    $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+    $response = json_decode($response, true);
+    if($httpcode == 200){ 
+        $customResponse =  $response;
 
     }else{
-        $response['results'] = 'Something went Wrong!';
-    }
-
+        $customResponse['success']  = false;
+        $customResponse['httpCode'] = $httpcode;
+        $customResponse['message']  = $response['result']??'Something went Wrong with creating the patch api!';
+       
+    } 
+     
+    return $customResponse;
     // {
     //     "job_id": "r374aki32rnatv868nntpxloc7dkilszc3eu",
     //     "success": true,
@@ -147,14 +199,15 @@ function patchBulkBouncify($job_id)
 
 }
 
-function bulkJobStatus($job_id)
+function bulkJobStatus($job_id,$fileId)
 {
-    $apiKey = envparam('bulk_bouncify_key');
-    $curl = curl_init();
+    $apiKey  = envparam('bulk_bouncify_key');
+    $curl    = curl_init();
+    $url     = "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey";
 
     curl_setopt_array($curl, array(
     // Replace jobId with your list's jobId and API_KEY with your API Key
-    CURLOPT_URL => "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey", 
+    CURLOPT_URL => $url, 
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -168,14 +221,39 @@ function bulkJobStatus($job_id)
 
     $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+    // Prepare log data
+    $logData = [
+        'job_id'     => $job_id, 
+        'file_id'    => $fileId,
+        'which_api'  => 'BOUNCIFY_JOB_STATUS_API',
+        'url'        => $url,
+        'request'    => null,  // No request body for GET
+        'response'   => $response, // Store the response data
+        'created_at' => now(),
+    ];
     curl_close($curl);
+    
+    // Insert log with null job_id
+    $logId = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
 
     if($httpcode == 200){
-        return json_decode($response, true);
+        $response  = json_decode($response, true);
+        if($response){
+            $customResponse['success']  =  true;
+            $customResponse['httpcode'] =  $httpcode;
+            $customResponse['message']  =  $response['message'];
+            $customResponse['status']   =  $response['status'];
+            $customResponse['data']     =  $response;
+        }
 
     }else{
-        $response['results'] = 'Something went Wrong!';
+        $customResponse['success']  =  false;
+        $customResponse['httpcode'] =  $httpcode;
+        $customResponse['status']   =   'ok';
+        $customResponse['message']  = 'Something went Wrong with job status api !';
     }
+
+    return $customResponse;
 
     // {
     //     "job_id": "r374aki32rnatv868nntpxloc7dkilszc3eu",
@@ -203,15 +281,15 @@ function bulkJobStatus($job_id)
 
 }
 
-function bulkDownload($job_id)
+function bulkDownload($job_id,$fileId)
 {
 
-    $apiKey = envparam('bulk_bouncify_key');
-    $curl = curl_init();
-
+    $apiKey  = envparam('bulk_bouncify_key');
+    $curl    = curl_init();
+    $url     = "https://api.bouncify.io/v1/download?jobId=$job_id&apikey=$apiKey";
     curl_setopt_array($curl, array(
     // Replace API_KEY with your API Key and jobId with your list's jobId, you need to download
-    CURLOPT_URL => "https://api.bouncify.io/v1/download?jobId=$job_id&apikey=$apiKey",
+    CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -221,19 +299,37 @@ function bulkDownload($job_id)
     CURLOPT_CUSTOMREQUEST => 'POST',
     ));
 
-    $response = curl_exec($curl);
-
-    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
+    $response = curl_exec($curl); 
+    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE); 
+    // Prepare log data
+    $logData = [
+        'job_id'     => $job_id,
+        'file_id'    => $fileId,
+        'which_api'  => 'BOUNCIFY_DOWNLOAD_API',
+        'url'        => $url,
+        'request'    => null,  // No request body for GET
+        'response'   => $response, // Store the response data
+        'created_at' => now(),
+    ];
     curl_close($curl);
+    
+    // Insert log with null job_id
+    $logId = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
 
     if($httpcode == 200){
-        deleteBulkJob($job_id);
-        return $response;
+        $customResponse['success']  =  true;
+        $customResponse['httpcode'] =  $httpcode;
+        $customResponse['data']     =  $response;
+        deleteBulkJob($job_id,$fileId);
 
     }else{
-        $response['results'] = 'Something went Wrong!';
+        $customResponse['success']  =  false;
+        $customResponse['httpcode'] =  $httpcode;
+        $customResponse['status']   =   'ok';
+        $customResponse['message']  = 'Something went Wrong with download api !';
     }
+ 
+    return $customResponse;
 
 //     "Email", "Verification Result",	"Syntax Error",	"ISP", "Role", "Accept-all", "Disposable", "Trap", "Verified At"
 // "info@sample.com", "deliverable", "N", "Y", "N", "N", "N", "2021-09-13T06:49:39.280Z"
@@ -241,15 +337,15 @@ function bulkDownload($job_id)
 
 }
 
-function deleteBulkJob($job_id)
+function deleteBulkJob($job_id,$fileId)
 {
 
-    $apiKey = envparam('bulk_bouncify_key');
-    $curl = curl_init();
-
+    $apiKey  =  envparam('bulk_bouncify_key');
+    $curl    =  curl_init();
+    $url     =  "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey";
     curl_setopt_array($curl, array(
     // Replace jobId with your list's jobId and API_KEY with your API Key,you needs to delete
-    CURLOPT_URL => "https://api.bouncify.io/v1/bulk/$job_id?apikey=$apiKey",
+    CURLOPT_URL =>  $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -262,15 +358,35 @@ function deleteBulkJob($job_id)
     $response = curl_exec($curl);
 
     $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
+    // Prepare log data
+    $logData = [
+        'job_id'     => $job_id,
+        'file_id'    => $fileId,
+        'which_api'  => 'BOUNCIFY_DELETE_JOB_API',
+        'url'        => $url,
+        'request'    => null,  // No request body for GET
+        'response'   => $response, // Store the response data
+        'created_at' => now(),
+    ];
+    
     curl_close($curl);
 
-    if($httpcode == 200){
-        return $response;
+    // Insert log with null job_id
+    $logId = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+    $response  =  json_decode($response,true);
+
+    if($httpcode == 200){ 
+        $customResponse['success']  =  true;
+        $customResponse['httpCode'] =   $httpcode;
+        $customResponse['message']  =  $response['message']; 
 
     }else{
-        $response['results'] = 'Something went Wrong!';
+        $customResponse['success']  =  false;
+        $customResponse['httpCode'] =  $httpcode;
+        $customResponse['message']  =   $response['message']?? 'Something went Wrong with delete api !'; 
     }
+
+    return $customResponse;
 }
 
 
