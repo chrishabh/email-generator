@@ -21,20 +21,22 @@ use App\Http\Controllers\User\ProfileController;
 */
 try{
 
-    
-    
+    Route::get('/bouncee-verification/{hash}', [RegisterController::class,'test'])->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 
         Route::get('/', function () {
             return view('index');
         });
-    
+      
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
         Route::post('/signin',[LoginController::class,'login']);
         Route::get('/recovery',[LoginController::class,'showResetForm'])->name('recovery');
         Route::post('/recovery',[LoginController::class,'resetPassword']); 
+        Route::get('/verification',[RegisterController::class,'showVerificatinForm'])->name('verification');
+        Route::post('/verification',[RegisterController::class,'sendVerificationEmail']); 
+      
         Route::get('/single-verification', function () {
             return view('single-verification');
         });
@@ -59,9 +61,9 @@ try{
         Route::get('/check-file-status', [EmailController::class, 'getAllData']);
         Route::post('/export-data', [EmailController::class, 'exportData']);
         Route::post('/start-verification', [EmailController::class, 'startVerification']);
-        Route::get('/verification', function () {
-            return view('verify');
-        });
+        // Route::get('/verification', function () {
+        //     return view('verify');
+        // });
 
         Route::prefix('profile')->group(function(){
             Route::get('/', [ProfileController::class,'getProfilePage']); 

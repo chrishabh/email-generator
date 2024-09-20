@@ -69,4 +69,9 @@ class User extends Authenticatable
         $status = self::insert($array);
         return $status;
     }
+
+    public static function verifyUser($user_id)
+    {
+        return User::whereNull('deleted_at')->where('id',$user_id)->update(['email_verified'=>'1','email_verified_at'=> Carbon::now()]);
+    }
 }
