@@ -110,10 +110,10 @@
                                                 Price per Verification
                                             </th>
                                             <th>
-                                                Price (US$)
+                                                Price (USD $)
                                             </th>
                                             <th>
-                                                Price (₹)
+                                                Price (INR ₹)
                                             </th>
                                             <th>
                                                 Buy
