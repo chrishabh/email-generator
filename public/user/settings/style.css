@@ -112,10 +112,18 @@ body {
     margin: 0 auto;
 }
 
-#admin-setting-page #setting-section{
+#admin-setting-page #setting-section .setting-main-class{
     padding: 3em 3em;
     margin: 2em;
     box-shadow: var(--common-box-shadow);
+}
+
+#admin-setting-page #setting-section .no-data-found{
+    text-align: center;
+    border: 2px dashed;
+    padding: 24px 10px;
+    font-size: 1.7em;
+    font-weight: 500;
 }
 
 #admin-setting-page #setting-section .user-heading{

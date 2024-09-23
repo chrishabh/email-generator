@@ -15,14 +15,13 @@ async function renderHtml(event,elem){
 }
 
 function renderSettingHtmlPage(data){
-    let html       = '';
-    if(!data || !Array.isArray(data) || data.length === 0){
-
-        html+='<h1>No Data Found </h1>';
-
+    let html       = '' 
+    if(!data || !Array.isArray(data) || data.length === 0){ 
+        html+='<div class="setting-main-class"><h1 class="no-data-found">No Data Found </h1></div>'; 
     }
     else{
-        html = `<h1 class="user-heading">Users Table</h1>
+        html = `<div class="setting-main-class">
+        <h1 class="user-heading">Users Table</h1>
         <table class="table table-hover table-bordered">
             <thead class="table-head">
                 <tr>
@@ -30,7 +29,7 @@ function renderSettingHtmlPage(data){
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Available Credits</th>
-                    <th scope="col">Reset Password</th>
+                    // <th scope="col">Reset Password</th>
                     <th scope="col">delete User Ac</th>
                 </tr>
             </thead>
@@ -41,12 +40,13 @@ function renderSettingHtmlPage(data){
                     <td>${user.name}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
-                    <td class="text-center"><i class="fas fa-key fa-redo-alt"></i></td>
+                    // <td class="text-center"><i class="fas fa-key fa-redo-alt"></i></td>
                     <td class="text-center"><i class="fa-solid fa-trash"></td>
                 </tr>`;
             })
         html+=`</tbody>
-            </table>`
+            </table>
+        </div>`
     }
    // Set the innerHTML instead of textContent to render HTML
    return html

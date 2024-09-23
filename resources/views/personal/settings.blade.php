@@ -50,45 +50,6 @@
     <!-- Main Content -->
     <section id="admin-setting-page" class="container1">
         <div id="setting-section">
-            <h1 class="user-heading">Users Table</h1>
-            <table class="table table-hover table-bordered">
-                <thead class="table-head">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Available Credits</th>
-                        <th scope="col">Reset Password</th>
-                        <th scope="col">delete User Ac</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Rishabh singh</td>
-                        <td>Rishabh.singh@yopmail.com</td>
-                        <td>122 -credits</td>
-                        <td class="text-center"><i class="fas fa-key fa-redo-alt"></i></td>
-                        <td class="text-center"><i class="fa-solid fa-trash"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Rishabh singh</td>
-                        <td>Rishabh.singh@yopmail.com</td>
-                        <td>122 -credits</td>
-                        <td class="text-center"><i class="fas fa-key fa-redo-alt"></i></td>
-                        <td class="text-center"><i class="fa-solid fa-trash"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Rishabh singh</td>
-                        <td>Rishabh.singh@yopmail.com</td>
-                        <td>122 -credits</td>
-                        <td class="text-center"><i class="fas fa-key fa-redo-alt"></i></td>
-                        <td class="text-center"><i class="fa-solid fa-trash"></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
          
     </section>
