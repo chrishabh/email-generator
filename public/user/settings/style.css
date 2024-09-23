@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+/* 
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+} */
+
+/* Sidebar Style */
+.sidebar {
+    width: 80px;
+    background-color: #2d3436;
+    height: 100vh;
+    position: fixed;
+    transition: width 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Expand Sidebar on Hover */
+.sidebar:hover {
+    width: 260px;
+}
+
+/* Sidebar Items */
+.sidebar ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Sidebar Icons */
+.sidebar ul li a i {
+    font-size: 20px;
+    margin-right: 20px;
+    width: 40px;
+    text-align: center;
+}
+
+/* Sidebar Text */
+.sidebar ul li a span {
+    display: inline-block;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show text on sidebar hover */
+.sidebar:hover ul li a span {
+    opacity: 1;
+}
+
+/* Hover Effect */
+.sidebar ul li a:hover {
+    background-color: #00cec9;
+}
+
+.sidebar ul li a.active {
+    background-color: #0984e3;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 80px;
+    padding: 40px;
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+/* Expand Main Content when Sidebar is Open */
+.sidebar:hover ~ .main-content {
+    margin-left: 260px;
+}
+
+/* Main Content Styling */
+.main-content h1 {
+    font-size: 28px;
+    color: #2d3436;
+}
+
+.main-content p {
+    font-size: 18px;
+    color: #636e72;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar:hover {
+        width: 100%;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar:hover ~ .main-content {
+        margin-left: 0;
+    }
+}
