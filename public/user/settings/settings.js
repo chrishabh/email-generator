@@ -5,15 +5,16 @@ function init(){
 async function renderHtml(event,elem){
     event.preventDefault();
     if(elem.id=='setting'){
-        const data = await getSettingHtml('render-setting/','setting-page-token')
-        console.log(data);
-        renderSettingHtmlPage(data)
-
+        $('#preloader').fadeIn();
+        const data     = await getSettingHtml('render-setting/','setting-page-token')
+        let html       = renderSettingHtmlPage(data)
+        let settingDOM = document.getElementById('setting-section') 
+        settingDOM.innerHTML = html;
+        $('#preloader').fadeOut();
     }
 }
 
 function renderSettingHtmlPage(data){
-    let settingDOM = document.getElementById('setting-section') 
     let html       = '';
     if(!data || !Array.isArray(data) || data.length === 0){
 
@@ -48,10 +49,10 @@ function renderSettingHtmlPage(data){
             </table>`
     }
    // Set the innerHTML instead of textContent to render HTML
-   settingDOM.innerHTML = html;
+   return html
 }
 
-async function getSettingHtml(routeURL,tokenName){
+async function fetchGetRequest(routeURL,tokenName){
     try {
         const response = await fetch(`/settings/${routeURL}`, {
             method: 'GET',
@@ -73,6 +74,7 @@ async function getSettingHtml(routeURL,tokenName){
             throw new Error(data.message)
         }
     } catch (error) {
+        $('#preloader').fadeOut();
         console.error('Error:', error);
         Swal.fire({
             icon: 'error',
@@ -80,13 +82,10 @@ async function getSettingHtml(routeURL,tokenName){
             text: error,  // Error message from response
           });
     } finally {
-        // fullScreenLoader.style.display = 'none'; // Hide loader after request completion
+       
     }
 }
 
-function fetchGetRequest(){
-
-}
 
 function fetchPostRequest(){
 
