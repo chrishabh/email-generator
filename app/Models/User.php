@@ -82,13 +82,38 @@ class User extends Authenticatable
     }
 
 
-    static function getUserDetailsWithRemainingCredits(){
-        $query = "SELECT u.id as userId,u.name,u.email,u.mobile_number,u.work_experience_description,u.gender,uc.credits FROM users u LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc on uc.user_id=u.id WHERE u.deleted_at IS NULL AND u.role='user'";
-        $result = DB::select($query);
-        if(empty($result)){
-            return [];
-        }
-        return $result;
-         
+    static function getUserDetailsWithRemainingCredits($perPage, $currentPage){
+        $offset = ($currentPage - 1) * $perPage;
+    
+        // Get the total number of users for pagination
+        $totalUsersQuery = "
+            SELECT COUNT(*) as total
+            FROM users u
+            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc
+            ON uc.user_id = u.id
+            WHERE u.deleted_at IS NULL AND u.role = 'user'
+        ";
+        $totalUsersResult = DB::select($totalUsersQuery);
+        $totalUsers = $totalUsersResult[0]->total;
+    
+        // Fetch paginated users with remaining credits
+        $query = "
+            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, uc.credits
+            FROM users u
+            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc
+            ON uc.user_id = u.id
+            WHERE u.deleted_at IS NULL AND u.role = 'user'
+            LIMIT ?, ?
+        ";
+    
+        $result = DB::select($query, [$offset, $perPage]);
+    
+        return [
+            'data' => $result,
+            'total' => $totalUsers,  // Total users count
+            'perPage' => $perPage,
+            'currentPage' => $currentPage
+        ];
     }
+    
 }

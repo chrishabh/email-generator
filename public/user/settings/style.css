@@ -146,6 +146,30 @@ body {
     /* font-size: 1.1em; */
 
 }
+
+
+
+.pagination-controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination-controls button {
+    margin: 0 5px;
+    padding: 8px 13px;
+    border: 1px solid #004085;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    box-shadow: var(--common-box-shadow);
+    border-radius: 50%;
+}
+
+.pagination-controls button.active {
+    background: var(--accent--backgroun-color);
+    color: white;
+    border: 1px solid var(--accent--backgroun-color);
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
     .sidebar {

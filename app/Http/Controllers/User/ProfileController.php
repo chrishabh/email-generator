@@ -50,17 +50,31 @@ class ProfileController extends Controller
     }
 
     function renderSettingPage(Request $request)
-    {
-        try {
-            $data = User::getUserDetailsWithRemainingCredits();
-            return response()->json(['success' => true,'message'=>  'success','data'=>$data])->header('Content-Type', 'application/json; charset=UTF-8');  
-         
-        }catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('lead finder error: ' . $e->getMessage());
-            return response()->json(['success' => false,'message'=> $e->getMessage()])->header('Content-Type', 'application/json; charset=UTF-8');  
+{
+    try {
+        $perPage = 1; // Number of users per page
+        $currentPage = $request->input('page', 1); // Get the current page or default to 1
         
-        }
+        $paginationData = User::getUserDetailsWithRemainingCredits($perPage, $currentPage);
+
+        return response()->json([
+            'success'     => true,
+            'message'     => 'success',
+            'data'        => $paginationData['data'],
+            'total'       => $paginationData['total'],
+            'perPage'     => $paginationData['perPage'],
+            'currentPage' => $paginationData['currentPage']
+        ])->header('Content-Type', 'application/json; charset=UTF-8');
+
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Error in renderSettingPage: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ])->header('Content-Type', 'application/json; charset=UTF-8');
     }
+}
+
 
    // Update Personal Info
    public function updatePersonalInfo(Request $request)
