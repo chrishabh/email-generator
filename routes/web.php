@@ -73,7 +73,9 @@ try{
         });
         Route::prefix('settings')->group(function(){
             Route::get('/', [ProfileController::class,'getSettingPage']); 
-            Route::get('/render-setting', [ProfileController::class,'renderSettingPage']); 
+            Route::get('/render-setting', [ProfileController::class,'renderSettingPage']);  
+            Route::delete('/delete-user/{user}', [ProfileController::class, 'destroy']);
+
         });
 
         // Route::get('/setting', function () {

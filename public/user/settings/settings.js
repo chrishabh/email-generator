@@ -45,7 +45,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
                     <td>${user.name}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
-                    <td class="text-center"><i class="fa-solid fa-trash"></td>
+                    <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId})" style="cursor: pointer;"></i></td>
                 </tr>`;
             })
         html+=`</tbody>
@@ -60,6 +60,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
    // Set the innerHTML instead of textContent to render HTML
    return html
 }
+
 function generatePagination(currentPage, totalPages) {
     let paginationHtml = '';
 
@@ -122,8 +123,8 @@ async function fetchGetRequest(routeURL,tokenName){
         console.error('Error:', error);
         Swal.fire({
             icon: 'error',
-            title: 'Oops..',
-            text: error,  // Error message from response
+            title: 'Oops...',
+            text: error.message || 'Something went wrong!'
         });
     }
 }
@@ -132,6 +133,59 @@ async function fetchGetRequest(routeURL,tokenName){
 function fetchPostRequest(){
 
 }
+
+async function deleteUser(userId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                $('#preloader').fadeIn();
+                const response = await fetch(`/settings/delete-user/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector(`meta[name="delete-button-token"]`).getAttribute('content')
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    $('#preloader').fadeOut();
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'The user has been deleted successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    // Reload the user list or fetch the current page again after deletion
+                    fetchPage(1); // Reload the page or fetch current users
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                $('#preloader').fadeOut();
+                console.error('Error deleting user:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.message || 'Something went wrong!'
+                });
+            }
+        }
+    });
+}
+
 
 
 

@@ -50,30 +50,30 @@ class ProfileController extends Controller
     }
 
     function renderSettingPage(Request $request)
-{
-    try {
-        $perPage = 1; // Number of users per page
-        $currentPage = $request->input('page', 1); // Get the current page or default to 1
-        
-        $paginationData = User::getUserDetailsWithRemainingCredits($perPage, $currentPage);
+    {
+        try {
+            $perPage = 1; // Number of users per page
+            $currentPage = $request->input('page', 1); // Get the current page or default to 1
+            
+            $paginationData = User::getUserDetailsWithRemainingCredits($perPage, $currentPage);
 
-        return response()->json([
-            'success'     => true,
-            'message'     => 'success',
-            'data'        => $paginationData['data'],
-            'total'       => $paginationData['total'],
-            'perPage'     => $paginationData['perPage'],
-            'currentPage' => $paginationData['currentPage']
-        ])->header('Content-Type', 'application/json; charset=UTF-8');
+            return response()->json([
+                'success'     => true,
+                'message'     => 'success',
+                'data'        => $paginationData['data'],
+                'total'       => $paginationData['total'],
+                'perPage'     => $paginationData['perPage'],
+                'currentPage' => $paginationData['currentPage']
+            ])->header('Content-Type', 'application/json; charset=UTF-8');
 
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('Error in renderSettingPage: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ])->header('Content-Type', 'application/json; charset=UTF-8');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in renderSettingPage: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ])->header('Content-Type', 'application/json; charset=UTF-8');
+        }
     }
-}
 
 
    // Update Personal Info
@@ -205,4 +205,30 @@ class ProfileController extends Controller
         }
         
    }
+
+   public function destroy($id)
+    {
+        try {
+            // Find user by ID
+            $user = User::findOrFail($id);
+
+            // Delete user
+            $user->delete();
+
+            // Return success response
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully.',
+            ], 200)->header('Content-Type','application/json; charset=UTF-8');;
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in delete the user: ' . $e->getMessage());
+            // Return error response if deletion fails
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete user. ' . $e->getMessage(),
+            ], 500)->header('Content-Type','application/json; charset=UTF-8');
+        }
+    }
+
 }

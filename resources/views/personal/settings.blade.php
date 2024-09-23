@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('user/settings/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/bouncee-logo.png') }}" type="image/png">
     <script src="{{ asset('user/settings/settings.js') }}" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
    
 @endpush
 
@@ -36,6 +38,7 @@
 @section('main-section')
   <!-- Sidebar -->
   <meta name="setting-page-token" content="{{ csrf_token() }}">
+  <meta name="delete-button-token" content="{{ csrf_token() }}">
   <div class="row">
     <div class="sidebar">
         <ul>
