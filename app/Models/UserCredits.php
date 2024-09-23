@@ -5,10 +5,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserCredits extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     public static function updateCredits($order_id,$user_id,$credits){
 

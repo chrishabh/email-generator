@@ -18,6 +18,14 @@ async function renderHtml(event,elem){
         $('#preloader').fadeOut();
 
     }
+    if(elem.id=='dashboard'){
+        $('#preloader').fadeIn();
+        // return
+        const data  = await fetchOverallCreditsData()
+        $('#preloader').fadeOut();
+        renderOverallCreditsChart(data)
+ 
+    }
 }
 
 function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
@@ -186,7 +194,103 @@ async function deleteUser(userId) {
     });
 }
 
+async function fetchOverallCreditsData() {
+    try {
+        const response = await fetch(`/settings/overall-credits-report`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
+        const data = await response.json();
+        if (data.success) {
+            return data.data;
+        }
+        if(!data.success){
+            throw new Error(data.message)
+        }
+    } catch (error) {
+        $('#preloader').fadeOut();
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message || 'Something went wrong!'
+        });
+    }
+}
+
+// Render the overall credits chart
+function renderOverallCreditsChart(data) {
+    const ctx = document.getElementById('overallCreditsChart').getContext('3d');
+    
+    const chartData = {
+        labels: ['Available Credits', 'Used Credits'],
+        datasets: [{
+            label: 'Overall Credits Report',
+            data: [data.availableCredits, data.usedCredits],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.2)',  // Available credits
+                'rgba(255, 99, 132, 0.2)'   // Used credits
+            ],
+            borderColor: [
+                'rgba(75, 192, 192, 1)',    // Available credits
+                'rgba(255, 99, 132, 1)'     // Used credits
+            ],
+            borderWidth: 2 
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false, // Allows for custom height/width
+        // aspectRatio: 2, // Width to height ratio
+        elements: {
+            arc: {
+                borderWidth: 2,  // Increase border width for the arcs
+            }
+        },plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    boxWidth: 20,
+                    padding: 15,
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.7)', // Stylish tooltip background
+                titleColor: '#fff',
+                bodyColor: '#fff',
+            }
+        },
+        scales: {
+            y: {
+                display: false, // Hide y-axis
+                beginAtZero: true
+            }
+        },
+        animations: {
+            tension: {
+                duration: 300,
+                easing: 'linear',
+                from: 1,
+                to: 0,
+                loop: true
+            }
+        }
+    };
+    if (ctx.chartInstance) {
+        ctx.chartInstance.destroy();
+    }
+
+    new Chart(ctx, {
+        type: 'doughnut',  // You can use 'pie', 'bar', 'doughnut', etc.
+        data: chartData,
+        options: chartOptions
+    });
+}
 
 
 window.addEventListener('DOMContentLoaded',init)

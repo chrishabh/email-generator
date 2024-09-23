@@ -156,7 +156,7 @@ body {
 
 .pagination-controls button {
     margin: 0 5px;
-    padding: 8px 13px;
+    padding: 8px 12px;
     border: 1px solid #004085;
     background-color: #f9f9f9;
     cursor: pointer;
@@ -170,6 +170,17 @@ body {
     border: 1px solid var(--accent--backgroun-color);
 }
 
+ 
+#left-section-of-chart{
+    width: 400px; /* Set custom width */
+    height: 400px; /* Set custom height */
+    margin: 2em;
+}
+
+#overallCreditsChart{
+    box-shadow: var(--common-box-shadow);
+    padding: 1em 0;
+}
 /* Responsive */
 @media screen and (max-width: 768px) {
     .sidebar {

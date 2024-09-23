@@ -219,7 +219,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User deleted successfully.',
-            ], 200)->header('Content-Type','application/json; charset=UTF-8');;
+            ], 200)->header('Content-Type','application/json; charset=UTF-8');
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error in delete the user: ' . $e->getMessage());
@@ -229,6 +229,42 @@ class ProfileController extends Controller
                 'message' => 'Failed to delete user. ' . $e->getMessage(),
             ], 500)->header('Content-Type','application/json; charset=UTF-8');
         }
+    }
+
+
+    ######### DASHBOARD ############
+    public function getOverallCreditsReport()
+    {
+        try{
+            $credits = UserCredits::withTrashed()->get();
+
+            // Calculate total, used (soft deleted), and available credits
+            $totalCredits = $credits->sum('credits'); // Sum of all credits
+            $usedCredits = $credits->whereNotNull('deleted_at')->sum('credits');  // Soft deleted credits
+            $availableCredits = $totalCredits - $usedCredits;  // Active credits (not soft-deleted)
+    
+            // return response()->json([
+            //     'totalCredits'     => $totalCredits,
+            //     'usedCredits'      => $usedCredits,
+            //     'availableCredits' => $availableCredits,
+            // ]);
+
+             // Return success response
+             return response()->json([
+                'success' => true,
+                'message' => 'success',
+                'data'    => [ 'totalCredits'=> $totalCredits, 'usedCredits'=> $usedCredits,  'availableCredits' => $availableCredits]
+            ], 200)->header('Content-Type','application/json; charset=UTF-8');
+
+        }catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in delete the user: ' . $e->getMessage());
+            // Return error response if deletion fails
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete user. ' . $e->getMessage(),
+            ], 500)->header('Content-Type','application/json; charset=UTF-8');
+        }
+         
     }
 
 }
