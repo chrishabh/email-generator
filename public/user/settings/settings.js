@@ -6,7 +6,7 @@ async function renderHtml(event,elem){
     event.preventDefault();
     if(elem.id=='setting'){
         $('#preloader').fadeIn();
-        const data     = await getSettingHtml('render-setting/','setting-page-token')
+        const data     = await fetchGetRequest('render-setting/','setting-page-token')
         let html       = renderSettingHtmlPage(data)
         let settingDOM = document.getElementById('setting-section') 
         settingDOM.innerHTML = html;
