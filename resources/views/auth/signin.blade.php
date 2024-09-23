@@ -113,7 +113,7 @@
                         <div class="sign-form--foot">
                             <a href="/recovery">Can’t login?</a> <a href="/signup"> Sign up for new user?</a><br>
                         </div>
-                        <div class="sign-form--foot-verification"><a style="margin-top: 3em;" href="/verification">Email Verification?</a></div>
+                        <div class="sign-form--foot-verification"><a style="margin-top: 3em;" href="/verification">Haven't verified your email yet? Click here to verify now and log in.</a></div>
                 </div>
                 </form>
                 <!-- <script>

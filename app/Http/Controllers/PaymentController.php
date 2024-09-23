@@ -153,6 +153,24 @@ class PaymentController extends Controller
                 
             }
         }
+
+        $credit_points = [
+            '5' => 2000,
+            '9' => 5000,
+            '14' => 10000,
+            '28' => 25000,
+            '45' => 50000,
+            '75' => 100000,
+            '125' => 200000,
+            '250' => 500000,
+            '450' => 1000000,
+        ];
+
+        foreach($payment_data as &$value)
+        {
+            $value['credit_points'] = number_format($credit_points[$value['amount']]);
+            $value['amount'] = number_format($value['amount']);
+        }
             
         $headerData['creditPoint'] = $creditPoint; 
         $headerData['paymentData'] = $payment_data; 

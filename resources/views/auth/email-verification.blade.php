@@ -36,7 +36,7 @@
             <div class="sidebar-signup">
                 <div>
                     <div class="div-block-148">
-                        <h1>Email Verification<br></h1>
+                        <h1>Verify Your Email<br></h1>
                         <p class="signup-intro" style="text-align: center;">Email verification is a powerful tool for
                             your business.<br></p>
                     </div>

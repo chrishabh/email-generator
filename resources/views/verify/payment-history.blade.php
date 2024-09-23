@@ -114,6 +114,9 @@
                                                 Order Status
                                             </th>
                                             <th>
+                                                Credits
+                                            </th>
+                                            <th>
                                                 Price
                                             </th>
                                             <th>
@@ -138,6 +141,9 @@
                                             </td>
                                             <td class="cell-with-media">
                                                 <span class="text-success">{{$value['status']}}</span>
+                                            </td>
+                                            <td class="cell-with-media">
+                                                <span>{{$value['credit_points']}}</span>
                                             </td>
                                             <td class="cell-with-media">
                                                 <span>$ {{$value['amount']}}</span>

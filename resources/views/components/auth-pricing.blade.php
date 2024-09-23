@@ -113,9 +113,6 @@
                                                 Price (USD $)
                                             </th>
                                             <th>
-                                                Price (INR ₹)
-                                            </th>
-                                            <th>
                                                 Buy
                                             </th>
                                         </tr>
@@ -133,9 +130,6 @@
                                             </td>
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$5</span>
-                                            </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*5 ?></span>
                                             </td>
                                             <td class="bolder nowrap"> 
                                                 <form action="{{ route('create.Order') }}" method="POST">
@@ -157,9 +151,6 @@
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$9</span>
                                             </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*9 ?></span>
-                                            </td>
                                             <td class="bolder nowrap"> <form action="{{ route('create.Order') }}" method="POST">
                                                 @csrf
                                                     <input type="hidden" name="input_value" id="input_value"  value="9">
@@ -178,9 +169,6 @@
                                             </td>
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$14</span>
-                                            </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*14 ?></span>
                                             </td>
                                             <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
@@ -202,9 +190,6 @@
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$28</span>
                                             </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*28 ?></span>
-                                            </td>
                                             <td class="bolder nowrap"> <form action="{{ route('create.Order') }}" method="POST">
                                                 @csrf
                                                     <input type="hidden" name="input_value" id="input_value"  value="28">
@@ -223,9 +208,6 @@
                                             </td>
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$45</span>
-                                            </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*45 ?></span>
                                             </td>
                                             <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
@@ -248,9 +230,6 @@
                                                 <span class="text-success">$75</span>
                                             </td>
                                             <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*75 ?></span>
-                                            </td>
-                                            <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
                                                 @csrf
                                                     <input type="hidden" name="input_value" id="input_value"  value="75">
@@ -269,9 +248,6 @@
                                             </td>
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$125</span>
-                                            </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*125 ?></span>
                                             </td>
                                             <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
@@ -293,9 +269,6 @@
                                                 <span class="text-success">$250</span>
                                             </td>
                                             <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*250 ?></span>
-                                            </td>
-                                            <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
                                                 @csrf
                                                     <input type="hidden" name="input_value" id="input_value"  value="250">
@@ -314,9 +287,6 @@
                                             </td>
                                             <td class="bolder nowrap">
                                                 <span class="text-success">$450</span>
-                                            </td>
-                                            <td class="bolder nowrap">
-                                                <span class="text-success">₹<?php echo 83.48*450 ?></span>
                                             </td>
                                             <td class="bolder nowrap">
                                             <form action="{{ route('create.Order') }}" method="POST">
