@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -78,5 +79,16 @@ class User extends Authenticatable
     public static function verifyUser($user_id)
     {
         return User::whereNull('deleted_at')->where('id',$user_id)->update(['email_verified'=>'1','email_verified_at'=> Carbon::now()]);
+    }
+
+
+    static function getUserDetailsWithRemainingCredits(){
+        $query = "SELECT u.id as userId,u.name,u.email,u.mobile_number,u.work_experience_description,u.gender,uc.credits FROM users u LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc on uc.user_id=u.id WHERE u.deleted_at IS NULL AND u.role='user'";
+        $result = DB::select($query);
+        if(empty($result)){
+            return [];
+        }
+        return $result;
+         
     }
 }

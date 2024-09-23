@@ -71,7 +71,10 @@ try{
             Route::post('/work-experience/update', [ProfileController::class, 'updateWorkExperience']); 
             Route::post('/password/update', [ProfileController::class, 'updatePassword']); 
         });
-        Route::get('/settings', [ProfileController::class,'getSettingPage']);   
+        Route::prefix('settings')->group(function(){
+            Route::get('/', [ProfileController::class,'getSettingPage']); 
+            Route::get('/render-setting', [ProfileController::class,'renderSettingPage']); 
+        });
 
         // Route::get('/setting', function () {
         //     return view('comming-soon');

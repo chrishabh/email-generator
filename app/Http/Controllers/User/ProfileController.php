@@ -49,7 +49,18 @@ class ProfileController extends Controller
         return view('personal.settings')->with(compact('headerData','userData'));
     }
 
-
+    function renderSettingPage(Request $request)
+    {
+        try {
+            $data = User::getUserDetailsWithRemainingCredits();
+            return response()->json(['success' => true,'message'=>  'success','data'=>$data])->header('Content-Type', 'application/json; charset=UTF-8');  
+         
+        }catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('lead finder error: ' . $e->getMessage());
+            return response()->json(['success' => false,'message'=> $e->getMessage()])->header('Content-Type', 'application/json; charset=UTF-8');  
+        
+        }
+    }
 
    // Update Personal Info
    public function updatePersonalInfo(Request $request)
