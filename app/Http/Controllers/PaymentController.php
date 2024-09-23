@@ -23,7 +23,7 @@ class PaymentController extends Controller
 
     public function createOrder(Request $request)
     {
-        return view('notice');
+        //return view('notice');
 
         $verification_credits = [
             '5' => 2000,
