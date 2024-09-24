@@ -54,7 +54,7 @@ async function renderHtml(event,elem){
         const perPage       = response.perPage;
         const currentPage   = parseInt(response.currentPage);
 
-        let html             = renderSettingHtmlPage(data, totalUsers, perPage, currentPage);
+        let html             = renderSettingHtmlPage(data, totalUsers, perPage, currentPage,true);
         let settingDOM       = document.getElementById('messages-section');
         settingDOM.innerHTML = html;
         $('#preloader').fadeOut();
@@ -69,7 +69,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
     } 
     else{
         html = `<div class="setting-main-class">
-        <h1 class="user-heading">Users Table</h1>
+        <h1 class="user-heading">${!isMessagePage?'Users Table':'User Work Experince'}</h1>
         <table class="table table-hover table-bordered">
             <thead class="table-head">`;
             if(isMessagePage){
@@ -289,17 +289,19 @@ async function fetchOverallCreditsData() {
 
 // Render the overall credits chart
 function renderOverallCreditsChart(data) {
-    let html = `<div class="row justify-content-center">       
+    let html = `<div class="row mx-0">       
         <div class="col-md-6" id="left-section-of-chart">
             <h1>Total Credit Score</h1>
             <canvas id="overallCreditsChart" width="400" height="400"></canvas>
         </div>
-        <div class="col-md-6">
-             
+        <div class="col-md-6" id="right-section-of-chart">
+            <h1>Total Available Credit Score of API</h1>
+            <canvas id="overallCreditsAdminChart" width="400" height="400"></canvas>
         </div>
     </div>`;
     document.getElementById('dashboard-section').innerHTML=html;
     const ctx = document.getElementById('overallCreditsChart').getContext('2d');
+    const ctx1 = document.getElementById('overallCreditsAdminChart').getContext('2d');
     
     const chartData = {
         labels: ['Available Credits', 'Used Credits'],
@@ -307,12 +309,26 @@ function renderOverallCreditsChart(data) {
             label: 'Overall Credits Report',
             data: [data.availableCredits, data.usedCredits],
             backgroundColor: [
-                'rgba(75, 192, 192, 0.2)',  // Available credits
+                'rgba(63, 81, 181, 0.2)',  // Available credits
                 'rgba(255, 99, 132, 0.2)'   // Used credits
             ],
             borderColor: [
-                'rgba(75, 192, 192, 1)',    // Available credits
+                'rgba(63, 81, 181, 1)',    // Available credits
                 'rgba(255, 99, 132, 1)'     // Used credits
+            ],
+            borderWidth: 2 
+        }]
+    };
+    const chartData2 = {
+        labels: ['Available Admin Credits'],
+        datasets: [{
+            label: 'Overall Credits',
+            data: [data.adminCreditsTotal],
+            backgroundColor: [
+                'rgba(63, 81, 181, 0.2)',  // Light blue shade with transparency
+            ],
+            borderColor: [
+                'rgba(63, 81, 181, 1)',    // Solid blue shade for the border
             ],
             borderWidth: 2 
         }]
@@ -343,13 +359,13 @@ function renderOverallCreditsChart(data) {
         },
         scales: {
             y: {
-                display: false, // Hide y-axis
+                display: true, // Hide y-axis
                 beginAtZero: true
             }
         },
         animations: {
             tension: {
-                duration: 300,
+                duration: 100,
                 easing: 'linear',
                 from: 1,
                 to: 0,
@@ -360,10 +376,18 @@ function renderOverallCreditsChart(data) {
     if (ctx.chartInstance) {
         ctx.chartInstance.destroy();
     }
+    if (ctx1.chartInstance) {
+        ctx1.chartInstance.destroy();
+    }
 
     new Chart(ctx, {
         type: 'doughnut',  // You can use 'pie', 'bar', 'doughnut', etc.
         data: chartData,
+        options: chartOptions
+    });
+    new Chart(ctx1, {
+        type: 'pie',  // You can use 'pie', 'bar', 'doughnut', etc.
+        data: chartData2,
         options: chartOptions
     });
 }

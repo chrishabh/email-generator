@@ -176,22 +176,27 @@ body {
 }
 
  
-#left-section-of-chart{
+#left-section-of-chart,
+#right-section-of-chart{
     width: 500px; /* Set custom width */
     height: 500px; /* Set custom height */
-    margin: 2em;  
+    /* margin: 2em;   */
     /* box-shadow: var(--common-box-shadow); */
 }
 
  
-#overallCreditsChart{ 
+#overallCreditsChart,
+#overallCreditsAdminChart{ 
     padding: 2em 2em;
 }
 
-#left-section-of-chart h1{
+#left-section-of-chart h1,
+#right-section-of-chart h1
+{
     font-size: 17px;
     font-weight: bold;
     padding: 1.5em 0 0 0;
+    text-align:center;
 }
 /* Responsive */
 @media screen and (max-width: 768px) {

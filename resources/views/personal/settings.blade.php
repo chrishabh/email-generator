@@ -58,14 +58,15 @@
 
         <!-- Chart Container -->
         <div id="dashboard-section">
-            <div class="row justify-content-center">
+            <div class="row mx-0">
                  
                 <div class="col-md-6" id="left-section-of-chart">
                     <h1>Total Credit Score</h1>
                     <canvas id="overallCreditsChart" width="400" height="400"></canvas>
                 </div>
-                <div class="col-md-6">
-                    {{-- <canvas id="overallCreditsChart" width="400" height="400"></canvas> --}}
+                <div class="col-md-6" id="right-section-of-chart">
+                    <h1>Total Available Credit Score of API</h1>
+                    <canvas id="overallCreditsAdminChart" width="400" height="400"></canvas>
                 </div>
             </div> 
         </div>
