@@ -320,7 +320,7 @@ function renderOverallCreditsChart(data) {
         }]
     };
     const chartData2 = {
-        labels: ['Available Admin Credits'],
+        labels: ['Available API Credits'],
         datasets: [{
             label: 'Overall Credits',
             data: [data.adminCreditsTotal],
