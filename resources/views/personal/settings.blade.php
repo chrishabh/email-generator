@@ -11,6 +11,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/wow.js"></script>
+    <script src="js/jquery.nav.js"></script>
+    <!-- <script src="js/scrolling-nav.js"></script> -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/main.js"></script>
+    <!-- <script src="js/slim.min.js"></script> -->
+    <script src="js/three.min.js"></script>
    
 @endpush
 
@@ -76,6 +90,8 @@
   </div>
     
      
-     
+  <div id="preloader">
+    <div class="loader" id="loader-1"></div>
+</div>
 
 @endsection

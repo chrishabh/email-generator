@@ -7,8 +7,10 @@
 
 @yield('main-section')
 
-@if((auth()->check()))
-    @include('layout.auth-footer')
-@else
-    @include('layout.footer')
+@if(request()->path()!='settings')
+    @if((auth()->check()))
+        @include('layout.auth-footer')
+    @else
+        @include('layout.footer')
+    @endif
 @endif
