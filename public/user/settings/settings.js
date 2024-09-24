@@ -79,7 +79,6 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                     <th scope="col">user Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Work Experience</th>
-                    <th scope="col">delete User Ac</th>
                 </tr>`;
             }else{
                 html += `
@@ -88,7 +87,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Available Credits</th>
-                    <th scope="col">delete User Ac</th>
+                    <th scope="col">Delete User</th>
                 </tr>`;
             }
                  
@@ -102,7 +101,6 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                     <td>${user.userId}</td>
                     <td> ${user.name}</td>
                     <td>${user.work_experience_description}</td>
-                    <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId},${isMessagePage})" style="cursor: pointer;"></i></td>
                 </tr>`;
                 }else{
                     html+= `<tr>
