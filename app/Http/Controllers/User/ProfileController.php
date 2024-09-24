@@ -261,24 +261,22 @@ class ProfileController extends Controller
     public function getOverallCreditsReport()
     {
         try{
-            $credits = UserCredits::withTrashed()->get();
+            $credits                 = UserCredits::withTrashed()->get(); 
+            $totalCredits            = $credits->sum('credits'); // Sum of all credits
+            $usedCredits             = $credits->whereNotNull('deleted_at')->sum('credits');  // Soft deleted credits
+            $availableCredits        = $totalCredits - $usedCredits;  
+            $creditAvailableOfAdmin  = 0;
+            if(env('API_PLATFORM')=='debouncee'){
+                $creditAvailableOfAdmin = getDebounceCreditBalance();
 
-            // Calculate total, used (soft deleted), and available credits
-            $totalCredits = $credits->sum('credits'); // Sum of all credits
-            $usedCredits = $credits->whereNotNull('deleted_at')->sum('credits');  // Soft deleted credits
-            $availableCredits = $totalCredits - $usedCredits;  // Active credits (not soft-deleted)
-    
-            // return response()->json([
-            //     'totalCredits'     => $totalCredits,
-            //     'usedCredits'      => $usedCredits,
-            //     'availableCredits' => $availableCredits,
-            // ]);
-
-             // Return success response
+            }elseif(env('API_PLATFORM')=='bouncify'){
+                $creditAvailableOfAdmin = getBouncifyCreditBalance();
+            }
+        
              return response()->json([
                 'success' => true,
                 'message' => 'success',
-                'data'    => [ 'totalCredits'=> $totalCredits, 'usedCredits'=> $usedCredits,  'availableCredits' => $availableCredits]
+                'data'    => ['adminCreditsTotal'=>$creditAvailableOfAdmin, 'totalCredits'=> $totalCredits, 'usedCredits'=> $usedCredits,  'availableCredits' => $availableCredits]
             ], 200)->header('Content-Type','application/json; charset=UTF-8');
 
         }catch (\Exception $e) {
