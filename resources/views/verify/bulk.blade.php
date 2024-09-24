@@ -91,10 +91,17 @@
                                         </div>
                                     </div>
                                     <div class="info-line--right row col-md-7 col-offset-1 align-items-center ">
-                                        <div class="col-md-5">
-                                            <span class="time-tag"><span class="icon-clock"></span>start to processing</span>
+                                        <div class="col-md-7">
+                                            {{-- <span class="time-tag"><span class="icon-clock"></span>start to processing</span> --}}
+                                            <div id="progress-card" class="progress-card">
+                                                {{-- <h3>Verification Progress</h3> --}}
+                                                <div class="progress-container">
+                                                    <div id="progress-bar" class="progress-bar"></div>
+                                                </div>
+                                                <span id="progress-text">0 / {{ $value['total']}} emails verified</span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        {{-- <div class="col-md-2">
                                             <div class="neumorphic-progress-circle">
                                                 <div class="circle">
                                                     <div class="mask full" id="progress-mask-full">
@@ -107,9 +114,9 @@
                                                         <span class="percentage" id="percentage-text">0%</span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             {{-- <button class="btn btn-primary mt-4" onclick="updateProgress(75)">Set Progress to 75%</button> --}}
-                                        </div>
+                                        {{-- </div> --}}
                                         <div class="col-md-5">
                                             <meta name="verification-csrf-token" content="{{ csrf_token() }}">
                                             <a href="" class="startverification-btn" onclick="startVerification(event,this,{{$value['fileId']}})">Start Verification</a>

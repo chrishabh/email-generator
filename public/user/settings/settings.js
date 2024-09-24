@@ -198,7 +198,7 @@ async function fetchGetRequest(routeURL,tokenName){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: error.message || 'Something went wrong!'
+            text: error || 'Something went wrong!'
         });
     }
 }

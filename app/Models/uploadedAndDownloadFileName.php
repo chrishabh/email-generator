@@ -67,6 +67,16 @@ class uploadedAndDownloadFileName extends Model
         return self::where('id',$fileId)->where('user_id',$user_id)->where('verificationStatus',$verificationStatus)->first()->toArray();
     }
 
+    static function getStatusOfEmailVerification($fileId){
+        $query = "SELECT uf.id,
+        count(bu.id) as total_emails,
+        SUM(CASE WHEN bu.job_email_status='verified' THEN 1 ELSE 0 END) as total_verified_emails,
+        SUM(CASE WHEN bu.job_email_status!='verified' AND bu.job_email_status IS NULL THEN 1 ELSE 0 END) as total_not_verified_emails
+        from uploaded_and_download_file_names uf left join bulk_upload_email_file_data bu on bu.file_id=uf.id where uf.id=$fileId GROUP BY uf.id";
+        $result  = DB::select($query);
+        return $result;
+    }
+
 
 
      

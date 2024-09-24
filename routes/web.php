@@ -61,6 +61,7 @@ try{
         Route::get('/check-file-status', [EmailController::class, 'getAllData']);
         Route::post('/export-data', [EmailController::class, 'exportData']);
         Route::post('/start-verification', [EmailController::class, 'startVerification']);
+        Route::post('/check-verification-status', [EmailController::class, 'checkEmailVerificationStatus']);
         // Route::get('/verification', function () {
         //     return view('verify');
         // });

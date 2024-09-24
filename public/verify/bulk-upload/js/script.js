@@ -108,7 +108,7 @@ $(document).ready(function() {
             process: {
                 url: '/upload',
                 method: 'POST',
-                headers: {
+                headers: { 
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 onload: (response) => {
@@ -329,7 +329,11 @@ function startVerification(event,element,fileId){
     element.style.backgroundColor = '#d1d1d1';
     element.style.color           = '#ffffff';
     element.style.cursor          = 'not-allowed'; 
-    const progressInterval        = simulateProgress();
+    // const progressInterval        = simulateProgress();
+
+    // Start polling the verification status immediately without waiting for the API response
+    pollVerificationStatus(fileId, element); // This is called right away to start polling in parallel
+
     fetch('/start-verification',{
         method:'POST',
         headers: {
@@ -343,24 +347,101 @@ function startVerification(event,element,fileId){
              
     }).then(data=>{
              
-        if(data.data[0].verificationStatus=='verified'){
-            // let divElement = document.getElementById(`list_${fileId}`)
-            clearInterval(progressInterval);
-            updateProgress(100);
-            window.location.reload(); 
-        }else{
-            console.log(data.data[0]);   
-        }
+        // if(data.data[0].verificationStatus=='verified'){
+        //     // let divElement = document.getElementById(`list_${fileId}`)
+        //     // clearInterval(progressInterval);
+        //     // updateProgress(100);
+        //     window.location.reload(); 
+
+            
+        // }else{
+        //     console.log(data.data[0]);   
+        // }
+
+        // Start polling the verification status immediately after triggering the start-verification API
+        console.log("Verification started:", data);
+        // We don't need to call pollVerificationStatus() here again since it started earlier
     }).catch(error=>{
-        console.log('Error of verification',error) 
-        element.setAttribute('data-disabled');
-        element.textContent = 'Start Verification'; // Reset button text
-        element.style.backgroundColor = ''; // Reset background color
-        element.style.color = ''; // Reset text color
-        element.style.cursor = ''; // Reset cursor
+        console.error('Error starting verification:', error);
+        resetButton(element);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error || 'Something went wrong!',
+        });
     })
+     
+}
+function pollVerificationStatus(fileId, element) {
+    const pollingInterval = 5000; // Poll every 2 seconds
+    const intervalId = setInterval(() => {
+        fetch('/check-verification-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="verification-csrf-token"]').attr('content'),
+            },
+            body: JSON.stringify({ fileId })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            return response.json();
+        })
+        .then(data => {
+            
+            if (!data.success) {
+                // console.error('Verification failed:', data.message);
+                // clearInterval(intervalId); // Stop polling on error
+                // resetButton(element);
+                // Swal.fire({
+                //     icon: 'error',
+                //     title: 'Verification Error',
+                //     text: data.message || 'Verification failed!',
+                // });
+                throw new Error('Verification failed:', data.message);
+                // return;
+            }
+            const totalEmails = data.data[0].total_emails;
+            const verifiedEmails = data.data[0].total_verified_emails;
+
+            // Update progress bar
+            updateProgressBar(verifiedEmails, totalEmails);
+
+            // If all emails are verified, stop polling
+            if (verifiedEmails >= totalEmails) {
+                clearInterval(intervalId);
+                window.location.reload(); // Optionally reload the page when done
+            }
+        })
+        .catch(error => {
+            console.error('Error checking verification status:', error);
+            clearInterval(intervalId); // Stop polling on error
+            resetButton(element);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: error || 'Something went wrong!',
+            });
+        });
+    }, pollingInterval);
+}
+// Function to update progress bar
+function updateProgressBar(verifiedEmails, totalEmails) {
+    const progressBar        = document.getElementById('progress-bar');
+    const progressText       = document.getElementById('progress-text'); 
+    const progressPercent    = (verifiedEmails / totalEmails) * 100;
+    progressBar.style.width  = progressPercent + '%';
+    progressText.textContent = `${verifiedEmails} / ${totalEmails} emails verified`;
 }
 
+// Function to reset the button in case of error
+function resetButton(element) {
+    element.setAttribute('data-disabled', false);
+    element.textContent = 'Start Verification'; // Reset button text
+    element.style.backgroundColor = ''; // Reset background color
+    element.style.color = ''; // Reset text color
+    element.style.cursor = ''; // Reset cursor
+}
 
 
 function disableDownloadButton(){

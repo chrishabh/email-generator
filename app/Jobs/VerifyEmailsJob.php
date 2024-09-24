@@ -61,6 +61,7 @@ class VerifyEmailsJob implements ShouldQueue
                     $dataArray['isValidEmail'] = '0';
                     $dataArray['status']       = 'invalid';
                 }
+                $dataArray['job_email_status'] = 'verified';
 
                 // $isValidEmail = $counter % 2 == 1;
                 // if($isValidEmail){

@@ -306,6 +306,7 @@ class EmailController extends Controller
         if(!empty($data)){
             foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
+                    // pp($countOfValidAndInvalidEmails);
                     $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
                     $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
                     $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
@@ -394,6 +395,7 @@ class EmailController extends Controller
                             'file_id'    => $fileId,
                             'importedBy' => $userId,
                             'type'       =>'bulk', 
+                            'status'     => NULL,
                             'created_at' => Carbon::now()
                         ); 
                         array_push($insertArray,$arr);
@@ -402,7 +404,7 @@ class EmailController extends Controller
                    
                 }
             }
-
+            // pp($insertArray);
             if(!empty($insertArray)){
                 if(DB::table('bulk_upload_email_file_data')->insert($insertArray)){ 
                     $filePath         = $file->storeAs('public/',$path); 
@@ -488,11 +490,7 @@ class EmailController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
         }
-        if(envparam('IS_BULK_EMAIL_VERIFIED_THROUGH_BOUNCIFY_BULK_API')=='1'){ 
-            $response = self::verifyEmailByBouncifyJob($request['fileId']);
-        }else{
-            VerifyEmailsJob::dispatch($request['fileId']);
-        }
+        VerifyEmailsJob::dispatch($request['fileId']);
         return response()->json(['sucess'=>'ok','status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],Auth::user()->id)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
     }
@@ -613,6 +611,33 @@ class EmailController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->back()->withErrors($e->getMessage())->withInput();
+        }
+    }
+
+    function checkEmailVerificationStatus(Request $request){
+        try{
+            $rules = [
+                'fileId'   => 'required'
+            ];
+            $validator = Validator::make($request->all(),$rules);
+            if($validator->fails()){
+                return response()->json([
+                    'success'  => false,
+                    'message'  => $validator
+                ]);
+            } 
+
+            return response()->json([
+                'success' => true,
+                'data'    => uploadedAndDownloadFileName::getStatusOfEmailVerification($request->fileId),
+                'message' => 'verification started...'
+            ]);
+        }catch(\Exception $e){
+            \Illuminate\Support\Facades\Log::error('Error in renderSettingPage: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ])->header('Content-Type', 'application/json; charset=UTF-8');
         }
     }
 
