@@ -7,6 +7,7 @@ use App\Models\UserCredits;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Pdf;
 use Psy\Readline\Hoa\Console;
 use Razorpay\Api\Api;
 use SebastianBergmann\Environment\Console as EnvironmentConsole;
@@ -176,5 +177,44 @@ class PaymentController extends Controller
         $headerData['paymentData'] = $payment_data; 
 
         return view('verify.payment-history')->with(compact('headerData'));
+    }
+
+    public static function getInvoicePdf(Request $request)
+    {
+        if(!empty($request->order_id)){
+
+            $data = Order::getInvoiceData($request->order_id);
+
+            $credit_points = [
+                '5' => 2000,
+                '9' => 5000,
+                '14' => 10000,
+                '28' => 25000,
+                '45' => 50000,
+                '75' => 100000,
+                '125' => 200000,
+                '250' => 500000,
+                '450' => 1000000,
+            ]; 
+
+            $binded_data = [
+                'order_number' => $data->order_id,
+                'date' => $data->created_at,
+                'logo_url' => url("/assets/logo.png"),
+                'client' => $data->name,
+                'company' => "bouncee",
+                'items' => [[
+                    'description' =>  number_format($credit_points[$data->amount])." Verifications",
+                    'amount' => $data->amount
+                ]],
+                'total' => $data->amount
+            ];
+
+            // Load a view and pass the data
+            $pdf = Pdf::loadView('invoice-pdf', $binded_data)->setOption('enable-external-links', true);
+
+            // Return the PDF as a download
+            return $pdf->download('invoice-pdf');
+        }
     }
 }
