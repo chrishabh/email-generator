@@ -91,7 +91,7 @@ class User extends Authenticatable
         $totalUsersQuery = "
             SELECT COUNT(*) as total
             FROM users u
-            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc
+            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC) as uc
             ON uc.user_id = u.id
             WHERE u.deleted_at IS NULL AND u.role = 'user'
         ";
@@ -109,7 +109,7 @@ class User extends Authenticatable
         $query = "
             SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, uc.credits
             FROM users u
-            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC LIMIT 1) as uc
+            LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC) as uc
             ON uc.user_id = u.id
             WHERE u.deleted_at IS NULL AND u.role = 'user'
             LIMIT ?, ?
