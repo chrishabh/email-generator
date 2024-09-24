@@ -76,6 +76,7 @@ try{
             Route::get('/render-setting', [ProfileController::class,'renderSettingPage']);  
             Route::delete('/delete-user/{user}', [ProfileController::class, 'destroy']);
             Route::get('/overall-credits-report', [ProfileController::class, 'getOverallCreditsReport']);
+            Route::get('/render-messages', [ProfileController::class, 'renderMessagesPage']);
 
         });
 

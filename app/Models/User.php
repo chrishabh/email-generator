@@ -84,7 +84,7 @@ class User extends Authenticatable
     }
 
 
-    static function getUserDetailsWithRemainingCredits($perPage, $currentPage){
+    static function getUserDetailsWithRemainingCredits($perPage, $currentPage,$isWorkEx=false){
         $offset = ($currentPage - 1) * $perPage;
     
         // Get the total number of users for pagination
@@ -95,6 +95,13 @@ class User extends Authenticatable
             ON uc.user_id = u.id
             WHERE u.deleted_at IS NULL AND u.role = 'user'
         ";
+        if($isWorkEx){
+            $totalUsersQuery = "
+            SELECT COUNT(*) as total
+            FROM users u
+            WHERE u.deleted_at IS NULL AND u.role = 'user' AND u.work_experience_description IS NOT NULL
+        ";  
+        }
         $totalUsersResult = DB::select($totalUsersQuery);
         $totalUsers = $totalUsersResult[0]->total;
     
@@ -107,6 +114,15 @@ class User extends Authenticatable
             WHERE u.deleted_at IS NULL AND u.role = 'user'
             LIMIT ?, ?
         ";
+
+        if($isWorkEx){
+            $query = "
+            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender
+            FROM users u
+            WHERE u.deleted_at IS NULL AND u.role = 'user' AND u.work_experience_description IS NOT NULL
+            LIMIT ?, ?
+        ";  
+        }
     
         $result = DB::select($query, [$offset, $perPage]);
     

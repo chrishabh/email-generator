@@ -1,9 +1,29 @@
-function init(){
-
+async function init(){
+    if(window.location.pathname=='/settings'){
+        $('#preloader').fadeIn(); 
+        const data  = await fetchOverallCreditsData()
+        renderOverallCreditsChart(data)  
+        $('#preloader').fadeOut();
+    }
 }
 
 async function renderHtml(event,elem){
     event.preventDefault();
+    const idArray = ['setting-section', 'dashboard-section','messages-section'];
+
+    // Hide all sections except the one selected
+    idArray.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) {
+            if (elem.id === id.split('-')[0]) {
+                section.style.display = 'block';  // Show the selected section
+            } else {
+                section.style.display = 'none';   // Hide other sections
+                section.innerHTML     = '';           // Clear the content of the hidden sections
+            }
+        }
+    });
+
     if(elem.id=='setting'){
         $('#preloader').fadeIn();
         const response      = await fetchGetRequest('render-setting/','setting-page-token')
@@ -18,7 +38,7 @@ async function renderHtml(event,elem){
         $('#preloader').fadeOut();
 
     }
-    if(elem.id=='dashboard'){
+    else if(elem.id=='dashboard'){
         $('#preloader').fadeIn();
         // return
         const data  = await fetchOverallCreditsData()
@@ -26,9 +46,23 @@ async function renderHtml(event,elem){
         renderOverallCreditsChart(data)
  
     }
+    else if(elem.id=='messages'){
+        $('#preloader').fadeIn();
+        const response      = await fetchGetRequest('render-messages/','setting-page-token')
+        const data          = response.data;
+        const totalUsers    = response.total;
+        const perPage       = response.perPage;
+        const currentPage   = parseInt(response.currentPage);
+
+        let html             = renderSettingHtmlPage(data, totalUsers, perPage, currentPage);
+        let settingDOM       = document.getElementById('messages-section');
+        settingDOM.innerHTML = html;
+        $('#preloader').fadeOut();
+ 
+    }
 }
 
-function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
+function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessagePage=false){
     let html       = ''  
     if (!data || !Array.isArray(data) || data.length === 0) {
         html += '<div class="setting-main-class"><h1 class="no-data-found">No Data Found</h1></div>';
@@ -37,24 +71,48 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
         html = `<div class="setting-main-class">
         <h1 class="user-heading">Users Table</h1>
         <table class="table table-hover table-bordered">
-            <thead class="table-head">
+            <thead class="table-head">`;
+            if(isMessagePage){
+                html += `
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">user Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Work Experience</th>
+                    <th scope="col">delete User Ac</th>
+                </tr>`;
+            }else{
+                html += `
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Available Credits</th>
                     <th scope="col">delete User Ac</th>
-                </tr>
-            </thead>
+                </tr>`;
+            }
+                 
+           html+= `</thead>
             <tbody>`;
             data.forEach((user, index) => {
-               html+= `<tr>
+ 
+                if(isMessagePage){
+                    html+= `<tr>
+                    <th scope="row">${index+1}</th>
+                    <td>${user.userId}</td>
+                    <td> ${user.name}</td>
+                    <td>${user.work_experience_description}</td>
+                    <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId},${isMessagePage})" style="cursor: pointer;"></i></td>
+                </tr>`;
+                }else{
+                    html+= `<tr>
                     <th scope="row">${index+1}</th>
                     <td>${user.name}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
-                    <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId})" style="cursor: pointer;"></i></td>
+                    <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId},${isMessagePage})" style="cursor: pointer;"></i></td>
                 </tr>`;
+                }
             })
         html+=`</tbody>
             </table>`;
@@ -62,19 +120,20 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage){
         // Pagination controls
         let totalPages = Math.ceil(totalUsers / perPage);
         html += `<div class="pagination-controls">`;
-        html += generatePagination(currentPage, totalPages);
+        html += generatePagination(currentPage, totalPages,isMessagePage);
         html += `</div></div>`;
     }
    // Set the innerHTML instead of textContent to render HTML
    return html
 }
+ 
 
-function generatePagination(currentPage, totalPages) {
+function generatePagination(currentPage, totalPages,isMessagePage=false) {
     let paginationHtml = '';
 
     if (totalPages <= 1) return ''; // No pagination if only one page
 
-    paginationHtml += `<button onclick="fetchPage(1)" class="${currentPage === 1 ? 'active' : ''}">1</button>`;
+    paginationHtml += `<button onclick="fetchPage(1,${isMessagePage})" class="${currentPage === 1 ? 'active' : ''}">1</button>`;
 
     if (currentPage > 3) {
         paginationHtml += `<span>...</span>`;
@@ -82,28 +141,35 @@ function generatePagination(currentPage, totalPages) {
 
     // Show current page and up to 2 pages before/after current page
     for (let page = Math.max(2, currentPage - 2); page <= Math.min(totalPages - 1, currentPage + 2); page++) {
-        paginationHtml += `<button onclick="fetchPage(${page})" class="${page === currentPage ? 'active' : ''}">${page}</button>`;
+        paginationHtml += `<button onclick="fetchPage(${page},${isMessagePage})" class="${page === currentPage ? 'active' : ''}">${page}</button>`;
     }
 
     if (currentPage < totalPages - 2) {
         paginationHtml += `<span>...</span>`;
     }
 
-    paginationHtml += `<button onclick="fetchPage(${totalPages})" class="${currentPage === totalPages ? 'active' : ''}">${totalPages}</button>`;
+    paginationHtml += `<button onclick="fetchPage(${totalPages},${isMessagePage})" class="${currentPage === totalPages ? 'active' : ''}">${totalPages}</button>`;
 
     return paginationHtml;
 }
 
-async function fetchPage(pageNumber) {
+async function fetchPage(pageNumber,isMessagePage) {
     $('#preloader').fadeIn();
-    const response      = await fetchGetRequest(`render-setting?page=${pageNumber}`, 'setting-page-token'); 
+    let response      = await fetchGetRequest(`render-setting?page=${pageNumber}`, 'setting-page-token'); 
+    if(isMessagePage)  
+        response      = await fetchGetRequest(`render-messages/?page=${pageNumber}`, 'setting-page-token'); 
+    
     const data          = response.data;
     const totalUsers    = response.total;
     const perPage       = response.perPage;
     const currentPage   = parseInt(response.currentPage);
     
     let html = renderSettingHtmlPage(data, totalUsers, perPage, currentPage);
+    
     let settingDOM = document.getElementById('setting-section');
+    if(isMessagePage)
+        settingDOM = document.getElementById('messages-section');
+
     settingDOM.innerHTML = html;
     $('#preloader').fadeOut();
 }
@@ -223,7 +289,17 @@ async function fetchOverallCreditsData() {
 
 // Render the overall credits chart
 function renderOverallCreditsChart(data) {
-    const ctx = document.getElementById('overallCreditsChart').getContext('3d');
+    let html = `<div class="row justify-content-center">       
+        <div class="col-md-6" id="left-section-of-chart">
+            <h1>Total Credit Score</h1>
+            <canvas id="overallCreditsChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-6">
+             
+        </div>
+    </div>`;
+    document.getElementById('dashboard-section').innerHTML=html;
+    const ctx = document.getElementById('overallCreditsChart').getContext('2d');
     
     const chartData = {
         labels: ['Available Credits', 'Used Credits'],

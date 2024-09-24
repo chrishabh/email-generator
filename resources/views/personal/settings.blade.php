@@ -46,8 +46,8 @@
             <li><a class="active" id="dashboard" onclick="renderHtml(event,this)"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
             <li><a href="/payment-history"><i class="fas fa-history"></i><span>Payment History</span></a></li>
             <li><a  id="setting" onclick="renderHtml(event,this)"><i class="fas fa-cogs"></i><span>Settings</span></a></li>
-            <li><a href="#"><i class="fas fa-user"></i><span>Messages</span></a></li>
-            <li><a href="#"><i class="fas fa-question-circle"></i><span>Help</span></a></li>
+            <li><a  id="messages" onclick="renderHtml(event,this)"><i class="fas fa-user"></i><span>Messages</span></a></li>
+            {{-- <li><a href="#"><i class="fas fa-question-circle"></i><span>Help</span></a></li> --}}
         </ul>
     </div>
     
@@ -58,16 +58,19 @@
 
         <!-- Chart Container -->
         <div id="dashboard-section">
-            <div class="row">
-                <h1>Total Credit Score</h1>
+            <div class="row justify-content-center">
+                 
                 <div class="col-md-6" id="left-section-of-chart">
+                    <h1>Total Credit Score</h1>
                     <canvas id="overallCreditsChart" width="400" height="400"></canvas>
                 </div>
                 <div class="col-md-6">
-                    <canvas id="overallCreditsChart" width="400" height="400"></canvas>
+                    {{-- <canvas id="overallCreditsChart" width="400" height="400"></canvas> --}}
                 </div>
             </div> 
         </div>
+
+        <div id="messages-section"></div>
     
     </section>
   </div>
