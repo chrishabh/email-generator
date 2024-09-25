@@ -160,10 +160,12 @@
                                             </td>
 
                                             <td class="cell-with-media">
+                                                @if($value['status'] == 'Paid')
                                                 <span class="image-span">
                                                     <img src="/assets/bill.png" alt="Bill" onclick="callPdf({{json_encode($value['id'])}})">
                                                     
                                                 </span>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach
