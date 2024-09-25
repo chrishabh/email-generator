@@ -11,6 +11,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/wow.js"></script>
+    <script src="js/jquery.nav.js"></script>
+    <!-- <script src="js/scrolling-nav.js"></script> -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/main.js"></script>
+    <!-- <script src="js/slim.min.js"></script> -->
+    <script src="js/three.min.js"></script>
    
 @endpush
 
@@ -44,7 +58,6 @@
     <div class="sidebar">
         <ul>
             <li><a class="active" id="dashboard" onclick="renderHtml(event,this)"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
-            <li><a href="/payment-history"><i class="fas fa-history"></i><span>Payment History</span></a></li>
             <li><a  id="setting" onclick="renderHtml(event,this)"><i class="fas fa-cogs"></i><span>Settings</span></a></li>
             <li><a  id="messages" onclick="renderHtml(event,this)"><i class="fas fa-user"></i><span>Messages</span></a></li>
             {{-- <li><a href="#"><i class="fas fa-question-circle"></i><span>Help</span></a></li> --}}
@@ -77,6 +90,8 @@
   </div>
     
      
-     
+  <div id="preloader">
+    <div class="loader" id="loader-1"></div>
+</div>
 
 @endsection

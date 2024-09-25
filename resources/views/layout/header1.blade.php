@@ -111,9 +111,8 @@
                         <div class="header-dropdown">
                             <div id="myDropdown" class="dropdown-content">
                                 <a href="/profile">Profile</a>
-                                @if($role == 'user')
-                                    <a href="/payment-history">Payment History</a>
-                                @else 
+                                <a href="/payment-history">Payment History</a>
+                                @if($role == 'admin')
                                     <a href="/settings">Settings</a>
                                 @endif
                                 <div class="dropdown-divider" id="dive"></div>

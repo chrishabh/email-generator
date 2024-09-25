@@ -2,7 +2,7 @@
 
 @section('main-section')
 @push('styles')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 @endpush
 <!-- <div class="flex"> -->
 <section id="payment-history">
@@ -86,11 +86,15 @@
             text-align: center;
             margin-top: 10px;
         }
+        .image-span{
+            display: inline-block;
+            height: 25px;
+            width: 25px;
+        }
     </style>
+    <meta name="payment-history-csrf-token" content="{{ csrf_token() }}">
     <div class="container ">
         <div class="content-box">
-
-
             <div class="row ">
                 <div class="col-sm-12">
                     <div class="element-wrapper">
@@ -122,6 +126,9 @@
                                             <th>
                                                 Created At
                                             </th>
+                                            <th>
+                                            <i class="fas fa-download"></i>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -151,6 +158,13 @@
                                             <td class="cell-with-media">
                                                 <span>{{$value['created_at']}}</span>
                                             </td>
+
+                                            <td class="cell-with-media">
+                                                <span class="image-span">
+                                                    <img src="/assets/bill.png" alt="Bill" onclick="callPdf({{json_encode($value['id'])}})">
+                                                    
+                                                </span>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -171,5 +185,44 @@
 
 </section>
 <!-- </div> -->
+<script>
+    function callPdf(order_id) {
+        let body={
+        order_id:order_id,
+    }
+    console.log(order_id);
+        fetch("/invoice-pdf", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="payment-history-csrf-token"]').getAttribute('content')
+            },
+            body:JSON.stringify(body)   
+    })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+              // Create a new object URL from the blob
+                const url = window.URL.createObjectURL(blob);
+        
+                // Create a link element to download the PDF
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'file.pdf';  // Set a file name for the download
+                document.body.appendChild(a);
+                a.click();
+
+                // Remove the link element
+                a.remove();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+</script>
 
 @endsection

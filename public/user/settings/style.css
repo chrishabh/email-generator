@@ -15,8 +15,8 @@ body {
 .sidebar {
     width: 6%;
     background-color: #2d3436;
-    height: 100vh;
-    position: fixed;
+    height: 150vh;
+    position: absolute;
     transition: width 0.3s ease;
     display: flex;
     flex-direction: column;

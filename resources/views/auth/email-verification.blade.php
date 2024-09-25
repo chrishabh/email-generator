@@ -86,7 +86,7 @@
                 @enderror  
                 <div class="sign-form">
                     <div class="title">
-                        Email Verification
+                     Verify Email
                     </div>
 
                     <form method="POST" accept-charset="utf-8" class="form-inner" id='resetPassword' action="{{ route('verification') }}">

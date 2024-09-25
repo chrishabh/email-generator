@@ -92,6 +92,7 @@ try{
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
             Route::get('/resend-code', [LoginController::class, 'resendCode'])->name('resend.code');
             Route::get('/payment-history', [PaymentController::class, 'getPaymentHistory'])->name('payment.history');
+            Route::post('/invoice-pdf', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
       
         });
          
