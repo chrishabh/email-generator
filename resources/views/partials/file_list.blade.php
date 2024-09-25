@@ -38,22 +38,12 @@
                     </div>
                 </div>
                 <div class="info-line--right row col-md-7 col-offset-1 align-items-center">
-                    <div class="col-md-5">
-                        <span class="time-tag"><span class="icon-clock"></span>start to processing</span>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="neumorphic-progress-circle">
-                            <div class="circle">
-                                <div class="mask full">
-                                    <div class="fill"></div>
-                                </div>
-                                <div class="mask half">
-                                    <div class="fill"></div>
-                                </div>
-                                <div class="inside-circle">
-                                    <span class="percentage">0%</span>
-                                </div>
+                    <div class="col-md-7">
+                        <div id="progress-card" class="progress-card"> 
+                            <div class="progress-container">
+                                <div id="progress-bar" class="progress-bar"></div>
                             </div>
+                            <span id="progress-text">0 / {{ $value['total']}} emails verified</span>
                         </div>
                     </div>
                     <div class="col-md-5">
