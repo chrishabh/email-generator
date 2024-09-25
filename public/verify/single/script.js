@@ -174,7 +174,9 @@ async function getVerificationEmailStatus(data){
                             const data  =  responseData.result;
                             dataAbort   =  data.isAbortAll;
                             status      =  data.status;
+                            creditPoint =  data.creditPoint;
                             hideLoaderAndAppendHtml(id,status,dataAbort);
+                            document.getElementById('creditPoint').innerHTML = creditPoint
                         } 
                         else if(responseData.error){
                             throw new Error(responseData.error);
@@ -185,8 +187,20 @@ async function getVerificationEmailStatus(data){
                     }
                 }
             } catch (error) {
-                // Handle the error and stop the process
                 console.error('Error:', error.messaage);
+                // Handle the error and stop the process
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error.message || 'Something went wrong!',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Reload the window when OK is clicked
+                        window.location.reload();
+                    }
+                });
+                
                 break; // Stop further fetch requests if one fails
             }
         }
