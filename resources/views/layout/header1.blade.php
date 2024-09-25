@@ -83,7 +83,7 @@
         <div class="container1">
             <div class="mainheader">
                 <div class="mainheader--left">
-                    <a href="/" class="logo">
+                    <a href="" class="logo">
                         <img src="{{ asset('/assets/logo.png') }}" alt="">
                     </a>
                     <ul class="main-menu">

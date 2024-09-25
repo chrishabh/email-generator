@@ -78,7 +78,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                     <th scope="col">#</th>
                     <th scope="col">user Id</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Work Experience</th>
+                    <th scope="col">User Experience</th>
                 </tr>`;
             }else{
                 html += `
@@ -287,13 +287,17 @@ async function fetchOverallCreditsData() {
 
 // Render the overall credits chart
 function renderOverallCreditsChart(data) {
+    console.log(data);
     let html = `<div class="row mx-0">       
         <div class="col-md-6" id="left-section-of-chart">
             <h1>Total Credit Score</h1>
+            <h2 style="text-align: left;padding: 20px;font-weight: bold;">Customer Available Balance : ${data.availableCredits} </h2>
+            <h2 style="text-align: left;padding-left: 20px;font-weight: bold;">Cutomer Used Balance :  ${data.usedCredits}</h2>
             <canvas id="overallCreditsChart" width="400" height="400"></canvas>
         </div>
         <div class="col-md-6" id="right-section-of-chart">
             <h1>Total Available Credit Score of API</h1>
+            <h2 style="text-align: center;padding: 20px;font-weight: bold;">API Available Credits :  ${data.adminCreditsTotal}</h2>
             <canvas id="overallCreditsAdminChart" width="400" height="400"></canvas>
         </div>
     </div>`;

@@ -80,6 +80,7 @@
                 <div class="col-md-6" id="right-section-of-chart">
                     <h1>Total Available Credit Score of API</h1>
                     <canvas id="overallCreditsAdminChart" width="400" height="400"></canvas>
+                   
                 </div>
             </div> 
         </div>

@@ -120,7 +120,7 @@
                     <!-- Work Experience Section -->
                     <div class="card mb-4 custom-boxshadow flex-grow-1 card-bg-grey">
                         <div class="card-header">
-                            <h5 class="mb-0">Work Experience <span class="mb-0 edit-icon float-right"><i class="fas fa-edit"></i></span></h5>
+                            <h5 class="mb-0">User Experience<span class="mb-0 edit-icon float-right"><i class="fas fa-edit"></i></span></h5>
                         </div>
                         <div class="card-body">
                             <div class="loader-overlay " id="work-experience-info-loader" style="display: none">
@@ -129,7 +129,7 @@
                             <form method="POST"  id="work_experience_info_form">
                                 <meta name="work-experience-info-csrf-token" content="{{ csrf_token() }}">
                                 <div class="mb-3 row mx-0 align-items-center">
-                                    <label for="work_experience" class="col-md-3 col-form-label pr-1">Describe your work experience</label>
+                                    <label for="work_experience" class="col-md-3 col-form-label pr-1">Describe your experience:</label>
                                     <div class="col-md-9">
                                         <textarea id="work_experience" name="work_experience" class="form-control" rows="4" disabled  data-original-value="{{ old('work_experience', $userData['work_experience_description']) }}">{{old('work_experience',$userData['work_experience_description'])}}</textarea>
                                     </div>
