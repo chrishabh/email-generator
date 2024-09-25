@@ -142,6 +142,10 @@ class EmailController extends Controller
             $status                  = null;
             $isAbortAll              = false;
             $user_id                 = Auth::user()->id;
+            $userCredit              = UserCredits::getCreditPoint($user_id);
+            $creditPoints            = ($userCredit) ? $userCredit->credits :0;
+            if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+           
             if(!empty($data)){
                 $email = $data['email'];
                 $id    = $data['id'];
@@ -174,7 +178,7 @@ class EmailController extends Controller
                     }
                 }  
 
-                return response()->json(['result'=>['status'=>$status,'isAbortAll' => $isAbortAll , 'emailId' => $emailId , 'fileId' =>$fileId ]])->header('Content-Type','application/json; charset=UTF-8');
+                return response()->json(['result'=>['creditPoint'=>$creditPoints,'status'=>$status,'isAbortAll' => $isAbortAll , 'emailId' => $emailId , 'fileId' =>$fileId ]])->header('Content-Type','application/json; charset=UTF-8');
             }
         }catch(\Exception $e){ 
             \Illuminate\Support\Facades\Log::error('lead finder error: ' . $e->getMessage());
