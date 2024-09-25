@@ -382,7 +382,7 @@ function startVerification(event,element,fileId){
      
 }
 function pollVerificationStatus(fileId, element) {
-    const pollingInterval = 30000; // Poll every 2 seconds
+    const pollingInterval = 20000; // Poll every 2 seconds
     const intervalId = setInterval(() => {
         fetch('/check-verification-status', {
             method: 'POST',
