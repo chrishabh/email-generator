@@ -33,5 +33,17 @@ class BulkUploadEmailFileData extends Model
             ->groupBy('status')
             ->get()->toArray();
     }
+
+    static function getCountOfEmails($fileId,$userId){
+        $data = self::select(DB::raw('count(*) as total_count'))->where('importedBy',$userId)->where('file_id',$fileId)->where('type','bulk')->groupBy('file_id')->first()->toArray();
+        
+        if(!empty($data)){
+           return $data['total_count'];
+        }
+        return 0;
+    }
+
+
+    
     
 }

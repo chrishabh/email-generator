@@ -337,12 +337,12 @@ class EmailController extends Controller
                 'filepond' => 'required|file|mimes:csv,txt',
             ]);
              
-            $file     = $request->file('filepond');
-            $rowCount = 0;
+            $file         = $request->file('filepond');
+            $rowCount     = 0;  
+            $uniqueEmails = [];
 
             if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
                 $header = fgetcsv($handle); // Try to read the first line (header)
-            
                 if ($header === false) {
                     $response = response()->json(['error' => 'The file is not a valid CSV file.']);
                     $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
@@ -350,13 +350,21 @@ class EmailController extends Controller
                 } 
                 while (($row = fgetcsv($handle)) !== FALSE) {
                     $rowCount++;
+                    // Ensure the row is not empty and contains at least one column
+                    if (isset($row[0])) {
+                        $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
+                        // Add only valid and unique emails to the array
+                        if (filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email, $uniqueEmails)) {
+                            $uniqueEmails[] = $email;
+                        }
+                    }
                 }
                 fclose($handle);
             } 
 
             $userCredit = UserCredits::getCreditPoint(Auth::user()->id);
             $creditPoints = ($userCredit) ? $userCredit->credits :0;
-            if ($rowCount > $creditPoints) {
+            if (count($uniqueEmails) > $creditPoints){
                 $response = response()->json(['error' => 'You should not have enough credit score to validate the email.']);
                 $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
                 return $response;
@@ -382,28 +390,23 @@ class EmailController extends Controller
                 'fileName'             =>  $fileName,
                 'uploadedFileLocation' =>  'public/'.$path,
                 'created_at'           => Carbon::now()
-               ));
-            while (($row = fgetcsv($handle)) !== FALSE) {
-                $arr = array();
-                
-                // Ensure the row is not empty and contains at least one column
-                if (isset($row[0])) {
-                    $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
-                   if($fileId){
-                        $arr   =  array(
-                            'email'     => $email,
-                            'file_id'    => $fileId,
-                            'importedBy' => $userId,
-                            'type'       =>'bulk', 
-                            'status'     => NULL,
-                            'created_at' => Carbon::now()
-                        ); 
-                        array_push($insertArray,$arr);
-                   }
-                     
-                   
+            ));
+
+            foreach ($uniqueEmails as $email) { 
+                // Only add the email if it is unique in the database as well
+                if($fileId){
+                    $insertArray[] = [
+                        'email'     => $email,
+                        'file_id'   => $fileId,
+                        'importedBy'=> $userId,
+                        'type'      => 'bulk', 
+                        'status'    => NULL,
+                        'created_at'=> Carbon::now()
+                    ];
                 }
+                 
             }
+
             // pp($insertArray);
             if(!empty($insertArray)){
                 if(DB::table('bulk_upload_email_file_data')->insert($insertArray)){ 
@@ -414,7 +417,6 @@ class EmailController extends Controller
                     return response()->json(['error' => 'something went wrong while importing the data.'])->header('Content-Type', 'application/json; charset=UTF-8');
                     // return response()->json(['error' =>  'something went wrong while importing the data.']);
                 }
-
             }
         
 
@@ -490,8 +492,13 @@ class EmailController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
         }
+        $userId       = Auth::user()->id;
+        $totalEmails  = BulkUploadEmailFileData::getCountOfEmails($request['fileId'],$userId);
+        $userCredit   = UserCredits::getCreditPoint($userId);
+        $creditPoints = ($userCredit) ? $userCredit->credits :0;
+        if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
         VerifyEmailsJob::dispatch($request['fileId']);
-        return response()->json(['sucess'=>'ok','status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],Auth::user()->id)],200)->header('Content-Type', 'application/json; charset=UTF-8');
+        return response()->json(['sucess'=>true,'status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],$userId)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
     }
 

@@ -332,7 +332,7 @@ function startVerification(event,element,fileId){
     // const progressInterval        = simulateProgress();
 
     // Start polling the verification status immediately without waiting for the API response
-    pollVerificationStatus(fileId, element); // This is called right away to start polling in parallel
+    const intervalId  = pollVerificationStatus(fileId, element); // This is called right away to start polling in parallel
 
     fetch('/start-verification',{
         method:'POST',
@@ -346,7 +346,10 @@ function startVerification(event,element,fileId){
         return response.json(); 
              
     }).then(data=>{
-             
+        if(data.success==false){
+            clearInterval(intervalId); 
+            throw new Error('Verification failed:'+ data.message);
+        }
         // if(data.data[0].verificationStatus=='verified'){
         //     // let divElement = document.getElementById(`list_${fileId}`)
         //     // clearInterval(progressInterval);
@@ -362,12 +365,18 @@ function startVerification(event,element,fileId){
         console.log("Verification started:", data);
         // We don't need to call pollVerificationStatus() here again since it started earlier
     }).catch(error=>{
-        console.error('Error starting verification:', error);
+        console.error('Error starting verification:',error.message);
         resetButton(element);
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: error || 'Something went wrong!',
+            text: error.message || 'Something went wrong!',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Reload the window when OK is clicked
+                window.location.reload();
+            }
         });
     })
      
@@ -414,16 +423,24 @@ function pollVerificationStatus(fileId, element) {
             }
         })
         .catch(error => {
-            console.error('Error checking verification status:', error);
+            console.error('Error checking verification status:', error.message);
             clearInterval(intervalId); // Stop polling on error
             resetButton(element);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: error || 'Something went wrong!',
+                text: error.message || 'Something went wrong!',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reload the window when OK is clicked
+                    window.location.reload();
+                }
             });
         });
     }, pollingInterval);
+
+    return intervalId;
 }
 // Function to update progress bar
 function updateProgressBar(verifiedEmails, totalEmails) {
@@ -441,6 +458,8 @@ function resetButton(element) {
     element.style.backgroundColor = ''; // Reset background color
     element.style.color = ''; // Reset text color
     element.style.cursor = ''; // Reset cursor
+    
+
 }
 
 

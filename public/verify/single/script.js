@@ -134,7 +134,7 @@ async function getEmailStatusVerification() {
                 }
             } catch (error) {
                 // Handle the error and stop the process
-                console.error('Error:', error);
+                console.error('Error:', error.messaage);
                 break; // Stop further fetch requests if one fails
             }
         }
@@ -186,7 +186,7 @@ async function getVerificationEmailStatus(data){
                 }
             } catch (error) {
                 // Handle the error and stop the process
-                console.error('Error:', error);
+                console.error('Error:', error.messaage);
                 break; // Stop further fetch requests if one fails
             }
         }

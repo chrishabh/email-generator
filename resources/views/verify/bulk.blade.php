@@ -23,6 +23,9 @@
         <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
         <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
         <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
   <script src="{{ asset('verify/bulk-upload/js/script.js') }}" type="text/javascript"></script>
     @endpush
