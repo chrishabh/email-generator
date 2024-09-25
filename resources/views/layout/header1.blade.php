@@ -115,7 +115,7 @@
                                 @if($role == 'admin')
                                     <a href="/settings">Settings</a>
                                 @endif
-                                <div class="dropdown-divider" id="dive"></div>
+                                <!-- <div class="dropdown-divider" id="dive"></div> -->
                                 <a href="/logout" id="out">Sign Out</a>
                             </div>
 
