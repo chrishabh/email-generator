@@ -287,7 +287,6 @@ async function fetchOverallCreditsData() {
 
 // Render the overall credits chart
 function renderOverallCreditsChart(data) {
-    console.log(data);
     let html = `<div class="row mx-0">       
         <div class="col-md-6" id="left-section-of-chart">
             <h1>Total Credit Score</h1>

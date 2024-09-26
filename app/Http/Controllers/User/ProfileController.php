@@ -263,7 +263,7 @@ class ProfileController extends Controller
         try{
             $credits                 = UserCredits::withTrashed()->get(); 
             $totalCredits            = $credits->sum('credits'); // Sum of all credits
-            $usedCredits             = $credits->whereNotNull('deleted_at')->sum('credits');  // Soft deleted credits
+            $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
             $availableCredits        = $totalCredits - $usedCredits;  
             $creditAvailableOfAdmin  = 0;
             if(env('API_PLATFORM')=='debouncee'){

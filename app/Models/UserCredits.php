@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class UserCredits extends Model
 {
@@ -64,6 +65,22 @@ class UserCredits extends Model
             'user_id' => $user_id,
             'credits' => "100"
         ]);
+    }
+
+    public static function getUsedCredits()
+    {
+        $usedCredits = DB::table('user_credits')
+                    ->select(DB::raw('MAX(CAST(credits AS UNSIGNED)) - MIN(CAST(credits AS UNSIGNED)) AS used_credits'))
+                    ->groupBy('user_id', 'order_id')
+                    ->get();
+
+        // To sum all the used credits
+        $totalUsedCredits = DB::table(DB::raw("({$usedCredits->toSql()}) as tab"))
+            ->mergeBindings($usedCredits->getQuery()) // Merges bindings from the subquery
+            ->select(DB::raw('SUM(used_credits) as total_used_credits'))
+            ->value('total_used_credits');
+
+        return $totalUsedCredits->total_used_credits;
     }
 
 }
