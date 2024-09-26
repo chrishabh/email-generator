@@ -262,7 +262,7 @@ class ProfileController extends Controller
     {
         try{
             $credits                 = UserCredits::withTrashed()->get(); 
-            $totalCredits            = $credits->whereNull('delete_at')->sum('credits'); // Sum of all credits
+            $totalCredits            = $credits->whereNull('deleted_at')->sum('credits'); // Sum of all credits
             $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
             $availableCredits        = $totalCredits;  
             $creditAvailableOfAdmin  = 0;
