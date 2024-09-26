@@ -81,7 +81,7 @@ class UserCredits extends Model
 
 
 
-        return $totalUsedCredits->total_used_credits;
+        return $totalUsedCredits;
     }
 
 }
