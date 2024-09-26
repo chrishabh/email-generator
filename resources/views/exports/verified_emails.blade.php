@@ -21,7 +21,7 @@
                 <td>{{$email['email']}}</td>
                 @if ($isExport)
                     <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td>
-                    <td>{{($email['status']=='valid')? 'Deliverable':'Invalid' }}</td>
+                    <td>{{$email['apiStatus']}}</td>
                     <td>5</td>
                     <td>No</td>
                     <td>Yes</td> 

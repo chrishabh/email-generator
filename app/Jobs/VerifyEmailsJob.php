@@ -47,22 +47,19 @@ class VerifyEmailsJob implements ShouldQueue
     {
         // Implement your email verification logic here
         if($data){
-            $count   = 0;
-            $counter = 1;
-            $isUpdateData =false;
-            
-            $emailController = new EmailController();
+            $count         = 0;
+            $counter       = 1;
+            $isUpdateData  = false;
+            // pp($data);
             foreach($data as $key=>$value){
-                $dataArray=[];
-                if(EmailController::isValidEmail($value->email)){
-                    $dataArray['isValidEmail'] = '1';
-                    $dataArray['status']       = 'valid';
-                }else{
-                    $dataArray['isValidEmail'] = '0';
-                    $dataArray['status']       = 'invalid';
-                }
-                $dataArray['job_email_status'] = 'verified';
-
+                $dataArray = [];
+                $status    = EmailController::isValidEmail($value->email,true);
+                $dataArray = [
+                    'apiStatus'         => $status ? strtolower($status):NULL,
+                    'status'            => ($status && strtolower($status)=='deliverable') ? 'valid':'invalid',
+                    'job_email_status'  => 'verified'
+                ];
+               
                 // $isValidEmail = $counter % 2 == 1;
                 // if($isValidEmail){
                 //     $dataArray['isValidEmail'] = '1';

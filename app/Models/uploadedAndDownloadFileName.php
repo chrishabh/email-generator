@@ -22,7 +22,7 @@ class uploadedAndDownloadFileName extends Model
     }
 
     public static function getPendingFileDataBasedOnCurrentUser($file_id,$user_id,$verificationStatus,$status=''){
-        return DB::table('uploaded_and_download_file_names as ud')->select('ud.fileName','ud.id','bu.file_id','bu.id as bulk_email_id', 'bu.email', 'bu.isValidEmail', 'bu.type', 'bu.status')
+        return DB::table('uploaded_and_download_file_names as ud')->select('ud.fileName','ud.id','bu.apiStatus','bu.file_id','bu.id as bulk_email_id', 'bu.email', 'bu.isValidEmail', 'bu.type', 'bu.status')
             ->leftJoin('bulk_upload_email_file_data as bu', function($join) {
             $join->on('ud.id', '=', 'bu.file_id')
                 ->on('ud.user_id', '=', 'bu.importedBy'); 
