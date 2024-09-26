@@ -15,11 +15,13 @@ body {
 .sidebar {
     width: 6%;
     background-color: #2d3436;
-    height: 150vh;
-    position: absolute;
+    height: 100vh;
+    position: sticky;
     transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    z-index: 1; 
 }
 
 /* Expand Sidebar on Hover */

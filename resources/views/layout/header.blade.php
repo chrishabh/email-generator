@@ -61,18 +61,18 @@
                                 </a>
                             </li> -->
                         @endif
-                            <li class="nav-item">
+                            <li class="nav-item header-item-extra-padding">
                                 <a class="nav-link" href="#pricing">
                                     Pricing
                                 </a>
                             </li>
                      
-                        <li class="nav-item">
+                        <li class="nav-item header-item-extra-padding">
                             <a class="nav-link" href="/single-verification">
                                 Single Verification
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item header-item-extra-padding">
                             <a class="nav-link" href="/bulk-verification">
                                 Bulk Verification
                             </a>

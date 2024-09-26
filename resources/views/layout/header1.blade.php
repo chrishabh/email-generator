@@ -39,7 +39,7 @@
     $nameParts = explode(' ', $fullName);
     $name ='';
     if (count($nameParts) < 2) {
-        $firstName = $nameParts[0];
+        $firstName = $fullName[0];
         $name      = strtoupper($firstName); 
     }else{
         $firstName = $nameParts[0];
