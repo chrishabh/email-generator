@@ -261,8 +261,8 @@ class ProfileController extends Controller
     public function getOverallCreditsReport()
     {
         // try{
-            $credits                 = UserCredits::join('users', 'users.id', '=','user_id')->withTrashed()->whereNull('users.deleted_at')->get(); 
-            $totalCredits            = $credits->whereNull('user_credits.deleted_at1')->sum('credits'); // Sum of all credits
+            $credits                 = UserCredits::join('users', 'users.id', '=','user_id')->whereNull('users.deleted_at')->get(); 
+            $totalCredits            = $credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
             $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
             $availableCredits        = $totalCredits;  
             $creditAvailableOfAdmin  = 0;
