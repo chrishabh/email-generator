@@ -573,4 +573,7 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
         margin-block-start: 2em;
     }
      
+    #CheckButon{
+        margin: 0 auto;
+    }
 }

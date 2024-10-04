@@ -55,8 +55,8 @@
   <meta name="setting-page-token" content="{{ csrf_token() }}">
   <meta name="delete-button-token" content="{{ csrf_token() }}">
   <div class="row">
-    <div class="sidebar">
-        <ul>
+    <div class="sidebar" id="black-sidebar">
+        <ul class="dashboard-listing">
             <li><a class="active" id="dashboard" onclick="renderHtml(event,this)"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
             <li><a  id="setting" onclick="renderHtml(event,this)"><i class="fas fa-cogs"></i><span>Settings</span></a></li>
             <li><a  id="messages" onclick="renderHtml(event,this)"><i class="fas fa-user"></i><span>Messages</span></a></li>

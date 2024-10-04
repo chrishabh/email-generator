@@ -218,3 +218,81 @@ body {
         margin-left: 0;
     }
 }
+
+
+
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+
+}
+
+/* Large Devices (desktops, 992px to 1199px) */
+@media (max-width:1199px){
+
+}
+
+/* Medium Devices (tablets, 768px to 991px) */
+@media(max-width:991px){
+
+}
+
+/* Small Devices (phones, 576px to 767px) */
+@media(max-width:767px){
+
+}
+
+/* Extra Small Devices (phones less than 576px) */
+@media (max-width:575px) {
+    .sidebar{
+        padding: 1em 0em;
+    }
+
+    #black-sidebar .dashboard-listing{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .dashboard-listing #dashboard span,
+    .dashboard-listing #setting span,
+    .dashboard-listing #messages span{
+        display: none;
+    }
+
+    .sidebar .dashboard-listing li{
+        margin-bottom: 0px;
+    }
+
+    #left-section-of-chart, #right-section-of-chart {
+        margin-bottom: 20px;
+    }
+
+    #admin-setting-page{
+        width: 100%;
+
+    }
+
+    #overallCreditsChart,
+    #overallCreditsAdminChart{
+        height: 425px;
+        width: 336px;
+    }
+    #left-section-of-chart h2{
+        padding: 20px 20px 9px !important;
+        line-height: 18px;
+        text-align: center !important;
+    }
+
+    #right-section-of-chart{
+        margin-top: 10em;
+    }
+
+    #setting-section .setting-main-class,
+    #messages-section .setting-main-class{
+        padding: 3em 1em !important;
+        margin: 2em 1em !important;
+    }
+}

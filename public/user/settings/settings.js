@@ -70,6 +70,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
     else{
         html = `<div class="setting-main-class">
         <h1 class="user-heading">${!isMessagePage?'Users Table':'User Work Experince'}</h1>
+        <div class="table-responsive">
         <table class="table table-hover table-bordered">
             <thead class="table-head">`;
             if(isMessagePage){
@@ -113,7 +114,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                 }
             })
         html+=`</tbody>
-            </table>`;
+            </table></div>`;
         
         // Pagination controls
         let totalPages = Math.ceil(totalUsers / perPage);
