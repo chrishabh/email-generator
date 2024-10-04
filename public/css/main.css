@@ -1836,3 +1836,26 @@ textarea {
 .btn-home-common:hover{
   color:#fff !important;
 }
+
+
+
+/* 992px to 1200px */
+@media (max-width:1199px) {
+  
+}
+
+/* 768px to 991px */
+@media(max-width:991px){
+
+}
+
+/* 576px to 767px */
+@media (max-width:767px){
+
+} 
+
+@media(max-width:575px){
+  #header-wrap .navbar-expand-md .navbar-brand, .navbar-expand-md .navbar-toggler{
+    margin: 0px 10px;
+  }
+}

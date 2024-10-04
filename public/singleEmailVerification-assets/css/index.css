@@ -233,3 +233,52 @@ body{
         transform: rotate(0deg) translateX(0);
     }
 }
+
+
+
+@media (max-width:1199px){
+
+}
+
+@media(max-width:991px){
+
+}
+@media(max-width:767px){
+
+}
+@media(max-width:575px){
+    .hero-section .head-main{
+        margin-top: 0em; 
+        padding-top: 4vh; 
+        font-size: 35px;
+    }
+    
+    .hero-section .head-main>span{
+        font-size: 29px;
+    }
+
+    .hero-section video{
+        width: 95%;
+    }
+    .hero-section{
+        padding-bottom: 0px;
+    }
+
+    .Htw .Htw-main{
+        padding: 12px 35px;
+    }
+    .Htw .container div:first-child {
+        flex-direction: column-reverse;
+    }
+    
+    .Htw .validate-button{
+        width: 100%;
+    }
+
+    .Htw .card{
+        margin-block-start: 21px;
+    }
+    .Htw{
+        margin-bottom: 50px;
+    }
+}

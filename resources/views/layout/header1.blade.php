@@ -67,6 +67,12 @@
             <li class="current"><a href="/lead-finder">Lead Finder</a></li> 
             <li class=""><a href="/bulk">Bulk Verifications</a></li>
             <li><a href="/pricing">Buy Credits</a></li> 
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/payment-history">Payment History</a></li>
+            @if($role == 'admin')
+                <li><a href="/settings">Settings</a></li>        
+            @endif
+            <li><a href="/logout" id="out">Sign Out</a></li>
         </ul>
         <div class="credit-info">
             Credit Balance

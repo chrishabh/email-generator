@@ -12,3 +12,22 @@
 .Bulk .para p{
     font-size: 15px;
 }
+
+
+
+@media(max-width:1199px){
+
+}
+@media(max-width:991px){
+
+}
+
+@media(max-width:767px){
+
+}
+@media(max-width:565px){
+    .Bulk .image-H img{
+        max-width: 94%;
+        padding-block-start: 2em;
+    }
+}
