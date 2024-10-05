@@ -1311,6 +1311,9 @@ hr {
   color: #333;
 }
 
+.header-item-extra-padding{
+  padding-right: 50px;
+}
 /* #pricing .table {
   margin-top: 15px;
   padding: 30px;

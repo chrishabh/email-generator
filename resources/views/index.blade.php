@@ -280,7 +280,7 @@
   <!-- Call To Action Section Start -->
 
   <!-- Team Section Start -->
-  <section id="team" class="section-padding bg-gray">
+  <!-- <section id="team" class="section-padding bg-gray">
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown animated" data-wow-delay="0.3s" style="visibility: visible;-webkit-animation-delay: 0.3s; -moz-animation-delay: 0.3s; animation-delay: 0.3s;">
@@ -324,11 +324,11 @@
                 <h5 style="color:black">Christopher Lee</h5>
             </div>
         </div>
-    </div>
+    </div> -->
 
     
     <!-- Modal for 360 Viewer -->
-    <div class="modal fade" id="CEO" tabindex="-1" role="dialog" aria-labelledby="CEOLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="CEO" tabindex="-1" role="dialog" aria-labelledby="CEOLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-body">
@@ -510,7 +510,7 @@
         </div>
     </div>
 
-  </section>
+  </section> -->
   <!-- Team Section End -->
 
   <!-- Pricing section Start -->

@@ -260,9 +260,9 @@ class ProfileController extends Controller
     ######### DASHBOARD ############
     public function getOverallCreditsReport()
     {
-        try{
-            $credits                 = UserCredits::withTrashed()->get(); 
-            $totalCredits            = $credits->whereNull('deleted_at')->sum('credits'); // Sum of all credits
+        // try{
+            $credits                 = UserCredits::join('users', 'users.id', '=','user_id')->whereNull('users.deleted_at')->get(); 
+            $totalCredits            = $credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
             $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
             $availableCredits        = $totalCredits;  
             $creditAvailableOfAdmin  = 0;
@@ -279,14 +279,14 @@ class ProfileController extends Controller
                 'data'    => ['adminCreditsTotal'=>$creditAvailableOfAdmin, 'totalCredits'=> $totalCredits, 'usedCredits'=> $usedCredits,  'availableCredits' => $availableCredits]
             ], 200)->header('Content-Type','application/json; charset=UTF-8');
 
-        }catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error in delete the user: ' . $e->getMessage());
-            // Return error response if deletion fails
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete user. ' . $e->getMessage(),
-            ], 500)->header('Content-Type','application/json; charset=UTF-8');
-        }
+        // }catch (\Exception $e) {
+        //     \Illuminate\Support\Facades\Log::error('Error in delete the user: ' . $e->getMessage());
+        //     // Return error response if deletion fails
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Failed to delete user. ' . $e->getMessage(),
+        //     ], 500)->header('Content-Type','application/json; charset=UTF-8');
+        // }
          
     }
 
