@@ -1312,7 +1312,11 @@ hr {
 }
 
 .header-item-extra-padding{
-  padding-right: 50px;
+  padding-right: 40px;
+}
+
+.header-item-extra-padding-bulk{
+  padding-right: 160px;
 }
 /* #pricing .table {
   margin-top: 15px;
