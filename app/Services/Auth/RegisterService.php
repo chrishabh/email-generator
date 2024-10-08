@@ -37,6 +37,8 @@ class RegisterService{
         if(UserVerification::createVerificationToken($verification_link)){
             Notification::route('mail', $request->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$request->name,'verification_link'=>$link],'verification-template'));
             UserCredits::initialFreeCredit(User::getUserId($request->email));
+
+            Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('New Account Notification',['User'=>$request->name,'account_email' => $request->email,'account_creation_date'=>Carbon::now()],'new-account'));
             return redirect()->route('signin')->with('success', "Registration successful! Please check your inbox, junk, or spam folder for a verification email. Once you verify your email, you'll be able to log in.");
 
         }

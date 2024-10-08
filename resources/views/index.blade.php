@@ -7,6 +7,22 @@
 @section('main-section')
   @push('title')
     <title>bouncee</title>
+     <!-- Description (for SEO) -->
+     <meta name="description" content="Cheap and Best Email Verification Tool.">
+    
+    <!-- Keywords (for SEO) -->
+    <meta name="keywords" content="email verification, email validation, bouncee pricing, neverbounce, zerobounce, bulk email verifier, affordable email checker">
+
+    <!-- Author Information -->
+    <meta name="author" content="bouncee">
+
+    <!-- Social Media Optimization -->
+    <!-- Facebook Open Graph -->
+    <meta property="og:title" content="bouncee">
+    <meta property="og:description" content="Cheap and Best Email Verification Tool.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:url" content="https://bouncee.net/">
+    <meta property="og:type" content="website">
   @endpush
     <!-- Hero Area Start -->
     <div id="hero-area" class="hero-area-bg">
@@ -280,7 +296,7 @@
   <!-- Call To Action Section Start -->
 
   <!-- Team Section Start -->
-  <section id="team" class="section-padding bg-gray">
+  <!-- <section id="team" class="section-padding bg-gray">
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown animated" data-wow-delay="0.3s" style="visibility: visible;-webkit-animation-delay: 0.3s; -moz-animation-delay: 0.3s; animation-delay: 0.3s;">
@@ -324,11 +340,11 @@
                 <h5 style="color:black">Christopher Lee</h5>
             </div>
         </div>
-    </div>
+    </div> -->
 
     
     <!-- Modal for 360 Viewer -->
-    <div class="modal fade" id="CEO" tabindex="-1" role="dialog" aria-labelledby="CEOLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="CEO" tabindex="-1" role="dialog" aria-labelledby="CEOLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
               <div class="modal-body">
@@ -510,7 +526,7 @@
         </div>
     </div>
 
-  </section>
+  </section> -->
   <!-- Team Section End -->
 
   <!-- Pricing section Start -->
