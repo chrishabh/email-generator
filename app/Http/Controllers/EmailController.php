@@ -616,7 +616,9 @@ class EmailController extends Controller
             UserCredits::updateCreditsWhenEmailGetsVerify($arrayData['user_id'],1);
             $singleVerification = new singleVerification;
             $singleVerification->insertDataAndgetId($arrayData);
-            $validEmails = $arrayData;
+            // $validEmails = $arrayData;
+            $lastTwoVerifications = singleVerification::orderBy('id', 'desc')->take(2)->get();
+            $validEmails          = $lastTwoVerifications->toArray();
             return redirect()->back()->with(compact('validEmails')); 
            
 

@@ -58,21 +58,23 @@
                             <div class="inner-layer">
                                 @php
                                     
-                                    $data   = session('validEmails')
+                                    $datas   = session('validEmails')
                                 @endphp
-                                @if (!empty($data))
-                                    @php 
-                                        $status = $data['status'];
-                                        $email  = $data['email'];
-                                    @endphp
-                                    <div class="correct-email {{$status=='deliverable'?'valid-email':'invalid-email'}}">
-                                        <div class="col-md-8"> 
-                                            <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
-                                        </div>
-                                        <div class="col-md-3 col-offset-1 px-0"> 
-                                            <div class="status--div  {{$status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
-                                        </div> 
-                                    </div>  
+                                @if (!empty($datas))
+                                    @foreach ($datas as $data)
+                                        @php 
+                                            $status = $data['status'];
+                                            $email  = $data['email'];
+                                        @endphp
+                                        <div class="correct-email {{$status!=null && $status=='deliverable'?'valid-email':'invalid-email'}}">
+                                            <div class="col-md-8"> 
+                                                <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
+                                            </div>
+                                            <div class="col-md-3 col-offset-1 px-0"> 
+                                                <div class="status--div  {{$status!=null && $status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
+                                            </div> 
+                                        </div>  
+                                    @endforeach 
                                     @else
                                     <div class="no-content-parent">
                                         <img class="no-content" id="analImage" src="{{ asset('verify/single/image/1.png') }}" alt="no content" srcset="">
