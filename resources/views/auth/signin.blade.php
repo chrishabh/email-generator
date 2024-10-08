@@ -105,8 +105,11 @@
                                    {{ $message }}  
                                @enderror
                             </div>
+                            <div class="forgot-password">
+                                <a href="/recovery">Forgot Password?</a>
+                            </div>
                         </div>
-
+                       
 
                         <button class="btn fullwidth" type="submit" style="margin-top: 4em;" id="signIn">Login to your
                             account</button>

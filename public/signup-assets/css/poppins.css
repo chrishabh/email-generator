@@ -5855,6 +5855,17 @@ html {
   color: #92929d;
   font-weight: 500;
 }
+
+.forgot-password {
+  border-radius: 0 0 20px 20px;
+  background-color: #fff;
+  text-align: left;
+  font-size: 12px;
+  color: #0062ff;
+  font-weight: 300;
+  width: calc(100% + 40px);
+}
+
 .sign-form--foot {
   border-radius: 0 0 20px 20px;
   background-color: #fafafb;
