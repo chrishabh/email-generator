@@ -617,7 +617,7 @@ class EmailController extends Controller
             $singleVerification = new singleVerification;
             $singleVerification->insertDataAndgetId($arrayData);
             // $validEmails = $arrayData;
-            $lastTwoVerifications = singleVerification::orderBy('id', 'desc')->take(2)->get();
+            $lastTwoVerifications = singleVerification::where('user_id', $arrayData['user_id'])->orderBy('id', 'desc')->take(2)->get();
             $validEmails          = $lastTwoVerifications->toArray();
             return redirect()->back()->with(compact('validEmails')); 
            
