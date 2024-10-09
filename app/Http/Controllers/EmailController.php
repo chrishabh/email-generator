@@ -433,15 +433,17 @@ class EmailController extends Controller
         $creditPoint =0;
         $headerData = array(); 
         if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
-           
+            $userId               = Auth::user()->id;
+            $data                 = UserCredits::getCreditPoint($userId); 
+            $oldVerificationData  = singleVerification::where('user_id', $userId)->orderBy('id', 'desc')->get()->toArray();
             if(!empty($data)){
                 $creditPoint =$data->credits;
                 
             }
         }
             
-        $headerData['creditPoint'] = $creditPoint; 
+        $headerData['creditPoint']         = $creditPoint; 
+        $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
     }
 
@@ -619,7 +621,7 @@ class EmailController extends Controller
             // $validEmails = $arrayData;
             $lastTwoVerifications = singleVerification::where('user_id', $arrayData['user_id'])->orderBy('id', 'desc')->take(2)->get();
             $validEmails          = $lastTwoVerifications->toArray();
-            return redirect()->back()->with(compact('validEmails')); 
+            return redirect()->back()->with(compact('validEmails'))->withInput(); 
            
 
         } catch (\Exception $e) {
