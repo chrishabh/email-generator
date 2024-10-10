@@ -104,7 +104,7 @@
                 @if ($oldVerificationData != null && !empty($oldVerificationData))
                     {{-- <h1>Single Verification History</h1> --}}
                     <div class="col-md-12 mt-5">
-                        <div class="single-card">
+                        <div class="history-card">
                             <div class="outer-layer">
                                 <div class="inner-layer"> 
                                     <h3 class="right-card-head">Single Emails Verification History</h3>
