@@ -34,7 +34,7 @@
 
 #single--verification .single-card{
     border-radius: 3px;
-    min-height: 300px;
+    max-height: 300px;
     box-shadow:  var(--common-box-shadow);
     padding: var(--card-padding);
     background-color: #fafafb;
