@@ -107,7 +107,7 @@
                         <div class="history-card">
                             <div class="outer-layer">
                                 <div class="inner-layer"> 
-                                    <h3 class="right-card-head">Single Emails Verification History</h3>
+                                    <h3 class="right-card-head">Single Verification History</h3>
                                     @foreach ($headerData['oldVerificationData'] as $data)
                                         @php
                                             $status = $data['status'];
