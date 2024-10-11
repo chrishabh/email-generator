@@ -35,11 +35,7 @@
                     <h3 class="footer-titel">Contact</h3>
                     <ul class="address">
                         <li>
-                            <a href="#"><i class="lni-map-marker"></i>1234 Elm Street,<br>Suite 567
-                                Springfield, IL 62701</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="lni-phone-handset"></i> Phone: +1 (801) 512 0616</a>
+                            <a href="#"><i class="lni-map-marker"></i>Springfield, IL 62701</a>
                         </li>
                         <li>
                             <a href="#"><i class="lni-envelope"></i> Email: support@bouncee.net</a>
