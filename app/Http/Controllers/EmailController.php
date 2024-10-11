@@ -619,7 +619,7 @@ class EmailController extends Controller
             $singleVerification = new singleVerification;
             $singleVerification->insertDataAndgetId($arrayData);
             $validEmails = $arrayData;
-            return redirect()->back()->with(compact('validEmails')); 
+            return redirect()->back()->with(compact('validEmails'))->withInput(); 
            
 
         } catch (\Exception $e) {
