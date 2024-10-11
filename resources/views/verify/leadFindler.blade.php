@@ -17,7 +17,7 @@
         <div id="leadFinder">
             <div class="container1">
                 <div class="first-top-lead">
-                    <div class="single-card">
+                    <div class="history-card">
                         <div class="top-section-lead">
                             <div class="row mx-0">
                                 <div class="col-md-1 col-sm-1">
@@ -107,7 +107,7 @@
                         }
                     @endphp
                     @if(!empty($data))
-                        <div class="second-lead-card single-card mt-4">
+                        <div class="second-lead-card history-card mt-4">
                             <div class="row mx-0">
                                 <div class="col-md-12 col-sm-12">
                                     <h2 class="lead-heading--requsted font-weight-bold">Results</h2>
