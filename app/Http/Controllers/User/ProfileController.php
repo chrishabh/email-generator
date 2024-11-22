@@ -52,7 +52,7 @@ class ProfileController extends Controller
     function renderSettingPage(Request $request)
     {
         try {
-            $perPage = 10; // Number of users per page
+            $perPage = 50; // Number of users per page
             $currentPage = $request->input('page', 1); // Get the current page or default to 1
             
             $paginationData = User::getUserDetailsWithRemainingCredits($perPage, $currentPage);
