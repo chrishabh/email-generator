@@ -24,6 +24,12 @@ body {
     z-index: 1; 
 }
 
+.verified-badge {
+    width: 17px;
+    height: 17px;
+}
+
+
 /* Expand Sidebar on Hover */
 .sidebar:hover {
     width: 260px;
@@ -135,6 +141,12 @@ body {
     margin-bottom: 20px;
     font-weight: bold;
     font-size: 20px;
+
+}
+
+#admin-setting-page #setting-section .user-heading-right,
+#admin-setting-page #messages-section .user-heading-right{
+    text-align-last: end;
 
 }
 

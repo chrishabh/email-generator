@@ -62,6 +62,7 @@ class ProfileController extends Controller
                 'message'     => 'success',
                 'data'        => $paginationData['data'],
                 'total'       => $paginationData['total'],
+                'verified_user'       => $paginationData['verified_user'],
                 'perPage'     => $paginationData['perPage'],
                 'currentPage' => $paginationData['currentPage']
             ])->header('Content-Type', 'application/json; charset=UTF-8');

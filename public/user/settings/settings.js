@@ -30,9 +30,10 @@ async function renderHtml(event,elem){
         const data          = response.data;
         const totalUsers    = response.total;
         const perPage       = response.perPage;
+        const totalVerifiedUsers    = response.verified_user;
         const currentPage   = parseInt(response.currentPage);
 
-        let html             = renderSettingHtmlPage(data, totalUsers, perPage, currentPage);
+        let html             = renderSettingHtmlPage(data, totalUsers, perPage, totalVerifiedUsers, currentPage);
         let settingDOM       = document.getElementById('setting-section');
         settingDOM.innerHTML = html;
         $('#preloader').fadeOut();
@@ -51,10 +52,11 @@ async function renderHtml(event,elem){
         const response      = await fetchGetRequest('render-messages/','setting-page-token')
         const data          = response.data;
         const totalUsers    = response.total;
+        const totalVerifiedUsers    = response.verified_user;
         const perPage       = response.perPage;
         const currentPage   = parseInt(response.currentPage);
 
-        let html             = renderSettingHtmlPage(data, totalUsers, perPage, currentPage,true);
+        let html             = renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, currentPage,true);
         let settingDOM       = document.getElementById('messages-section');
         settingDOM.innerHTML = html;
         $('#preloader').fadeOut();
@@ -62,14 +64,19 @@ async function renderHtml(event,elem){
     }
 }
 
-function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessagePage=false){
+function renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, currentPage,isMessagePage=false){
     let html       = ''  
     if (!data || !Array.isArray(data) || data.length === 0) {
         html += '<div class="setting-main-class"><h1 class="no-data-found">No Data Found</h1></div>';
     } 
     else{
         html = `<div class="setting-main-class">
-        <h1 class="user-heading">${!isMessagePage?'Users Table':'User Work Experince'}</h1>
+        <div class="user-heading" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>${!isMessagePage ? 'Users Table' : 'User Work Experience'}</h1>
+        <p class="user-heading-right" style="margin: 0; text-align: right;">
+            Verified Users: ${totalVerifiedUsers} <br> Unverified Users: ${totalUsers - totalVerifiedUsers}
+        </p>
+    </div>
         <div class="table-responsive">
         <table class="table table-hover table-bordered">
             <thead class="table-head">`;
@@ -106,7 +113,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage, currentPage,isMessageP
                 }else{
                     html+= `<tr>
                     <th scope="row">${index+1}</th>
-                    <td>${user.name}</td>
+                    <td>${user.name} ${user.verified == '1' ? `<img class="verified-badge" src="assets/2614a027236645.56361cc2c40e4-removebg-preview.png" alt="Verified">` : ''}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
                     <td class="text-center"><i class="fa-solid fa-trash" onclick="deleteUser(${user.userId},${isMessagePage})" style="cursor: pointer;"></i></td>

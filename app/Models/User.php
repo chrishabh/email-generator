@@ -107,7 +107,7 @@ class User extends Authenticatable
     
         // Fetch paginated users with remaining credits
         $query = "
-            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, uc.credits
+            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, uc.credits,u.email_verified as verified
             FROM users u
             LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC) as uc
             ON uc.user_id = u.id
@@ -123,12 +123,20 @@ class User extends Authenticatable
             LIMIT ?, ?
         ";  
         }
+
+        $verified_count = "SELECT COUNT(id) as verified_user
+            FROM users u
+            WHERE u.deleted_at IS NULL AND u.role = 'user' AND u.email_verified = '1'";
+
+        $totalVerifiedUsersResult = DB::select($verified_count);
+        $totalVerifiedUsers = $totalVerifiedUsersResult[0]->verified_user;
     
         $result = DB::select($query, [$offset, $perPage]);
     
         return [
             'data' => $result,
             'total' => $totalUsers,  // Total users count
+            'verified_user' => $totalVerifiedUsers,
             'perPage' => $perPage,
             'currentPage' => $currentPage
         ];
