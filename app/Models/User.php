@@ -133,5 +133,16 @@ class User extends Authenticatable
             'currentPage' => $currentPage
         ];
     }
+
+    public static function getUnVerifiedUsers()
+    {
+        $return = User::whereNull('deleted_at')->where('email_verified', '0')->get();
+
+        if(count($return)>0){
+            return $return->toArray();
+        }
+
+        return [];
+    }
     
 }
