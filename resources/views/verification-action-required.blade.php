@@ -89,7 +89,7 @@
                 <li>Open the email and click the <strong>"Verify Email Address"</strong> button.</li>
                 <li>Once verified, you can log in to your account without any issues.</li>
             </ol>
-            <p>If you did not create an account on Bouncee.net, you can safely ignore this email.</p>
+            <p>If you did not create an account on bouncee.net, you can safely ignore this email.</p>
         </div>
         <div class="email-footer">
             <p>Thank you,<br>bouncee team,</p>
