@@ -134,27 +134,31 @@ function renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, cur
 }
  
 
-function generatePagination(currentPage, totalPages,isMessagePage=false) {
+function generatePagination(currentPage, totalPages, isMessagePage = false) {
     let paginationHtml = '';
 
     if (totalPages <= 1) return ''; // No pagination if only one page
 
-    paginationHtml += `<button onclick="fetchPage(1,${isMessagePage})" class="${currentPage === 1 ? 'active' : ''}">1</button>`;
+    // Add the first page
+    paginationHtml += `<button onclick="fetchPage(1, ${isMessagePage})" class="${currentPage === 1 ? 'active' : ''}">1</button>`;
 
+    // Add ellipsis if there's a gap after the first page
     if (currentPage > 3) {
         paginationHtml += `<span>...</span>`;
     }
 
-    // Show current page and up to 2 pages before/after current page
+    // Add pages around the current page
     for (let page = Math.max(2, currentPage - 2); page <= Math.min(totalPages - 1, currentPage + 2); page++) {
-        paginationHtml += `<button onclick="fetchPage(${page},${isMessagePage})" class="${page === currentPage ? 'active' : ''}">${page}</button>`;
+        paginationHtml += `<button onclick="fetchPage(${page}, ${isMessagePage})" class="${page === currentPage ? 'active' : ''}">${page}</button>`;
     }
 
+    // Add ellipsis if there's a gap before the last page
     if (currentPage < totalPages - 2) {
         paginationHtml += `<span>...</span>`;
     }
 
-    paginationHtml += `<button onclick="fetchPage(${totalPages},${isMessagePage})" class="${currentPage === totalPages ? 'active' : ''}">${totalPages}</button>`;
+    // Add the last page
+    paginationHtml += `<button onclick="fetchPage(${totalPages}, ${isMessagePage})" class="${currentPage === totalPages ? 'active' : ''}">${totalPages}</button>`;
 
     return paginationHtml;
 }
@@ -168,9 +172,10 @@ async function fetchPage(pageNumber,isMessagePage) {
     const data          = response.data;
     const totalUsers    = response.total;
     const perPage       = response.perPage;
+    const totalVerifiedUsers  = response.verified_user;
     const currentPage   = parseInt(response.currentPage);
     
-    let html = renderSettingHtmlPage(data, totalUsers, perPage, currentPage);
+    let html = renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, currentPage);
     
     let settingDOM = document.getElementById('setting-section');
     if(isMessagePage)
