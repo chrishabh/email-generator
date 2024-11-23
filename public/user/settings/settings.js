@@ -70,6 +70,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, cur
         html += '<div class="setting-main-class"><h1 class="no-data-found">No Data Found</h1></div>';
     } 
     else{
+        const startIndex = (currentPage - 1) * perPage;
         html = `<div class="setting-main-class">
         <div class="user-heading" style="display: flex; justify-content: space-between; align-items: center;">
         <h1>${!isMessagePage ? 'Users Table' : 'User Work Experience'}</h1>
@@ -105,14 +106,14 @@ function renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, cur
  
                 if(isMessagePage){
                     html+= `<tr>
-                    <th scope="row">${index+1}</th>
+                    <th scope="row">${startIndex+index+1}.</th>
                     <td>${user.userId}</td>
                     <td> ${user.name}</td>
                     <td>${user.work_experience_description}</td>
                 </tr>`;
                 }else{
                     html+= `<tr>
-                    <th scope="row">${index+1}</th>
+                    <th scope="row">${startIndex+index+1}.</th>
                     <td>${user.name} ${user.verified == '1' ? `<img class="verified-badge" src="assets/2614a027236645.56361cc2c40e4-removebg-preview.png" alt="Verified">` : ''}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
