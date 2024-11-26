@@ -9,6 +9,7 @@
     <!-- <script type="text/javascript" async="" src="signup-assets/js/mixpannel-2-latest.min.js"></script> -->
     <script src="signup-assets/js/jquery-min.js"></script>
     <script src="signup-assets/js/script-min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <link rel="stylesheet" href="signup-assets/css/poppins.css">
     <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
@@ -127,11 +128,9 @@
                             </div>
 
                         </div>
-                        <!-- <p>
-                                By signing up, you confirm that you’ve read
-                            and accepted our <a href="">User Notice</a> and <a href="">Privacy Policy.</a>
-                            </p> -->
-
+                        <div class="sign-inp-row">
+                            <div class="g-recaptcha" data-sitekey="https://www.google.com/recaptcha/enterprise.js?render=6Lc244oqAAAAANIUGHzQLEB6eMn3funHKY1LzPyS"></div>
+                        </div>
                         <button class="btn fullwidth" id="signUpBtn" type="submit" style="margin-top: 4em;">Sign
                             Up</button>
                         <div class="sign-form--foot">
