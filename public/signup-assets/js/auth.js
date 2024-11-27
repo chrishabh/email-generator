@@ -90,7 +90,20 @@ const signupFormValidation = function(){
         event.preventDefault()
         // 'no_of_email_verification':'no_of_email_verification',
         validateForm({'name':'name','email':'email','password':'password'});
-        const hasErrors =document.querySelectorAll('.validation-error').length>0
+
+        // Validate captcha
+        const captchaResponse = grecaptcha.getResponse();
+        const captchaError = document.getElementById('captchaError');
+       
+        if (!captchaResponse) {
+            captchaError.innerText = "Please complete the CAPTCHA.";
+            captchaError.style.display = "block";
+        } else {
+            captchaError.innerText = "";
+            captchaError.style.display = "none";
+        }
+
+        const hasErrors =document.querySelectorAll('.validation-error').length>0 || !captchaResponse;
         if(!hasErrors){
             const form = document.getElementById('signUpForm');
             form.submit();

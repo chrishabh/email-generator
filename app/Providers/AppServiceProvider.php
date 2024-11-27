@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\EnvProperties;
+use Dotenv\Dotenv;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -37,5 +38,7 @@ class AppServiceProvider extends ServiceProvider
                         Config::set('env.'.$envprop->key, $envprop->value);
             }
         }
+
+       
     }
 }
