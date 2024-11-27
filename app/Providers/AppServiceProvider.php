@@ -39,9 +39,6 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
-        if (!getenv('APP_NAME')) {
-            $dotenv = Dotenv::createImmutable(base_path());
-            $dotenv->load();
-        }
+       
     }
 }
