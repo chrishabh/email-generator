@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterFormRequest;
 use App\Http\Requests\Auth\ResetPasswordFormRequest;
 use App\Models\Lookup;
+use App\Models\SignupLog;
 use App\Models\User;
 use App\Models\UserVerification;
 use App\Notifications\ConfirmationCode;
+use App\Services\Auth\ReCaptchaService;
 use App\Services\Auth\RegisterService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -33,12 +36,30 @@ class RegisterController extends Controller
     public function signup(Request $request)
     {
          try {
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            $userIp = $request->ip();
+            // Log the full signup request
+            $signupLog = SignupLog::create([
+                'status'              => 'failed', // Default to failed, update later if successful
+                'request_payload'     => json_encode($request->except(['password'])), // Exclude sensitive data
+                // 'recaptcha_response'  => $recaptchaResponse,
+                'ip_address'          => $userIp,
+            ]);
             $registerFormRequest = new RegisterFormRequest(); 
             $validator           = Validator::make($request->all(),$registerFormRequest->rules()); 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            return RegisterService::signup($request);
+     
+            // Verify reCAPTCHA using the service
+            // $recaptchaResponse = $request->input('g-recaptcha-response');
+            // $userIp            = $request->ip();
+            if (!ReCaptchaService::verifyAndLog($recaptchaResponse,$userIp,$signupLog)) {
+                // return back()->with(['g-recaptcha-response' => 'ReCAPTCHA verification failed.']);
+                return back()->with(['error' => 'ReCAPTCHA verification failed.']);
+            }
+            
+            return RegisterService::signup($request,$signupLog);
 
         } catch (\Throwable $th) {
             \Illuminate\Support\Facades\Log::error('Registration failed: ' . $th->getMessage());

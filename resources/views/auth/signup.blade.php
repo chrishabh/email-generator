@@ -17,6 +17,7 @@
     <script src="signup-assets/js/auth.js" type="text/javascript"></script>
     <!-- <link rel="icon" href="/favicon.ico" type="image/x-icon"> -->
 
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <script>
         // window.dataLayer = window.dataLayer || [];
@@ -62,7 +63,16 @@
         <div class="col-form">
             <div class="col-form--center">
                 <a href="" class="logo"><img src="signup-assets/asset/logo.png" alt=""></a>
-
+                @if (session()->has('success'))
+                    <div class="alert block-message" id="successBlock">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session()->has('error'))
+                    <div class="alert block-message" id="alertBlock">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 <div class="sign-form">
                     <div class="title">
@@ -132,6 +142,13 @@
                             and accepted our <a href="">User Notice</a> and <a href="">Privacy Policy.</a>
                             </p> -->
 
+                            {{-- capcache --}}
+                            <div class="g-recaptcha" data-sitekey="6LcBr4sqAAAAAERuBfKv_udrAMh-ME8QyNabyRyp"></div>
+                            <div class="vError" id="captchaError">
+                                @error('g-recaptcha-response')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                         <button class="btn fullwidth" id="signUpBtn" type="submit" style="margin-top: 4em;">Sign
                             Up</button>
                         <div class="sign-form--foot">

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\EnvProperties;
+use Dotenv\Dotenv;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -36,6 +37,11 @@ class AppServiceProvider extends ServiceProvider
             foreach ($env_properties as $envprop) {
                         Config::set('env.'.$envprop->key, $envprop->value);
             }
+        }
+
+        if (!getenv('APP_NAME')) {
+            $dotenv = Dotenv::createImmutable(base_path());
+            $dotenv->load();
         }
     }
 }
