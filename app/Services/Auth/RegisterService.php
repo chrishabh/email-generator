@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Notification;
 
 class RegisterService{
 
-    static function signup($request){
+    static function signup($request,$signupLog){
         $user = User::insertGetId([
             'name'                    => $request->name,
             'email'                    => $request->email,
@@ -21,7 +21,12 @@ class RegisterService{
             'role'                     => $request->role??'user',
             'no_of_email_verification' => $request->no_of_email_verification,
         ]); 
-
+        
+        // Update the log with the user_id and status as successful
+        $signupLog->update([
+            'user_id' => $user,
+            'status' => 'successful',
+        ]);
         $bytes = random_bytes(16);
         $timestamp = Carbon::now()->timestamp;
         $str = '?userid=' . $user . '?email=' . $request->email .'?timestamp'.$timestamp. '?uniquecode=' . bin2hex($bytes);
