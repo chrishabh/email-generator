@@ -25,7 +25,9 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $dropDownData = Lookup::getDataByLookupType('HMEV');
-        return view('auth.signup')->with(compact('dropDownData'));
+        $captchaFlag   = env('TESTING_ENV');
+
+        return view('auth.signup')->with(compact('dropDownData','captchaFlag'));
     }
 
     public function showVerificatinForm()
@@ -54,7 +56,7 @@ class RegisterController extends Controller
             // Verify reCAPTCHA using the service
             // $recaptchaResponse = $request->input('g-recaptcha-response');
             // $userIp            = $request->ip();
-            if (!ReCaptchaService::verifyAndLog($recaptchaResponse,$userIp,$signupLog)) {
+            if (!env('TESTING_ENV') &&!ReCaptchaService::verifyAndLog($recaptchaResponse,$userIp,$signupLog)) {
                 // return back()->with(['g-recaptcha-response' => 'ReCAPTCHA verification failed.']);
                 return back()->with(['error' => 'ReCAPTCHA verification failed.']);
             }

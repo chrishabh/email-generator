@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiKey\GenerateCustomEndpointController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -78,6 +79,16 @@ try{
             Route::delete('/delete-user/{user}', [ProfileController::class, 'destroy']);
             Route::get('/overall-credits-report', [ProfileController::class, 'getOverallCreditsReport']);
             Route::get('/render-messages', [ProfileController::class, 'renderMessagesPage']);
+
+        });
+
+        Route::prefix('customApi')->group(function(){
+            Route::get('/', [GenerateCustomEndpointController::class,'renderApiGenerateKeyPage']); 
+            Route::get('/api-keys', [GenerateCustomEndpointController::class, 'index']);
+            Route::post('{id}/regenerate', [GenerateCustomEndpointController::class,'regenerate'])->name('customApi.regenerate');  
+            Route::post('/{id}/toggle', [GenerateCustomEndpointController::class, 'toggle'])->name('customApi.toggle'); 
+            Route::post('/{id}/destroy', [GenerateCustomEndpointController::class, 'destroy'])->name('customApi.destroy');
+            Route::post('/store', [GenerateCustomEndpointController::class, 'store'])->name('customApi.store');
 
         });
 

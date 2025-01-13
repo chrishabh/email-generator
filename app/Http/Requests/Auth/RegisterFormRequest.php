@@ -30,7 +30,7 @@ class RegisterFormRequest extends FormRequest
             // 'password' => ['required'],
             'password' => ['required','string','min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'],
             'role'     => ['in:user,admin'],
-            'g-recaptcha-response' => ['required'],
+            // 'g-recaptcha-response' => ['required'],
         ];
     }
 

@@ -1,0 +1,106 @@
+
+#custom-api-section .btn-bg-bl{
+    background-color: var(--accent-color);
+}
+ 
+
+#custom-api-section .copy-clipboard:hover{
+    border-radius: 50%;
+    background-color: var(--theme-background-gradient);
+    font-size: 0.7em;  
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#custom-api-section .bg-color{
+    color: var(--accent-color);
+}
+
+
+.custom-modal {
+    width: 50%; /* Set width to 50% of the screen */
+    max-width: 600px; /* Max width for larger screens */
+}
+
+
+
+/* Input field container */
+.input-field {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Input field styling */
+  .input-field input {
+    font-size: 1em;
+    padding: 0.5rem 0;
+    border: none;
+    border-bottom: 2px solid #ccc !important;
+    box-shadow: 0 1px 0 0 #ccc !important;
+    outline: none;
+    width: 100%;
+  }
+  
+  /* Focus state for input field */
+  .input-field input:focus {
+    border-bottom: 2px solid var(--accent-color) !important;
+  }
+  
+  /* Label positioning */
+  .input-field label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    font-size: 1rem;
+    color: #999 !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none; /* Prevent the label from being clicked */
+  }
+  
+  /* When input is focused or filled */
+  .input-field input:focus + label,
+  .input-field input:not(:placeholder-shown) + label {
+    top: -1rem !important;
+    font-size: 0.85rem !important;
+    color: var(--accent-color) !important;
+  }
+  
+  /* Error state for input field */
+  .input-field input.error {
+    border-bottom: 2px solid red !important;
+  }
+  
+  .input-field input.error + label {
+    color: red !important;
+  }
+  
+   
+
+.my-custom-popup #swal2-title{ 
+  padding: 1em 1em 0 !important;
+  font-size: 1.4em   !important;
+  font-weight: 500   !important;
+}
+
+
+.my-custom-popup .swal2-confirm{
+  background-color: var(--accent-color ) !important;
+  padding: 0.4em 1.5em !important;
+
+}
+
+.my-custom-popup .swal2-deny,
+.my-custom-popup .swal2-cancel, 
+.my-custom-popup .swal2-cancel:focus,
+.my-custom-popup .swal2-cancel:hover{ 
+  padding: 0.4em 1.5em !important;
+
+}
+
+
+
+
+
+
+
+  
