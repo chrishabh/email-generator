@@ -115,7 +115,6 @@ $(document).ready(function() {
                     try {
                         const responseObj = JSON.parse(response);
                         if (responseObj.error) {
-                            console.log(responseObj.error);
                             showError(responseObj.error);
                         } else {
                             $('#alertContent').text(responseObj.success);
@@ -130,7 +129,6 @@ $(document).ready(function() {
                             }, 10000);
                         }
                     } catch (error) {
-                        console.log(error);
                         showError(error);
                     }
                 },
@@ -362,7 +360,6 @@ function startVerification(event,element,fileId){
         // }
 
         // Start polling the verification status immediately after triggering the start-verification API
-        console.log("Verification started:", data);
         // We don't need to call pollVerificationStatus() here again since it started earlier
     }).catch(error=>{
         console.error('Error starting verification:',error.message);
