@@ -415,7 +415,7 @@ function singlebouncify($email){
         return json_decode($response, true);
 
     }else{
-        return $response['results'] = 'Something went Wrong!';
+        return $response['results'] = "Something went Wrong!$httpcode";
     }
 
 
