@@ -25,7 +25,7 @@ class VerifyEmailsJob implements ShouldQueue
      */
     protected $fileId;
     protected $userId;
-    public $timeout = 600; 
+    public $timeout = 1200; 
     public function __construct($fileId,$userId)
     {
         $this->fileId = $fileId;

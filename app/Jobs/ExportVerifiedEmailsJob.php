@@ -27,6 +27,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
 
      protected $fileId;
      protected $userId;
+     public $timeout = 1200; 
     public function __construct($fileId,$userId)
     {
         $this->fileId  =  $fileId;
