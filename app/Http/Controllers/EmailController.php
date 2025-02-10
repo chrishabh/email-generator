@@ -193,7 +193,7 @@ class EmailController extends Controller
         $this->isValidEmail("ch.rishabh8527@gmail.com");
     }
 
-    public static function isValidEmail($email,$get_response = false)
+    public static function isValidEmail($email,$get_response = false, $user_id=null)
     {
         if(env('API_PLATFORM') == "bouncify"){
             if(env('KICKBOX_API_FLAG',false)){
@@ -201,7 +201,7 @@ class EmailController extends Controller
                 $data = singlebouncify($email);
                 
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => json_encode($data),
                     'created_at'=>Carbon::now()
@@ -213,7 +213,7 @@ class EmailController extends Controller
                 return isset($data['result']) && $data['result'] === 'deliverable';
             }else{
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => "Bouncify Flag off.",
                     'created_at'=>Carbon::now()
@@ -234,7 +234,7 @@ class EmailController extends Controller
         
                 $data = $response->json();
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => json_encode($data),
                     // 'created_at'=>Carbon::now()
@@ -246,7 +246,7 @@ class EmailController extends Controller
                 return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
             }else{
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => "Debouncee Flag off.",
                      'created_at'=>Carbon::now()
@@ -256,7 +256,7 @@ class EmailController extends Controller
             }
         }else{
             $log = [
-                'user_id' => Auth::User()->id,
+                'user_id' => Auth::User()->id??$user_id,
                 'email' => $email,
                 'result' => "API Flag off.",
                  'created_at'=>Carbon::now()
@@ -503,7 +503,7 @@ class EmailController extends Controller
         $userCredit   = UserCredits::getCreditPoint($userId);
         $creditPoints = ($userCredit) ? $userCredit->credits :0;
         if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
-        VerifyEmailsJob::dispatch($request['fileId']);
+        VerifyEmailsJob::dispatch($request['fileId'],$userId);
         return response()->json(['sucess'=>true,'status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],$userId)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
     }

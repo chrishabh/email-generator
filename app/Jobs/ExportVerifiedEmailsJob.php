@@ -26,9 +26,11 @@ class ExportVerifiedEmailsJob implements ShouldQueue
      */
 
      protected $fileId;
-    public function __construct($fileId)
+     protected $userId;
+    public function __construct($fileId,$userId)
     {
         $this->fileId  =  $fileId;
+        $this->userId = $userId;
     }
 
     /**
@@ -38,7 +40,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
      */
     public function handle()
     {
-        $user_id = Auth::user()->id; 
+        $user_id = $this->userId; 
         $allUploadedFiles = uploadedAndDownloadFileName::getFileIdsBasedOnCurrentUser($this->fileId,$user_id,'verified');
         if(!empty($allUploadedFiles)){
             $currentDate       = Carbon::now()->format('Y-m-d');

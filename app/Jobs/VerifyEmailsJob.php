@@ -24,9 +24,11 @@ class VerifyEmailsJob implements ShouldQueue
      * @return void
      */
     protected $fileId;
-    public function __construct($fileId)
+    protected $userId;
+    public function __construct($fileId,$userId)
     {
         $this->fileId = $fileId;
+        $this->userId = $userId;
     }
 
     /**
@@ -36,11 +38,11 @@ class VerifyEmailsJob implements ShouldQueue
      */
     public function handle()
     {
-        $user_id = Auth::user()->id;  
+        $user_id = $this->userId;  
         $data    = uploadedAndDownloadFileName::getPendingFileDataBasedOnCurrentUser($this->fileId,$user_id,'pending');
         // Once all emails are verified, generate an export file
         $this->verifyEmail($data,$user_id);
-        ExportVerifiedEmailsJob::dispatch($this->fileId);
+        ExportVerifiedEmailsJob::dispatch($this->fileId,$this->userId);
     }
     
     protected function verifyEmail($data,$user_id)
@@ -53,7 +55,7 @@ class VerifyEmailsJob implements ShouldQueue
             // pp($data);
             foreach($data as $key=>$value){
                 $dataArray = [];
-                $status    = EmailController::isValidEmail($value->email,true);
+                $status    = EmailController::isValidEmail($value->email,true, $user_id);
                 $dataArray = [
                     'apiStatus'         => $status ? strtolower($status):NULL,
                     'status'            => ($status && strtolower($status)=='deliverable') ? 'valid':'invalid',
