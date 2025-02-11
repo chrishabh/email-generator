@@ -407,12 +407,14 @@ function pollVerificationStatus(fileId, element) {
                 throw new Error('Verification failed:', data.message);
                 // return;
             }
-            const totalEmails = data.data[0].total_emails;
-            const verifiedEmails = data.data[0].total_verified_emails;
+            const totalEmails     = data.data[0].total_emails;
+            const verifiedEmails  = data.data[0].total_verified_emails;
+            const isFailedJob     = data.data[0].is_failed_job;
 
             // Update progress bar
             updateProgressBar(verifiedEmails, totalEmails);
 
+            if(isFailedJob) throw new Error('Verification was interrupted due to an unexpected issue. Please try again later.');
             // If all emails are verified, stop polling
             if (verifiedEmails >= totalEmails) {
                 clearInterval(intervalId);

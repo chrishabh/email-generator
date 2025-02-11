@@ -231,7 +231,25 @@ class EmailController extends Controller
                         'email' => $email,
                     // ]
                 ]);
-        
+
+                // Extract response body and HTTP status code
+                $responseBody = $response->json();
+                $httpcode     = $response->status();
+
+                $logData = [
+                    'job_id'            =>  'GET',
+                    'file_id'           => $email,
+                    'which_api'         => 'DEBOUNCE_EMAIL_VERIFY_API',
+                    'url'               => 'https://api.debounce.io/v1/',
+                    'request'           =>json_encode(['email' => $email, 'key' => $apiKey]), // Store request data
+                    'response'          => json_encode($responseBody), 
+                    'api_status_code'   => $httpcode,
+                    'created_at'        => now()
+                ];
+            
+                // Insert log with null job_id
+                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+            
                 $data = $response->json();
                 $log = [
                     'user_id' => Auth::User()->id??$user_id,
