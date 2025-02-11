@@ -54,7 +54,6 @@ class VerifyEmailsJob implements ShouldQueue
         } else {
             \Illuminate\Support\Facades\Log::error(date('Y-M-d H:s:i')." Failed to retrieve job UUID for file ID: {$this->fileId}");
         }
-        $this->gert();
         $user_id = $this->userId;  
         $data    = uploadedAndDownloadFileName::getPendingFileDataBasedOnCurrentUser($this->fileId,$user_id,'pending');
         // Once all emails are verified, generate an export file
