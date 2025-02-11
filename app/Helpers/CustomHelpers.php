@@ -414,7 +414,7 @@ function singlebouncify($email){
        // Log data in database
     $logData = [
         'job_id'            => 'GET',
-        'file_id'           => $email,
+        'file_id'           => NULL,
         'which_api'         => 'BOUNCIFY_EMAIL_VERIFY_API',
         'url'               => $url,
         'request'           =>json_encode(['email' => $email,'key'=>$apiKey]), // Store request data

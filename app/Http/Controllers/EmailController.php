@@ -238,7 +238,7 @@ class EmailController extends Controller
 
                 $logData = [
                     'job_id'            =>  'GET',
-                    'file_id'           => $email,
+                    'file_id'           =>  NULL,
                     'which_api'         => 'DEBOUNCE_EMAIL_VERIFY_API',
                     'url'               => 'https://api.debounce.io/v1/',
                     'request'           =>json_encode(['email' => $email, 'key' => $apiKey]), // Store request data
