@@ -193,12 +193,12 @@ class EmailController extends Controller
         $this->isValidEmail("ch.rishabh8527@gmail.com");
     }
 
-    public static function isValidEmail($email,$get_response = false, $user_id=null)
+    public static function isValidEmail($email,$get_response = false, $user_id=null,$fileId=null)
     {
         if(env('API_PLATFORM') == "bouncify"){
             if(env('KICKBOX_API_FLAG',false)){
 
-                $data = singlebouncify($email);
+                $data = singlebouncify($email,$fileId);
                 
                 $log = [
                     'user_id' => Auth::User()->id??$user_id,
@@ -238,7 +238,7 @@ class EmailController extends Controller
 
                 $logData = [
                     'job_id'            =>  'GET',
-                    'file_id'           =>  NULL,
+                    'file_id'           =>  $fileId,
                     'which_api'         => 'DEBOUNCE_EMAIL_VERIFY_API',
                     'url'               => 'https://api.debounce.io/v1/',
                     'request'           =>json_encode(['email' => $email, 'key' => $apiKey]), // Store request data

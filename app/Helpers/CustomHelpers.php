@@ -390,7 +390,7 @@ function deleteBulkJob($job_id,$fileId)
 }
 
 
-function singlebouncify($email){
+function singlebouncify($email,$fileId=NULL){
     $apiKey = envparam('bouncify_key');
     $curl = curl_init();
     $url  = "https://api.bouncify.io/v1/verify?apikey=$apiKey&email=$email";
@@ -414,7 +414,7 @@ function singlebouncify($email){
        // Log data in database
     $logData = [
         'job_id'            => 'GET',
-        'file_id'           => NULL,
+        'file_id'           => $fileId,
         'which_api'         => 'BOUNCIFY_EMAIL_VERIFY_API',
         'url'               => $url,
         'request'           =>json_encode(['email' => $email,'key'=>$apiKey]), // Store request data

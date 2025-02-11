@@ -71,7 +71,7 @@ class VerifyEmailsJob implements ShouldQueue
             // pp($data);
             foreach($data as $key=>$value){
                 $dataArray = [];
-                $status    = EmailController::isValidEmail($value->email,true, $user_id);
+                $status    = EmailController::isValidEmail($value->email,true, $user_id,$this->fileId);
                 $dataArray = [
                     'apiStatus'         => $status ? strtolower($status):NULL,
                     'status'            => ($status && strtolower($status)=='deliverable') ? 'valid':'invalid',
