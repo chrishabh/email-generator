@@ -49,7 +49,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
                 $verifiedEmailData = BulkUploadEmailFileData::getFileEmails($value->id,$user_id);
                 if($verifiedEmailData){
                     $fileName = $value->fileName;
-                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName";
+                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName.csv";
                     Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath);
                     uploadedAndDownloadFileName::updateData(['downloadFileLocation'=>$filePath,'downloadFileName'=>$fileName],$this->fileId);
                 }
