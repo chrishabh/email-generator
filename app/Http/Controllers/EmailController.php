@@ -272,6 +272,39 @@ class EmailController extends Controller
                 EmailVerificationLog::addLog($log);
                 return false;
             }
+        }elseif(env('API_PLATFORM')=='bouncee'){
+            $response = Http::get("https://bouncee-email-verification-e41352412b38.herokuapp.com/api/verify-email?email=$email");
+                // Extract response body and HTTP status code
+                $responseBody = $response->json();
+                $httpcode     = $response->status();
+
+                $logData = [
+                    'job_id'            =>  'GET',
+                    'file_id'           =>  $fileId,
+                    'which_api'         => 'BOUNCEE_API',
+                    'url'               => 'https://bouncee-email-verification-e41352412b38.herokuapp.com/api/verify-email',
+                    'request'           =>json_encode(['email' => $email]), // Store request data
+                    'response'          => json_encode($responseBody), 
+                    'api_status_code'   => $httpcode,
+                    'created_at'        => now()
+                ];
+            
+                // Insert log with null job_id
+                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+            
+                $data = $response->json();
+                $log = [
+                    'user_id' => Auth::User()->id??$user_id,
+                    'email' => $email,
+                    'result' => json_encode($data),
+                    // 'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                if($get_response){
+                    return $data['status'];
+                }
+                return isset($data['status']) && $data['status'] === 'Deliverable'; 
+
         }else{
             $log = [
                 'user_id' => Auth::User()->id??$user_id,
