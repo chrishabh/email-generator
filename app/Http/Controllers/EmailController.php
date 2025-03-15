@@ -273,7 +273,12 @@ class EmailController extends Controller
                 return false;
             }
         }elseif(env('API_PLATFORM')=='bouncee'){
-            $response = Http::get("https://bouncee-email-verification-e41352412b38.herokuapp.com/api/verify-email?email=$email");
+            $apiUrl = envparam('BOUNCEE_API_URL');
+            $apiKey = envparam('BOUNCEE_API_KEY');
+            $response = Http::withHeaders([
+                    'X-API-KEY' => $apiKey,
+                    'Accept' => 'application/json',
+                ])->get("$apiUrl=$email");
                 // Extract response body and HTTP status code
                 $responseBody = $response->json();
                 $httpcode     = $response->status();
@@ -282,7 +287,7 @@ class EmailController extends Controller
                     'job_id'            =>  'GET',
                     'file_id'           =>  $fileId,
                     'which_api'         => 'BOUNCEE_API',
-                    'url'               => 'https://bouncee-email-verification-e41352412b38.herokuapp.com/api/verify-email',
+                    'url'               => $apiUrl,
                     'request'           =>json_encode(['email' => $email]), // Store request data
                     'response'          => json_encode($responseBody), 
                     'api_status_code'   => $httpcode,
@@ -301,9 +306,9 @@ class EmailController extends Controller
                 ];
                 EmailVerificationLog::addLog($log);
                 if($get_response){
-                    return $data['status'];
+                    return $data['status']??'invalid';
                 }
-                return isset($data['status']) && $data['status'] === 'Deliverable'; 
+                return isset($data['status']) && $data['status'] === 'deliverable'; 
 
         }else{
             $log = [
