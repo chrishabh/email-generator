@@ -306,7 +306,7 @@ class EmailController extends Controller
                 ];
                 EmailVerificationLog::addLog($log);
                 if($get_response){
-                    return $data['status'];
+                    return $data['status']??'invalid';
                 }
                 return isset($data['status']) && $data['status'] === 'deliverable'; 
 
