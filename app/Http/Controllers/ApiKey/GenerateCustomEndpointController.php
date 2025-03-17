@@ -20,13 +20,13 @@ class GenerateCustomEndpointController extends Controller
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
             $data                 = UserCredits::getCreditPoint($userId); 
-            $apiKeys              = ApiKeys::where('user_id', $userId)->where('is_deleted','0')->WhereNull('deleted_at')->orderBy('id','DESC')->paginate(5);
+            // $apiKeys              = ApiKeys::where('user_id', $userId)->where('is_deleted','0')->WhereNull('deleted_at')->orderBy('id','DESC')->paginate(5);
             if(!empty($data)){
                 $creditPoint =$data->credits;
                 
             }
         }
-            
+        $apiKeys=[];  
         $headerData['creditPoint']         = $creditPoint;
         return view('ApiKey.generate-api-endpoint')->with(compact('headerData','apiKeys'));
     }
@@ -65,9 +65,11 @@ class GenerateCustomEndpointController extends Controller
          
     }
 
-    public function index()
-    { 
-        $keys = ApiKeys::orderBy('id', 'desc')->where('is_deleted','0')->whereNull('deleted_at')->get();
+    public function index(Request $request)
+    {  
+        $perPage = 2; // Number of users per page
+        $currentPage = $request->input('page', 1); // Get the current page or default to 1 
+        $keys = ApiKeys::getDataWithPagination($perPage ,$currentPage);
         return response()->json(['success'=>true,'keys'=>$keys,'message' => 'API Key created successfully'],200)->header('Content-Type', 'application/json; charset=UTF-8');
     }
 

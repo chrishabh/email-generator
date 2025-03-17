@@ -10,6 +10,7 @@
     font-size: 0.7em;  
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    padding: 7px 7px;
 }
 
 #custom-api-section .bg-color{
@@ -97,6 +98,29 @@
 
 }
 
+
+
+#tableRenderSection .pagination-controls {
+  /* margin-top: 20px; */ 
+  text-align: center;
+  padding-block-start: 2em;
+}
+
+#tableRenderSection .pagination-controls button {
+  margin: 0 5px;
+  padding: 7px 14px;
+  border: 1px solid #004085;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  box-shadow: var(--common-box-shadow);
+  border-radius: 50%;
+}
+
+#tableRenderSection .pagination-controls button.active {
+  background: var(--accent--backgroun-color);
+  color: white;
+  border: 1px solid var(--accent--backgroun-color);
+}
 
 
 

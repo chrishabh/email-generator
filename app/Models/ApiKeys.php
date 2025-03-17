@@ -60,7 +60,7 @@ class ApiKeys extends Model
             'data'        => $result,
             'total'       => $totalData,
             'perPage'     => $perPage,
-            'currentPage' => $currentPage
+            'currentPage' => (int)$currentPage
         ];
     }
 }

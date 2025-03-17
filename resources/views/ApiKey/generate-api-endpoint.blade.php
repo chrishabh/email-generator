@@ -3,16 +3,19 @@
 @section('main-section')
     @push('styles') 
         <link rel="stylesheet" href="{{ asset('api/css/style.css') }}"> 
-{{--         
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> --}}
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
          
   
-        {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">  --}}
-
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf/notyf.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
-        <link href="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css" rel="stylesheet"> 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> 
+        <link rel="stylesheet" href="{{ asset('api/css/notyf/notyf.min.css') }}"> 
+        {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf/notyf.min.css"> --}}
+        <link rel="stylesheet" href="{{ asset('api/css/sweetalert/sweetalert2.min.css') }}"> 
+        {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">  --}}
+        <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialize.min.css') }}"> 
+        {{-- <link href="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css" rel="stylesheet">  --}}
+        <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialfont.min.css') }}"> 
+        {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
  
  
          
@@ -27,8 +30,9 @@
                         <div class="col-6">
                             <h1 class="text-xl font-medium">API Keys</h1>
                         </div>
-                        <div class="col-6 justify-items-end grid">
-                            <a class=" waves-effect waves-light btn  btn-bg-bl  modal-trigger hover:text-white font-normal" href="#modal1" >New API Key</a>
+                        <div class="col-6 justify-items-end d-flex justify-content-end">
+                            <a class=" waves-effect waves-light btn btn-bg-bl modal-trigger hover:text-white font-normal" href="#modal1" >New API Key</a>
+                            <a class=" waves-effect waves-light btn btn-bg-bl hover:text-white font-normal ml-4" href="/reference" >API Docs</a>
                         </div>
                     </div>
                 </div>
@@ -38,10 +42,10 @@
                     @endif
                     <div class="row">
                         <div class="col-md-12 col-sm-12"> 
-                            @if (empty($apiKeys))
+                            {{-- @if (empty($apiKeys))
                                 <p class="text-center text-xl font-500">No API keys found.</p>
-                            @else
-                            <table class="table table-bordered shadow-lg">
+                            @else --}}
+                            {{-- <table class="table table-bordered shadow-lg">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -73,8 +77,9 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
-                            @endif  
+                            </table> --}}
+                            <div id="tableRenderSection"></div>
+                            {{-- @endif   --}}
                         </div>
                     </div>
                 </div>
@@ -128,14 +133,14 @@
 
 @section('specificScript')
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/notyf/notyf.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 
 
-    {{-- <script src="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/js/materialize.min.js"></script>  --}}
-    {{-- <script src="https://cdn.tailwindcss.com"></script>  --}}
+    <script src="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/js/materialize.min.js"></script> 
+    <script src="https://cdn.tailwindcss.com"></script> 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
-    {{-- <script src="{{ asset('api/js/script.js') }}" type="text/javascript"></script> --}}
+    <script src="{{ asset('api/js/script.js') }}" type="text/javascript"></script>
 
 @endsection

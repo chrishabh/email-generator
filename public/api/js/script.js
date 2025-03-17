@@ -122,7 +122,7 @@ function init(){
             <td>${key.name}</td>
             <td>
               <span id="key-${key.id}">${key.key}</span>
-              <i id="copybutton" class="fa-regular fa-copy copy-clipboard  pl-2" style="font-size: 18px;"data-clipboard-text="${key.key}" onclick="copyToClipboard()"></i>
+              <i id="copybutton" class="fa-regular fa-copy copy-clipboard  pl-2" style="font-size: 15px;"data-clipboard-text="${key.key}" onclick="copyToClipboard()"></i>
             </td>
             <td> 
               <span class="inline-flex items-center rounded-md bg-${key.status =='Enabled' ? 'green' : 'red' }-100 px-2 py-1 text-xs font-medium text-${ key.status=='Enabled' ? 'green' : 'red' }-700 ring-1 ring-inset ring-${key.status=='Enabled' ? 'green' : 'red' }}-600/20 ">${ key.status }</span>
@@ -233,9 +233,115 @@ function init(){
       }
   });
   }
+
+
+
+  window.fetchPage = async(pageNumber)=>{
+    try {
+      await fetchData('api-keys',pageNumber)
+    } catch (error) {
+      console.error('Error fetching API keys:', error) 
+      successNotyf.error(error.message)
+    } 
+  }
 }
 
 
-document.addEventListener('DOMContentLoaded',init)
+document.addEventListener('DOMContentLoaded',()=>{
+  init()
+  fetchData('api-keys',1)
+}) 
 
 
+const fetchData= async(url,page)=>{ 
+  try { 
+    $('#preloader').fadeIn();
+    const response = await axios.get(`/customApi/${url}?page=${page}`) 
+    const data     = await response.data;
+    if(!data.success) throw new Error(response.error)
+    if(data.success) {
+      const html = appendHtml(data);
+      const htmlsection =document.getElementById('tableRenderSection')
+      htmlsection.innerHTML=html
+    }
+    $('#preloader').fadeOut();
+  } catch (error) {
+    console.error('Error fetching API keys:', error)
+    $('#preloader').fadeOut();
+    successNotyf.error(error.message)
+  }
+  
+}
+
+const appendHtml = (data) =>{ 
+  let html = 
+  `<table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Key</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="apiKeysTableBody">`;
+    data.keys.data.forEach(key => {
+      html+= `
+        <tr>
+          <td>${key.name}</td>
+          <td>
+            <span id="key-${key.id}">${key.key}</span>
+            <i id="copybutton" class="fa-regular fa-copy copy-clipboard  pl-2" style="font-size: 15px;"data-clipboard-text="${key.key}" onclick="copyToClipboard()"></i>
+          </td>
+          <td> 
+            <span class="inline-flex items-center rounded-md bg-${key.status =='Enabled' ? 'green' : 'red' }-100 px-2 py-1 text-xs font-medium text-${ key.status=='Enabled' ? 'green' : 'red' }-700 ring-1 ring-inset ring-${key.status=='Enabled' ? 'green' : 'red' }}-600/20 ">${ key.status }</span>
+          </td>
+          <td>${key.created_at}</td>
+          <td>
+            <i id="editToolTip" class="fas fa-pencil pr-2 hover:cursor-pointer" data-position="bottom" data-tooltip="edit" style="font-size:14px;"></i>
+            <i id="regenerateToolTip" onclick="regenerate(${key.id})" class="fas fa-arrows-rotate pr-2 hover:cursor-pointer" data-position="bottom" data-tooltip="regenerate"  style="font-size: 14px;font-weight:600"></i>
+            <i  id="deletedToolTip" onclick="triggerSweetAlert('Are you sure you want to delete this?',${key.id})"  class="fa fa-trash d-inline hover:cursor-pointer  "  data-position="bottom" data-tooltip="deleted" style="font-size: 14px;"></i>
+          </td>
+        </tr>`;
+      });
+    
+    html+=`
+    </tbody>
+  </table>`;
+  let totalPages = Math.ceil(data.keys.total / data.keys.perPage);
+  html += `<div class="pagination-controls">`;
+  html += generatePagination(data.keys.currentPage, totalPages);
+  html += `</div></div>`; 
+  return html;
+      
+}
+
+function generatePagination(currentPage, totalPages) {
+  let paginationHtml = '';
+
+  if (totalPages <= 1) return ''; // No pagination if only one page
+
+  // Add the first page
+  paginationHtml += `<button onclick="fetchPage(1)" class="${currentPage === 1 ? 'active' : ''}">1</button>`;
+
+  // Add ellipsis if there's a gap after the first page
+  if (currentPage > 3) {
+      paginationHtml += `<span>...</span>`;
+  }
+
+  // Add pages around the current page
+  for (let page = Math.max(2, currentPage - 2); page <= Math.min(totalPages - 1, currentPage + 2); page++) {
+      paginationHtml += `<button onclick="fetchPage(${page})" class="${page === currentPage ? 'active' : ''}">${page}</button>`;
+  }
+
+  // Add ellipsis if there's a gap before the last page
+  if (currentPage < totalPages - 2) {
+      paginationHtml += `<span>...</span>`;
+  }
+
+  // Add the last page
+  paginationHtml += `<button onclick="fetchPage(${totalPages})" class="${currentPage === totalPages ? 'active' : ''}">${totalPages}</button>`;
+
+  return paginationHtml;
+}
