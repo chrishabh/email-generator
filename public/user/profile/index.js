@@ -77,7 +77,6 @@ function init(){
     document.querySelectorAll('.edit-icon').forEach(icon => {
         icon.addEventListener('click', function() {
             const card = icon.closest('.card');
-            console.log(card);
             enableFormFields(card);
         });
     });

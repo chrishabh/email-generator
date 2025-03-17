@@ -193,15 +193,15 @@ class EmailController extends Controller
         $this->isValidEmail("ch.rishabh8527@gmail.com");
     }
 
-    public static function isValidEmail($email,$get_response = false)
+    public static function isValidEmail($email,$get_response = false, $user_id=null,$fileId=null)
     {
         if(env('API_PLATFORM') == "bouncify"){
             if(env('KICKBOX_API_FLAG',false)){
 
-                $data = singlebouncify($email);
+                $data = singlebouncify($email,$fileId);
                 
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => json_encode($data),
                     'created_at'=>Carbon::now()
@@ -213,7 +213,7 @@ class EmailController extends Controller
                 return isset($data['result']) && $data['result'] === 'deliverable';
             }else{
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => "Bouncify Flag off.",
                     'created_at'=>Carbon::now()
@@ -231,10 +231,28 @@ class EmailController extends Controller
                         'email' => $email,
                     // ]
                 ]);
-        
+
+                // Extract response body and HTTP status code
+                $responseBody = $response->json();
+                $httpcode     = $response->status();
+
+                $logData = [
+                    'job_id'            =>  'GET',
+                    'file_id'           =>  $fileId,
+                    'which_api'         => 'DEBOUNCE_EMAIL_VERIFY_API',
+                    'url'               => 'https://api.debounce.io/v1/',
+                    'request'           =>json_encode(['email' => $email, 'key' => $apiKey]), // Store request data
+                    'response'          => json_encode($responseBody), 
+                    'api_status_code'   => $httpcode,
+                    'created_at'        => now()
+                ];
+            
+                // Insert log with null job_id
+                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+            
                 $data = $response->json();
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => json_encode($data),
                     // 'created_at'=>Carbon::now()
@@ -246,7 +264,7 @@ class EmailController extends Controller
                 return isset($data['debounce']['reason']) && $data['debounce']['reason'] === 'Deliverable';
             }else{
                 $log = [
-                    'user_id' => Auth::User()->id,
+                    'user_id' => Auth::User()->id??$user_id,
                     'email' => $email,
                     'result' => "Debouncee Flag off.",
                      'created_at'=>Carbon::now()
@@ -254,9 +272,47 @@ class EmailController extends Controller
                 EmailVerificationLog::addLog($log);
                 return false;
             }
+        }elseif(env('API_PLATFORM')=='bouncee'){
+            $apiUrl = envparam('BOUNCEE_API_URL');
+            $apiKey = envparam('BOUNCEE_API_KEY');
+            $response = Http::withHeaders([
+                    'X-API-KEY' => $apiKey,
+                    'Accept' => 'application/json',
+                ])->get("$apiUrl=$email");
+                // Extract response body and HTTP status code
+                $responseBody = $response->json();
+                $httpcode     = $response->status();
+
+                $logData = [
+                    'job_id'            =>  'GET',
+                    'file_id'           =>  $fileId,
+                    'which_api'         => 'BOUNCEE_API',
+                    'url'               => $apiUrl,
+                    'request'           =>json_encode(['email' => $email]), // Store request data
+                    'response'          => json_encode($responseBody), 
+                    'api_status_code'   => $httpcode,
+                    'created_at'        => now()
+                ];
+            
+                // Insert log with null job_id
+                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+            
+                $data = $response->json();
+                $log = [
+                    'user_id' => Auth::User()->id??$user_id,
+                    'email' => $email,
+                    'result' => json_encode($data),
+                    // 'created_at'=>Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                if($get_response){
+                    return $data['status']??'invalid';
+                }
+                return isset($data['status']) && $data['status'] === 'deliverable'; 
+
         }else{
             $log = [
-                'user_id' => Auth::User()->id,
+                'user_id' => Auth::User()->id??$user_id,
                 'email' => $email,
                 'result' => "API Flag off.",
                  'created_at'=>Carbon::now()
@@ -503,7 +559,7 @@ class EmailController extends Controller
         $userCredit   = UserCredits::getCreditPoint($userId);
         $creditPoints = ($userCredit) ? $userCredit->credits :0;
         if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
-        VerifyEmailsJob::dispatch($request['fileId']);
+        VerifyEmailsJob::dispatch($request['fileId'],$userId);
         return response()->json(['sucess'=>true,'status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],$userId)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
     }
@@ -654,6 +710,56 @@ class EmailController extends Controller
         }
     }
 
+    public static function smtpHandshake(Request $request)
+    {
+        $email = $request['email'];
+        $domain = substr(strrchr($email, "@"), 1); // Extract domain
+        $mxRecords = dns_get_record($domain, DNS_MX);
+
+        if (empty($mxRecords)) {
+            return "No MX records found for domain $domain.";
+        }
+
+        // Use the highest priority MX server
+        usort($mxRecords, function ($a, $b) {
+            return $a['pri'] - $b['pri'];
+        });
+        $mxHost = $mxRecords[0]['target'];
+
+        // Connect to the SMTP server
+        $connection = fsockopen($mxHost, 25, $errno, $errstr, 10);
+        if (!$connection) {
+            return "Failed to connect to SMTP server: $errstr ($errno)";
+        }
+
+        // Perform SMTP handshake
+        $responses = [];
+        fwrite($connection, "HELO " . gethostname() . "\r\n");
+        $responses[] = fgets($connection, 1024);
+
+        // Specify the sender email
+        fwrite($connection, "MAIL FROM: <test@example.com>\r\n");
+        $responses[] = fgets($connection, 1024);
+
+        // Specify the recipient email
+        fwrite($connection, "RCPT TO: <$email>\r\n");
+        $response = fgets($connection, 1024);
+        $responses[] = $response;
+
+        // Close the connection
+        fwrite($connection, "QUIT\r\n");
+        fclose($connection);
+
+        // Check the response for recipient validation
+        if (strpos($response, '250') !== false) {
+            return "Email address is valid.";
+        } elseif (strpos($response, '550') !== false) {
+            return "Email address is invalid.";
+        }
+
+        return "Unable to verify the email address.";
+    }
+    
 
 
 }

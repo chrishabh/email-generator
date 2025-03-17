@@ -128,7 +128,6 @@ async function getEmailStatusVerification() {
 
                 // If the result is true, log the data
                 if (responseData.result) {
-                    console.log(responseData);
                 } else {
                     throw new Error('Verification failed');
                 }

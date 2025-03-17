@@ -390,13 +390,13 @@ function deleteBulkJob($job_id,$fileId)
 }
 
 
-function singlebouncify($email){
+function singlebouncify($email,$fileId=NULL){
     $apiKey = envparam('bouncify_key');
     $curl = curl_init();
-
+    $url  = "https://api.bouncify.io/v1/verify?apikey=$apiKey&email=$email";
     curl_setopt_array($curl, array(
     // Replace API_KEY with your API Key
-    CURLOPT_URL => "https://api.bouncify.io/v1/verify?apikey=$apiKey&email=$email",
+    CURLOPT_URL =>  $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -407,15 +407,30 @@ function singlebouncify($email){
     ));
 
     $response = curl_exec($curl);
-    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE); 
+    $curlError = curl_error($curl);
+    curl_close($curl); 
 
-    curl_close($curl);
+       // Log data in database
+    $logData = [
+        'job_id'            => 'GET',
+        'file_id'           => $fileId,
+        'which_api'         => 'BOUNCIFY_EMAIL_VERIFY_API',
+        'url'               => $url,
+        'request'           =>json_encode(['email' => $email,'key'=>$apiKey]), // Store request data
+        'response'          => $response ?: $curlError, // Store response data
+        'api_status_code'   => $httpcode, // Store response data
+        'created_at'        => now()
+    ];
+
+    // Insert log with null job_id
+    $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
 
     if($httpcode == 200){
         return json_decode($response, true);
 
     }else{
-        $response['results'] = 'Something went Wrong!';
+        return $response['results'] = "Something went Wrong!$httpcode";
     }
 
 

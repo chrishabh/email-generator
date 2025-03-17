@@ -115,7 +115,6 @@ $(document).ready(function() {
                     try {
                         const responseObj = JSON.parse(response);
                         if (responseObj.error) {
-                            console.log(responseObj.error);
                             showError(responseObj.error);
                         } else {
                             $('#alertContent').text(responseObj.success);
@@ -130,7 +129,6 @@ $(document).ready(function() {
                             }, 10000);
                         }
                     } catch (error) {
-                        console.log(error);
                         showError(error);
                     }
                 },
@@ -362,7 +360,6 @@ function startVerification(event,element,fileId){
         // }
 
         // Start polling the verification status immediately after triggering the start-verification API
-        console.log("Verification started:", data);
         // We don't need to call pollVerificationStatus() here again since it started earlier
     }).catch(error=>{
         console.error('Error starting verification:',error.message);
@@ -410,12 +407,14 @@ function pollVerificationStatus(fileId, element) {
                 throw new Error('Verification failed:', data.message);
                 // return;
             }
-            const totalEmails = data.data[0].total_emails;
-            const verifiedEmails = data.data[0].total_verified_emails;
+            const totalEmails     = data.data[0].total_emails;
+            const verifiedEmails  = data.data[0].total_verified_emails;
+            const isFailedJob     = data.data[0].is_failed_job;
 
             // Update progress bar
             updateProgressBar(verifiedEmails, totalEmails);
 
+            if(isFailedJob) throw new Error('Verification was interrupted due to an unexpected issue. Please try again later.');
             // If all emails are verified, stop polling
             if (verifiedEmails >= totalEmails) {
                 clearInterval(intervalId);

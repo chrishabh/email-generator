@@ -192,7 +192,6 @@
         let body={
         order_id:order_id,
     }
-    console.log(order_id);
         fetch("/invoice-pdf", {
             method: 'POST',
             headers: {

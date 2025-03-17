@@ -156,7 +156,6 @@
                 return response.json(); 
              
             }).then(data=>{
-                     console.log(data.message);
                 if(data.message == "OTP Resent Successful!"){
                     alert(data.message);
                     // Reset the countdown timer

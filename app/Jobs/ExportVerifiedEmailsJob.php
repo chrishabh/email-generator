@@ -26,9 +26,12 @@ class ExportVerifiedEmailsJob implements ShouldQueue
      */
 
      protected $fileId;
-    public function __construct($fileId)
+     protected $userId;
+     public $timeout = 1200; 
+    public function __construct($fileId,$userId)
     {
         $this->fileId  =  $fileId;
+        $this->userId = $userId;
     }
 
     /**
@@ -38,7 +41,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
      */
     public function handle()
     {
-        $user_id = Auth::user()->id; 
+        $user_id = $this->userId; 
         $allUploadedFiles = uploadedAndDownloadFileName::getFileIdsBasedOnCurrentUser($this->fileId,$user_id,'verified');
         if(!empty($allUploadedFiles)){
             $currentDate       = Carbon::now()->format('Y-m-d');
@@ -46,7 +49,7 @@ class ExportVerifiedEmailsJob implements ShouldQueue
                 $verifiedEmailData = BulkUploadEmailFileData::getFileEmails($value->id,$user_id);
                 if($verifiedEmailData){
                     $fileName = $value->fileName;
-                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName";
+                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName.csv";
                     Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath);
                     uploadedAndDownloadFileName::updateData(['downloadFileLocation'=>$filePath,'downloadFileName'=>$fileName],$this->fileId);
                 }
