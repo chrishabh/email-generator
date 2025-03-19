@@ -67,7 +67,7 @@ class GenerateCustomEndpointController extends Controller
 
     public function index(Request $request)
     {  
-        $perPage = 2; // Number of users per page
+        $perPage = 10; // Number of users per page
         $currentPage = $request->input('page', 1); // Get the current page or default to 1 
         $keys = ApiKeys::getDataWithPagination($perPage ,$currentPage);
         return response()->json(['success'=>true,'keys'=>$keys,'message' => 'API Key created successfully'],200)->header('Content-Type', 'application/json; charset=UTF-8');
@@ -88,7 +88,7 @@ class GenerateCustomEndpointController extends Controller
             }
 
             $id                 = $request['key'];
-            $apiKey             = ApiKeys::where('user_id', Auth::id())->findOrFail($id);
+            $apiKey             = ApiKeys::where('user_id', Auth::id())->where('id', $id)->where('is_deleted', '0')->where('deleted_at',null)->firstOrFail();
             $apiKey->delete(); 
             ApiKeyLogs::create(['api_key_id' => $id,'key_name'=>$apiKey->name, 'key'=>$apiKey->key, 'action' => CustomApiEnum::DELETED]);
             return response()->json(['message' => 'key deleted successfully!!','success'=> true])->header('Content-Type', 'application/json; charset=UTF-8');  

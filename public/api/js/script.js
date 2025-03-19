@@ -167,7 +167,7 @@ function init(){
         const data = response.data
         modalInstances['modal1'].close()
         if(data.success){
-          fetchApiKeys(true,'key generated!!')
+          fetchData('api-keys',1,'key generated!!') 
         }else{
           $('#preloader').fadeOut();
           throw new Error(data.error)
