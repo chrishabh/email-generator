@@ -86,7 +86,7 @@ function init(){
       const response = await axios.post(`/customApi/${key}/destroy`,{key});
       const {success,message}  = response.data;
       if(!success) throw new Error(message)
-        fetchApiKeys(true,'keys deleted!')
+        fetchData('api-keys',1,'keys deleted!')
     } catch (error) {
       $('#preloader').fadeOut();
       console.error('Error creating API key:', error)
@@ -100,7 +100,7 @@ function init(){
       const response = await axios.post(`/customApi/${key}/regenerate`,{key});
       const {success,message,newKey}  = response.data;
       if(!success) throw new Error(message)
-      fetchApiKeys(true,'key Regenerated!!')
+      fetchData('api-keys',1,'key Regenerated!!')
     } catch (error) {
       $('#preloader').fadeOut(); 
       console.error('Error creating API key:', error)
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 }) 
 
 
-const fetchData= async(url,page)=>{ 
+const fetchData= async(url,page,message=null)=>{ 
   try { 
     $('#preloader').fadeIn();
     const response = await axios.get(`/customApi/${url}?page=${page}`) 
@@ -265,6 +265,9 @@ const fetchData= async(url,page)=>{
       htmlsection.innerHTML=html
     }
     $('#preloader').fadeOut();
+    if(message){
+      successNotyf.success(message)
+    }
   } catch (error) {
     console.error('Error fetching API keys:', error)
     $('#preloader').fadeOut();
