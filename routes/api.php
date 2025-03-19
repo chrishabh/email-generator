@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PublicEmailVerifications\EmailVerificationController;
+use App\Http\Middleware\VerifyApiKeyAndCredits;
 use App\Jobs\ExportVerifiedEmailsJob;
 use App\Jobs\VerifyEmailsJob;
 
@@ -22,6 +24,17 @@ Route::get('/lead',[EmailController::class,'generateEmail']);
 Route::get('/getVerify',[EmailController::class,'generateEmail']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware(['verify.apikey.credits'])->get('/v1/verify', [EmailVerificationController::class, 'verifyEmail'])->name('verifyEmail');
+
+
+Route::fallback(function (Request $request) {
+    return response()->json([
+        'success' => false,
+        'result' => 'Route not found',
+        'code'  => 404
+    ], 404);
 });
 
 Route::post('email-generator',[EmailController::class, 'generateEmail'])->name('generateEmail');
