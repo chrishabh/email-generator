@@ -13,7 +13,7 @@ class ApiViewComponent extends Component
      */
     public $text;
     public $type;
-    public function __construct($text,$type)
+    public function __construct($text,$type=null)
     {
         $this->text = $text;
         $this->type = $type;

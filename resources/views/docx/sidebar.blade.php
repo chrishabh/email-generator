@@ -27,7 +27,7 @@
                     [
                         'title' => 'SINGLE VALIDATION',
                         'items' => [
-                            ['title' => 'Single Validation API', 'href' => '/single-validation-api'],
+                            ['title' => 'Single Validation API', 'href' => 'single-validation-api'],
                         ]
                     ]
                 ];

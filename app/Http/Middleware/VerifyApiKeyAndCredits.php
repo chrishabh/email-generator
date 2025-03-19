@@ -27,11 +27,11 @@ class VerifyApiKeyAndCredits
 
         // rate limit 
         $rateLimitKey = 'verify-api:' . $apiKey;
-        if(RateLimiter::tooManyAttempts($rateLimitKey,5)){//allow 5 req in a min
+        if(RateLimiter::tooManyAttempts($rateLimitKey,120)){//allow 5 req in a min
             return response()->json([
                 "success"=>false,
-                "result" =>"Too many requests",
-                "code" =>429
+                "code" =>429,
+                "result" =>"Too many requests"
             ],429);
         }
         RateLimiter::hit($rateLimitKey,60);
@@ -47,9 +47,9 @@ class VerifyApiKeyAndCredits
  
         if(!$apiKeysExist){
             return response()->json([
-                "result"=>'Invalid API Key',
                 "success"=>false,
-                "code" =>401
+                "code" =>401,
+                "result"=>'Invalid API Key',
             ],401);
         }
 
@@ -62,8 +62,9 @@ class VerifyApiKeyAndCredits
         if ($creditPoints < 1) {
             return response()->json([
                 "success"=>"false",
+                "code" =>402,
                 "result"=>"Insufficient verification credits",
-                "code" =>402
+                
             ],402);
         }
         return $next($request);
