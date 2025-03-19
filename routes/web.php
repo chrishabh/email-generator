@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiKey\GenerateCustomEndpointController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Docx\DocumentationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
@@ -90,6 +91,11 @@ try{
             Route::post('/{id}/destroy', [GenerateCustomEndpointController::class, 'destroy'])->name('customApi.destroy');
             Route::post('/store', [GenerateCustomEndpointController::class, 'store'])->name('customApi.store');
 
+        });
+
+        Route::prefix('/reference')->group(function(){
+            Route::get('/',[DocumentationController::class,'index']);
+            Route::get('/{page}', [DocumentationController::class, 'show'])->name('reference.page');
         });
 
         // Route::get('/setting', function () {

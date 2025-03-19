@@ -1,13 +1,15 @@
 
 @if(request()->path()=='customApi' || request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history' ||request()->path()=='settings')
     @include('layout.header1',['headerData' =>$headerData??null])
+@elseif(request()->is('reference/*'))
+    @include('layout.header2',['headerData' =>$headerData??null])
 @else 
     @include('layout.header',['headerData' =>$headerData??null])
 @endif
 
 @yield('main-section')
 
-@if(request()->path()!='settings')
+@if(request()->path()!='settings' || request()->is('reference/*'))
     @if((auth()->check()))
         @include('layout.auth-footer')
     @else

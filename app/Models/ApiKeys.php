@@ -45,13 +45,13 @@ class ApiKeys extends Model
         $offset = ($currentPage - 1) * $perPage;
         $totalUsersQuery = "
         SELECT COUNT(*) as total
-        FROM api_keys as u WHERE u.deleted_at IS NULL AND u.is_deleted='0' ";  
+        FROM api_keys as u WHERE u.deleted_at IS NULL AND u.is_deleted='0'";  
         $totalResult = DB::select($totalUsersQuery);
         $totalData = $totalResult[0]->total;
 
         $query = "
             SELECT * from api_keys as u
-            WHERE u.deleted_at IS NULL AND u.is_deleted='0' 
+            WHERE u.deleted_at IS NULL AND u.is_deleted='0' order by u.id desc 
             LIMIT ?, ?
         ";
         $result = DB::select($query, [$offset, $perPage]);
