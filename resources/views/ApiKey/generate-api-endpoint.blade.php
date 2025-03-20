@@ -87,7 +87,7 @@
 
 
             <!-- New API Key Modal -->
-            <div id="modal1" class="modal modal-sm custom-modal">
+            <div id="modal1" class="modal modal-sm custom-modal rounded-lg">
                 <div class="modal-content">
                     <div class="row mx-0 align-items-center">
                         <!-- API Key Heading with Icons on the Right -->

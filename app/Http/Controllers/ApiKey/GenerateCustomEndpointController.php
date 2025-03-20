@@ -45,7 +45,7 @@ class GenerateCustomEndpointController extends Controller
                 return $response;
             }
            
-            $key    = str_replace('-', '', Str::uuid()->toString());
+            $key    = Str::uuid()->toString();
             $userid = Auth::user()->id; 
             $apiKey = ApiKeys::create([
                 'user_id' => $userid,

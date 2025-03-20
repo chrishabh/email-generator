@@ -83,10 +83,10 @@ function init(){
 
   window.deleteKey =async (key)=>{
     try {
-      const response = await axios.post(`/customApi/${key}/destroy`,{key});
+      const response = await axios.post(`/Api/${key}/destroy`,{key});
       const {success,message}  = response.data;
       if(!success) throw new Error(message)
-        fetchData('api-keys',1,'keys deleted!')
+        fetchData('api-keys',1,'API Key Deleted Successfully!')
     } catch (error) {
       $('#preloader').fadeOut();
       console.error('Error creating API key:', error)
@@ -97,10 +97,10 @@ function init(){
   window.regenerate = async(key)=>{
     try {
       $('#preloader').fadeIn();
-      const response = await axios.post(`/customApi/${key}/regenerate`,{key});
+      const response = await axios.post(`/Api/${key}/regenerate`,{key});
       const {success,message,newKey}  = response.data;
       if(!success) throw new Error(message)
-      fetchData('api-keys',1,'key Regenerated!!')
+      fetchData('api-keys',1,'API Key Regenerated Successfully!')
     } catch (error) {
       $('#preloader').fadeOut(); 
       console.error('Error creating API key:', error)
@@ -111,7 +111,7 @@ function init(){
   window.fetchApiKeys = (isApiForSaveKey=false,text='')=>{
     const apiKeysTableBody = document.getElementById("apiKeysTableBody"); 
     // $('#preloader').fadeIn();
-    axios.get('/customApi/api-keys')
+    axios.get('/Api/api-keys')
     .then(response => {
       const data = response.data;
       if(!data.success) throw new Error(response.error)
@@ -162,12 +162,12 @@ function init(){
       errorMessage.classList.add("hidden");
       let name =apiKey.value
       $('#preloader').fadeIn();
-      axios.post('/customApi/store', {name})
+      axios.post('/Api/store', {name})
       .then((response) =>{
         const data = response.data
         modalInstances['modal1'].close()
         if(data.success){
-          fetchData('api-keys',1,'key generated!!') 
+          fetchData('api-keys',1,'API Key Generated Successfully!') 
         }else{
           $('#preloader').fadeOut();
           throw new Error(data.error)
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 const fetchData= async(url,page,message=null)=>{ 
   try { 
     $('#preloader').fadeIn();
-    const response = await axios.get(`/customApi/${url}?page=${page}`) 
+    const response = await axios.get(`/Api/${url}?page=${page}`) 
     const data     = await response.data;
     if(!data.success) throw new Error(response.error)
     if(data.success) {
@@ -277,8 +277,10 @@ const fetchData= async(url,page,message=null)=>{
 }
 
 const appendHtml = (data) =>{ 
-  let html = 
-  `<table class="table table-bordered">
+
+  if(!empty(data.keys.data)) {let html=`<p class="text-center text-xl font-500">No API keys found.</p>`;}
+  else {
+ let html= `<table class="table table-bordered">
     <thead>
       <tr>
         <th>Name</th>
@@ -316,6 +318,7 @@ const appendHtml = (data) =>{
   html += `<div class="pagination-controls">`;
   html += generatePagination(data.keys.currentPage, totalPages);
   html += `</div></div>`; 
+  }
   return html;
       
 }
