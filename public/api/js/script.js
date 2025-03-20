@@ -278,12 +278,13 @@ const fetchData= async(url,page,message=null)=>{
 
 const appendHtml = (data) =>{ 
 
-  if(!data.keys.data) {
-    let html=`<p class="text-center text-xl font-500">No API keys found.</p>`;
+  let html='';
+  if(!data.keys.data || data.keys.data.length === 0) {
+    html=`<p class="text-center text-xl font-500">No API keys found.</p>`;
     return html;
   }
   else {
- let html= `<table class="table table-bordered">
+    html= `<table class="table table-bordered">
     <thead>
       <tr>
         <th>Name</th>
