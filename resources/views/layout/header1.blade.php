@@ -97,7 +97,7 @@
                         <li class="current"><a href="/lead-finder">Lead Finder</a></li>
                         <li class=""><a href="/bulk">Bulk Verifications</a></li>
                         <li><a href="/pricing">Buy Credits</a></li>
-                        <li><a href="/customApi">API</a></li>
+                        <li><a href="/Api">API</a></li>
                     </ul>
                 </div>
                 <div class="mainheader--right">
