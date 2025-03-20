@@ -20,7 +20,7 @@
         <div class="pt-4">
             <h2 class=" text-gray-900 font-[500]">Components of the API are:</h2>
             <ul class="mt-2 list-disc pl-6 ">
-                <li><strong>hostname:</strong> api.bouncee.net</li>
+                <li><strong>hostname:</strong> bouncee.net</li>
                 <li><strong>api-version:</strong> The version of the API to be used (e.g., v1).</li>
                 <li><strong>path:</strong> The specific API method being requested.</li>
                 <li><strong>parameters:</strong> Query parameters required for the request.</li>
@@ -32,7 +32,7 @@
 
         <x-api-view-component
             type="Example Request:"
-            text="https://api.bouncee.net/v1/verify?apikey=232650svdvb174apwv0mbvu6syvf5tem&email=some@gmail.com"
+            text="https://bouncee.net/v1/verify?apikey=232650svdvb174apwv0mbvu6syvf5tem&email=some@gmail.com"
         />
     </div>
 

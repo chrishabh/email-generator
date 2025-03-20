@@ -29,7 +29,7 @@
                     </p> 
                     <p class="text-grey-700 mt-1">
                         If you have any questions about integrating or using the <b>Bouncee</b> Email Validation API, feel free to reach out to our 
-                        <a class="text-[#46b8da] font-semibold underline" href="#">support team </a> via a ticket or live chat.
+                        <a class="text-[#46b8da] font-semibold underline" href="mailto:support@bouncee.net">support@bouncee.net </a> via Email address.
                     </p>
                 </div> 
             </section>
