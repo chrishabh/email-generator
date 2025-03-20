@@ -278,7 +278,10 @@ const fetchData= async(url,page,message=null)=>{
 
 const appendHtml = (data) =>{ 
 
-  if(!empty(data.keys.data)) {let html=`<p class="text-center text-xl font-500">No API keys found.</p>`;}
+  if(!data.keys.data) {
+    let html=`<p class="text-center text-xl font-500">No API keys found.</p>`;
+    return html;
+  }
   else {
  let html= `<table class="table table-bordered">
     <thead>
