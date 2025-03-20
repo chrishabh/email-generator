@@ -32,7 +32,7 @@
 
         <x-api-view-component
             type="Example Request:"
-            text="https://bouncee.net/v1/verify?apikey=232650svdvb174apwv0mbvu6syvf5tem&email=some@gmail.com"
+            text="https://bouncee.net/api/v1/verify?apikey=232650svdvb174apwv0mbvu6syvf5tem&email=some@gmail.com"
         />
     </div>
 

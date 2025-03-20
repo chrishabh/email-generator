@@ -10,7 +10,7 @@
         <x-page-name-component 
         pageName='Single Validation API <br> <div class="flex items-center space-x-2 mt-3">
             <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">GET</span>
-            <span class="text-[#384248] text-[11px]">https://bouncee.net/v1/verify</span>
+            <span class="text-[#384248] text-[11px]">https://bouncee.net/api/v1/verify</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">

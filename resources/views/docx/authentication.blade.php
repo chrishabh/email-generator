@@ -26,7 +26,7 @@
             <h2 class="font-semibold text-lg pb-4">Example:</h2>
             <div class="bg-gray-800 text-white p-4 rounded-lg">
                 <p class="text-[orange] pb-3 text-lg">cURL</p>
-               curl &nbsp;-X  &nbsp; GET &nbsp; <span class="text-[#b35e14] font-semibold"> 'https://bouncee.net/v1/verify?apikey=your_api_key&email=some@gmail.com'</span>
+               curl &nbsp;-X  &nbsp; GET &nbsp; <span class="text-[#b35e14] font-semibold"> 'https://bouncee.net/api/v1/verify?apikey=your_api_key&email=some@gmail.com'</span>
             </div>
             <p class="bg-[#fcf8f2] border-l-4 border-[#eea236] p-6 my-9 rounded-lg"><span class="text-2xl pr-2"> 🚧</span>Replace your_api_key with your actual API key before making requests.</p>
         </div>
