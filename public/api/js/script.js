@@ -308,7 +308,6 @@ const appendHtml = (data) =>{
           </td>
           <td>${key.created_at}</td>
           <td>
-            <i id="editToolTip" class="fas fa-pencil pr-2 hover:cursor-pointer" data-position="bottom" data-tooltip="edit" style="font-size:14px;"></i>
             <i id="regenerateToolTip" onclick="regenerate(${key.id})" class="fas fa-arrows-rotate pr-2 hover:cursor-pointer" data-position="bottom" data-tooltip="regenerate"  style="font-size: 14px;font-weight:600"></i>
             <i  id="deletedToolTip" onclick="triggerSweetAlert('Are you sure you want to delete this?',${key.id})"  class="fa fa-trash d-inline hover:cursor-pointer  "  data-position="bottom" data-tooltip="deleted" style="font-size: 14px;"></i>
           </td>
