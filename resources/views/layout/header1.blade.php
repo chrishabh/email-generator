@@ -116,7 +116,7 @@
                             <span class="avatar-text">{{$name}}</span>
                         </div>
                         <div class="header-dropdown">
-                            <div id="myDropdown" class="dropdown-content">
+                            <div id="myDropdown" class="dropdown-content-header">
                                 <a href="/profile">Profile</a>
                                 <a href="/payment-history">Payment History</a>
                                 @if($role == 'admin')

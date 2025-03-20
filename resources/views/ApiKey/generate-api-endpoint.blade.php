@@ -12,7 +12,7 @@
         {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf/notyf.min.css"> --}}
         <link rel="stylesheet" href="{{ asset('api/css/sweetalert/sweetalert2.min.css') }}"> 
         {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">  --}}
-        {{-- <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialize.min.css') }}">  --}}
+        <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialize.min.css') }}"> 
         {{-- <link href="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css" rel="stylesheet">  --}}
         <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialfont.min.css') }}"> 
         {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}

@@ -62,7 +62,7 @@ body{
     display: relative;
 
 }
-#header1 .header-dropdown .dropdown-content{
+#header1 .header-dropdown .dropdown-content-header{
     position: absolute;
     top: 3.5rem;
     background-color: #fff;
@@ -84,7 +84,7 @@ body{
 }
 
 
-#header1 .header-dropdown .dropdown-content a {
+#header1 .header-dropdown .dropdown-content-header a {
     color: black;
     padding: 10px 22px;
     text-decoration: none;
@@ -93,11 +93,11 @@ body{
     font-family: 'Poppins', sans-serif, serif;
 
 }
-#header1 .header-dropdown .dropdown-content a:hover {
+#header1 .header-dropdown .dropdown-content-header a:hover {
     background-color: #ddd;
 }
 
-#header1 .header-dropdown .dropdown-content.show{
+#header1 .header-dropdown .dropdown-content-header.show{
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
