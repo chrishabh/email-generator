@@ -137,7 +137,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/js/materialize.min.js"></script> 
-    {{-- <script src="https://cdn.tailwindcss.com"></script>  --}}
+    <script src="https://cdn.tailwindcss.com"></script> 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
     <script src="{{ asset('api/js/script.js') }}" type="text/javascript"></script>
 
