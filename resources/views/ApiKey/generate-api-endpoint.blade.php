@@ -16,6 +16,7 @@
         {{-- <link href="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css" rel="stylesheet">  --}}
         <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialfont.min.css') }}"> 
         {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
+        <script src="{{ asset('docx/tailwind/script.js') }}"></script>
          
 
     @endpush
@@ -137,7 +138,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/js/materialize.min.js"></script> 
-    <script src="https://cdn.tailwindcss.com"></script> 
+    {{-- <script src="https://cdn.tailwindcss.com"></script>  --}}
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
     <script src="{{ asset('api/js/script.js') }}" type="text/javascript"></script>
 
