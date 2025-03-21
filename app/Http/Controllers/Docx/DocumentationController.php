@@ -14,6 +14,7 @@ class DocumentationController extends Controller
         'rate-limiting'          => ['title' => 'Rate Limiting', 'view' => 'docx.rate-limiting'],
         'http-status-codes'      => ['title' => 'HTTP Status Codes', 'view' => 'docx.http-status-codes'],
         'single-validation-api'  => ['title' => 'Single Validation API', 'view' => 'docx.single-validation-api'],
+        'get-credit-balance'     => ['title' => 'Get credit balance', 'view' => 'docx.get-credit-balance']
     ];
 
     public function index(){

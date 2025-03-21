@@ -162,33 +162,41 @@ text='<div class="bg-gray-800 text-green-400 font-mono text-sm p-4 rounded-lg mt
 />
 
 
-<h2 class=" text-gray-900 font-[500] text-lg pb-2">QUERY PARAMS</h2>
-<div class="overflow-x-auto">
-    <table class="w-full border border-gray-300 rounded-lg">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-3 text-left border border-gray-300 font-semibold">Parameter</th>
-                <th class="p-3 text-left border border-gray-300 font-semibold">Type</th>
-                <th class="p-3 text-left border border-gray-300 font-semibold">Required</th>
-                <th class="p-3 text-left border border-gray-300 font-semibold">Description</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="border border-gray-300">
-                <td class="p-3 border border-gray-300">apikey</td>
-                <td class="p-3 border border-gray-300">[string]</td>
-                <td class="p-3 border border-gray-300"><strong>Yes</strong></td>
-                <td class="p-3 border border-gray-300">Your <strong>Bouncee</strong> API key.</td>
-            </tr>
-            <tr class="border border-gray-300">
-                <td class="p-3 border border-gray-300">email</td>
-                <td class="p-3 border border-gray-300">[string]</td>
-                <td class="p-3 border border-gray-300"><strong>Yes</strong></td>
-                <td class="p-3 border border-gray-300"> The email address to be verified.</td>
-            </tr> 
-        </tbody>
-    </table>
-</div>
+    <h2 class=" text-gray-900 font-[500] text-lg pb-2">QUERY PARAMS</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full border border-gray-300 rounded-lg">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left border border-gray-300 font-semibold">Parameter</th>
+                    <th class="p-3 text-left border border-gray-300 font-semibold">Type</th>
+                    <th class="p-3 text-left border border-gray-300 font-semibold">Required</th>
+                    <th class="p-3 text-left border border-gray-300 font-semibold">Description</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border border-gray-300">
+                    <td class="p-3 border border-gray-300">apikey</td>
+                    <td class="p-3 border border-gray-300">[string]</td>
+                    <td class="p-3 border border-gray-300"><strong>Yes</strong></td>
+                    <td class="p-3 border border-gray-300">Your <strong>Bouncee</strong> API key.</td>
+                </tr>
+                <tr class="border border-gray-300">
+                    <td class="p-3 border border-gray-300">email</td>
+                    <td class="p-3 border border-gray-300">[string]</td>
+                    <td class="p-3 border border-gray-300"><strong>Yes</strong></td>
+                    <td class="p-3 border border-gray-300"> The email address to be verified.</td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+
+    {{-- next prev page --}} 
+    <x-back-next-button-component 
+    nextPageName="Get credit balance" 
+    nextUrl="{{ route('reference.page', ['page' => 'get-credit-balance']) }}" 
+    prevUrl="{{ route('reference.page', ['page' => 'http-status-codes']) }}" 
+    prevPageName="HTTP Status Codes"
+    />
     </div>
 @endsection

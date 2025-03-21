@@ -29,6 +29,12 @@
                         'items' => [
                             ['title' => 'Single Validation API', 'href' => 'single-validation-api'],
                         ]
+                    ],
+                    [
+                        'title' => 'ACCOUNT',
+                        'items' => [
+                            ['title' => 'Get credit balance', 'href' => 'get-credit-balance'],
+                        ]
                     ]
                 ];
                 use Illuminate\Support\Str;
