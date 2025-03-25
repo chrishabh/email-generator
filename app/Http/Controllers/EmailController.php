@@ -159,7 +159,7 @@ class EmailController extends Controller
                     UserCredits::updateCreditsWhenEmailGetsVerify($user_id,1);
                 }
                 if ($stopValidationCheckbox=='1'){
-                    if($this->isValidEmail($email)){ 
+                    if($this->isValidEmail($email,false,$user_id,$fileId)){ 
                         $status = 'valid';
                    }else{
                         $status = 'invalid';
