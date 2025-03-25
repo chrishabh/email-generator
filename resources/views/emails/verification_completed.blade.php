@@ -11,7 +11,7 @@
         <p><strong>File Name:</strong> <span style="color: #ffa500;">{{ $fileName }}</span></p>
         <p><strong>Total Emails:</strong> {{ $totalEmails }}</p>
         <p><strong>Status:</strong> <span style="color: {{ $status == 'verified' ? 'green' : 'red' }};">{{ $status }}</span></p>
-        <p>To understand the verification result, please click below.</p>
+        <p>To check the verification result, please click below.</p>
         <p style="text-align: center;">
             <a href="{{ url('/signin') }}" 
                style="display: inline-block; background-color: #217278; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
