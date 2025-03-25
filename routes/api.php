@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware(['verify.apikey.credits'])->get('/v1/verify', [EmailVerificationController::class, 'verifyEmail'])->name('verifyEmail');
 
-Route::middleware(['public.auth'])->get('/v1/creditInfo', [EmailVerificationController::class, 'verifyEmail'])->name('creditInfo');
+Route::middleware(['public.auth'])->get('/v1/creditInfo', [EmailVerificationController::class, 'creditInfo'])->name('creditInfo');
 
 Route::fallback(function (Request $request) {
     return response()->json([
