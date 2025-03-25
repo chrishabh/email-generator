@@ -146,7 +146,7 @@
                     <br>
                     <div class="curent--aside">
                         <div class="upload-aside--widget">
-                            <h4 class="widget-title">UPLOAD Your file ( csv)</h4>
+                            <h4 class="widget-title">Upload Your File (CSV, TXT, XLSX, XLS)</h4>
                             <form action="javascript:void(0)" class="form-upload">
                                 {{-- <div class="filepond--root uploader filepond--hopper">
                                     <input class="filepond--browser" type="file" id="filepond--browser-kxvrqlbna"

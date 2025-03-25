@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class EmailController extends Controller
 {
@@ -356,33 +357,53 @@ class EmailController extends Controller
         try { 
 
             $request->validate([
-                'filepond' => 'required|file|mimes:csv,txt',
+                'filepond' => 'required|file|mimes:csv,txt,xlsx,xls',
             ]);
              
             $file         = $request->file('filepond');
-            $rowCount     = 0;  
+            $extension    = $file->getClientOriginalExtension();
+            $rowCount     = 0;
             $uniqueEmails = [];
-
-            if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
-                $header = fgetcsv($handle); // Try to read the first line (header)
-                if ($header === false) {
-                    $response = response()->json(['error' => 'The file is not a valid CSV file.']);
-                    $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
-                    return $response;
+            if (in_array($extension, ['csv', 'txt'])) {
+                if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
+                    $header = fgetcsv($handle); // Try to read the first line (header)
+                    if ($header === false) {
+                        $response = response()->json(['error' => 'Invalid CSV/TXT file format.']);
+                        $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+                        return $response;
+                    } 
+                    while (($row = fgetcsv($handle)) !== FALSE) {
+                        $rowCount++;
+                        // Ensure the row is not empty and contains at least one column
+                        if (isset($row[0])) {
+                            $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
+                            // Add only valid and unique emails to the array
+                            if (filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email, $uniqueEmails)) {
+                                $uniqueEmails[] = $email;
+                            }
+                        }
+                    }
+                    fclose($handle);
                 } 
-                while (($row = fgetcsv($handle)) !== FALSE) {
-                    $rowCount++;
-                    // Ensure the row is not empty and contains at least one column
-                    if (isset($row[0])) {
-                        $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
-                        // Add only valid and unique emails to the array
+            }elseif (in_array($extension, ['xlsx', 'xls'])) {
+                $spreadsheet = IOFactory::load($file->getRealPath());
+                $sheet       = $spreadsheet->getActiveSheet();
+                foreach ($sheet->getRowIterator() as $row) {
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(false);
+                    foreach ($cellIterator as $cell) {
+                        $email = trim($cell->getValue());
                         if (filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email, $uniqueEmails)) {
                             $uniqueEmails[] = $email;
                         }
                     }
                 }
-                fclose($handle);
-            } 
+            }
+            if (empty($uniqueEmails)) {
+                $response = response()->json(['error' => 'No valid emails found in the file.']);
+                $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+                return $response;
+            }
 
             $userCredit = UserCredits::getCreditPoint(Auth::user()->id);
             $creditPoints = ($userCredit) ? $userCredit->credits :0;
