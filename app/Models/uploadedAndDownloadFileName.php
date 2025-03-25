@@ -62,6 +62,10 @@ class uploadedAndDownloadFileName extends Model
           return DB::table('uploaded_and_download_file_names')->where('user_id',$user_id)->where('id',$file_id)->where('verificationStatus','verified')->first();
 
     }
+    public static function getStatus($file_id,$user_id){
+          return DB::table('uploaded_and_download_file_names')->where('user_id',$user_id)->where('id',$file_id)->first();
+
+    }
 
     static function getDataFromTable($fileId,$user_id,$verificationStatus){
         return self::where('id',$fileId)->where('user_id',$user_id)->where('verificationStatus',$verificationStatus)->first()->toArray();

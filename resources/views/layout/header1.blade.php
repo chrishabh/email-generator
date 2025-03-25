@@ -64,7 +64,7 @@
     <div id="mobileMenu" class="mobile-menu">
         <ul class="main-menu"> 
             <li class="current"><a href="/single">Single Verification</a></li> 
-            <li class="current"><a href="/lead-finder">Lead Finder</a></li> 
+            <li class="current"><a href="/lead-finder">B2B Email Finder</a></li> 
             <li class=""><a href="/bulk">Bulk Verifications</a></li>
             <li><a href="/pricing">Buy Credits</a></li> 
             <li><a href="/profile">Profile</a></li>
@@ -94,7 +94,7 @@
                     </a>
                     <ul class="main-menu">
                         <li class="current"><a href="/single">Single Verification</a></li>
-                        <li class="current"><a href="/lead-finder">Lead Finder</a></li>
+                        <li class="current"><a href="/lead-finder">B2B Email Finder</a></li>
                         <li class=""><a href="/bulk">Bulk Verifications</a></li>
                         <li><a href="/pricing">Buy Credits</a></li>
                     </ul>
