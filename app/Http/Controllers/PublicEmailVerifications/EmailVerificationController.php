@@ -29,4 +29,20 @@ class EmailVerificationController extends Controller
             "user" =>$user->name 
         ],200);
     }
+
+    public function creditInfo(Request $request)
+    {
+        $userId = $request->api_key_data->user_id;
+        $userCredit= UserCredits::getCreditPoint($userId);
+        $creditPoints = ($userCredit) ? $userCredit->credits : 0;
+        return response()->json([
+            "success"=>"true",
+            "code" =>200,
+            "credits_info"=>[
+                "credits_remaining" => $creditPoints,
+            ],
+                
+        ],200);
+        
+    }
 }

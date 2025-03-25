@@ -67,5 +67,7 @@ class Kernel extends HttpKernel
         'restrict.access' => \App\Http\Middleware\RestrictAccess::class,
         'user.email.verification' => \App\Http\Middleware\UserEmailVerification::class,
         'verify.apikey.credits' => \App\Http\Middleware\VerifyApiKeyAndCredits::class,
+        'public.auth' => \App\Http\Middleware\VerifyApiKeyAndCredits::class,
+
     ];
 }
