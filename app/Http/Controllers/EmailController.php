@@ -329,9 +329,9 @@ class EmailController extends Controller
             foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     // pp($countOfValidAndInvalidEmails);
-                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
-                    $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
-                    $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
+                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails)->sum('total_count');
+                    // $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
+                    // $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
                     $fileNameWithExtension         =  basename($value->fileName); 
                     $fileName                      =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
                     $parts                         =  explode('_', $fileName);  
@@ -340,9 +340,9 @@ class EmailController extends Controller
                     $fileName                      =  $fileName.'...'.$fileExtension;
                     $dataArr['fileName']           =  $fileName;
                     $dataArr['created_at']         =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
-                    $dataArr['totalValidEmail']    =  $validEmailCount; 
-                    $dataArr['totalInvalidEmail']  =  $invalidEmailCount;
-                    $dataArr['total']              =  !empty($countOfValidAndInvalidEmails)?((empty($countOfValidAndInvalidEmails[0]['status']))?$countOfValidAndInvalidEmails[0]['total_count'] : $validEmailCount +$invalidEmailCount):0; 
+                    // $dataArr['totalValidEmail']    =  $validEmailCount; 
+                    $dataArr['verifyStatusData']   =  $countOfValidAndInvalidEmails;
+                    $dataArr['total']              =  $collectionOfCount??0; 
                     $dataArr['verificationStatus'] =  $value->verificationStatus; 
                     $dataArr['userId']             =  $value->user_id; 
                     $dataArr['fileId']             =  $value->id; 
