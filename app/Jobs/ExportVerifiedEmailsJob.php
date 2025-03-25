@@ -50,8 +50,8 @@ class ExportVerifiedEmailsJob implements ShouldQueue
                 if($verifiedEmailData){
                     $fileName = $value->fileName;
                     $withoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-                    $fileName = $withoutExtension.'csv';
-                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$withoutExtension.csv";
+                    $fileName = $withoutExtension.'.csv';
+                    $filePath = "public/Bulk Verified Emails/$currentDate/$user_id/$value->id/$fileName";
                     Excel::store(new BulkUploadExport($verifiedEmailData,true), $filePath);
                     uploadedAndDownloadFileName::updateData(['downloadFileLocation'=>$filePath,'downloadFileName'=>$fileName],$this->fileId);
                 }
