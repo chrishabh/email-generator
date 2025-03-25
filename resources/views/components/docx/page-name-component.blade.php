@@ -1,0 +1,1 @@
+<h1 class="text-2xl  font-bold mb-[1.4em] pb-[2em] border-b-1 border-[#0000001A] leading-1.2 text-1.9">{!! $pageName !!}</h1>

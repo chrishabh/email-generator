@@ -92,17 +92,20 @@ const signupFormValidation = function(){
         validateForm({'name':'name','email':'email','password':'password'});
 
         // Validate captcha
-        const captchaResponse = grecaptcha.getResponse();
-        const captchaError = document.getElementById('captchaError');
-       
-        if (!captchaResponse) {
-            captchaError.innerText = "Please complete the CAPTCHA.";
-            captchaError.style.display = "block";
-        } else {
-            captchaError.innerText = "";
-            captchaError.style.display = "none";
+        const isClassPresent  = document.getElementsByClassName('hide-the-captcha');
+        if(isClassPresent) var captchaResponse =true;
+        if(!isClassPresent){
+            captchaResponse = grecaptcha.getResponse();
+            const captchaError    = document.getElementById('captchaError');
+        
+            if (!captchaResponse) {
+                captchaError.innerText = "Please complete the CAPTCHA.";
+                captchaError.style.display = "block";
+            } else {
+                captchaError.innerText = "";
+                captchaError.style.display = "none";
+            }
         }
-
         const hasErrors =document.querySelectorAll('.validation-error').length>0 || !captchaResponse;
         if(!hasErrors){
             const form = document.getElementById('signUpForm');

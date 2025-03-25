@@ -23,10 +23,10 @@
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <!-- Responsive Style -->
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/header1/style.css') }}">    
-    <script src="{{ asset('assets/header1/index.js') }}" type="text/javascript"></script> 
+    <link rel="stylesheet" href="{{ asset('assets/header1/style.css') }}">     
     @stack('styles')
 
+    <script src="{{ asset('assets/header1/index.js') }}" type="text/javascript"></script> 
 </head>
 
 <body>
@@ -97,6 +97,7 @@
                         <li class="current"><a href="/lead-finder">B2B Email Finder</a></li>
                         <li class=""><a href="/bulk">Bulk Verifications</a></li>
                         <li><a href="/pricing">Buy Credits</a></li>
+                        <li><a href="/Api">API</a></li>
                     </ul>
                 </div>
                 <div class="mainheader--right">
@@ -115,7 +116,7 @@
                             <span class="avatar-text">{{$name}}</span>
                         </div>
                         <div class="header-dropdown">
-                            <div id="myDropdown" class="dropdown-content">
+                            <div id="myDropdown" class="dropdown-content-header">
                                 <a href="/profile">Profile</a>
                                 <a href="/payment-history">Payment History</a>
                                 @if($role == 'admin')
@@ -136,4 +137,5 @@
             </div>
         </div>
     </header>
+    
     <!-- Header Area wrapper End -->

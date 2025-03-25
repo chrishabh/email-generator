@@ -34,8 +34,6 @@
 </head>
 
 <body class="">
-
-
     <main class="sign-container">
         <div class="col-img bgi" style="background-color: #0024a1">
 
@@ -143,12 +141,13 @@
                             </p> -->
 
                             {{-- capcache --}}
-                            <div class="g-recaptcha" data-sitekey="6Lcb8IsqAAAAAHQ9XfZkgvgDPW7lOlOkFbGX27BG"></div>
+                            <div class="g-recaptcha {{$captchaFlag? 'hide-the-captcha':''}}" style="{{$captchaFlag? 'display:none;':''}}"  data-sitekey="6LcBr4sqAAAAAERuBfKv_udrAMh-ME8QyNabyRyp"></div>
                             <div class="vError" id="captchaError">
                                 @error('g-recaptcha-response')
                                     {{ $message }}
                                 @enderror
-                            </div>
+                            </div> 
+                             
                         <button class="btn fullwidth" id="signUpBtn" type="submit" style="margin-top: 4em;">Sign
                             Up</button>
                         <div class="sign-form--foot">

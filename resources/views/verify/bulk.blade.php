@@ -3,27 +3,42 @@
 @section('main-section')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('verify/bulk-upload/css/style.css') }}">
+        <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
         <!-- jQuery CDN -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
-        <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+            
 
-        <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
+        <!-- Load FilePond Core -->
+        {{-- <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script> --}}
+        <script src="{{ asset('filepond/filepond.min.js') }}" type="text/javascript"></script>
 
-        <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
-        <link href="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.css" rel="stylesheet">
-        <link href="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.css" rel="stylesheet">
-        <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet">
-    
+        <!-- Load FilePond Plugins -->
+        <script src="{{ asset('filepond/filepnd-image-preview.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('filepond/filepond-plugin-image-exif-orientation.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('filepond/filepond-plugin-file-validate-size.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('filepond/filepond-plugin-image-edit.min.js') }}" type="text/javascript"></script>
 
 
-         
-        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-        <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
-        <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
-        <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.js"></script>
-        
+
+        {{-- <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script> --}}
+        {{-- <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js"></script> --}}
+        {{-- <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script> --}}
+        {{-- <script src="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.min.js"></script> --}}
+
+        <!-- jQuery FilePond (only if needed) -->
+        {{-- <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script> --}}
+        <script src="{{ asset('filepond/filepond.jquery.js') }}" type="text/javascript"></script>
+
+        <!-- FilePond Styles -->
+        <link rel="stylesheet" href="{{ asset('filepond/css/filepond.css') }}">
+        <link rel="stylesheet" href="{{ asset('filepond/css/filepond-plugin-image-preview.css') }}">
+        {{-- <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet"> --}}
+        {{-- <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet"> --}}
+        {{-- <link href="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.css" rel="stylesheet"> --}}
+        {{-- <link href="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.css" rel="stylesheet"> --}}
+        {{-- <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet"> --}}
+
+
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     

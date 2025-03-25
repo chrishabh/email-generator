@@ -1,0 +1,1 @@
+<p class="bg-[#fcf8f2] border-l-4 border-[#eea236] p-6 my-9 rounded-lg"><span class="text-2xl pr-2"> 🚧</span>{!! $text!!}</p>

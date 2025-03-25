@@ -79,7 +79,7 @@ class VerifyEmailsJob implements ShouldQueue
 
             foreach($data as $key=>$value){
                 $dataArray = [];
-                $status    = EmailController::isValidEmail($value->email,true, $user_id);
+                $status    = EmailController::isValidEmail($value->email,true, $user_id,$this->fileId);
                 $dataArray = [
                     'apiStatus'         => $status ? strtolower($status):NULL,
                     'status'            => ($status && strtolower($status)=='deliverable') ? 'valid':'invalid',
@@ -148,7 +148,7 @@ class VerifyEmailsJob implements ShouldQueue
                 $this->jobUuid = uploadedAndDownloadFileName::where('id', $this->fileId)->value('job_id');
             }
             foreach ($validAdminEmails as $email) {
-                echo $email;
+                // echo $email;
                 Mail::to($email)->send(new JobFailedNotification($this->fileId, $exception->getMessage(), $this->jobUuid));
             }
         } else {

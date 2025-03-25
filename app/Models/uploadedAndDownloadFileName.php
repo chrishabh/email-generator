@@ -78,7 +78,14 @@ class uploadedAndDownloadFileName extends Model
         SUM(CASE WHEN bu.job_email_status!='verified' AND bu.job_email_status IS NULL THEN 1 ELSE 0 END) as total_not_verified_emails
         from uploaded_and_download_file_names uf left join bulk_upload_email_file_data bu on bu.file_id=uf.id where uf.id=$fileId GROUP BY uf.id";
         $result  = DB::select($query);
-        $is_failed_job = DB::select("SELECT CASE WHEN EXISTS ( SELECT 1 FROM failed_jobs f WHERE f.id = u.job_id ) THEN 1 ELSE 0 END AS is_failed FROM uploaded_and_download_file_names u WHERE u.id =$fileId");
+        $is_failed_job = DB::select("SELECT 
+            CASE 
+                WHEN f.uuid IS NOT NULL THEN 1 
+                ELSE 0 
+            END AS is_failed 
+        FROM uploaded_and_download_file_names u 
+        LEFT JOIN failed_jobs f ON f.uuid = u.job_id
+        WHERE u.id = $fileId");
         $result[0]->is_failed_job = $is_failed_job[0]->is_failed;
         return $result;
     }

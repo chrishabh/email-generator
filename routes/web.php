@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ApiKey\GenerateCustomEndpointController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Docx\DocumentationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
@@ -79,6 +81,21 @@ try{
             Route::get('/overall-credits-report', [ProfileController::class, 'getOverallCreditsReport']);
             Route::get('/render-messages', [ProfileController::class, 'renderMessagesPage']);
 
+        });
+
+        Route::prefix('Api')->group(function(){
+            Route::get('/', [GenerateCustomEndpointController::class,'renderApiGenerateKeyPage']); 
+            Route::get('/api-keys', [GenerateCustomEndpointController::class, 'index']);
+            Route::post('{id}/regenerate', [GenerateCustomEndpointController::class,'regenerate'])->name('customApi.regenerate');  
+            Route::post('/{id}/toggle', [GenerateCustomEndpointController::class, 'toggle'])->name('customApi.toggle'); 
+            Route::post('/{id}/destroy', [GenerateCustomEndpointController::class, 'destroy'])->name('customApi.destroy');
+            Route::post('/store', [GenerateCustomEndpointController::class, 'store'])->name('customApi.store');
+
+        });
+
+        Route::prefix('/reference')->group(function(){
+            Route::get('/',[DocumentationController::class,'index']);
+            Route::get('/{page}', [DocumentationController::class, 'show'])->name('reference.page');
         });
 
         // Route::get('/setting', function () {
