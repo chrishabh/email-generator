@@ -151,7 +151,7 @@ class EmailController extends Controller
                 $email = $data['email'];
                 $id    = $data['id'];
                 if($stopValidationCheckbox=='0'){
-                    if($this->isValidEmail($email)){
+                    if($this->isValidEmail($email,false,$user_id,$fileId)){
                         $status= 'valid';
                     }else{
                         $status = 'invalid';
