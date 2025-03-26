@@ -9,7 +9,7 @@
                 'header'=> 'background:#0E866D;font-weight:bold',
                 'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
                 'features' => [
-                    'Free Email Check',
+                    'Free Single Email Check',
                     'Unlimited Email Credits',
                     'Unlimited Users',
                     'Free API Integration',
@@ -25,7 +25,7 @@
                 'header'=> 'background:#3F51B5;font-weight:bold',
                 'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
                 'features' => [
-                    'Bulk Email Check',
+                    'Free Bulk Email Check',
                     'Unlimited Email Credits',
                     'Unlimited Users',
                     'Free API Integration',
