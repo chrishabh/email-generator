@@ -402,7 +402,7 @@
                 'header'=> 'background:#0E866D;font-weight:bold',
                 'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
                 'features' => [
-                    'Free Email Check',
+                    'Free Single Email Check',
                     'Unlimited Email Credits',
                     'Unlimited Users',
                     'Free API Integration',
@@ -418,7 +418,7 @@
                 'header'=> 'background:#3F51B5;font-weight:bold',
                 'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
                 'features' => [
-                    'Bulk Email Check',
+                    'Free Bulk Email Check',
                     'Unlimited Email Credits',
                     'Unlimited Users',
                     'Free API Integration',
@@ -583,15 +583,16 @@
                                         <li class="included">{{ $feature }}</li>
                                     @endforeach 
                                 </ul>
+                                <a href='/signup' class="select-btn btn " style="box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);{{$plan['header']}}">Start Free</a>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
             <div class="section-header text-center"> 
-                <div class="header-button" style="margin-top:2rem;">
+                {{-- <div class="header-button" style="margin-top:2rem;">
                     <a rel="nofollow" href="/signup" class="btn btn-home-common">Sign up now and get 100 FREE Credits</a>
-                </div>
+                </div> --}}
                 <p class="checkbox-text">
                     <img decoding="async" src="assets/checkmark.png" width="15px" height="15px"> No monthly payment, no upfront fee, credits never expire. <br>
                 </p>
