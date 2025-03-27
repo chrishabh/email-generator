@@ -77,7 +77,7 @@
         <div class="credit-info">
             Credit Balance
                    
-            <div class="credit-info--tag {{ $creditClass }}"> 
+            <div class="credit-info--tag credit-color-100p"> 
                 {{$creditPoint}}  
                 {{-- <div class="buy-option">Buy More Credits</div> --}}
             </div>

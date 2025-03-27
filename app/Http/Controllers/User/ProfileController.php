@@ -16,15 +16,15 @@ class ProfileController extends Controller
 {
     //
     function getProfilePage(Request $request){
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+            // if(!empty($data)){
+            //     $creditPoint =$data->credits;
                 
-            }
+            // }
             $userData  = Auth::user();
         }
             
@@ -33,15 +33,15 @@ class ProfileController extends Controller
     }
 
     function getSettingPage(Request $request){
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+            // if(!empty($data)){
+            //     $creditPoint =$data->credits;
                 
-            }
+            // }
             $userData  = Auth::user();
         }
             
