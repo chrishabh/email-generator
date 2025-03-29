@@ -30,7 +30,7 @@
         <div class="row">
           <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
             <div class="contents">
-              <h2 class="head-title">Email Verification Tool<br>Effortless, Swift, & Precise</h2>
+              <h2 class="head-title">#1 Free Email Verification Tool<br>Effortless, Swift, & Precise</h2>
               <p style="color: black; text-align:center">Over 1 Million users trust bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
               Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
               @if(!auth()->check())
