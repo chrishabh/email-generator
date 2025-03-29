@@ -144,7 +144,7 @@ class EmailController extends Controller
             $isAbortAll              = false;
             $user_id                 = Auth::user()->id;
             // $userCredit              = UserCredits::getCreditPoint($user_id);
-            // $creditPoints            = ($userCredit) ? $userCredit->credits :0;
+             $creditPoints            = "Free";//($userCredit) ? $userCredit->credits :0;
             // if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
            
             if(!empty($data)){
