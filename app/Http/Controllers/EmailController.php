@@ -690,7 +690,7 @@ class EmailController extends Controller
             $arrayData =[
                 'email'   => $email,
                 'user_id' => Auth::user()->id,
-                'status'  => $status ? strtolower($status):NULL
+                'status'  => $status ? $status:NULL
             ];
             UserCredits::updateCreditsWhenEmailGetsVerify($arrayData['user_id'],1);
             $singleVerification = new singleVerification;
