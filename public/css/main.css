@@ -750,7 +750,7 @@ hr {
 
 .navbar-expand-md .navbar-nav .nav-link {
   color: #333;
-  font-weight: 400;
+  font-weight: bold;
   padding: 7px 0;
   cursor: pointer;
   position: relative;
