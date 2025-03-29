@@ -141,7 +141,7 @@
                             </p> -->
 
                             {{-- capcache --}}
-                            <div class="g-recaptcha {{$captchaFlag? 'hide-the-captcha':''}}" style="{{$captchaFlag? 'display:none;':''}}"  data-sitekey="6LcBr4sqAAAAAERuBfKv_udrAMh-ME8QyNabyRyp"></div>
+                            <div class="g-recaptcha {{$captchaFlag? 'hide-the-captcha':''}}" style="{{$captchaFlag? 'display:none;':''}}"  data-sitekey="6Lcb8IsqAAAAAHQ9XfZkgvgDPW7lOlOkFbGX27BG"></div>
                             <div class="vError" id="captchaError">
                                 @error('g-recaptcha-response')
                                     {{ $message }}

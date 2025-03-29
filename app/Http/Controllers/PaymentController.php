@@ -119,16 +119,16 @@ class PaymentController extends Controller
 
     public static function getPricing()
     {
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
-        if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+        // if(Auth::check()){ 
+        //     $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+        //     if(!empty($data)){
+        //         $creditPoint =$data->credits;
                 
-            }
-        }
+        //     }
+        // }
             
         $headerData['creditPoint'] = $creditPoint; 
         return view('verify.pricing')->with(compact('headerData'));
@@ -144,16 +144,16 @@ class PaymentController extends Controller
             $payment_data = [];
         }
 
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
-        if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+        // if(Auth::check()){ 
+        //     $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+        //     if(!empty($data)){
+        //         $creditPoint =$data->credits;
                 
-            }
-        }
+        //     }
+        // }
 
         $credit_points = [
             '5' => 2000,

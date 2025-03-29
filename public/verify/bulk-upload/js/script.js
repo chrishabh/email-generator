@@ -147,6 +147,15 @@ $(document).ready(function() {
         },
         labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
     });
+        // Set allowed file types
+    pond.setOptions({
+        acceptedFileTypes: [
+            'text/csv',
+            'text/plain',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel'
+        ]
+    });
     const value =parseInt(document.getElementById('creditPoint').innerText,10)
     if(value<=0) {
         pond.setOptions({

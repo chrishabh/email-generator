@@ -78,23 +78,29 @@
                                                 <div class="meta"><span class="txt-green"> {{ $value['total']}} Emails </span>- {{$value['created_at']}}</div>
                                             </div>
                                         </div>
-                                        <div class="info-line--right row col-md-6 col-offset-1 align-items-center ">
-                                            <div class="col-md-4 stat-col">
-                                                Valid Emails
-                                                <div class="text-green val">{{$value['totalValidEmail']}}</div>
-                                            </div>
-                                            <div class="col-md-5 stat-col">
-                                                Invalid Emails
-                                                <div class="text-red val">{{$value['totalInvalidEmail']}}</div>
- 
-                                            </div>
-                                            <div class="col-md-3 text-center">
-                                                <meta name="csrf-token" content="{{ csrf_token() }}">
-                                                <i class="fa-solid fa-download download-icon" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},this)"></i>
-                                            </div>
-            
-            
+                                      <div class="info-line--right row col-md-5 align-items-center ">
+                                            <div class="row row mx-0">
+                                                @foreach ($value['verifyStatusData'] as $k=>$v)
+                                                    @php
+                                                        $statusOfVer = $v['apiStatus'];
+                                                        $color='';
+                                                        if($statusOfVer =='deliverable') $color='#28A745';
+                                                        else if($statusOfVer =='undeliverable') $color='#DC3545';
+                                                        else if($statusOfVer =='unknown') $color='#FFC107';
+                                                        else if($statusOfVer =='accept all') $color='#6C757D';
+                                                    @endphp
+                                                    <div class="col-md-6 stat-col pb-3">
+                                                        <span class="text text-capitalize">{{$v['apiStatus']}}</span> 
+                                                        <div class=" val" style="color:{{$color}}">{{$v['total_count']}}</div>
+                                                    </div>
+                                                @endforeach 
+                                                
+                                            </div> 
                                         </div>
+                                        <div class="col-md-2 text-center">
+                                            <meta name="csrf-token" content="{{ csrf_token() }}">
+                                            <i class="fa-solid fa-download download-icon" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},this)"></i>
+                                        </div> 
                                     </div>    
                                 @endif
                                 @if ($value['verificationStatus']=='pending')
@@ -155,7 +161,7 @@
                     <br>
                     <div class="curent--aside">
                         <div class="upload-aside--widget">
-                            <h4 class="widget-title">UPLOAD Your file ( csv)</h4>
+                            <h4 class="widget-title">Upload Your File (CSV, TXT, XLSX, XLS)</h4>
                             <form action="javascript:void(0)" class="form-upload">
                                 {{-- <div class="filepond--root uploader filepond--hopper">
                                     <input class="filepond--browser" type="file" id="filepond--browser-kxvrqlbna"

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class EmailController extends Controller
 {
@@ -142,15 +143,15 @@ class EmailController extends Controller
             $status                  = null;
             $isAbortAll              = false;
             $user_id                 = Auth::user()->id;
-            $userCredit              = UserCredits::getCreditPoint($user_id);
-            $creditPoints            = ($userCredit) ? $userCredit->credits :0;
-            if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+            // $userCredit              = UserCredits::getCreditPoint($user_id);
+            // $creditPoints            = ($userCredit) ? $userCredit->credits :0;
+            // if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
            
             if(!empty($data)){
                 $email = $data['email'];
                 $id    = $data['id'];
                 if($stopValidationCheckbox=='0'){
-                    if($this->isValidEmail($email)){
+                    if($this->isValidEmail($email,false,$user_id,$fileId)){
                         $status= 'valid';
                     }else{
                         $status = 'invalid';
@@ -158,7 +159,7 @@ class EmailController extends Controller
                     UserCredits::updateCreditsWhenEmailGetsVerify($user_id,1);
                 }
                 if ($stopValidationCheckbox=='1'){
-                    if($this->isValidEmail($email)){ 
+                    if($this->isValidEmail($email,false,$user_id,$fileId)){ 
                         $status = 'valid';
                    }else{
                         $status = 'invalid';
@@ -325,15 +326,15 @@ class EmailController extends Controller
     }
 
     function bulkPage(Request $request){
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
         $fileData   = array();
         if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
-            if($data){
-                $creditPoint =$data->credits;
+            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            // if($data){
+            //     $creditPoint =$data->credits;
                 
-            }
+            // }
             // $data = BulkUploadEmailFileData::getBulkData(Auth::user()->id);
             $userid= Auth::user()->id;
 
@@ -367,9 +368,9 @@ class EmailController extends Controller
             foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     // pp($countOfValidAndInvalidEmails);
-                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails); 
-                    $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
-                    $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
+                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails)->sum('total_count');
+                    // $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
+                    // $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
                     $fileNameWithExtension         =  basename($value->fileName); 
                     $fileName                      =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
                     $parts                         =  explode('_', $fileName);  
@@ -378,9 +379,9 @@ class EmailController extends Controller
                     $fileName                      =  $fileName.'...'.$fileExtension;
                     $dataArr['fileName']           =  $fileName;
                     $dataArr['created_at']         =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
-                    $dataArr['totalValidEmail']    =  $validEmailCount; 
-                    $dataArr['totalInvalidEmail']  =  $invalidEmailCount;
-                    $dataArr['total']              =  !empty($countOfValidAndInvalidEmails)?((empty($countOfValidAndInvalidEmails[0]['status']))?$countOfValidAndInvalidEmails[0]['total_count'] : $validEmailCount +$invalidEmailCount):0; 
+                    // $dataArr['totalValidEmail']    =  $validEmailCount; 
+                    $dataArr['verifyStatusData']   =  $countOfValidAndInvalidEmails;
+                    $dataArr['total']              =  $collectionOfCount??0; 
                     $dataArr['verificationStatus'] =  $value->verificationStatus; 
                     $dataArr['userId']             =  $value->user_id; 
                     $dataArr['fileId']             =  $value->id; 
@@ -394,41 +395,61 @@ class EmailController extends Controller
         try { 
 
             $request->validate([
-                'filepond' => 'required|file|mimes:csv,txt',
+                'filepond' => 'required|file|mimes:csv,txt,xlsx,xls',
             ]);
              
             $file         = $request->file('filepond');
-            $rowCount     = 0;  
+            $extension    = $file->getClientOriginalExtension();
+            $rowCount     = 0;
             $uniqueEmails = [];
-
-            if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
-                $header = fgetcsv($handle); // Try to read the first line (header)
-                if ($header === false) {
-                    $response = response()->json(['error' => 'The file is not a valid CSV file.']);
-                    $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
-                    return $response;
+            if (in_array($extension, ['csv', 'txt'])) {
+                if (($handle = fopen($file->getRealPath(), 'r')) !== false) {
+                    $header = fgetcsv($handle); // Try to read the first line (header)
+                    if ($header === false) {
+                        $response = response()->json(['error' => 'Invalid CSV/TXT file format.']);
+                        $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+                        return $response;
+                    } 
+                    while (($row = fgetcsv($handle)) !== FALSE) {
+                        $rowCount++;
+                        // Ensure the row is not empty and contains at least one column
+                        if (isset($row[0])) {
+                            $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
+                            // Add only valid and unique emails to the array
+                            if (filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email, $uniqueEmails)) {
+                                $uniqueEmails[] = $email;
+                            }
+                        }
+                    }
+                    fclose($handle);
                 } 
-                while (($row = fgetcsv($handle)) !== FALSE) {
-                    $rowCount++;
-                    // Ensure the row is not empty and contains at least one column
-                    if (isset($row[0])) {
-                        $email = mb_convert_encoding($row[0], 'UTF-8', 'auto');
-                        // Add only valid and unique emails to the array
+            }elseif (in_array($extension, ['xlsx', 'xls'])) {
+                $spreadsheet = IOFactory::load($file->getRealPath());
+                $sheet       = $spreadsheet->getActiveSheet();
+                foreach ($sheet->getRowIterator() as $row) {
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(false);
+                    foreach ($cellIterator as $cell) {
+                        $email = trim($cell->getValue());
                         if (filter_var($email, FILTER_VALIDATE_EMAIL) && !in_array($email, $uniqueEmails)) {
                             $uniqueEmails[] = $email;
                         }
                     }
                 }
-                fclose($handle);
-            } 
-
-            $userCredit = UserCredits::getCreditPoint(Auth::user()->id);
-            $creditPoints = ($userCredit) ? $userCredit->credits :0;
-            if (count($uniqueEmails) > $creditPoints){
-                $response = response()->json(['error' => 'You should not have enough credit score to validate the email.']);
+            }
+            if (empty($uniqueEmails)) {
+                $response = response()->json(['error' => 'No valid emails found in the file.']);
                 $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
                 return $response;
             }
+
+            // $userCredit = UserCredits::getCreditPoint(Auth::user()->id);
+            // $creditPoints = ($userCredit) ? $userCredit->credits :0;
+            // if (count($uniqueEmails) > $creditPoints){
+            //     $response = response()->json(['error' => 'You should not have enough credit score to validate the email.']);
+            //     $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+            //     return $response;
+            // }
 
             $handle            = fopen($file->getRealPath(), 'r');
             $currentDate       = Carbon::now()->format('Y-m-d');
@@ -486,16 +507,16 @@ class EmailController extends Controller
     }
 
     function singleEmailPage(Request $request){
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
-            $data                 = UserCredits::getCreditPoint($userId); 
+            // $data                 = UserCredits::getCreditPoint($userId); 
             $oldVerificationData  = singleVerification::where('user_id', $userId)->orderBy('id', 'desc')->get()->toArray();
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+            // if(!empty($data)){
+            //     $creditPoint =$data->credits;
                 
-            }
+            // }
         }
             
         $headerData['creditPoint']         = $creditPoint; 
@@ -505,16 +526,16 @@ class EmailController extends Controller
 
 
     function leadFinder(Request $request){
-        $creditPoint =0;
+        $creditPoint ='Free';
         $headerData = array(); 
-        if(Auth::check()){ 
-            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+        // if(Auth::check()){ 
+        //     $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            if(!empty($data)){
-                $creditPoint =$data->credits;
+        //     if(!empty($data)){
+        //         $creditPoint =$data->credits;
                 
-            }
-        }
+        //     }
+        // }
             
         $headerData['creditPoint'] = $creditPoint; 
         return view('verify.leadFindler')->with(compact('headerData'));   
@@ -555,10 +576,10 @@ class EmailController extends Controller
             return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
         }
         $userId       = Auth::user()->id;
-        $totalEmails  = BulkUploadEmailFileData::getCountOfEmails($request['fileId'],$userId);
-        $userCredit   = UserCredits::getCreditPoint($userId);
-        $creditPoints = ($userCredit) ? $userCredit->credits :0;
-        if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+        // $totalEmails  = BulkUploadEmailFileData::getCountOfEmails($request['fileId'],$userId);
+        // $userCredit   = UserCredits::getCreditPoint($userId);
+        // $creditPoints = ($userCredit) ? $userCredit->credits :0;
+        // if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
         VerifyEmailsJob::dispatch($request['fileId'],$userId);
         return response()->json(['sucess'=>true,'status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],$userId)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 

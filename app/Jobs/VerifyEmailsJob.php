@@ -4,8 +4,10 @@ namespace App\Jobs;
 
 use App\Http\Controllers\EmailController;
 use App\Mail\JobFailedNotification;
+use App\Mail\VerificationJobCompletedMail;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\uploadedAndDownloadFileName;
+use App\Models\User;
 use App\Models\UserCredits;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -48,6 +50,11 @@ class VerifyEmailsJob implements ShouldQueue
         if ($this->job) {
             $this->jobUuid = $this->getJobUuid();  
         } 
+       
+        $user = User::find($this->userId);
+        if (!$user) {
+            return;
+        }
 
         if($this->jobUuid) {
             uploadedAndDownloadFileName::where('id', $this->fileId)->update(['job_id' => $this->jobUuid]);
@@ -68,7 +75,8 @@ class VerifyEmailsJob implements ShouldQueue
             $count         = 0;
             $counter       = 1;
             $isUpdateData  = false;
-            // pp($data);
+            $fileName      = $data[0]->fileName; 
+
             foreach($data as $key=>$value){
                 $dataArray = [];
                 $status    = EmailController::isValidEmail($value->email,true, $user_id,$this->fileId);
@@ -101,7 +109,9 @@ class VerifyEmailsJob implements ShouldQueue
                 uploadedAndDownloadFileName::updateData(['verificationStatus'=>'verified'],$value->id);
                 $this->deductCreditPoint($user_id,$count);
             }
-            
+            $user     = User::find($this->userId);
+            $verified = uploadedAndDownloadFileName::getStatus($this->fileId,$user_id);
+            Mail::to($user->email)->send(new VerificationJobCompletedMail($user->name, $fileName, $count, $verified->verificationStatus)); 
         }
     }
 
