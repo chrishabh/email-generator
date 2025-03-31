@@ -518,7 +518,7 @@ class EmailController extends Controller
                 
             // }
         }
-            
+        //    pp( $oldVerificationData ); 
         $headerData['creditPoint']         = $creditPoint; 
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
