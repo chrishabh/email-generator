@@ -67,7 +67,7 @@
                                 @endphp
                                 @if (!empty($data))
                                     @php 
-                                        $status = $data['status'];
+                                        $status = strtolower($data['status']);
                                         $email  = $data['email']; 
                                         $color  = '';
                                         if($status =='deliverable') {$color='#28A745';}
@@ -110,7 +110,7 @@
                                     <h3 class="right-card-head">Single Verification History</h3>
                                     @foreach ($headerData['oldVerificationData'] as $data)
                                         @php
-                                            $status = $data['status'];
+                                            $status = strtolower($data['status']);
                                             $email = $data['email'];
                                             $color  = ''; 
                                             if($status =='deliverable') {$color='#28A745';}
