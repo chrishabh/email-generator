@@ -73,8 +73,8 @@
                                         $color  = '';
                                         if($statusChk =='deliverable') {$color='#28A745';}
                                         else if($statusChk =='undeliverable') $color='#DC3545';
-                                        else if($statusChk =='unknown') $color='#FFC107';
-                                        else if($statusChk =='accept all') $color='#FFA500';
+                                        else if($statusChk =='unknown') $color='#FFA500';
+                                        else if($statusChk =='accept all') $color='#FFC107';
                                     @endphp
                                     <div class="correct-email" style="border: 2px solid {{$color}}">
                                         <div class="col-md-8"> 
@@ -117,8 +117,8 @@
                                             $color  = ''; 
                                             if($statusChk =='deliverable') {$color='#28A745';}
                                             else if($statusChk =='undeliverable') $color='#DC3545';
-                                            else if($statusChk =='unknown') $color='#FFC107';
-                                            else if($statusChk =='accept all') $color='#FFA500';
+                                            else if($statusChk =='unknown') $color='#FFA500';
+                                            else if($statusChk =='accept all') $color='#FFC107';
                                         @endphp
                                         <style>
                                             .correct-email .fa-light::before{
