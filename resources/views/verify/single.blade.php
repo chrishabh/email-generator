@@ -67,13 +67,14 @@
                                 @endphp
                                 @if (!empty($data))
                                     @php 
-                                        $status = strtolower($data['status']);
+                                        $status    = $data['status'];
+                                        $statusChk = strtolower($data['status']);
                                         $email  = $data['email']; 
                                         $color  = '';
-                                        if($status =='deliverable') {$color='#28A745';}
-                                        else if($status =='undeliverable') $color='#DC3545';
-                                        else if($status =='unknown') $color='#FFC107';
-                                        else if($status =='accept all') $color='#6C757D';
+                                        if($statusChk =='deliverable') {$color='#28A745';}
+                                        else if($statusChk =='undeliverable') $color='#DC3545';
+                                        else if($statusChk =='unknown') $color='#FFC107';
+                                        else if($statusChk =='accept all') $color='#FFA500';
                                     @endphp
                                     <div class="correct-email" style="border: 2px solid {{$color}}">
                                         <div class="col-md-8"> 
@@ -110,13 +111,14 @@
                                     <h3 class="right-card-head">Single Verification History</h3>
                                     @foreach ($headerData['oldVerificationData'] as $data)
                                         @php
-                                            $status = strtolower($data['status']);
+                                             $status    = $data['status'];
+                                             $statusChk = strtolower($data['status']);
                                             $email = $data['email'];
                                             $color  = ''; 
-                                            if($status =='deliverable') {$color='#28A745';}
-                                            else if($status =='undeliverable') $color='#DC3545';
-                                            else if($status =='unknown') $color='#FFC107';
-                                            else if($status =='accept all') $color='#6C757D';
+                                            if($statusChk =='deliverable') {$color='#28A745';}
+                                            else if($statusChk =='undeliverable') $color='#DC3545';
+                                            else if($statusChk =='unknown') $color='#FFC107';
+                                            else if($statusChk =='accept all') $color='#FFA500';
                                         @endphp
                                         <style>
                                             .correct-email .fa-light::before{
