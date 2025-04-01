@@ -70,7 +70,6 @@
                                         $status = $data['status'];
                                         $email  = $data['email']; 
                                         $color  = '';
-                                        pp($status);
                                         if($status =='deliverable') {$color='#28A745';}
                                         else if($status =='undeliverable') $color='#DC3545';
                                         else if($status =='unknown') $color='#FFC107';
