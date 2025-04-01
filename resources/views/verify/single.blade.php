@@ -81,7 +81,7 @@
                                             <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
                                         </div>
                                         <div class="col-md-3 col-offset-1 px-0"> 
-                                            <div class="status--div" style="background-color: {{$status}}">{{ $status }}</div>
+                                            <div class="status--div" style="background-color: {{$color}}">{{ $status }}</div>
                                         </div> 
                                     </div>  
                                     @else
