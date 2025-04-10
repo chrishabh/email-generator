@@ -750,7 +750,8 @@ hr {
 
 .navbar-expand-md .navbar-nav .nav-link {
   color: #333;
-  font-weight: 400;
+  font-weight: bold;
+  font-size: 16px;
   padding: 7px 0;
   cursor: pointer;
   position: relative;
@@ -939,6 +940,7 @@ hr {
 
 #hero-area .contents .header-button .btn {
   margin-right: 10px;
+  font-size: 16px;
 }
 
 .sloder-img {

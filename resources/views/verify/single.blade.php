@@ -67,15 +67,21 @@
                                 @endphp
                                 @if (!empty($data))
                                     @php 
-                                        $status = $data['status'];
-                                        $email  = $data['email'];
+                                        $status    = $data['status'];
+                                        $statusChk = strtolower($data['status']);
+                                        $email  = $data['email']; 
+                                        $color  = '';
+                                        if($statusChk =='deliverable') {$color='#28A745';}
+                                        else if($statusChk =='undeliverable') $color='#DC3545';
+                                        else if($statusChk =='unknown') $color='#FFA500';
+                                        else if($statusChk =='accept all') $color='#FFC107';
                                     @endphp
-                                    <div class="correct-email {{$status=='deliverable'?'valid-email':'invalid-email'}}">
+                                    <div class="correct-email" style="border: 2px solid {{$color}}">
                                         <div class="col-md-8"> 
                                             <h2> <i class="fa-light fa-check"></i>  {{ $email }}</h2>
                                         </div>
                                         <div class="col-md-3 col-offset-1 px-0"> 
-                                            <div class="status--div  {{$status=='deliverable' ? 'bg-success-valid' :'bg-danger-valid'}}">{{ $status }}</div>
+                                            <div class="status--div" style="background-color: {{$color}}">{{ $status }}</div>
                                         </div> 
                                     </div>  
                                     @else
@@ -105,17 +111,27 @@
                                     <h3 class="right-card-head">Single Verification History</h3>
                                     @foreach ($headerData['oldVerificationData'] as $data)
                                         @php
-                                            $status = $data['status'];
+                                             $status    = $data['status'];
+                                             $statusChk = strtolower($data['status']);
                                             $email = $data['email'];
+                                            $color  = ''; 
+                                            if($statusChk =='deliverable') {$color='#28A745';}
+                                            else if($statusChk =='undeliverable') $color='#DC3545';
+                                            else if($statusChk =='unknown') $color='#FFA500';
+                                            else if($statusChk =='accept all') $color='#FFC107';
                                         @endphp
-                                        <div
-                                            class="correct-email {{ $status != null && $status == 'deliverable' ? 'valid-email' : 'invalid-email' }}">
+                                        <style>
+                                            .correct-email .fa-light::before{
+                                                font-size: 14px;
+                                            }
+                                        </style>
+                                        <div class="correct-email" style="font-size:14px;color:{{$color}};border: 2px solid {{$color}}">
                                             <div class="col-md-8">
-                                                <h2> <i class="fa-light fa-check"></i> {{ $email }}</h2>
+                                                <h2 style="color:{{$color}}"> <i class="fa-light fa-check" style="color:{{$color}}"></i> {{ $email }}</h2>
                                             </div>
                                             <div class="col-md-3 col-offset-1 px-0">
                                                 <div
-                                                    class="status--div  {{ $status != null && $status == 'deliverable' ? 'bg-success-valid' : 'bg-danger-valid' }}">
+                                                    class="status--div"  style="background-color: {{$color}}">
                                                     {{ $status }}</div>
                                             </div>
                                         </div>

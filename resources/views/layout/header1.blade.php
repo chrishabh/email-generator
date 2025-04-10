@@ -51,14 +51,15 @@
     }
 
 
-    $creditClass ='credit-color-50L';
-    $creditPoint=0;
-    if (isset($headerData)){
-        $creditPoint = $headerData['creditPoint'];
-        if($creditPoint>=100)  $creditClass ='credit-color-100p';  
-        else if($creditPoint<50) $creditClass ='credit-color-50L'; 
-        else $creditClass = 'credit-color-100M'; 
-    }  
+    $creditClass ='credit-color-100p';
+    $creditPoint = $headerData['creditPoint'];
+    // $creditPoint=0;
+    // if (isset($headerData)){
+    //     $creditPoint = $headerData['creditPoint'];
+    //     if($creditPoint>=100)  $creditClass ='credit-color-100p';  
+    //     else if($creditPoint<50) $creditClass ='credit-color-50L'; 
+    //     else $creditClass = 'credit-color-100M'; 
+    // }  
     @endphp
     <!-- Header Area wrapper Starts -->
     <div id="mobileMenu" class="mobile-menu">

@@ -144,7 +144,7 @@ class EmailController extends Controller
             $isAbortAll              = false;
             $user_id                 = Auth::user()->id;
             // $userCredit              = UserCredits::getCreditPoint($user_id);
-            // $creditPoints            = ($userCredit) ? $userCredit->credits :0;
+             $creditPoints            = "Free";//($userCredit) ? $userCredit->credits :0;
             // if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
            
             if(!empty($data)){
@@ -307,9 +307,9 @@ class EmailController extends Controller
                 ];
                 EmailVerificationLog::addLog($log);
                 if($get_response){
-                    return $data['status']??'invalid';
+                    return $data['status']??'Unknown';
                 }
-                return isset($data['status']) && $data['status'] === 'deliverable'; 
+                return isset($data['status']) && $data['status'] === 'Deliverable'; 
 
         }else{
             $log = [
@@ -518,7 +518,7 @@ class EmailController extends Controller
                 
             // }
         }
-            
+        //    pp( $oldVerificationData ); 
         $headerData['creditPoint']         = $creditPoint; 
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
@@ -690,7 +690,7 @@ class EmailController extends Controller
             $arrayData =[
                 'email'   => $email,
                 'user_id' => Auth::user()->id,
-                'status'  => $status ? strtolower($status):NULL
+                'status'  => $status ? $status:NULL
             ];
             UserCredits::updateCreditsWhenEmailGetsVerify($arrayData['user_id'],1);
             $singleVerification = new singleVerification;
