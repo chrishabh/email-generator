@@ -7,14 +7,18 @@ class DocumentationController extends Controller
 {
 
     private $pages = [
-        'overview'               => ['title' => 'Bouncee API Documentation', 'view' => 'docx.index'],
-        'authentication'         => ['title' => 'Authentication', 'view' => 'docx.authentication'],
-        'request-url-format'     => ['title' => 'Request - URL Formats', 'view' => 'docx.request-url-format'],
-        'responses'              => ['title' => 'Responses', 'view' => 'docx.responses'],
-        'rate-limiting'          => ['title' => 'Rate Limiting', 'view' => 'docx.rate-limiting'],
-        'http-status-codes'      => ['title' => 'HTTP Status Codes', 'view' => 'docx.http-status-codes'],
-        'single-validation-api'  => ['title' => 'Single Validation API', 'view' => 'docx.single-validation-api'],
-        'get-credit-balance'     => ['title' => 'Get credit balance', 'view' => 'docx.get-credit-balance']
+        'overview'                                   => ['title' => 'Bouncee API Documentation', 'view' => 'docx.index'],
+        'authentication'                             => ['title' => 'Authentication', 'view' => 'docx.authentication'],
+        'request-url-format'                         => ['title' => 'Request - URL Formats', 'view' => 'docx.request-url-format'],
+        'responses'                                  => ['title' => 'Responses', 'view' => 'docx.responses'],
+        'rate-limiting'                              => ['title' => 'Rate Limiting', 'view' => 'docx.rate-limiting'],
+        'http-status-codes'                          => ['title' => 'HTTP Status Codes', 'view' => 'docx.http-status-codes'],
+        'single-validation-api'                      => ['title' => 'Single Validation API', 'view' => 'docx.single-validation-api'],
+        'bulk-email-list'                            => ['title' => 'Upload a bulk email list', 'view' => 'docx.bulk-email-list'],
+        'start-verifying-bulk-email-list'            => ['title' => 'Start verifying bulk email list', 'view' => 'docx.start-verifying-bulk-email-list'],
+        'check-job-status-of-a-bulk-email-list'     => ['title' => 'Check job status of a bulk email list', 'view' => 'docx.check-job-status-of-a-bulk-email-list'],
+        'download-the-result-of-bulk-email-list'     => ['title' => 'Download the result of bulk email list', 'view' => 'docx.download-the-result-of-bulk-email-list'],
+        'delete-a-bulk-email-list'                  => ['title' => 'Delete a bulk email list', 'view' => 'docx.delete-a-bulk-email-list']
     ];
 
     public function index(){

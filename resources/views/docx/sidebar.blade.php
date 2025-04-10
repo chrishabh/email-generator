@@ -1,7 +1,7 @@
 <div class="flex min-h-screen">
     <!-- Sidebar -->
     <aside class="w-64 border-r border-gray-200 bg-white fixed h-full overflow-y-auto">
-        <div class="p-6">
+        <div class="p-6 pb-12">
             <div class="flex items-center mb-8">
                 <a href="/" class="text-2xl font-bold text-laravel-red">Docs</a>
             </div>
@@ -35,7 +35,17 @@
                         'items' => [
                             ['title' => 'Get credit balance', 'href' => 'get-credit-balance'],
                         ]
-                    ]
+                    ],
+                    [
+                        'title' => 'BULK VALIDATION',
+                        'items' => [
+                            ['title' => 'Upload a bulk email list', 'href' => 'bulk-email-list'],
+                            ['title' => 'Start verifying bulk email list', 'href' => 'start-verifying-bulk-email-list'],
+                            ['title' => 'Check job status of a bulk email list', 'href' => 'check-job-status-of-a-bulk-email-list'], 
+                            ['title' => 'Download the result of bulk email list', 'href' => 'download-the-result-of-bulk-email-list'],
+                            ['title' => 'Delete a bulk email list', 'href' => 'delete-a-bulk-email-list'],
+                        ]
+                    ],
                 ];
                 use Illuminate\Support\Str;
                 $currentPath = request()->path();

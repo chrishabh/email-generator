@@ -83,7 +83,7 @@ try{
 
         });
 
-        Route::prefix('Api')->group(function(){
+        Route::prefix('customRoute')->group(function(){
             Route::get('/', [GenerateCustomEndpointController::class,'renderApiGenerateKeyPage']); 
             Route::get('/api-keys', [GenerateCustomEndpointController::class, 'index']);
             Route::post('{id}/regenerate', [GenerateCustomEndpointController::class,'regenerate'])->name('customApi.regenerate');  
