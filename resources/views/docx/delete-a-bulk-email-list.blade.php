@@ -20,7 +20,7 @@
 
         
     <x-warning-text-component 
-    text="<strong>Deleting a list is irreversible.<strong><br>
+    text="<strong>Deleting a list is irreversible.</strong><br>
 Once removed, both the uploaded data and its results are permanently erased. To revalidate, the list must be uploaded and processed again.
 "
 />
@@ -187,6 +187,8 @@ Once removed, both the uploaded data and its results are permanently erased. To 
     <x-back-next-button-component   
     prevUrl="{{ route('reference.page', ['page' => 'bulk-email-list']) }}" 
     prevPageName="Upload a bulk email list"
+    nextPageName="" 
+    nextUrl="" 
     />
     </div>
 @endsection

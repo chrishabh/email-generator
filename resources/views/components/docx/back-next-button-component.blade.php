@@ -3,7 +3,7 @@
          ← {{$prevPageName}}
     </a>
     <a href="{{$nextUrl}}" class=" text-gray-600  hover:undeline hover:text-[orange]">
-        {{$nextPageName}} →
+        {{$nextPageName}} @if(!empty($nextPageName))→ @endif
          
     </a>
 </div>
