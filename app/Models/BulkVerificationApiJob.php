@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Jobs\PublicBulkApiCsvData;
+use App\Jobs\PublicBulkVerificationJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +51,7 @@ class BulkVerificationApiJob extends Model
         // Save the job to the database
         $file_data = BulkVerificationApiJob::create($csvData);
        
+        PublicBulkApiCsvData::dispatch($file_data->id,$userId);
 
         return [
             'success' => true,
@@ -57,4 +60,38 @@ class BulkVerificationApiJob extends Model
         ];
     }
 
+    public static function getFilePath($fileId, $userId)
+    {
+        return BulkVerificationApiJob::where('id', $fileId)->where('user_id',$userId)->where('status','new')->first()->file_path;
+       
+    }
+
+    public static function startVerification($request)
+    {
+        $file = BulkVerificationApiJob::where('job_id', $request->job_id)->where('user_id',$request->api_key_data->user_id)->where('status','new')->first();
+
+        if(!empty($file)){
+            PublicBulkVerificationJob::dispatch($file->id,$request->api_key_data->user_id);
+            return [
+                'success' => true,
+                'message' => 'Job verification will be attempted shortly. Call /status endpoint to know the status of the Job.',
+                'job_id' => $file->job_id,
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Job not found or already in progress.',
+            'job_id' => null,
+        ];
+    }
+
+    public static function updateJobStatus($jobId, $status)
+    {
+        $job = BulkVerificationApiJob::where('id', $jobId)->first();
+        if ($job) {
+            $job->status = $status;
+            $job->save();
+        }
+    }
 }

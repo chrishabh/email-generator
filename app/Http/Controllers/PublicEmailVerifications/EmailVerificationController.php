@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PublicEmailVerifications;
  
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmailController;
+use App\Http\Requests\PublicBulkStartVerificationFormRequest;
 use App\Http\Requests\PublicBulkUploadFormRequest;
 use App\Models\BulkVerificationApiJob;
 use App\Models\User;
@@ -53,4 +54,8 @@ class EmailVerificationController extends Controller
         return response()->json(BulkVerificationApiJob::uploadfile($request), 200);
     }
    
+    public function startBulkVerify(PublicBulkStartVerificationFormRequest $request)
+    {
+        return response()->json(BulkVerificationApiJob::startVerification($request), 200);
+    }
 }
