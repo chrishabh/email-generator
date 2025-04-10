@@ -4,6 +4,8 @@ namespace App\Http\Controllers\PublicEmailVerifications;
  
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmailController;
+use App\Http\Requests\PublicBulkUploadFormRequest;
+use App\Models\BulkVerificationApiJob;
 use App\Models\User;
 use App\Models\UserCredits;
 use Illuminate\Http\Request;
@@ -45,4 +47,10 @@ class EmailVerificationController extends Controller
         ],200);
         
     }
+
+    public function bulkVerify(PublicBulkUploadFormRequest $request)
+    {
+        return response()->json(BulkVerificationApiJob::uploadfile($request), 200);
+    }
+   
 }

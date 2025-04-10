@@ -32,9 +32,8 @@ Route::middleware(['verify.apikey.credits'])->get('/v1/verify', [EmailVerificati
 
 Route::group(['middleware' => ['public.auth']], function (){
     Route::get('/v1/creditInfo',[EmailVerificationController::class, 'creditInfo'])->name('creditInfo'); 
-    Route::group(['prefix' => 'v1/bulk'], function () {
-        Route::post('/{jobId?}', [EmailVerificationController::class, 'checkJobStatus'])->name('checkJobStatus'); 
-    });
+    Route::post('v1/bulk', [EmailVerificationController::class, 'checkJobStatus'])->name('bulkVerify'); 
+    Route::post('v1/bulk/{jobId?}', [EmailVerificationController::class, 'checkJobStatus'])->name('checkJobStatus'); 
 });
 
 Route::fallback(function (Request $request) {
