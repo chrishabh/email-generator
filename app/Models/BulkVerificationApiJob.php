@@ -56,4 +56,5 @@ class BulkVerificationApiJob extends Model
             'job_id' => $jobId,
         ];
     }
+
 }

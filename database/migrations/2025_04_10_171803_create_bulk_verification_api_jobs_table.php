@@ -22,7 +22,7 @@ class CreateBulkVerificationApiJobsTable extends Migration
             $table->string('file_name',500);
             $table->string('download_file_path',500)->nullable();
             $table->string('download_file_name',500)->nullable();
-            $table->enum('status', ['new', 'in-progress','completed','deleted']);
+            $table->enum('status', ['new','preparing', 'verifying','completed','deleted','failed','cancelled']);
 
             $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
