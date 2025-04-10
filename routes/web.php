@@ -26,9 +26,9 @@ try{
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 
-        Route::get('/', function () {
-            return view('index');
-        });
+        // Route::get('/', function () {
+        //     return view('index');
+        // });
       
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
@@ -83,7 +83,7 @@ try{
 
         });
 
-        Route::prefix('customRoute')->group(function(){
+        Route::prefix('Api')->group(function(){
             Route::get('/', [GenerateCustomEndpointController::class,'renderApiGenerateKeyPage']); 
             Route::get('/api-keys', [GenerateCustomEndpointController::class, 'index']);
             Route::post('{id}/regenerate', [GenerateCustomEndpointController::class,'regenerate'])->name('customApi.regenerate');  

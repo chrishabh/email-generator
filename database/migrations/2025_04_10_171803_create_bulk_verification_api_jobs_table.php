@@ -16,7 +16,7 @@ class CreateBulkVerificationApiJobsTable extends Migration
         Schema::create('bulk_verification_api_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('job_id',50)->unique();
-            $table->unsignedBigInteger('user_id',20);
+            $table->unsignedBigInteger('user_id');
             $table->string('api_key',50);
             $table->string('file_path',500);
             $table->string('file_name',500);

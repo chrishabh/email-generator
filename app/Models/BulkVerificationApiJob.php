@@ -7,11 +7,13 @@ use App\Jobs\PublicBulkVerificationJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class BulkVerificationApiJob extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
 
     public static function uploadfile($request)
