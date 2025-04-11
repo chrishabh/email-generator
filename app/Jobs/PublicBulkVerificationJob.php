@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Excel;
 
 class PublicBulkVerificationJob implements ShouldQueue
@@ -81,8 +82,8 @@ class PublicBulkVerificationJob implements ShouldQueue
         $apiUrl = envparam('BOUNCEE_API_URL_PUBLIC_BULK_VERIFICATION');
         $apiKey = envparam('BOUNCEE_API_KEY');
         $response = Http::withHeaders([
-                'X-API-KEY' => $apiKey,
-                'Accept' => 'application/json',
+            'X-API-KEY' => $apiKey,
+            'Accept' => 'application/json',
         ])->get("$apiUrl=$email");
         
         // Extract response body and HTTP status code
