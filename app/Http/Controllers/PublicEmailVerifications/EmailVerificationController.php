@@ -259,4 +259,80 @@ class EmailVerificationController extends Controller
             BulkVerificationApiData::createData($insert_data);
         }
     }
+
+    public function downloadJob(Request $request)
+    {
+        $jobId = $request->query('jobId');
+        $apiKey = $request->query('apiKey');  
+        if (empty($jobId) || empty($apiKey)) {
+            return response()->json([
+                'result' => 'Invalid API Key or jobId',
+                'success' => false
+            ],400);
+        }
+
+        $job = BulkVerificationApiJob::where('job_id', $jobId)->first(); 
+        if (!$job) {
+            return response()->json([
+                'result' => 'Job not found. Invalid jobId',
+                'success' => false
+            ],400);
+        }
+
+        if ($job->api_key !== $apiKey) {
+            return response()->json([
+                'result' => 'Invalid API Key',
+                'success' => false
+            ],401);
+        }
+
+        switch ($job->status) {
+            case 'verifying':
+                return response()->json([
+                    'result' => 'Job is being verified, please wait until it completes.',
+                    'success' => false
+                ],400);
+
+            case 'new':
+                return response()->json([
+                    'result' => 'Job is ready for verification, please start verification and download your results once list verified.',
+                    'success' => false
+                ],400);
+
+            case 'preparing':
+                return response()->json([
+                    'result' => 'Job is being prepared for verification, please start verifying and then download you result.',
+                    'success' => false
+                ],400);
+
+            case 'failed':
+            case 'cancelled':
+                return response()->json([
+                    'result' => 'List cannot be downloaded, The uploaded list contains invalid data.',
+                    'success' => false
+                ],400);
+        }
+
+        if ($job->status !== 'completed' || empty($job->download_file_path)) {
+            return response()->json([
+                'result' => 'DOWNLOAD-RESTRICTED',
+                'success' => false
+            ],400);
+        }
+ 
+        if ($job->download_file_path) {
+            $filePath = storage_path('app/'.$job->download_file_path); 
+            if (!file_exists($filePath)) {
+                return response()->json([
+                    'result' => 'Download file not found',
+                    'success' => false
+                ],404);
+            }   
+        }
+ 
+        return response()->download(
+            storage_path('app/' . $job->download_file_path),
+            $job->download_file_name ?? basename($job->download_file_path)
+        );
+    }
 }

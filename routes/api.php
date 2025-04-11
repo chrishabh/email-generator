@@ -36,6 +36,8 @@ Route::group(['middleware' => ['public.auth']], function (){
     Route::post('v1/bulk/start-verification', [EmailVerificationController::class, 'startBulkVerify'])->name('startBulkVerify'); 
     Route::get('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'chkJob']);
     Route::delete('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'deleteJob'])->name('deleteJob');
+    Route::get('/v1/download', [EmailVerificationController::class, 'downloadJob'])->name('downloadJob');
+
 });
 
 Route::post('test', [EmailVerificationController::class, 'testcode'])->name('testcode'); 
