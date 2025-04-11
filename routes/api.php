@@ -33,7 +33,7 @@ Route::middleware(['verify.apikey.credits'])->get('/v1/verify', [EmailVerificati
 Route::group(['middleware' => ['public.auth']], function (){
     Route::get('/v1/creditInfo',[EmailVerificationController::class, 'creditInfo'])->name('creditInfo'); 
     Route::post('v1/bulk', [EmailVerificationController::class, 'bulkVerify'])->name('bulkVerify');
-    Route::post('v1/bulk/start-verification/', [EmailVerificationController::class, 'bulkVerify'])->name('bulkVerify'); 
+    Route::post('v1/bulk/start-verification', [EmailVerificationController::class, 'startBulkVerify'])->name('startBulkVerify'); 
     Route::get('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'chkJob']);
     Route::delete('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'deleteJob'])->name('deleteJob');
 });
