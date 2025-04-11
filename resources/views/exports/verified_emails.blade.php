@@ -4,7 +4,9 @@
             <th>EMAIL</th>
             @if ($isExport)
                 <th>RESULT</th>
-                <th>REASON</th>
+                @if (!$isBulkUploadApi)
+                    <th>REASON</th>
+                @endif
                 <th>DOMAIN </th>
             @endif 
         </tr>
@@ -17,8 +19,16 @@
             <tr>
                 <td>{{$email['email']}}</td>
                 @if ($isExport)
-                    <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td>
-                    <td>{{$email['apiStatus']}}</td>
+                    
+                    @if($isExport && !$isBulkUploadApi) 
+                        <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td> 
+                    @elseif($isExport && $isBulkUploadApi) 
+                        <td>{{$email['status']}}</td>
+                    @endif
+                    
+                    @if (!$isBulkUploadApi)
+                      <td>{{$email['apiStatus']}}</td>
+                     @endif
                     <td>{{ $domain}}</td>  
                 @endif
                

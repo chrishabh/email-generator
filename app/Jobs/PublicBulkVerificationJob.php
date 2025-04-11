@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exports\BulkUploadExport;
 use App\Models\BulkVerificationApiData;
 use App\Models\BulkVerificationApiJob;
 use Illuminate\Bus\Queueable;
@@ -10,6 +11,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Excel;
 
 class PublicBulkVerificationJob implements ShouldQueue
 {
@@ -50,7 +53,27 @@ class PublicBulkVerificationJob implements ShouldQueue
             $response = $this->verifyEmail($email);
             BulkVerificationApiData::updateData($data->id, $this->fileId, $email, $response['status'] ?? "Unkown", json_encode($response));
         }
-        BulkVerificationApiJob::updateJobStatus($this->fileId, 'completed');
+        $this->generateCsvFile($this->fileId);
+        BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+    }
+
+    private function generateCsvFile($fileId){ 
+        $email_data = BulkVerificationApiData::getData($fileId);  
+        if(!empty($email_data)){
+            $jobData           = BulkVerificationApiJob::where('id', $fileId)->first();
+            $fileName          = $jobData->file_name;
+            $currentDate       = Carbon::now()->format('Y-m-d');
+            BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+            $verifiedEmailData = $email_data;
+            $withoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+            $fileName = $withoutExtension.'.csv';
+            $filePath = "public/bulkDownload/$currentDate/$fileId/$fileName";
+            Excel::store(new BulkUploadExport($verifiedEmailData,true,true), $filePath); 
+            BulkVerificationApiJob::where('id', $fileId)->update([
+                'download_file_name' => $fileName,
+                'download_file_path' => $filePath,
+            ]);
+        }
     }
 
     public function verifyEmail($email)
