@@ -52,7 +52,7 @@ class BulkVerificationApiJob extends Model
 
         $csvData = [
             'job_id'    => $jobId,
-            'api_key'   => $request->api_key_data->api_key,
+            'api_key'   => $request->api_key_data->key,
             'user_id'   => $userId,
             'file_path' => $filePath,
             'file_name' => $originalFilename,
