@@ -9,6 +9,13 @@ class BulkVerificationApiData extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'file_id',
+        'email',
+        'status',
+        'reason',
+    ];
+
     public static function createData($data)
     {
         return self::create([

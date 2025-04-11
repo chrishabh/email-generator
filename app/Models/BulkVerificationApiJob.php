@@ -15,6 +15,17 @@ class BulkVerificationApiJob extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $fillable = [
+        'job_id',
+        'user_id',
+        'api_key',
+        'file_path',
+        'file_name',
+        'download_file_path',
+        'download_file_name',
+        'status',
+    ];
+
 
     public static function uploadfile($request)
     {
