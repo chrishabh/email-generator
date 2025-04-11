@@ -37,9 +37,6 @@ class BulkVerificationApiJob extends Model
         $originalFilename  = pathinfo($originalFilename, PATHINFO_FILENAME);
         $path             = "publicBulkUpload/{$currentDate}/{$userId}/{$originalFilename}";
 
-        // Optional: Store file in storage/app/csv_uploads
-        $path = $file->store('csv_uploads');
-
         // Example: Read CSV content
         $filePath   = $file->storeAs('public/',$path); 
 
