@@ -10,7 +10,7 @@
         <x-page-name-component 
         pageName='Delete Bulk Email List <br> <div class="flex items-center space-x-2 mt-3">
             <span class="bg-red-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">DELETE</span>
-            <span class="text-[#384248] text-[11px]">https://api.bouncee.net/v1/bulk</span>
+            <span class="text-[#384248] text-[11px]">http://localhost:8000/api/v1/bulk/{job_id}?apiKey=094e913b-e0bc-4e3b-b876-575f011774c6</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">
@@ -109,7 +109,7 @@ Once removed, both the uploaded data and its results are permanently erased. To 
                 </thead>
                 <tbody> 
                     <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">apikey</td>
+                        <td class="p-3 border border-gray-300">apiKey</td>
                         <td class="p-3 border border-gray-300">[string]</td> 
                         <td class="p-3 border border-gray-300">Yes</td> 
                         <td class="p-3 border border-gray-300">Your Bouncee API key</td>

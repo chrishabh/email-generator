@@ -10,7 +10,7 @@
         <x-page-name-component 
         pageName='Check job status of a bulk email list <br> <div class="flex items-center space-x-2 mt-3">
             <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">GET</span>
-            <span class="text-[#384248] text-[11px]">https://api.bouncee.net/v1/bulk</span>
+            <span class="text-[#384248] text-[11px]">http://localhost:8000/api/v1/bulk/{jobId}?apiKey=094e913b-e0bc-4e3b-b876-575f011774c6</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">
@@ -29,13 +29,6 @@
     "total": 2,
     "verified": 2,
     "pending": 0,
-    "analysis": {
-        "common_isp": 1,
-        "role_based": 1,
-        "disposable": 0,
-        "spamtrap": 0,
-        "syntax_error": 0
-    },
     "results": {
         "deliverable": 1,
         "undeliverable": 0,
@@ -43,7 +36,8 @@
         "unknown": 0
     },
     "success": true,
-    "message": "Verification completed successfully. Please download the result using /download endpoint"
+    "message": "Verification completed successfully. Please 
+    download the result using /download endpoint"
 }
 
 
@@ -93,32 +87,12 @@
                         <td class="p-3 border border-gray-300">pending</td>
                         <td class="p-3 border border-gray-300">[Integer]</td> 
                         <td class="p-3 border border-gray-300">The number of emails need to be verified</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">common_isp</td>
-                        <td class="p-3 border border-gray-300">[0,1]</td> 
-                        <td class="p-3 border border-gray-300">Whether the email is considered a role address. (e.g. "sales@, info@, help@, etc.)</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">role-based</td>
-                        <td class="p-3 border border-gray-300">[0,1]</td> 
-                        <td class="p-3 border border-gray-300">Whether the email is hosted by a free email provider like Gmail, Yahoo!, Hotmail etc..</td>
-                    </tr>
+                    </tr> 
                     <tr class="border border-gray-300">
                         <td class="p-3 border border-gray-300">disposable</td>
                         <td class="p-3 border border-gray-300">[0,1]</td> 
                         <td class="p-3 border border-gray-300">Whether this is a temporary email.</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">spamtrap</td>
-                        <td class="p-3 border border-gray-300">[0,1]</td> 
-                        <td class="p-3 border border-gray-300">Is this a honey-trap email
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">syntax_error</td>
-                        <td class="p-3 border border-gray-300">[0,1]</td> 
-                        <td class="p-3 border border-gray-300">Whether the email is syntactically incorrect
-                    </tr>
+                    </tr>  
                     <tr class="border border-gray-300">
                         <td class="p-3 border border-gray-300">deliverable</td>
                         <td class="p-3 border border-gray-300">[Integer]</td> 

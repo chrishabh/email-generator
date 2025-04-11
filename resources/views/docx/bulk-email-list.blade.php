@@ -10,7 +10,7 @@
         <x-page-name-component 
         pageName='Upload a bulk email list <br> <div class="flex items-center space-x-2 mt-3">
             <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">POST</span>
-            <span class="text-[#384248] text-[11px]">https://api.bouncee.net/v1/bulk</span>
+            <span class="text-[#384248] text-[11px]">https://bouncee.net/api/v1/bulk?apiKey=x23yz</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">
@@ -24,45 +24,11 @@
                 •	Max emails per file: 500,000
                 •	Additional columns will be retained for reference
             </p>
-            <strong>
-                Option 2: JSON Object Upload
-            </strong>
-            You can dynamically submit email addresses in a JSON format with optional metadata. Example:
+             
         </p>
 
 
-
-        <x-api-view-component
-        text='<div class="bg-gray-800 text-green-400 font-mono text-sm p-4 rounded-lg mt-4">
-<pre class=" mt-2 text-[#b35e14]">{
-  "auto_verify": "true",
-  "emails": [
-    {
-      "email": "john.doe@example.com",
-      "firstname": "John",
-      "lastname": "Doe"
-    },
-    {
-      "email": "jane.smith@example.com",
-      "firstname": "Jane",
-      "lastname": "Smith"
-    }
-  ]
-}
-
-</pre>
-</div>'
-    />
-
-
-
-
-    <x-warning-text-component 
-    text="•	Maximum of 500 unverified lists allowed in your account <br>
-•	Up to 100 active verification lists can be processed at the same time
-"
-/>
-
+ 
 
 
 
@@ -188,18 +154,6 @@ text='<div class="bg-gray-800 text-green-400 font-mono text-sm p-4 rounded-lg mt
                         <td class="p-3 border border-gray-300">[file (.csv)]</td>
                         <td class="p-3 border border-gray-300">Yes</td>
                         <td class="p-3 border border-gray-300">The file to upload</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">auto_verify</td>
-                        <td class="p-3 border border-gray-300">[boolean]</td>
-                        <td class="p-3 border border-gray-300">No</td>
-                        <td class="p-3 border border-gray-300">Start verification immediately</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">emails</td>
-                        <td class="p-3 border border-gray-300">[JSON array]</td>
-                        <td class="p-3 border border-gray-300">Yes(if no file)</td>
-                        <td class="p-3 border border-gray-300">Emails and related metadata</td>
                     </tr>
                 </tbody>
             </table>

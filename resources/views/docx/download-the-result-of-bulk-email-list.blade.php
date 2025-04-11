@@ -9,8 +9,8 @@
     <div class="prose max-w-none">
         <x-page-name-component 
         pageName='Download Verified Email List <br> <div class="flex items-center space-x-2 mt-3">
-            <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">POST</span>
-            <span class="text-[#384248] text-[11px]">https://api.bouncee.net/v1/download</span>
+            <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">GET</span>
+            <span class="text-[#384248] text-[11px]">http://localhost:8000/api/v1/download?apiKey=094e913b-e0bc-4e3b-b876-sc6&jobId=1</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">
@@ -31,12 +31,12 @@
         <x-api-view-component
         text='<div class="bg-gray-800 text-green-400 font-mono text-sm p-4 rounded-lg mt-4">
 <p class="text-green-500">HTTP/1.1 200 OK</p>
-<pre class=" mt-2 text-[#b35e14]">"Email", "Verification Result", "Syntax Error", "ISP", "Role", "Disposable", "Trap", "Verified At"
-"info@example.com", "deliverable", "N", "Y", "N", "N", "N", "2025-04-08T06:49:39.280Z"
-"support@demo.org", "accept-all", "N", "N", "Y", "Y", "N", "2025-04-08T06:49:39.282Z"
-
-
-
+<pre class=" mt-2 text-[#b35e14]">"EMAIL","RESULT","DOMAIN"
+"nicole.fockler@jobvector.de","undeliverable","jobvector.de"
+"dana@jobvector.de","undeliverable","jobvector.de"
+"dpfeil@jobvector.de","undeliverable","jobvector.de"
+"clark@hush.com","unknown","hush.com"
+"k.clark@hush.com","undeliverable","hush.com"
 </pre>
 </div>'
     />
@@ -61,39 +61,14 @@
                         <td class="p-3 border border-gray-300">The email address that was verified</td>
                     </tr>
                     <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Verification Result</td>
+                        <td class="p-3 border border-gray-300">Result</td>
                         <td class="p-3 border border-gray-300">[string]</td> 
                         <td class="p-3 border border-gray-300">One of: deliverable, undeliverable, accept-all, or unknown</td>
                     </tr>
                     <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Syntax Error</td>
-                        <td class="p-3 border border-gray-300">["Y"/"N"]</td> 
-                        <td class="p-3 border border-gray-300">Indicates whether the email format is invalid</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">ISP</td>
-                        <td class="p-3 border border-gray-300">["Y"/"N"]</td> 
-                        <td class="p-3 border border-gray-300">Identifies if the domain belongs to a public email provider (e.g. Gmail)</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Role</td>
-                        <td class="p-3 border border-gray-300">["Y"/"N"]</td> 
-                        <td class="p-3 border border-gray-300">Indicates whether the email is a role-based address (e.g., info@, sales@)</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Disposable</td>
-                        <td class="p-3 border border-gray-300">["Y"/"N"]</td> 
-                        <td class="p-3 border border-gray-300">Temporary or one-time email addresses</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Trap</td>
-                        <td class="p-3 border border-gray-300">["Y"/"N"]</td> 
-                        <td class="p-3 border border-gray-300">Flags if the address is a spamtrap</td>
-                    </tr>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">Verified At</td>
-                        <td class="p-3 border border-gray-300">[datetime]</td> 
-                        <td class="p-3 border border-gray-300">The timestamp when the email was last verified</td>
+                        <td class="p-3 border border-gray-300">Domain</td>
+                        <td class="p-3 border border-gray-300">[string]</td> 
+                        <td class="p-3 border border-gray-300">Domain of the email</td>
                     </tr>
                 </tbody>
             </table>
@@ -113,13 +88,13 @@
                 </thead>
                 <tbody>
                     <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">job_id</td>
+                        <td class="p-3 border border-gray-300">jobId</td>
                         <td class="p-3 border border-gray-300">[string]</td>
                         <td class="p-3 border border-gray-300">Yes</td>
                         <td class="p-3 border border-gray-300">Unique ID of the verification job</td>
                     </tr>
                     <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">api_key</td>
+                        <td class="p-3 border border-gray-300">apiKey</td>
                         <td class="p-3 border border-gray-300">[string]</td>
                         <td class="p-3 border border-gray-300">Yes</td>
                         <td class="p-3 border border-gray-300">Your Bouncee API key</td>

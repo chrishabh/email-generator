@@ -9,12 +9,12 @@
     <div class="prose max-w-none">
         <x-page-name-component 
         pageName='Start Bulk Email List Verification <br> <div class="flex items-center space-x-2 mt-3">
-            <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">PATCH</span>
-            <span class="text-[#384248] text-[11px]">https://api.bouncee.net/v1/bulk</span>
+            <span class="bg-green-600 text-white text-[9px] font-bold px-1 py-1 rounded-md">POST</span>
+            <span class="text-[#384248] text-[11px]">https://bouncee.net/api/vv1/bulk/start-verification?apiKey=xyz123a</span>
         </div>'/>
 
         <p class="text-gray-600 pb-6">
-            Use this endpoint to initiate the verification process for an email list you've previously uploaded. The list must have a status of <strong>ready</strong>, and must not have been automatically verified during the upload process (auto_verify = false). Once initiated, the list begins verification and results will be available upon completion.
+            Use this endpoint to initiate the verification process for an email list you've previously uploaded. The list must have a status of <strong>ready</strong>, and must not have been automatically verified during the upload process. Once initiated, the list begins verification and results will be available upon completion.
         </p>
 
 
@@ -69,7 +69,9 @@
             </table>
         </div>
 
-        <h2 class=" text-gray-900 font-[500] text-lg pb-2 pt-12">Path Parameters</h2>
+ 
+
+        <h2 class=" text-gray-900 font-[500] text-lg pb-2 pt-12">Body Parameters</h2>
         <div class="overflow-x-auto">
             <table class="w-full border border-gray-300 rounded-lg">
                 <thead class="bg-gray-100">
@@ -85,30 +87,7 @@
                         <td class="p-3 border border-gray-300">job_id</td>
                         <td class="p-3 border border-gray-300">[string]</td>
                         <td class="p-3 border border-gray-300">Yes</td>
-                        <td class="p-3 border border-gray-300">ID of the job you want to verify</td>
-                    </tr>
-                     
-                </tbody>
-            </table>
-        </div>
-
-        <h2 class=" text-gray-900 font-[500] text-lg pb-2 pt-12">Body Parameters</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full border border-gray-300 rounded-lg">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-3 text-left border border-gray-300 font-semibold">Parameter</th>
-                        <th class="p-3 text-left border border-gray-300 font-semibold">Type</th>
-                        <th class="p-3 text-left border border-gray-300 font-semibold">Required</th>
-                        <th class="p-3 text-left border border-gray-300 font-semibold">Definition</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="border border-gray-300">
-                        <td class="p-3 border border-gray-300">action</td>
-                        <td class="p-3 border border-gray-300">[string]</td>
-                        <td class="p-3 border border-gray-300">Yes</td>
-                        <td class="p-3 border border-gray-300">Always set to "start"</td>
+                        <td class="p-3 border border-gray-300">ID of the Job you want to verify</td>
                     </tr>
                      
                 </tbody>
@@ -119,7 +98,7 @@
         <x-api-view-component
         text='<div class="bg-gray-800 text-green-400 font-mono text-sm p-4 rounded-lg mt-4">
 <pre class=" mt-2 text-[#b35e14]">{
-  "action": "start"
+  "job_id": "34c7f418-edaf-47fc-a1c1-1d6c019838edVfnq4Aks5H2MPL"
 }
 
 </pre>
