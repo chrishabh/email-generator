@@ -260,7 +260,7 @@ class EmailVerificationController extends Controller
         }
     }
 
-    public function downloadJob(Request $request)
+    public function downloadJobs(Request $request)
     {
         $jobId = $request->query('jobId');
         $apiKey = $request->query('apiKey');  
