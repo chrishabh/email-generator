@@ -11,6 +11,7 @@ use App\Models\BulkVerificationApiJob;
 use App\Models\User;
 use App\Models\UserCredits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EmailVerificationController extends Controller
 {
@@ -226,5 +227,36 @@ class EmailVerificationController extends Controller
     public function startBulkVerify(PublicBulkStartVerificationFormRequest $request)
     {
         return response()->json(BulkVerificationApiJob::startVerification($request), 200);
+    }
+
+    public function testcode()
+    {
+
+        $file = Storage::disk('local')->get(BulkVerificationApiJob::getFilePath(3,1));
+        
+        // Convert to lines
+        $lines = explode("\n", $file);
+        $header = null;
+
+        foreach ($lines as $line) {
+            if (trim($line) === '') continue;
+
+            $row = str_getcsv($line);
+
+            if (!$header) {
+                $header = $row;
+                continue;
+            }
+
+            $data = array_combine($header, $row);
+
+            // Insert or update model based on your CSV structure
+            $insert_data = [
+                'file_id' => 3,
+                'email' => $data['Email'],
+                'created_at' => now(),
+            ];
+            BulkVerificationApiData::createData($insert_data);
+        }
     }
 }

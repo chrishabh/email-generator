@@ -38,6 +38,9 @@ Route::group(['middleware' => ['public.auth']], function (){
     Route::delete('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'deleteJob'])->name('deleteJob');
 });
 
+Route::post('test', [EmailVerificationController::class, 'testcode'])->name('testcode'); 
+
+
 Route::fallback(function (Request $request) {
     return response()->json([
         'success' => false,
