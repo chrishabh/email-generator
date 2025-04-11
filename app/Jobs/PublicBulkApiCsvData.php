@@ -59,7 +59,7 @@ class PublicBulkApiCsvData implements ShouldQueue
             // Insert or update model based on your CSV structure
             $insert_data = [
                 'file_id' => $this->fileId,
-                'email' => $data['email'],
+                'email' => $data['Email'],
                 'created_at' => now(),
             ];
             BulkVerificationApiData::createData($insert_data);

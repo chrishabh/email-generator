@@ -37,11 +37,11 @@ class PublicBulkVerificationJob implements ShouldQueue
      */
     public function handle()
     {
-        BulkVerificationApiJob::updateStatus($this->fileId, 'in-progress');
+        BulkVerificationApiJob::updateJobStatus($this->fileId, 'in-progress');
         $email_data = BulkVerificationApiData::getData($this->fileId);
 
         if ($email_data->isEmpty()) {
-            BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+            BulkVerificationApiJob::updateJobStatus($this->fileId, 'completed');
             return;
         }
         foreach ($email_data as $data) {
@@ -50,7 +50,7 @@ class PublicBulkVerificationJob implements ShouldQueue
             $response = $this->verifyEmail($email);
             BulkVerificationApiData::updateData($data->id, $this->fileId, $email, $response['status'] ?? "Unkown", json_encode($response));
         }
-        BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+        BulkVerificationApiJob::updateJobStatus($this->fileId, 'completed');
     }
 
     public function verifyEmail($email)
