@@ -28,7 +28,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware(['verify.apikey.credits'])->get('/v1/verify', [EmailVerificationController::class, 'verifyEmail'])->name('verifyEmail');
 
-Route::middleware(['public.auth'])->get('/v1/creditInfo', [EmailVerificationController::class, 'creditInfo'])->name('creditInfo');
+// Route::middleware(['public.auth'])->get('/v1/creditInfo', [EmailVerificationController::class, 'creditInfo'])->name('creditInfo');
+
+Route::group(['middleware' => ['public.auth']], function (){
+    Route::get('/v1/creditInfo',[EmailVerificationController::class, 'creditInfo'])->name('creditInfo'); 
+    Route::post('v1/bulk', [EmailVerificationController::class, 'bulkVerify'])->name('bulkVerify');
+    Route::post('v1/bulk/start-verification/', [EmailVerificationController::class, 'bulkVerify'])->name('bulkVerify'); 
+    Route::get('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'chkJob']);
+    Route::delete('/v1/bulk/{jobId?}', [EmailVerificationController::class, 'deleteJob'])->name('deleteJob');
+});
 
 Route::fallback(function (Request $request) {
     return response()->json([
