@@ -55,7 +55,7 @@ class PublicBulkVerificationJob implements ShouldQueue
             BulkVerificationApiData::updateData($data->id, $this->fileId, $email, $response['status'] ?? "Unkown", json_encode($response));
         }
         $this->generateCsvFile($this->fileId);
-        BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+        BulkVerificationApiJob::updateJobStatus($this->fileId, 'completed');
     }
 
     private function generateCsvFile($fileId){ 
@@ -64,7 +64,7 @@ class PublicBulkVerificationJob implements ShouldQueue
             $jobData           = BulkVerificationApiJob::where('id', $fileId)->first();
             $fileName          = $jobData->file_name;
             $currentDate       = Carbon::now()->format('Y-m-d');
-            BulkVerificationApiJob::updateStatus($this->fileId, 'completed');
+            BulkVerificationApiJob::updateJobStatus($this->fileId, 'completed');
             $verifiedEmailData = $email_data;
             $withoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
             $fileName = $withoutExtension.'.csv';
