@@ -40,7 +40,7 @@ class PublicBulkVerificationJob implements ShouldQueue
      */
     public function handle()
     {
-        BulkVerificationApiJob::updateJobStatus($this->fileId, 'in-progress');
+        BulkVerificationApiJob::updateJobStatus($this->fileId, 'preparing');
         $email_data = BulkVerificationApiData::getData($this->fileId);
 
         if ($email_data->isEmpty()) {
