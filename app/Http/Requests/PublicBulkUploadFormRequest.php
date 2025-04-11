@@ -24,7 +24,7 @@ class PublicBulkUploadFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|file|mimes:csv|max:2048', // max 2MB
+            'file' => 'required|file|mimes:csv,txt|max:5120', // max 2MB
         ];
     }
 
