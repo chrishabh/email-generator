@@ -119,7 +119,7 @@
               <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated date. Continued use of the website after changes means you accept the updated terms.</p>
               <div class="custom-border-bottom"></div>
               <h4 class="section-ka-title">6. Contact Us</h4>
-              <p>If you have questions or concerns about this Privacy Policy, feel free to contact us at:: <strong>support@bouncce.net</strong></p>
+              <p>If you have questions or concerns about this Privacy Policy, feel free to <a href="mailto:support@bouncce.net">contact us.</a></p>
     
             </div>
         </div> 
