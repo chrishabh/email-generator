@@ -46,6 +46,24 @@ try{
         Route::get('/bulk-verification', function () {
             return view('bulk-verification');
         });
+        Route::get('/privacy', function () {
+            return view('privacy');
+        });
+        Route::get('/term', function () {
+            return view('termofuse');
+        });
+        Route::get('/cookie-policy', function () {
+            return view('cookie-policy');
+        });
+        Route::get('/gdpr', function () {
+            return view('gdpr-policy');
+        });
+        Route::get('/refund-polcy', function () {
+            return view('refund-policy');
+        });
+        Route::get('/data-policy', function () {
+            return view('data-policy');
+        });
 
 
            

@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12">
                     <div class="widget">
-                        <h3 class="footer-logo"><img  style="height: 70px; width: 200px;" src="assets/logo.png" alt=""></h3>
+                        <h3 class="footer-logo"><img  style="height: 40px; width: 120px;" src="assets/logo.png" alt=""></h3>
                         <div class="textwidget">
                             <p>Ensure your emails reach the right inbox with our accurate and efficient validation
                                 services. Reduce bounce rates and enhance deliverability effortlessly.</p>
@@ -18,20 +18,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                     <h3 class="footer-titel">Products</h3>
                     <ul class="footer-link">
                         <li><a href="/single-verification">Single Email Verification</a></li>
                         <li><a href="/bulk-verification">Bulk Email Verifiction</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                     <h3 class="footer-titel">Resources</h3>
                     <ul class="footer-link">
                         <li><a href="#pricing">Payment Options</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
+                    <h3 class="footer-titel">Legal</h3>
+                    <ul class="footer-link">
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/term">Terms</a></li>
+                        <li><a href="/cookie-policy">Cookie Privacy</a></li>
+                        <li><a href="/gdpr">GDPR Privacy Policy</a></li>
+                        <li><a href="/refund-polcy">Refund Policy</a></li> 
+                        <li><a href="/data-policy">Data Policy</a></li> 
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
                     <h3 class="footer-titel">Contact</h3>
                     <ul class="address">
                         <li>
