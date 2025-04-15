@@ -16,6 +16,9 @@
                             <a class="instagram" href="#"><i class="lni-instagram-filled"></i></a>
                             <a class="linkedin" href="https://www.linkedin.com/company/bouncee-net/"><i class="lni-linkedin-filled"></i></a>
                         </div>
+                        <div>
+                            <p class="f_size_14 mb_5"><img src="assets/gdpr.png" alt="GDPR Compliant" title="GDPR Compliant"> GDPR Compliant</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">
@@ -37,7 +40,7 @@
                         <li><a href="/privacy">Privacy Policy</a></li>
                         <li><a href="/term">Terms</a></li>
                         <li><a href="/cookie-policy">Cookie Privacy</a></li>
-                        <li><a href="/gdpr">GDPR Privacy Policy</a></li>
+                        <li><a href="/gdpr">GDPR Compliance</a></li>
                         <li><a href="/refund-polcy">Refund Policy</a></li> 
                         <li><a href="/data-policy">Data Policy</a></li> 
                     </ul>
