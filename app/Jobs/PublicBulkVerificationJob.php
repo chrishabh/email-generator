@@ -26,6 +26,7 @@ class PublicBulkVerificationJob implements ShouldQueue
      */
     protected $fileId;
     protected $userId;
+    public $tries = 3;
     public $timeout = 0; 
 
     public function __construct($fileId,$userId)

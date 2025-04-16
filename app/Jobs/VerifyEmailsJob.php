@@ -30,6 +30,7 @@ class VerifyEmailsJob implements ShouldQueue
     protected $fileId;
     protected $userId;
     protected $jobUuid;
+    public $tries = 3;
     public $timeout = 0; 
     public function __construct($fileId,$userId)
     {
