@@ -3,10 +3,10 @@
         <tr>
             <th>EMAIL</th>
             @if ($isExport)
-                <th>RESULT</th>
-                {{-- @if (!$isBulkUploadApi)
+                {{-- <th>RESULT</th> --}}
+                @if (!$isBulkUploadApi)
                     <th>REASON</th>
-                @endif --}}
+                @endif
                 <th>DOMAIN </th>
             @endif 
         </tr>
@@ -20,15 +20,15 @@
                 <td>{{$email['email']}}</td>
                 @if ($isExport)
                     
-                    @if($isExport && !$isBulkUploadApi) 
-                        <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td> 
+                    {{-- @if($isExport && !$isBulkUploadApi) 
+                        <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td>  --}}
                     @elseif($isExport && $isBulkUploadApi) 
                         <td>{{$email['status']}}</td>
                     @endif
                     
-                    {{-- @if (!$isBulkUploadApi)
+                    @if (!$isBulkUploadApi)
                       <td>{{$email['apiStatus']}}</td>
-                     @endif --}}
+                     @endif
                     <td>{{ $domain}}</td>  
                 @endif
                
