@@ -22,9 +22,9 @@
                     
                     {{-- @if($isExport && !$isBulkUploadApi) 
                         <td>{{($email['status']=='valid' )? 'Safe to Send':'Bounce' }}</td>  --}}
-                    @elseif($isExport && $isBulkUploadApi) 
+                    {{-- @elseif($isExport && $isBulkUploadApi) 
                         <td>{{$email['status']}}</td>
-                    @endif
+                    @endif --}}
                     
                     @if (!$isBulkUploadApi)
                       <td>{{$email['apiStatus']}}</td>
