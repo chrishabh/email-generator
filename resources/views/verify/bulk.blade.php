@@ -83,11 +83,12 @@
                                                 @foreach ($value['verifyStatusData'] as $k=>$v)
                                                     @php
                                                         $statusOfVer = $v['apiStatus'];
+                                                        // pp($statusOfVer);
                                                         $color='';
-                                                        if($statusOfVer =='deliverable') $color='#28A745';
-                                                        else if($statusOfVer =='undeliverable') $color='#DC3545';
-                                                        else if($statusOfVer =='unknown') $color='#FFC107';
-                                                        else if($statusOfVer =='accept all') $color='#6C757D';
+                                                        if(strtolower($statusOfVer) =='deliverable') $color='#28A745';
+                                                        else if(strtolower($statusOfVer) =='undeliverable') $color='#DC3545';
+                                                        else if(strtolower($statusOfVer) =='unknown') $color='#FFC107';
+                                                        else if(strtolower($statusOfVer) =='accept all') $color='#6C757D';
                                                     @endphp
                                                     <div class="col-md-6 stat-col pb-3">
                                                         <span class="text text-capitalize">{{$v['apiStatus']}}</span> 

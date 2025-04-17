@@ -77,6 +77,11 @@
                                 Bulk Verification
                             </a>
                         </li>
+                        <li class="nav-item header-item-extra-padding-bulk">
+                            <a class="nav-link" href="/reference">
+                                API Docs
+                            </a>
+                        </li>
                         @if(auth()->check())
                             <li class="nav-item">
                                 <a class="nav-link" href="#">
