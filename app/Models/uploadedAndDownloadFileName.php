@@ -26,7 +26,7 @@ class uploadedAndDownloadFileName extends Model
             ->leftJoin('bulk_upload_email_file_data as bu', function($join) {
             $join->on('ud.id', '=', 'bu.file_id')
                 ->on('ud.user_id', '=', 'bu.importedBy'); 
-        })->where('ud.user_id', '=',$user_id)->where('ud.id',$file_id)->where('bu.type','bulk')->where('ud.verificationStatus',$verificationStatus)
+        })->where('ud.user_id', '=',$user_id)->where('ud.id',$file_id)->where('bu.type','bulk')->whereNull('bu.status')->where('ud.verificationStatus',$verificationStatus)
         ->when($status === 'valid', function ($query) use ($status) {
             return $query->where('bu.status', $status);
         })->get();

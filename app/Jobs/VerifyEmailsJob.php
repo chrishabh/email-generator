@@ -76,7 +76,7 @@ class VerifyEmailsJob implements ShouldQueue
             $count         = 0;
             $counter       = 1;
             $isUpdateData  = false;
-            $fileName      = $data[0]->fileName; 
+            $fileName      = isset($data[0]->fileName)? $data[0]->fileName:''; 
 
             foreach($data as $key=>$value){
                 $dataArray = [];
