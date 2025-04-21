@@ -79,7 +79,11 @@
                                             </div>
                                         </div>
                                       <div class="info-line--right row col-md-5 align-items-center ">
-                                            <div class="row row mx-0">
+                                            <div class="row mx-0">
+                                                @php
+                                                    $uniqueStatuses = collect($value['verifyStatusData'])->pluck('apiStatus')->unique();
+                                                    $colClass = $uniqueStatuses->count() === 1 ? 'col-12' : 'col-md-6';
+                                                @endphp
                                                 @foreach ($value['verifyStatusData'] as $k=>$v)
                                                     @php
                                                         $statusOfVer = $v['apiStatus'];
@@ -90,7 +94,7 @@
                                                         else if(strtolower($statusOfVer) =='unknown') $color='#FFC107';
                                                         else if(strtolower($statusOfVer) =='accept all') $color='#6C757D';
                                                     @endphp
-                                                    <div class="col-md-6 stat-col pb-3">
+                                                    <div class="{{$colClass}}  stat-col pb-3">
                                                         <span class="text text-capitalize">{{$v['apiStatus']}}</span> 
                                                         <div class=" val" style="color:{{$color}}">{{$v['total_count']}}</div>
                                                     </div>
