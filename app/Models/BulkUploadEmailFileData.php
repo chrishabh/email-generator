@@ -29,7 +29,10 @@ class BulkUploadEmailFileData extends Model
     }
 
     static function getCountOfValidAndInvalidEmails($fileId,$userId){
-        return self::select('apiStatus', DB::raw('count(*) as total_count'))->where('importedBy',$userId)->where('file_id',$fileId)->where('type','bulk')
+        return self::select('apiStatus', 
+        DB::raw('count(*) as total_count'),
+        DB::raw('SUM(CASE WHEN job_email_status="verified" AND status IS NOT NULL THEN 1 ELSE 0 END) as verified_count')
+        )->where('importedBy',$userId)->where('file_id',$fileId)->where('type','bulk')
             ->groupBy('apiStatus')
             ->get()->toArray();
     }
@@ -42,6 +45,26 @@ class BulkUploadEmailFileData extends Model
         }
         return 0;
     }
+
+
+    public static function getStatus($file_id, $user_id) {
+        // Total emails in file
+        $total = DB::table('bulk_upload_email_file_data')
+                    ->where('file_id', $file_id)
+                    ->where('user_id', $user_id)
+                    ->count();
+    
+        // Verified emails
+        $verified = DB::table('bulk_upload_email_file_data')
+                    ->where('file_id', $file_id)
+                    ->where('user_id', $user_id)
+                    ->where('status', 'verified') // assuming status field
+                    ->count();
+    
+        // Return 1 if all are verified, else 0
+        return $total > 0 && $total == $verified ? true : false;
+    }
+    
 
 
     

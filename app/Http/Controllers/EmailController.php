@@ -276,41 +276,60 @@ class EmailController extends Controller
         }elseif(env('API_PLATFORM')=='bouncee'){
             $apiUrl = envparam('BOUNCEE_API_URL');
             $apiKey = envparam('BOUNCEE_API_KEY');
-            $response = Http::withHeaders([
+            try {
+                $response = Http::withHeaders([
                     'X-API-KEY' => $apiKey,
                     'Accept' => 'application/json',
-                ])->get("$apiUrl=$email");
+                ])->get($apiUrl, [
+                    'email' => $email,
+                ]);
+
                 // Extract response body and HTTP status code
                 $responseBody = $response->json();
                 $httpcode     = $response->status();
 
+                // Log request/response
                 $logData = [
-                    'job_id'            =>  'GET',
-                    'file_id'           =>  $fileId,
+                    'job_id'            => 'GET',
+                    'file_id'           => $fileId,
                     'which_api'         => 'BOUNCEE_API',
                     'url'               => $apiUrl,
-                    'request'           =>json_encode(['email' => $email]), // Store request data
+                    'request'           => json_encode(['email' => $email]), 
                     'response'          => json_encode($responseBody), 
                     'api_status_code'   => $httpcode,
                     'created_at'        => now()
                 ];
-            
-                // Insert log with null job_id
-                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
-            
-                $data = $response->json();
+                DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+
+
+                // Save Email Verification Log
                 $log = [
-                    'user_id' => Auth::User()->id??$user_id,
-                    'email' => $email,
-                    'result' => json_encode($data),
-                    // 'created_at'=>Carbon::now()
+                    'user_id'    => Auth::User()->id ?? $user_id,
+                    'email'      => $email,
+                    'result'     => json_encode($responseBody),
+                    'created_at' => Carbon::now()
                 ];
                 EmailVerificationLog::addLog($log);
-                if($get_response){
-                    return $data['status']??'Unknown';
-                }
-                return isset($data['status']) && $data['status'] === 'Deliverable'; 
 
+
+                if ($get_response) {
+                    return $responseBody['status'] ?? 'Unknown';
+                }
+        
+                return isset($responseBody['status']) && strtolower($responseBody['status']) === 'deliverable';
+
+            }
+            catch (\Exception $e) {
+                // Error logging
+                $log = [
+                    'user_id'    => Auth::User()->id ?? $user_id,
+                    'email'      => $email,
+                    'result'     => 'Error: ' . $e->getMessage(),
+                    'created_at' => Carbon::now()
+                ];
+                EmailVerificationLog::addLog($log);
+                return false;
+            } 
         }else{
             $log = [
                 'user_id' => Auth::User()->id??$user_id,
@@ -367,8 +386,9 @@ class EmailController extends Controller
         if(!empty($data)){
             foreach($data as $key=>$value){  
                     $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
-                    // pp($countOfValidAndInvalidEmails);
                     $collectionOfCount             =  collect($countOfValidAndInvalidEmails)->sum('total_count');
+                    $verifiedOfCount               =  collect($countOfValidAndInvalidEmails)->sum('verified_count');
+                    
                     // $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
                     // $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
                     $fileNameWithExtension         =  basename($value->fileName); 
@@ -382,6 +402,7 @@ class EmailController extends Controller
                     // $dataArr['totalValidEmail']    =  $validEmailCount; 
                     $dataArr['verifyStatusData']   =  $countOfValidAndInvalidEmails;
                     $dataArr['total']              =  $collectionOfCount??0; 
+                    $dataArr['verifiedTotal']      =  $verifiedOfCount??0; 
                     $dataArr['verificationStatus'] =  $value->verificationStatus; 
                     $dataArr['userId']             =  $value->user_id; 
                     $dataArr['fileId']             =  $value->id; 

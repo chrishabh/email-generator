@@ -127,7 +127,7 @@
                                                 <div class="progress-container">
                                                     <div id="progress-bar" class="progress-bar"></div>
                                                 </div>
-                                                <span id="progress-text">0 / {{ $value['total']}} emails verified</span>
+                                                <span id="progress-text">{{$value['verifiedTotal']}} / {{ $value['total']}} emails verified</span>
                                             </div>
                                         </div>
                                         {{-- <div class="col-md-2">

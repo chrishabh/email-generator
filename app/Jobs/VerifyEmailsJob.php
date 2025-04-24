@@ -64,9 +64,25 @@ class VerifyEmailsJob implements ShouldQueue
         }
         $user_id = $this->userId;  
         $data    = uploadedAndDownloadFileName::getPendingFileDataBasedOnCurrentUser($this->fileId,$user_id,'pending');
+        
+        if($data->isNotEmpty()){
+
+            // $chunks = array_chunk($data->toArray(), 100);
+            $chunks = $data->chunk(1000);
+            $chunkCount = $chunks->count();
+            // pp($chunkCount);
+            // $chunkCount = count($chunks); 
+            foreach ($chunks as $index => $chunk) {
+                $isLastChunk = ($index === $chunkCount - 1); 
+                dispatch(new VerifyEmailsChunkJob($chunk, $this->fileId, $this->userId, $this->jobUuid,$isLastChunk));
+            }
+        } 
+
+         
+        
         // Once all emails are verified, generate an export file
-        $this->verifyEmail($data,$user_id);
-        ExportVerifiedEmailsJob::dispatch($this->fileId,$this->userId);
+        // $this->verifyEmail($data,$user_id);
+        // ExportVerifiedEmailsJob::dispatch($this->fileId,$this->userId);
     }
     
     protected function verifyEmail($data,$user_id)
