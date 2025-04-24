@@ -37,7 +37,7 @@ class VerifyEmailsChunkJob implements ShouldQueue
     public function handle()
     {
         $count = 0;
-        $fileName = isset($this->chunkData[0]['fileName']) ? $this->chunkData[0]['fileName'] : '';
+        $fileName = isset($this->chunkData[0]->fileName) ? $this->chunkData[0]->fileName : '';
         $isUpdateData = false;
         // pp($this->chunkData);
         foreach ($this->chunkData as $value) {
