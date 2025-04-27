@@ -67,7 +67,7 @@
             <li class="current"><a href="/single">Single Verification</a></li> 
             <li class="current"><a href="/lead-finder">B2B Email Finder</a></li> 
             <li class=""><a href="/bulk">Bulk Verifications</a></li>
-            <li class=""><a href="/reference">API Docs</a></li>
+            {{-- <li class=""><a href="/reference">API Docs</a></li> --}}
             <li><a href="/pricing">Buy Credits</a></li> 
             <li><a href="/profile">Profile</a></li>
             <li><a href="/payment-history">Payment History</a></li>
@@ -98,7 +98,7 @@
                         <li class="current"><a href="/single">Single Verification</a></li>
                         <li class="current"><a href="/lead-finder">B2B Email Finder</a></li>
                         <li class=""><a href="/bulk">Bulk Verifications</a></li>
-                        <li class=""><a href="/reference">API Docs</a></li>
+                        {{-- <li class=""><a href="/reference">API Docs</a></li> --}}
                         <li><a href="/pricing">Buy Credits</a></li>
                         <li><a href="/Api">API</a></li>
                     </ul>
