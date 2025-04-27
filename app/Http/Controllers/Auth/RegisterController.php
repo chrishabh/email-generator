@@ -72,7 +72,7 @@ class RegisterController extends Controller
 
     public static function sendVerificationEmail(Request $request)
     {
-        // try{
+        try{
              
             $FormRequest = new ResetPasswordFormRequest();
             $validator         = Validator::make($request->all(),$FormRequest->rules());
@@ -100,21 +100,21 @@ class RegisterController extends Controller
                 $link = url("/bouncee-verification")."/".$token;
                 UserVerification::whereNull('deleted_at')->where('user_id',$user_data->id)->update(['deleted_at'=>Carbon::now()]);
                 if(UserVerification::createVerificationToken($verification_link)){
-                    Notification::route('mail', $user_data->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$user_data->name,'verification_link'=>$link],'verification-template'));
+                    Notification::route('mail', $user_data->email)->notify(new ConfirmationCode("Bouncee Email Verification",['User'=>$user_data->name,'verification_link'=>$link],'verification-template'));
                    
                     return redirect()->route('signin')->with('success', "Please check your inbox, junk, or spam folder for a verification email. Once you verify your email, you'll be able to log in.");
                 }        
             }else{
                 return redirect()->back()->with('error',"The email you entered is not registered. Please sign up first to proceed with the email verification proccess.");
             }
-        // }catch (ValidationException $e) {
-        //     // Handle validation exceptions specifically
-        //     return redirect()->back()->withErrors($e->errors())->withInput();
+        }catch (ValidationException $e) {
+            // Handle validation exceptions specifically
+            return redirect()->back()->withErrors($e->errors())->withInput();
             
-        // } catch (\Throwable $th) {
-        //     // Handle other types of exceptions
-        //     \Illuminate\Support\Facades\Log::error('Reset Request Failed: ' . $th->getMessage());
-        //     return redirect()->back()->with('error', 'Reset Request Failed: ' . $th->getMessage());
-        // }
+        } catch (\Throwable $th) {
+            // Handle other types of exceptions
+            \Illuminate\Support\Facades\Log::error('Reset Request Failed: ' . $th->getMessage());
+            return redirect()->back()->with('error', 'Reset Request Failed: ' . $th->getMessage());
+        }
     }
 }
