@@ -72,7 +72,7 @@ class RegisterController extends Controller
 
     public static function sendVerificationEmail(Request $request)
     {
-        try{
+        // try{
              
             $FormRequest = new ResetPasswordFormRequest();
             $validator         = Validator::make($request->all(),$FormRequest->rules());
@@ -107,14 +107,14 @@ class RegisterController extends Controller
             }else{
                 return redirect()->back()->with('error',"The email you entered is not registered. Please sign up first to proceed with the email verification proccess.");
             }
-        }catch (ValidationException $e) {
-            // Handle validation exceptions specifically
-            return redirect()->back()->withErrors($e->errors())->withInput();
+        // }catch (ValidationException $e) {
+        //     // Handle validation exceptions specifically
+        //     return redirect()->back()->withErrors($e->errors())->withInput();
             
-        } catch (\Throwable $th) {
-            // Handle other types of exceptions
-            \Illuminate\Support\Facades\Log::error('Reset Request Failed: ' . $th->getMessage());
-            return redirect()->back()->with('error', 'Reset Request Failed: ' . $th->getMessage());
-        }
+        // } catch (\Throwable $th) {
+        //     // Handle other types of exceptions
+        //     \Illuminate\Support\Facades\Log::error('Reset Request Failed: ' . $th->getMessage());
+        //     return redirect()->back()->with('error', 'Reset Request Failed: ' . $th->getMessage());
+        // }
     }
 }
