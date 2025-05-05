@@ -20,6 +20,7 @@ class RegisterService{
             'password'                 => Hash::make($request->password),
             'role'                     => $request->role??'user',
             'no_of_email_verification' => $request->no_of_email_verification,
+            'email_verified'           => '1',
         ]); 
         
         // Update the log with the user_id and status as successful
