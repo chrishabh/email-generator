@@ -8,6 +8,8 @@ use App\Http\Controllers\Docx\DocumentationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\Integeration\IntegrationController;
+use App\Http\Controllers\Integeration\MailchimpOAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\ProfileController;
 
@@ -81,10 +83,18 @@ try{
         Route::get('/check-file-status', [EmailController::class, 'getAllData']);
         Route::post('/export-data', [EmailController::class, 'exportData']);
         Route::post('/start-verification', [EmailController::class, 'startVerification']);
-        Route::post('/check-verification-status', [EmailController::class, 'checkEmailVerificationStatus']);
-        // Route::get('/verification', function () {
-        //     return view('verify');
-        // });
+        Route::post('/check-verification-status', [EmailController::class, 'checkEmailVerificationStatus']); 
+      
+      
+        Route::get('/tools', [IntegrationController::class, 'index']);
+        Route::get('/get-integrate-tools', [IntegrationController::class, 'getListOfIntegeratedTools']);
+        Route::get('/available-tools', [IntegrationController::class, 'availableTools']);
+        
+
+        Route::get('/mailchimp/login', [MailchimpOAuthController::class, 'redirectToMailchimp']);
+        Route::get('/mailchimp/callback', [MailchimpOAuthController::class, 'handleCallback']);
+        Route::get('/mailchimp/validate-emails', [MailchimpOAuthController::class, 'validateEmails']);
+
 
         Route::prefix('profile')->group(function(){
             Route::get('/', [ProfileController::class,'getProfilePage']); 

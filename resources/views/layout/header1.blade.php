@@ -51,8 +51,7 @@
     }
 
 
-    $creditClass ='credit-color-100p';
-    $creditPoint = $headerData['creditPoint'];
+    $creditClass ='credit-color-100p';    $creditPoint = $headerData['creditPoint'];
     // $creditPoint=0;
     // if (isset($headerData)){
     //     $creditPoint = $headerData['creditPoint'];
