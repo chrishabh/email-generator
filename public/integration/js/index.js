@@ -95,13 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2  px-3 rounded mb-2 shadow-sm';
+            const isMailchimp = integration.name.toLowerCase() === 'mailchimp';
             item.innerHTML = `
                <div class="flex items-center gap-4">
                 <img class="w-10" src="${integration.icon_url}" /> 
                 <span class="font-semibold text-md text-blue-700/50  capitalize tracking-widest">${integration.name}</span>
                 </div>
-                <button class="bg-blue-400 hover:bg-green-500 text-white px-3 py-1 rounded shadow-md"
-                    onclick="addIntegration(${integration.id})">Select</button>
+                 <button class="bg-blue-400 hover:bg-green-500 text-white px-3 py-1 rounded shadow-md"
+            ${isMailchimp ? `onclick="window.location.href='/mailchimp/login'"` : `onclick="addIntegration(${integration.id})"`}>
+            Select
+        </button>
             `;
             availableIntegrationsList.appendChild(item);
         });

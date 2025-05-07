@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Integration extends Model
 {
     use HasFactory;
-    protected $fillable = ['tool_id', 'status', 'emails'];
+    // protected $fillable = ['tool_id', 'status', 'emails'];
     
     public function tool()
     {

@@ -18,7 +18,12 @@ class CreateIntegrationsTable extends Migration
             $table->foreignId('tool_id')->constrained('integration_tools')->onDelete('cascade');
             $table->enum('status',['verified','pending'])->default('pending');
             $table->string('emails')->nullable();  
-            $table->string('name')->nullable;
+            $table->string('name')->nullable();
+            $table->string('mc_token')->nullable();
+            $table->string('mc_dc')->nullable();
+            $table->string('mc_user_id')->nullable(); 
+            $table->string('service_name'); 
+            $table->json('metadata')->nullable(); 
             $table->timestamps();
             $table->softDeletes();
         });

@@ -17,7 +17,11 @@ class IntegrationController extends Controller
     {   
         $creditPoint ='Free';
         $integrated = Integration::with('tool')->where('status','verified')->paginate(10); 
-        $headerData['creditPoint']         = $creditPoint;  
+        $headerData['creditPoint']         = $creditPoint;
+        $sessionData = session()->all();
+
+        // Log session data for debugging
+        //  pp($sessionData);
         return view('Integeration.index')->with(compact('headerData','integrated')); 
 
     }
