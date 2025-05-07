@@ -52,7 +52,8 @@
         <div class="bg-white p-6 rounded-lg shadow-lg md:max-w-2xl md:w-full sm:max-w-1xl">
             <h2 class="text-lg font-bold mb-4 text-xl text-blue-400">Add a New Integration</h2>
             <div id="availableIntegrationsList" class="max-h-[70vh] sm:max-h-[50vh] md:max-h-[60vh] overflow-y-auto"></div>
-            <div class="mt-4 flex justify-end">
+            <div class="mt-4 flex justify-between items-center">
+                <div id="pagination"></div>
                 <button id="closeModal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
             </div>
         </div>

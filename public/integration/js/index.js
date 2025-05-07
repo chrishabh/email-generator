@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayAvailableIntegrations = (data) => {
         availableIntegrationsList.innerHTML = '';
     
-        if (!data || !data.data ||data.data.length === 0) {
+        if (!data || !data.data || data.data.length === 0) {
             availableIntegrationsList.innerHTML = '<p class="text-gray-500">No available integrations.</p>';
             return;
         }
@@ -94,31 +94,76 @@ document.addEventListener('DOMContentLoaded', () => {
     
         data.data.forEach(integration => {
             const item = document.createElement('div');
-            item.className = 'flex justify-between items-center bg-gray-100 p-2  px-3 rounded mb-2 shadow-sm';
+            item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
             const isMailchimp = integration.name.toLowerCase() === 'mailchimp';
             item.innerHTML = `
-               <div class="flex items-center gap-4">
-                <img class="w-10" src="${integration.icon_url}" /> 
-                <span class="font-semibold text-md text-blue-700/50  capitalize tracking-widest">${integration.name}</span>
+                <div class="flex items-center gap-4">
+                    <img class="w-10" src="${integration.icon_url}" />
+                    <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.name}</span>
                 </div>
-                 <button class="bg-blue-400 hover:bg-green-500 text-white px-3 py-1 rounded shadow-md"
-            ${isMailchimp ? `onclick="window.location.href='/mailchimp/login'"` : `onclick="addIntegration(${integration.id})"`}>
-            Select
-        </button>
+                <button class="bg-blue-400 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md"
+                    ${isMailchimp ? `onclick="window.location.href='/mailchimp/login'"` : `onclick="addIntegration(${integration.id})"`}>
+                    Select
+                </button>
             `;
             availableIntegrationsList.appendChild(item);
         });
     
+        const paginationDiv = document.getElementById('pagination');
+        paginationDiv.innerHTML = ''; // Clear previous
+    
         const controls = document.createElement('div');
-        controls.className = 'flex justify-between mt-2';
-        controls.innerHTML = `
-            <button class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded" onclick="prevModalPage()" ${currentModalPage <= 1 ? 'disabled' : ''}>←</button>
-            <button class="bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded" onclick="nextModalPage()" ${currentModalPage >= lastModalPage ? 'disabled' : ''}>→</button>
-        `;
-        availableIntegrationsList.appendChild(controls);
+        controls.className = 'flex flex-wrap gap-2 items-center';
+    
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded';
+        prevBtn.innerText = '←';
+        prevBtn.disabled = currentModalPage <= 1;
+        // prevBtn.onclick = () => changeModalPage(currentModalPage - 1);
+        prevBtn.setAttribute('data-page', currentModalPage - 1);
+        controls.appendChild(prevBtn);
+    
+        // Page numbers
+        for (let i = 1; i <= lastModalPage; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.innerText = i;
+            pageBtn.className = `px-3 py-1 rounded ${i === currentModalPage ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+            // pageBtn.onclick = () => changeModalPage(i);
+            pageBtn.setAttribute('data-page', i);
+            controls.appendChild(pageBtn);
+        }
+    
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded';
+        nextBtn.innerText = '→';
+        nextBtn.disabled = currentModalPage >= lastModalPage;
+        // nextBtn.onclick = () => changeModalPage(currentModalPage + 1);
+        nextBtn.setAttribute('data-page', currentModalPage + 1);
+        controls.appendChild(nextBtn);
+    
+        paginationDiv.appendChild(controls);
+
+        paginationDiv.addEventListener('click', function (e) {
+            if (e.target && e.target.tagName === 'BUTTON') {
+                const page = parseInt(e.target.getAttribute('data-page'), 10);
+                if (!isNaN(page)) {
+                    changeModalPage(page);
+                }
+            }
+        });
     };
     
-    
+    function changeModalPage(page) {
+        if(page >=1 && page <= lastModalPage){
+            currentModalPage = page;
+            $('#preloader').fadeIn()
+            renderAvailableIntegrations();
+            $('#preloader').fadeOut()
+        }
+    }
+
 
     window.prevModalPage = () => {
         if (currentModalPage > 1) {
@@ -200,4 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderIntegrations();
+});
+
+
+window.addEventListener('load', () => {
+    if(localStorage.getItem('IntegerationList'))
+        localStorage.removeItem('IntegerationList');
 });
