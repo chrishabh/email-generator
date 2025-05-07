@@ -16,7 +16,7 @@ class CommonBatchService{
             $count = 0;
             foreach($user_data as $value)
             {
-                Notification::route('mail', $value['email'])->notify(new ConfirmationCode('Action Required: Complete Your Email Verification on bouncee.net',[],'verification-action-required'));
+                Notification::route('mail', $value['email'])->notify(new ConfirmationCode("Bouncee Email Verification Completed – Log In Now",[],'notice-verification-done'));
                 echo "Email Triggered to: " .$value['email']; 
                 echo "\n"; 
                 $count++;
