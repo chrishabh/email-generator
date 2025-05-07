@@ -79,10 +79,10 @@
                     <form method="POST" accept-charset="utf-8" id="signUpForm" action="{{ route('signup') }}">
                         @csrf
                         {{-- <div style="display:none;"><input type="hidden" name="_method" value="POST"></div> --}}
-                        <div class="sign-inp-row">
+                        <!-- <div class="sign-inp-row"> -->
                             <!-- Custom select structure -->
 
-                            <select
+                            <!-- <select
                                 class="nbemails {{ $errors->has('no_of_email_verification') ? 'validation-error' : '' }}"
                                 name="no_of_email_verification" onchange="" onclick="return false;" id=""
                                 placehodlder="">
@@ -97,7 +97,7 @@
                                     {{ $message }}
                                 @enderror
                             </div>
-                        </div>
+                        </div> -->
                         <div class="sign-inp-row">
                             <input type="text" name="name" placeholder="Enter your full name"
                                 class="{{ $errors->has('name') ? 'validation-error' : '' }}" maxlength="77"
