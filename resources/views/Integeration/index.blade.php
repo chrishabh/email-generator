@@ -1,7 +1,7 @@
 @extends('layout.main')
 @php
     // $headerData = array();
-    $headerData['whichPageRequest'] = 'integrationPage';
+    $headerData['whichPageRequest'] = 'Integration';
 @endphp
 @section('main-section')
     @push('styles')
