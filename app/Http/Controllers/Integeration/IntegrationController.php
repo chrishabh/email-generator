@@ -53,7 +53,6 @@ class IntegrationController extends Controller
         }
         $perPage = $validated['perPage'] ?? 10;  
         $tools   = IntegrationTool::paginate($perPage);
-        
         $toolsData = $tools->getCollection()->map(function ($tool) {
             // Add the icon_url using the mutator
             $tool->icon_url = $tool->icon_url; 
