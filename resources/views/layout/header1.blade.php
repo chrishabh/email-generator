@@ -68,6 +68,8 @@
             <li class=""><a href="/bulk">Bulk Verifications</a></li>
             {{-- <li class=""><a href="/reference">API Docs</a></li> --}}
             <li><a href="/pricing">Buy Credits</a></li> 
+            <li><a href="/Api">API</a></li>
+            <li><a href="/Integration">Integration</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/payment-history">Payment History</a></li>
             @if($role == 'admin')
@@ -100,6 +102,7 @@
                         {{-- <li class=""><a href="/reference">API Docs</a></li> --}}
                         <li><a href="/pricing">Buy Credits</a></li>
                         <li><a href="/Api">API</a></li>
+                        <li><a href="/Integration">Integration</a></li>
                     </ul>
                 </div>
                 <div class="mainheader--right">

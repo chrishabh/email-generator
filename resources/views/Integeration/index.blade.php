@@ -5,6 +5,40 @@
 @endphp
 @section('main-section')
     @push('styles')
+    <style>
+        .border-animation {
+          position: relative;
+          z-index: 0;
+          overflow: hidden;
+        }
+      
+        .border-animation::before {
+          content: '';
+          position: absolute;
+          z-index: -1;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(130deg, #ff00cc, #3333ff, #00ffcc, #ffcc00);
+          background-size: 300% 300%;
+          animation: borderMove 4s linear infinite;
+          border-radius: inherit;
+          filter: blur(3px);
+        }
+      
+        @keyframes borderMove {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      </style>
         {{-- <link rel="stylesheet" href="{{ asset('api/css/style.css') }}">  --}}
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
@@ -22,12 +56,14 @@
     <div id="custom-api-section" class="container1 mx-auto p-4">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">Connected Integrations</h1>
-            <button id="openModal" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Add Integration</button>
+            <button id="openModal" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-xl">Add Integration</button>
         </div>
 
-        <div id="integrationsList" class="bg-white rounded-lg shadow p-4"></div>
+        <div id="integrationsList" class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-center">Click on 'Add Integration' to add a new integration...</p>
+        </div>
 
-        <div class="flex justify-between items-center mt-4">
+        {{-- <div class="flex justify-between items-center mt-4">
             <div>
                 <label for="itemsPerPage" class="mr-2">Items per page:</label>
                 <select id="itemsPerPage" class="border rounded px-2 py-1">
@@ -44,7 +80,7 @@
                     →
                 </button>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Modal -->

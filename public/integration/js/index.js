@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let currentModalPage = 1;
     let lastModalPage = 1;
-    let itemsPerPage = parseInt(itemsPerPageSelect.value);
+    let itemsPerPage =  20;
 
     const fetchIntegrations = async () => {
         try {
@@ -27,11 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderIntegrations = async () => {
-        const data = await fetchIntegrations();
+        // const data = await fetchIntegrations();
+        const data = [];
         integrationsList.innerHTML = '';
 
         if (data.length === 0) {
-            integrationsList.innerHTML = '<p class="text-gray-500">No integrations found.</p>';
+            integrationsList.innerHTML = `<p class="text-gray-500 text-center">Click on 'Add Integration' to add a new integration..</p>`;
             return;
         }
 
@@ -101,9 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img class="w-10" src="${integration.icon_url}" />
                     <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.name}</span>
                 </div>
-                <button class="bg-blue-400 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md"
-                    ${isMailchimp ? `onclick="window.location.href='/mailchimp/login'"` : `onclick="addIntegration(${integration.id})"`}>
-                    Select
+                <button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">
+                Coming Soon
                 </button>
             `;
             availableIntegrationsList.appendChild(item);
@@ -226,23 +226,23 @@ document.addEventListener('DOMContentLoaded', () => {
         integrationModal.classList.add('hidden');
     });
 
-    itemsPerPageSelect.addEventListener('change', () => {
-        itemsPerPage = parseInt(itemsPerPageSelect.value);
-        currentPage = 1;
-        renderIntegrations();
-    });
+    // itemsPerPageSelect.addEventListener('change', () => {
+    //     itemsPerPage = parseInt(itemsPerPageSelect.value);
+    //     currentPage = 1;
+    //     renderIntegrations();
+    // });
 
-    prevPageButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderIntegrations();
-        }
-    });
+    // prevPageButton.addEventListener('click', () => {
+    //     if (currentPage > 1) {
+    //         currentPage--;
+    //         renderIntegrations();
+    //     }
+    // });
 
-    nextPageButton.addEventListener('click', () => {
-        currentPage++;
-        renderIntegrations();
-    });
+    // nextPageButton.addEventListener('click', () => {
+    //     currentPage++;
+    //     renderIntegrations();
+    // });
 
     renderIntegrations();
 });
