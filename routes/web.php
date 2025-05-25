@@ -40,6 +40,7 @@ try{
         Route::post('/recovery',[LoginController::class,'resetPassword']); 
         Route::get('/verification',[RegisterController::class,'showVerificatinForm'])->name('verification');
         Route::post('/verification',[RegisterController::class,'sendVerificationEmail']); 
+        Route::get('/integration-tools', [IntegrationController::class, 'publicIntegrationPage'])->name('integration-tool');
       
         Route::get('/single-verification', function () {
             return view('single-verification');

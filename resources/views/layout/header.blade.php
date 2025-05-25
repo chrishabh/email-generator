@@ -72,9 +72,14 @@
                                 Single Verification
                             </a>
                         </li>
-                        <li class="nav-item header-item-extra-padding-bulk">
+                        <li class="nav-item header-item-extra-padding">
                             <a class="nav-link" href="/bulk-verification">
                                 Bulk Verification
+                            </a>
+                        </li>
+                        <li class="nav-item header-item-extra-padding">
+                            <a class="nav-link" href="/integration-tools">
+                               Integrations
                             </a>
                         </li>
                         <li class="nav-item header-item-extra-padding-bulk">

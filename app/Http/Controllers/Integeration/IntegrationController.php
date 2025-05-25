@@ -69,4 +69,18 @@ class IntegrationController extends Controller
         ])->header('Content-Type','application/json; charset=UTF-8');;
     }
 
+    public function publicIntegrationPage(Request $request)
+    { 
+        $tools   = IntegrationTool::whereNull('deleted_at')->get();
+        $tools->transform(function ($tool) {
+            // Add the icon_url using the mutator
+            $tool->icon_url = "integration/integerated-icon/".$tool->icon_url; 
+            return $tool;
+        });
+        $tools = $tools->toArray();
+        return view('publicIntegration.integration')->with(compact('tools')); 
+
+        
+    }
+
 }
