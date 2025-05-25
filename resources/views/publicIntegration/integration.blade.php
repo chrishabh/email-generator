@@ -135,7 +135,7 @@ $headerData['whichPageRequest'] ='singlePage';
     <div class="container mx-auto px-4 py-12 md:py-16">
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-brand-dark-blue mb-4" style="margin-top: 4em;">Integrations</h1>
-            <p class="text-lg md:text-xl text-brand-gray">Bouncify allows effortless integration with web services of your choice</p>
+            <p class="text-lg md:text-xl text-brand-gray">Bouncee allows effortless integration with web services of your choice</p>
         </div>
 
         <div class="row">
