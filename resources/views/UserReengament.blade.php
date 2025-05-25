@@ -47,7 +47,7 @@
         <p>To welcome you back, we’re offering you <strong>exclusive free access</strong> to Bouncee for a limited time. No fees, no credit card required — just powerful tools at your fingertips.</p>
 
         <p style="text-align: center; margin: 30px 0;">
-            <a href="{{ url('/login') }}" class="btn">Log In and Start Free</a>
+            <a href="{{ url('/signin') }}" class="btn">Log In and Start Free</a>
         </p>
 
         <p>If you have any questions or need help getting started again, feel free to reach out. We’re always happy to assist.</p>
