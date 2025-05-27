@@ -29,14 +29,28 @@ class IntegrationController extends Controller
 
     public function getListOfIntegeratedTools(Request $request)
     {
-        $perPage = $request->get('perPage', 10);
+        $rules = [
+            'perPage' => 'nullable|integer|min:1|max:100', // Ensure perPage is an integer between 1 and 100
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            $response = response()->json(['success'=>false,'error'=>$validator],401);  
+            $response->headers->set('Content-Type', 'application/json; charset=UTF-8'); 
+            return $response;
+        }
+
+        $perPage = $validated['perPage'] ?? 10;  
         $integrations = Integration::with('tool')
             ->where('status', 'verified')
             ->paginate($perPage);
 
         return response()->json([
-            'data' => $integrations->items(),
-            'total' => $integrations->total()
+            'data'          => $integrations->items(),
+            'total'         => $integrations->total(), 
+            'currentPage'   => $integrations->currentPage(),
+            'lastPage'      => $integrations->lastPage(),
+            "success"       => true,
+            'message'       => 'Tools fetched successfully',
         ]);
     }
 

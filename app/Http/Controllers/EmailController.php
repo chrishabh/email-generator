@@ -7,6 +7,7 @@ use App\Jobs\ExportVerifiedEmailsJob;
 use App\Jobs\VerifyEmailsJob;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\EmailVerificationLog;
+use App\Models\Integration;
 use App\Models\LeadFinder;
 use App\Models\LeadFinderPCEmailLogs;
 use App\Models\singleVerification;
@@ -365,27 +366,34 @@ class EmailController extends Controller
         $data = uploadedAndDownloadFileName::getAllData($fileId,$userid,$searchContent );
         $fileData =array();
         if(!empty($data)){
-            foreach($data as $key=>$value){  
-                    $countOfValidAndInvalidEmails  =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
+            foreach($data as $key=>$value){ 
+                $iconUrl = null;
+                if($value->is_tools_integerate_email=='1'){ 
+                    $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->first()->toArray(); 
+                    $iconUrl = $integrated['tool']['icon_url'];
+                }
+                    $countOfValidAndInvalidEmails         =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     // pp($countOfValidAndInvalidEmails);
-                    $collectionOfCount             =  collect($countOfValidAndInvalidEmails)->sum('total_count');
+                    $collectionOfCount                    =  collect($countOfValidAndInvalidEmails)->sum('total_count');
                     // $validEmailCount               =  $collectionOfCount->firstWhere('status', 'valid')['total_count'] ?? 0;
                     // $invalidEmailCount             =  $collectionOfCount->firstWhere('status', 'invalid')['total_count'] ?? 0;
-                    $fileNameWithExtension         =  basename($value->fileName); 
-                    $fileName                      =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
-                    $parts                         =  explode('_', $fileName);  
-                    $fileName                      =  $parts[0];  
-                    $fileExtension                 =  pathinfo($fileNameWithExtension, PATHINFO_EXTENSION); // Get file extension
-                    $fileName                      =  $fileName.'...'.$fileExtension;
-                    $dataArr['fileName']           =  $fileName;
-                    $dataArr['created_at']         =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
+                    $fileNameWithExtension                =  basename($value->fileName); 
+                    $fileName                             =  pathinfo($fileNameWithExtension, PATHINFO_FILENAME);  
+                    $parts                                =  explode('_', $fileName);  
+                    $fileName                             =  $parts[0];  
+                    $fileExtension                        =  pathinfo($fileNameWithExtension, PATHINFO_EXTENSION); // Get file extension
+                    $dataArr['fileName']                  =  ($value->is_tools_integerate_email=='1' &&  $value->tool_name) ? $value->tool_name:$fileName.'...'.$fileExtension;
+                    // $fileName                      =  $fileName.'...'.$fileExtension;
+                    $dataArr['iconURL']                   =  $iconUrl; 
+                    $dataArr['is_tools_integerate_email'] = $value->is_tools_integerate_email; 
+                    $dataArr['created_at']                =  ($value->created_at)? Carbon::parse($value->created_at)->format('n/j/y, g:i A'):null; 
                     // $dataArr['totalValidEmail']    =  $validEmailCount; 
-                    $dataArr['verifyStatusData']   =  $countOfValidAndInvalidEmails;
-                    $dataArr['total']              =  $collectionOfCount??0; 
-                    $dataArr['verificationStatus'] =  $value->verificationStatus; 
-                    $dataArr['userId']             =  $value->user_id; 
-                    $dataArr['fileId']             =  $value->id; 
-                    $dataArr['isDownloadFileLocation'] =  (empty($value->downloadFileLocation) ||  ($value->downloadFileLocation==null) ) ? '0' : '1'; 
+                    $dataArr['verifyStatusData']          =  $countOfValidAndInvalidEmails;
+                    $dataArr['total']                     =  $collectionOfCount??0; 
+                    $dataArr['verificationStatus']        =  $value->verificationStatus; 
+                    $dataArr['userId']                    =  $value->user_id; 
+                    $dataArr['fileId']                    =  $value->id; 
+                    $dataArr['isDownloadFileLocation']    =  (empty($value->downloadFileLocation) ||  ($value->downloadFileLocation==null) ) ? '0' : '1'; 
                     array_push($fileData,$dataArr);
             }
         }

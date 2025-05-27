@@ -9,6 +9,8 @@ class IntegrationTool extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'icon','slug'];
+    protected $appends = ['icon_url'];
+    
     public function integrations()
     {
         return $this->hasMany(Integration::class, 'tool_id');

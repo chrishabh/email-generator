@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevPageButton = document.getElementById('prevPage');
     const nextPageButton = document.getElementById('nextPage');
     const integrationModal = document.getElementById('integrationModal');
+    const ImportEmailsModal    = document.getElementById('ImportEmails');
     const availableIntegrationsList = document.getElementById('availableIntegrationsList');
+    const availableImportEmails     = document.getElementById('availableImportEmails');
     const openModalButton = document.getElementById('openModal');
     const closeModalButton = document.getElementById('closeModal');
     const fullScreenLoader = document.getElementById('fullScreenLoader');
@@ -12,12 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const notyf = new Notyf();
     let currentPage = 1;
     let currentModalPage = 1;
-    let lastModalPage = 1;
-    let itemsPerPage = parseInt(itemsPerPageSelect.value);
+    let lastModalPage = lastPage = 1;
+    let itemsPerPage = 10;
 
     const fetchIntegrations = async () => {
         try {
             const response = await axios.get(`/integrations?page=${currentPage}&limit=${itemsPerPage}`);
+            if (!response.data.success) {
+                notyf.error(response.data.error || 'Error fetching available integrations');
+                return {
+                    data: [],
+                    total: 0,
+                    currentPage: 1,
+                    lastPage: 1
+                };
+            }
+
             return response.data;
         } catch (error) {
             console.error('Error fetching integrations:', error);
@@ -30,21 +42,88 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await fetchIntegrations();
         integrationsList.innerHTML = '';
 
-        if (data.length === 0) {
+        if (!data || !data.data || data.data.length === 0) {
             integrationsList.innerHTML = '<p class="text-gray-500">No integrations found.</p>';
             return;
         }
-
-        data.forEach(integration => {
+    
+        lastPage = data.lastPage || 1;
+        data.data.forEach(integration => {
             const card = document.createElement('div');
-            card.className = 'bg-gray-100 p-4 rounded shadow mb-4';
-            card.innerHTML = `
-                <h2 class="text-lg font-semibold">${integration.name}</h2>
-                <p class="text-gray-600">${integration.description}</p>
+            card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
+            card.innerHTML = ` 
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-4">
+                        <img class="w-10" src="${integration.tool.icon_url}" />
+                        <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.tool.name}</span>
+                    </div>
+ 
+                    <h2 class="text-[13px] font-700">${integration.name}-${integration.emails}</h2>
+                    <h2 class="text-[13px] font-bold uppercase">${integration.status==='verified' ?'<span class="text-green-800 font-semibold">active</span>' :'<span class="text-red-800 font-semibold"> N/A </span>'}</h2>
+                    <button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}')" class="bg-blue-400 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-xl">Select</button>
+                    <span class="cursor-pointer text-xl">&#8942;</span>
+                </div>
             `;
             integrationsList.appendChild(card);
         });
+
+
+        const listPaginationDiv = document.getElementById('list-pagination');
+        listPaginationDiv.innerHTML = ''; // Clear previous
+    
+        const controls = document.createElement('div');
+        controls.className = 'flex flex-wrap gap-2 items-center';
+    
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded';
+        prevBtn.innerText = '←';
+        prevBtn.disabled = currentPage <= 1;
+        // prevBtn.onclick = () => changeModalPage(currentModalPage - 1);
+        prevBtn.setAttribute('data-page', currentPage - 1);
+        controls.appendChild(prevBtn);
+
+
+        // Page numbers
+        for (let i = 1; i <= lastPage; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.innerText = i;
+            pageBtn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+            // pageBtn.onclick = () => changeModalPage(i);
+            pageBtn.setAttribute('data-page', i);
+            controls.appendChild(pageBtn);
+        }
+    
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'bg-gray-300 hover:bg-gray-400 px-3 py-1 rounded';
+        nextBtn.innerText = '→';
+        nextBtn.disabled = currentPage >= lastPage;
+        // nextBtn.onclick = () => changeModalPage(currentModalPage + 1);
+        nextBtn.setAttribute('data-page', currentPage + 1);
+        controls.appendChild(nextBtn);
+    
+        listPaginationDiv.appendChild(controls);
+
+        listPaginationDiv.addEventListener('click', function (e) {
+            if (e.target && e.target.tagName === 'BUTTON') {
+                const page = parseInt(e.target.getAttribute('data-page'), 10);
+                if (!isNaN(page)) {
+                    changeModalPage(page);
+                }
+            }
+        });
     };
+
+ 
+    function changeModalPage(page) {
+        if(page >=1 && page <= lastPage){
+            currentPage = page;
+            $('#preloader').fadeIn()
+            renderIntegrations();
+            $('#preloader').fadeOut()
+        }
+    }
 
     const fetchAvailableIntegrations = async () => {
         try {
@@ -224,13 +303,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModalButton.addEventListener('click', () => {
         integrationModal.classList.add('hidden');
+        availableImportEmails.classList.add('hidden');
     });
 
-    itemsPerPageSelect.addEventListener('change', () => {
-        itemsPerPage = parseInt(itemsPerPageSelect.value);
-        currentPage = 1;
-        renderIntegrations();
-    });
+    // itemsPerPageSelect.addEventListener('change', () => {
+    //     itemsPerPage = parseInt(itemsPerPageSelect.value);
+    //     currentPage = 1;
+    //     renderIntegrations();
+    // });
 
     prevPageButton.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -243,6 +323,63 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage++;
         renderIntegrations();
     });
+
+
+    window.openModalForImport=(toolName,imageUrl,name,userId,token,mc_dc)=>{
+        const card = document.createElement('div');
+        card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
+        card.innerHTML = ` 
+                <div class="flex items-center gap-4  pb-4 pt-2">
+                    <img class="w-10" src="${imageUrl}" />
+                    <div>
+                        <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${toolName}</span>
+                        <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${name}</span>
+                    </div> 
+                </div>
+            <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                <h2 class="text-[18px] font-bolder text-capitalize">${name}</h2>
+                <button onclick="ImportData('${toolName}',${userId},'${token}','${mc_dc}')" class="bg-blue-400 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-xl">Import</button>
+            </div>
+            `; 
+        availableImportEmails.innerHTML=card.outerHTML; 
+        ImportEmailsModal.classList.remove('hidden');
+    }
+
+
+    
+    window.ImportData = async (toolName, userId, token,mc_dc) => {
+        try {
+            $('#preloader').fadeIn()
+            const response = await axios.get(`/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&token=${token}&mc=${mc_dc}`);
+            if (!response.data.success) {
+                notyf.error(response.data.error || 'Error fetching available integrations');
+                $('#preloader').fadeIn()
+                ImportEmailsModal.classList.add('hidden');
+                // return {
+                //     data: [],
+                //     total: 0,
+                //     currentPage: 1,
+                //     lastPage: 1
+                // };
+            }
+            else if(response.data.success){
+                 $('#preloader').fadeIn()
+                notyf.success(response.data.message || 'Data imported successfully!'); 
+                setTimeout(() => {
+                    ImportEmailsModal.classList.add('hidden');
+                    location.href = '/bulk';  
+                }, 2000); 
+            }      
+        } catch (error) {
+            $('#preloader').fadeIn()
+            console.error('Error fetching integrations:', error);
+            notyf.error('Error fetching integrations');
+            // return [];
+        }
+    
+        console.log('Importing data for', toolName);
+    
+    }
 
     renderIntegrations();
 });

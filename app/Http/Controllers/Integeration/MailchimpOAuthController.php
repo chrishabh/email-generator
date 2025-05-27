@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Integeration;
 
 use App\Http\Controllers\Controller;
+use App\Models\BulkUploadEmailFileData;
 use App\Models\Integration;
 use App\Models\IntegrationTool;
+use App\Models\uploadedAndDownloadFileName;
 use Illuminate\Http\Request; 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class MailchimpOAuthController extends Controller
@@ -53,11 +57,16 @@ class MailchimpOAuthController extends Controller
                 ]); 
 
                 $meta = json_decode($metaResponse->getBody(), true);
+                $exists = Integration::where('mc_user_id', $meta['user_id'])->exists();
+                if ($exists) { 
+                    Session::flash('error', 'This Mailchimp account is already connected.');
+                    return redirect('/tools');
+                }
                 Session::put('mc_token', $accessToken);
                 Session::put('mc_dc', $meta['dc']);
                 Session::put('mc_user_id', $meta['user_id']);
                 Session::put('mc_', $meta); 
-                $integration = new Integration();
+                $integration                = new Integration();
                 $integration->tool_id       = $tool->id;
                 $integration->mc_token      = $accessToken;
                 $integration->mc_dc         = $meta['dc'];
@@ -76,8 +85,8 @@ class MailchimpOAuthController extends Controller
             return redirect('/tools');
 
         }catch (\Exception $e) {
-        // Flash error message 
-        dd($e);
+        // Flash error message  
+            echo $e->getMessage();
             Session::flash('error', 'Failed to connect Mailchimp. Please try again.'); 
             return redirect('/tools');
         } 
@@ -85,39 +94,115 @@ class MailchimpOAuthController extends Controller
 
 
 
-    public function validateEmails()
+    public function validateEmails(Request $request)
     {
-        $accessToken = Session::get('mc_token');
-        $dc = Session::get('mc_dc');
+        $userId          = $request->query('userId');
+        $token           = $request->query('token'); 
+        $mc_dc           = $request->query('mc'); 
+        $toolName        = $request->query('toolName'); 
+        $integeration_id = $request->query('integeration_id'); 
 
+         if(!$userId || !$token || !$mc_dc || !$toolName || !$integeration_id) {
+            return response()->json(
+            [
+                'message' => 'Unauthorized',
+                'success' => false,
+                'error' => 'UserId and token are required'
+            ], 401);
+        }
+
+        // $exists = Integration::where('mc_user_id', $userId)->where('mc_dc',$mc_dc)->where('mc_token',$token)->exists();
+
+        // if(!$exists) {
+        //     return response()->json(
+        //     [
+        //         'message' => 'Unauthorized',
+        //         'success' => false,
+        //         'error' => 'Invalid userId, token or data center'
+        //     ], 401);
+        // }
+
+        // $accessToken = Session::get('mc_token');
+        // $dc = Session::get('mc_dc');
+        // if(!$accessToken){
+            $accessToken = $token;
+            $dc          = $mc_dc; // Default data center if not set
+        // }
         $client = new Client([
             'base_uri' => "https://$dc.api.mailchimp.com/3.0/",
             'headers' => ['Authorization' => "OAuth $accessToken"]
-        ]);
+        ]); 
+        try {
+            DB::beginTransaction(); // Start DB transaction
 
-        // 1. Get Lists
-        $lists = json_decode($client->get('lists')->getBody(), true);
-        if (empty($lists['lists'])) return 'No lists found';
+            // Step 1: Get Lists
+            $lists = json_decode($client->get('lists')->getBody(), true);
+            if (empty($lists['lists'])) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'No lists found',
+                    'success' => false,
+                    'error' => 'No Mailchimp lists available for this account'
+                ], 404);
+            }
 
-        $listId = $lists['lists'][0]['id']; // first list
+            $listId = $lists['lists'][0]['id']; 
+            // Step 2: Get members
+            $members = json_decode($client->get("lists/$listId/members")->getBody(), true);
+            $emails = array_column($members['members'], 'email_address'); 
+            $results = []; 
+            $upload = new uploadedAndDownloadFileName();
+            $upload->fileName                  = $toolName.' Import - ' . now()->format('Ymd_His');
+            $upload->list_id                   = $listId;
+            $upload->user_id                   = Auth::user()->id;
+            $upload->tool_name                 = $toolName;
+            $upload->integeration_id           = $integeration_id;
+            $upload->mc_user_id                = $userId;
+            $upload->mc_token                  = $token;
+            $upload->is_tools_integerate_email = '1';
+            $upload->uploadedFileLocation      = NULL;
+            $upload->downloadFileName          = NULL;
+            $upload->downloadFileLocation      = NULL;
+            $upload->created_at                = now();
+            $upload->updated_at                = now(); 
+            $upload->save();
+            $uploadId                          = $upload->id;
+            foreach ($emails as $email) {
+                // Optionally validate via Bouncify here...
 
-        // 2. Get members
-        $members = json_decode($client->get("lists/$listId/members")->getBody(), true);
-        $emails = array_column($members['members'], 'email_address');
+                // Step 3: Save each email
+                $record = new BulkUploadEmailFileData();
+                $record->email                     = $email;
+                $record->file_id                   = $uploadId;
+                $record->importedBy                = Auth::user()->id;
+                $record->is_tools_integerate_email = '1';
+                $record->type                      = 'bulk';
+                $record->created_at                = now();
+                $record->updated_at                = now(); 
+                $record->save();
+                $results[] = ['email' => $email];
+            }
 
-        // 3. Validate with Bouncify
-        $results = [];
-        $bouncify = new Client(['base_uri' => 'https://api.bouncify.io/v1/']);
-        foreach ($emails as $email) {
-            $res = $bouncify->get('email/verify', [
-                'query' => ['email' => $email],
-                'headers' => ['Authorization' => 'Bearer ' . env('BOUNCIFY_API_KEY')]
-            ]);
-            $data = json_decode($res->getBody(), true);
-            $results[] = ['email' => $email, 'status' => $data['result']];
+            DB::commit(); // Commit DB transaction 
+            // return redirect('/tools')->with([
+            //     'success' => 'Emails validated and saved successfully!',
+            //     'uploadId' => $uploadId,
+            //     'results' => $results
+            // ]);
+             return response()->json([
+                'message' => 'Emails validated and saved successfully!',
+                'success' => true,
+                'results' => $results
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Roll back DB transaction on error
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return view('mailchimp.results', compact('results'));
     }
 
 }
