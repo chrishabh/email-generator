@@ -188,6 +188,7 @@
         <div class="ball"></div>
       </div>
     <section class="mt-25"></section>
+    @include('support')
 @endsection
 
  

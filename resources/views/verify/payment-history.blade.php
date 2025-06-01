@@ -225,5 +225,5 @@
             });
     }
 </script>
-
+@include('support')
 @endsection

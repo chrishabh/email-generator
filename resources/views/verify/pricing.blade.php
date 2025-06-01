@@ -115,5 +115,5 @@
    <!-- <div class="flex"> -->
    <x-auth-pricing /> 
    <!-- </div> -->
- 
+   @include('support')
 @endsection

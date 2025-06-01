@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordFormRequest;
 use App\Http\Requests\Auth\SignInFormRequest;
+use App\Models\create_user_support;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Notifications\ConfirmationCode;
+use App\Notifications\SupportRequestNotification;
 use App\Services\Auth\SignInService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 
@@ -149,5 +152,28 @@ class LoginController extends Controller
     //     }
     //     return  response()->json(['message' => "Something Went Wrong!"]);
     // }
+
+    public function supportSend(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'message' => 'required|string|max:1000',
+        ]);
+
+        create_user_support::addSupport(Auth::id(), $validated['email'], $validated['message']);
+
+        $adminEmails = explode(',', envparam('FAILED_JOB_ADMIN_EMAIL'));
+        $validAdminEmails = array_filter($adminEmails, function ($email) {
+            return filter_var(trim($email), FILTER_VALIDATE_EMAIL);
+        });
+
+        foreach($validAdminEmails as $value)
+        {
+            Notification::route('mail', $value['email'])->notify(new SupportRequestNotification("Bouncee: New Support Request", ['email' => $validated['email'], 'messageContent' => $validated['message']], 'support-email'));
+
+        }
+
+        return response()->json(['message' => 'Support email sent']);
+    }
 
 }
