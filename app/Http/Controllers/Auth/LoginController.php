@@ -162,7 +162,7 @@ class LoginController extends Controller
 
         create_user_support::addSupport(Auth::id(), $validated['email'], $validated['message']);
 
-        $adminEmails = explode(',', envparam('FAILED_JOB_ADMIN_EMAIL'));
+        $adminEmails = explode(',', envparam('SUPPORT_EMAILS'));
         $validAdminEmails = array_filter($adminEmails, function ($email) {
             return filter_var(trim($email), FILTER_VALIDATE_EMAIL);
         });
