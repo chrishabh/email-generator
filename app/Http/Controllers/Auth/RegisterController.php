@@ -37,8 +37,9 @@ class RegisterController extends Controller
 
     public function signup(Request $request)
     {
-         try {
-            $recaptchaResponse = $request->input('g-recaptcha-response');
+        //  try {
+            //$recaptchaResponse = $request->input('g-recaptcha-response');
+            $recaptchaResponse = null;
             $userIp = $request->ip();
             // Log the full signup request
             $signupLog = SignupLog::create([
@@ -63,10 +64,10 @@ class RegisterController extends Controller
             
             return RegisterService::signup($request,$signupLog);
 
-        } catch (\Throwable $th) {
-            \Illuminate\Support\Facades\Log::error('Registration failed: ' . $th->getMessage());
-            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
-        }
+        // } catch (\Throwable $th) {
+        //     \Illuminate\Support\Facades\Log::error('Registration failed: ' . $th->getMessage());
+        //     return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
+        // }
  
     }
 
