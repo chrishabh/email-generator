@@ -167,9 +167,9 @@ class LoginController extends Controller
             return filter_var(trim($email), FILTER_VALIDATE_EMAIL);
         });
 
-        foreach($validAdminEmails as $value)
+        foreach($validAdminEmails as $email)
         {
-            Notification::route('mail', $value['email'])->notify(new SupportRequestNotification("Bouncee: New Support Request", ['email' => $validated['email'], 'messageContent' => $validated['message']], 'support-email'));
+            Notification::route('mail', $email)->notify(new SupportRequestNotification("Bouncee: New Support Request", ['email' => $validated['email'], 'messageContent' => $validated['message']], 'support-email'));
 
         }
 
