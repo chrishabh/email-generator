@@ -163,7 +163,7 @@ class LoginController extends Controller
         if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        SendSupportEmail::dispatch($request->email, $request->message)->priorty('high');
+        SendSupportEmail::dispatch($request->email, $request->message);
         create_user_support::addSupport(Auth::id(), $validated['email'], $validated['message']);
         return response()->json(['message' => 'Support email sent']);
     }
