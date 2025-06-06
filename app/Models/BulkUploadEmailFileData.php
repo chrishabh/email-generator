@@ -44,6 +44,10 @@ class BulkUploadEmailFileData extends Model
     }
 
 
+    public function uploadedAndDownloadFileName()
+    {
+    return $this->belongsTo(uploadedAndDownloadFileName::class, 'file_id', 'id');
+    }
     
     
 }

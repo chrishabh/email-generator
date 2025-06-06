@@ -12,6 +12,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class MailchimpOAuthController extends Controller
 {
@@ -158,6 +159,7 @@ class MailchimpOAuthController extends Controller
             $upload->tool_name                 = $toolName;
             $upload->integeration_id           = $integeration_id;
             $upload->mc_user_id                = $userId;
+            $upload->mc_dc                     = $mc_dc;
             $upload->mc_token                  = $token;
             $upload->is_tools_integerate_email = '1';
             $upload->uploadedFileLocation      = NULL;
@@ -204,5 +206,91 @@ class MailchimpOAuthController extends Controller
             ], 500);
         }
     }
+
+    public function unsubscribeSelectedEmailsFromAllLists(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'emails' => 'required|array|min:1',
+            'emails.*' => 'string',
+            'fileId' => 'nullable|integer' // Optional if you're tracking fileId
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'error' => $validator->errors()
+            ], 422);
+        }
+
+        $emailsToUnsubscribe = $request->input('emails');
+        $fileId = $request->input('fileId');
+        $emailsToUnsubscribeNew = [];
+        $file = uploadedAndDownloadFileName::find($fileId);
+        if(!$file){
+            return response()->json(['status'=>false,'message'=> 'data is not found.','error' => 'File not found'], 404);
+        }
+
+        $builkUploadEmailFileData  = $file->bulkUploadEmailFileData;
+        if(($builkUploadEmailFileData->isNotEmpty())){
+            $filteredEmails   = $builkUploadEmailFileData->whereIn('apiStatus',$emailsToUnsubscribe);
+            if($filteredEmails->isNotEmpty()){
+                $emailsToUnsubscribeNew = $filteredEmails->pluck('email')->toArray();
+            }  
+        }
+
+        if(empty($emailsToUnsubscribeNew)){
+            return response()->json(['status'=>false,'message'=> 'No emails to unsubscribe.','error' => 'No emails to unsubscribe'], 404);
+        }
+
+        $mcUserId            = $file->mc_user_id;
+        $accessToken         = $file->mc_token;
+        $tool_name           = $file->tool_name;
+        $list_id             = $file->list_id;
+        $integeration_id     = $file->integeration_id;
+        $dc                  = $file->mc_dc;  
+        $emailsToUnsubscribe = $emailsToUnsubscribeNew;  
+
+        if (!$accessToken || !$dc || empty($emailsToUnsubscribe)) {
+            return response()->json(['success'=>false,'message'=>'Missing token, data center, or email list','error' => 'Missing token, data center, or email list'], 400);
+        }
+
+        $client = new Client([
+            'base_uri' => "https://$dc.api.mailchimp.com/3.0/",
+            'headers' => [
+                'Authorization' => "OAuth $accessToken",
+                'Accept' => 'application/json',
+            ]
+        ]);
+
+        // Step 1: Get all lists
+        $listsResponse = $client->get('lists');
+        $lists = json_decode($listsResponse->getBody(), true)['lists'];
+
+        $results = []; 
+        // Step 2: Loop through each list and unsubscribe emails
+        foreach ($lists as $list) {
+            $listId = $list['id'];
+
+            foreach ($emailsToUnsubscribe as $email) {
+                $subscriberHash = md5(strtolower($email));
+
+                try {
+                    $client->patch("lists/$listId/members/$subscriberHash", [
+                        'json' => [
+                            'status' => 'unsubscribed'
+                        ]
+                    ]);
+                    $results[] = ['email' => $email, 'list' => $list['name'], 'status' => 'unsubscribed'];
+                } catch (\Exception $e) {
+                    $results[] = ['email' => $email, 'list' => $list['name'], 'status' => 'error', 'message' => $e->getMessage()];
+                }
+            }
+        }
+        // Step 3: Save results to the file
+        $file->unsubscribe_results = json_encode($results);
+        $file->save();
+        return response()->json(['status'=>true,'message'=>'Verification result for unsbscibe  has been completed','data'=> $results], 200);
+    }   
 
 }

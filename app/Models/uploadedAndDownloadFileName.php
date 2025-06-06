@@ -90,6 +90,10 @@ class uploadedAndDownloadFileName extends Model
         return $result;
     }
 
+    public function bulkUploadEmailFileData()
+    {
+        return $this->hasMany(BulkUploadEmailFileData::class, 'file_id', 'id');
+    }
 
 
      

@@ -369,8 +369,9 @@ class EmailController extends Controller
             foreach($data as $key=>$value){ 
                 $iconUrl = null;
                 if($value->is_tools_integerate_email=='1'){ 
-                    $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->first()->toArray(); 
-                    $iconUrl = $integrated['tool']['icon_url'];
+                    $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->first(); 
+                    if($integrated)
+                     $iconUrl = $integrated['tool']['icon_url'];
                 }
                     $countOfValidAndInvalidEmails         =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     // pp($countOfValidAndInvalidEmails);

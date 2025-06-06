@@ -94,6 +94,7 @@ try{
         Route::get('/mailchimp/login', [MailchimpOAuthController::class, 'redirectToMailchimp']);
         Route::get('/mailchimp/callback', [MailchimpOAuthController::class, 'handleCallback']);
         Route::get('/mailchimp/validate-emails', [MailchimpOAuthController::class, 'validateEmails']);
+        Route::post('/mailchimp/unsubscribe-emails', [MailchimpOAuthController::class, 'unsubscribeSelectedEmailsFromAllLists']);
 
 
         Route::prefix('profile')->group(function(){

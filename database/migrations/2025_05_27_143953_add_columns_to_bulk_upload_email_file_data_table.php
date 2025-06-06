@@ -19,7 +19,9 @@ class AddColumnsToBulkUploadEmailFileDataTable extends Migration
             $table->unsignedBigInteger('integeration_id')->nullable()->after('tool_name');
             $table->string('mc_user_id')->nullable()->after('tool_name');
             $table->string('mc_token')->nullable()->after('mc_user_id');
-            $table->enum('is_tools_integerate_email', [0, 1])->default(0)->after('mc_token');
+            $table->string('mc_dc')->nullable()->after('mc_token');
+            $table->enum('is_tools_integerate_email', [0, 1])->default(0)->after('mc_dc');
+            $table->json('unsubscribe_results')->nullable()->after('update_at');
         });
 
         Schema::table('bulk_upload_email_file_data', function (Blueprint $table) {

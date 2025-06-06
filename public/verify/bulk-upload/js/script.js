@@ -265,9 +265,8 @@ function showError(message) {
     }, 10000);
                              
 }
-
-
-function downloadCsvFile(event, fileid,totalValidEmail,c) {
+ 
+function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,c) {
     event.preventDefault();
     if(totalValidEmail==0){ 
         c.style.cursor = 'not-allowed'; 
@@ -275,6 +274,18 @@ function downloadCsvFile(event, fileid,totalValidEmail,c) {
         c.style.opacity = '0.5';
         return;
     }
+    if(isIntegerateTool===1){
+        const dataAttributeValue = c.getAttribute('data-status');
+        window.statusArray = JSON.parse(dataAttributeValue);
+        IntegerateFunction(event,fileid,isIntegerateTool,dataAttributeValue)
+        return
+    }
+    
+    // Show loader animation
+    const originalText = c.textContent;
+    c.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Downloading...';
+    c.disabled = true;
+    
     fetch('/export-data', {
         method: 'POST',
         headers: {
@@ -301,12 +312,22 @@ function downloadCsvFile(event, fileid,totalValidEmail,c) {
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url); // Clean up the URL object
+            
+            // Reset button state after download
+            c.innerHTML = originalText;
+            c.disabled = false;
         } else {
             console.error('Response is not a Blob:', blob);
+            // Reset button on error
+            c.innerHTML = originalText;
+            c.disabled = false;
         }
     })
     .catch(error => {
         console.error('An error occurred:', error.message);
+        // Reset button on error
+        c.innerHTML = originalText;
+        c.disabled = false;
     });
 
 }
@@ -482,4 +503,185 @@ function disableDownloadButton(){
             }
           });
          
-}
+} 
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const downloadTab = document.getElementById('downloadTab');
+    const uploadTab = document.getElementById('uploadTab'); 
+    const modal             = document.getElementById("popupModal");
+    const contentArea       = document.getElementById("popupContent");
+    let currentFileId       = null;
+    let currentIsIntegrated = null;
+    window.preloaderModal  = document.getElementById('preloader-modal');
+
+
+    if (downloadTab) {
+        downloadTab.addEventListener('click', () => {
+            setActiveTab('downloadTab');
+            loadDownloadContent(currentFileId);
+        });
+    }
+
+    if (uploadTab) {
+        uploadTab.addEventListener('click', () => {
+            setActiveTab('uploadTab');
+            loadUploadContent(currentFileId);
+        });
+    }
+
+
+    window.IntegerateFunction = function(event, fileId, isIntegerateTool) {
+        event.preventDefault();
+        modal.classList.remove('hidden');
+        currentFileId = fileId;
+        currentIsIntegrated = isIntegerateTool; 
+        setActiveTab('downloadTab');
+        loadDownloadContent(fileId);
+        modal.classList.add('hidden');
+    }
+
+    window.setActiveTab = function(tabId) {
+        const tabs = ['downloadTab', 'uploadTab'];
+        tabs.forEach(id => {
+        const tab = document.getElementById(id);
+        if (id === tabId) {
+            tab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            tab.classList.remove('text-gray-600');
+        } else {
+            tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            tab.classList.add('text-gray-600');
+        }
+        });
+    }
+
+    window.loadDownloadContent= function(fileId) {
+        contentArea.innerHTML = `
+        <p class="mb-4">Click the below button to start the result download</p>
+        <button id="downloadBtn" class="bg-[#3F51B5] text-white px-4 py-2 rounded rounded mx-auto">Download</button>
+
+        <div class="mt-4 text-sm text-gray-600">
+            <ol class="list-decimal pl-5 space-y-1">
+            <li><a href="#" class="text-blue-600 underline">Understanding Result</a></li>
+            <li>Please wait for the download to complete</li>
+            <li>The downloaded file is in CSV format</li>
+            </ol>
+        </div>
+        `;
+
+        document.getElementById("downloadBtn").addEventListener("click", (e) => {
+            downloadCsvFile(e, fileId, 1, '0', e.target);
+        });
+    }
+
+
+    window.loadUploadContent = function(fileId) { 
+        let checkboxHtml = '';
+        if (Array.isArray(statusArray) && statusArray.length > 0) {
+            statusArray.forEach(function(status) {
+                if (status) {
+                    // You can customize label and value as needed
+                    checkboxHtml += `<label class="md:text-[16px] text-[12px] capitalize font-[600]"><input type="checkbox" class="mr-1 status-checkbox w-4 h-4" value="${status}"> ${status}</label><br>`;
+                }
+            }); 
+        }
+        contentArea.innerHTML = `
+        <p class="mb-2">Select the results type to unsubscribe</p>
+
+        <div class="space-y-2 mb-4">
+            ${checkboxHtml}
+        </div>
+
+        <button id="uploadBtn" class="bg-[#3F51B5] text-white px-4 py-2 rounded mx-auto flex items-center gap-2">
+            <svg id="spinner" class="hidden w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+            </path>
+            </svg>
+            <span id="btnText">Export</span>
+        </button>
+
+        <div class="mt-4 text-sm text-gray-600">
+            <ol class="list-decimal pl-5 space-y-1">
+                <li><a href="#" class="text-blue-600 underline">Understanding Result</a></li>
+            </ol>
+        </div>
+
+        <div class="mt-4 bg-yellow-100 text-yellow-800 text-sm p-2 rounded">
+            Selected emails will be unsubscribed from all your lists.
+        </div>
+        `;
+
+        document.getElementById("uploadBtn").addEventListener("click", (e) => {
+            const checkboxes      = document.querySelectorAll('.status-checkbox'); 
+            let checkedStatusArray = []
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkedStatusArray.push(checkbox.value);
+                }
+
+
+            })
+
+            if(checkedStatusArray.length===0){
+                e.preventDefault();
+                alert('Please select at least one status to export.');
+                return
+            }
+
+             // Disable button and show spinner
+            const btn = document.getElementById('uploadBtn');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btnText');
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            spinner.classList.remove('hidden');
+                
+            fetch('/mailchimp/unsubscribe-emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    emails: checkedStatusArray,
+                    fileId: fileId
+                })
+            })
+            .then(async response => {
+                const data = await response.json(); 
+                if (!response.ok) {
+                    if (!response.status && data.error) {
+                        const errorMessages = Object.values(data.error).flat().join("\n");
+                        console.log(errorMessages); 
+                        notyf.error(data.message || "An error occurred while unsubscribing emails.");
+                    }
+                }else {
+                    if(response.status){ 
+                        console.log("Unsubscribe Result:", data);
+                        notyf.success(data.message || "Unsubscribe request processed successfully.");
+                    }
+                }
+            }).catch(error => {
+                console.error("Request failed:", error); 
+                notyf.success(error.message || "A network or server error occurred. Please try again later");
+            }).finally(() => {
+                // Enable button and hide spinner
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                spinner.classList.add('hidden');
+                modal.classList.add('hidden');
+            });
+        });
+    }
+
+    
+    window.closePopup = function() {
+        modal.classList.add('hidden');
+        contentArea.innerHTML = "";
+        currentFileId = null;
+        currentIsIntegrated = null;
+    }
+
+});

@@ -41,8 +41,8 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"> 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-  <script src="{{ asset('verify/bulk-upload/js/script.js') }}" type="text/javascript"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+        <script src="{{ asset('verify/bulk-upload/js/script.js') }}" type="text/javascript"></script>
     @endpush
     <section class="bulk-upload" id="upload--bulk">
         <div class="container1">
@@ -66,7 +66,10 @@
                     <div class="upload-file--list">
 
                         @if (isset($fileData) && !empty($fileData))
-                            @foreach ($fileData as $key=>$value )
+                            @php
+                                $statusArray = array();
+                            @endphp
+                            @foreach ($fileData as $key=>$value ) 
                                 @if ($value['verificationStatus']=='verified')
                                     <div class="info-line flex" id="list_{{$value['fileId']}}" data-attribute="{{$value['fileId']}}">
                                         <div class="info-line--left col-md-5">
@@ -87,7 +90,7 @@
                                                 @foreach ($value['verifyStatusData'] as $k=>$v)
                                                     @php
                                                         $statusOfVer = $v['apiStatus'];
-                                                        // pp($statusOfVer);
+                                                        array_push($statusArray,  $statusOfVer);
                                                         $color='';
                                                         if(strtolower($statusOfVer) =='deliverable') $color='#28A745';
                                                         else if(strtolower($statusOfVer) =='undeliverable') $color='#DC3545';
@@ -99,12 +102,12 @@
                                                         <div class=" val" style="color:{{$color}}">{{$v['total_count']}}</div>
                                                     </div>
                                                 @endforeach 
-                                                
+
                                             </div> 
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <meta name="csrf-token" content="{{ csrf_token() }}">
-                                            <i class="fa-solid fa-download download-icon" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},this)"></i>
+                                            <i class="fa-solid fa-download download-icon" data-status="{{json_encode($statusArray)}}" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},{{$value['is_tools_integerate_email']}},this)"></i>
                                         </div> 
                                     </div>    
                                 @endif
@@ -199,12 +202,46 @@
             </div>
         </div>
     </section>
+
+    
+    <!-- Modal -->
+    <div id="popupModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-4 border-b">
+            <h2 class="text-xl font-semibold text-gray-800">Verification Result</h2>
+            <button onclick="closePopup()" class="text-gray-500 hover:text-red-500 text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex border-b" id="tabs">
+            <button id="downloadTab" class="flex-1 py-2 px-4 text-center hover:bg-gray-100 font-medium text-blue-600 border-b-2 border-blue-600">
+                <i class="fas fa-download mr-1"></i> Download CSV
+            </button>
+            <button id="uploadTab" class="flex-1 py-2 px-4 text-center hover:bg-gray-100 font-medium text-gray-600">
+                <i class="fas fa-cloud-upload-alt mr-1"></i> Update Mailchimp
+            </button>
+            </div>
+
+            <!-- Dynamic Content Area -->
+            <div class="p-4 p-4 flex flex-col" id="popupContent">
+            <!-- Content will be injected dynamically here -->
+            </div>
+        </div>
+    </div>
+
+    <meta name="import-csrf-token" content="{{ csrf_token() }}">
+
+
 @endsection
 
 @section('specificScript')
+        <script src="{{ asset('integration/css/tailwind/script.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/notyf/notyf.min.js"></script> 
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
-            const notyf = new Notyf();
+            window.notyf = new Notyf();
             @if(session('success'))
                 notyf.success("{{ session('success') }}");
             @endif
