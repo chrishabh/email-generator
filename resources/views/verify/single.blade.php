@@ -149,5 +149,6 @@
         </div>
     </section>
     <section class="mt-25"></section>
+    @include('support')
 
 @endsection

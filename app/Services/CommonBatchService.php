@@ -12,11 +12,12 @@ class CommonBatchService{
     public static function sendVerificationActionEmail()
     {
         if(env('VERIFICATION_ACTION')){
-            $user_data = User::getUnVerifiedUsers();
+            //$user_data = User::getUnVerifiedUsers();
+            $user_data = User::getUsersListForReengament();
             $count = 0;
             foreach($user_data as $value)
             {
-                Notification::route('mail', $value['email'])->notify(new ConfirmationCode("Bouncee Email Verification Completed – Log In Now",[],'notice-verification-done'));
+                Notification::route('mail', $value['email'])->notify(new ConfirmationCode("Bouncee is better than ever – and it’s FREE for you",[],'UserReengament'));
                 echo "Email Triggered to: " .$value['email']; 
                 echo "\n"; 
                 $count++;

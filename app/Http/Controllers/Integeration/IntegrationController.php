@@ -65,7 +65,7 @@ class IntegrationController extends Controller
             $response->headers->set('Content-Type', 'application/json; charset=UTF-8'); 
             return $response;
         }
-        $perPage = $validated['perPage'] ?? 10;  
+        $perPage = $validated['perPage'] ?? 20;  
         $tools   = IntegrationTool::paginate($perPage);
         $toolsData = $tools->getCollection()->map(function ($tool) {
             // Add the icon_url using the mutator
@@ -81,6 +81,20 @@ class IntegrationController extends Controller
             'currentPage' => $tools->currentPage(),
             'lastPage' => $tools->lastPage(),
         ])->header('Content-Type','application/json; charset=UTF-8');;
+    }
+
+    public function publicIntegrationPage(Request $request)
+    { 
+        $tools   = IntegrationTool::whereNull('deleted_at')->get();
+        $tools->transform(function ($tool) {
+            // Add the icon_url using the mutator
+            $tool->icon_url = "integration/integerated-icon/".$tool->icon_url; 
+            return $tool;
+        });
+        $tools = $tools->toArray();
+        return view('publicIntegration.integration')->with(compact('tools')); 
+
+        
     }
 
 }

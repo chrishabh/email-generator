@@ -350,10 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    nextPageButton.addEventListener('click', () => {
-        currentPage++;
-        renderIntegrations();
-    });
+    // nextPageButton.addEventListener('click', () => {
+    //     currentPage++;
+    //     renderIntegrations();
+    // });
 
 
     window.openModalForImport=(toolName,imageUrl,name,userId,token,mc_dc,toolId)=>{

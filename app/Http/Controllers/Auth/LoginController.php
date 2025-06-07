@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordFormRequest;
 use App\Http\Requests\Auth\SignInFormRequest;
+use App\Jobs\SendSupportEmail;
+use App\Models\create_user_support;
 use App\Models\User;
 use App\Models\VerificationCode;
 use App\Notifications\ConfirmationCode;
+use App\Notifications\SupportRequestNotification;
 use App\Services\Auth\SignInService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 
@@ -149,5 +153,19 @@ class LoginController extends Controller
     //     }
     //     return  response()->json(['message' => "Something Went Wrong!"]);
     // }
+
+    public function supportSend(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'message' => 'required|string|max:1000',
+        ]);
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        SendSupportEmail::dispatch($request->email, $request->message);
+        create_user_support::addSupport(Auth::id(), $validated['email'], $validated['message']);
+        return response()->json(['message' => 'Support email sent']);
+    }
 
 }

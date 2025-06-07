@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiKey\GenerateCustomEndpointController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BankStatementController;
 use App\Http\Controllers\Docx\DocumentationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
@@ -26,6 +27,8 @@ use App\Http\Controllers\User\ProfileController;
 try{
 
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
+    Route::get('/generate-statement', [BankStatementController::class, 'generate']);
+    Route::get('/import', [BankStatementController::class, 'importTransactions']);
     Route::middleware(['guest','session.timeout'])->group(function(){
 
         Route::get('/', function () {
@@ -40,6 +43,7 @@ try{
         Route::post('/recovery',[LoginController::class,'resetPassword']); 
         Route::get('/verification',[RegisterController::class,'showVerificatinForm'])->name('verification');
         Route::post('/verification',[RegisterController::class,'sendVerificationEmail']); 
+        Route::get('/integration-tools', [IntegrationController::class, 'publicIntegrationPage'])->name('integration-tool');
       
         Route::get('/single-verification', function () {
             return view('single-verification');
@@ -72,6 +76,7 @@ try{
     });
 
     Route::middleware(['restrict.access','session.timeout'])->group(function(){
+        Route::post('/support-send', [LoginController::class, 'supportSend'])->name('supportSend');
         Route::get('/single',[EmailController::class,'singleEmailPage'])->name('single');
         Route::post('/check-email',[EmailController::class,'checkEmailIsValidInvalid'])->name('check-email');
         Route::get('/lead-finder',[EmailController::class,'leadFinder'])->name('lead-finder');

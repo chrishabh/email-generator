@@ -152,5 +152,16 @@ class User extends Authenticatable
 
         return [];
     }
+
+    public static function getUsersListForReengament()
+    {
+        return User::join('user_credits', 'users.id', '=', 'user_credits.user_id')
+            ->whereNull('users.deleted_at')
+            ->whereNull('user_credits.deleted_at')
+            ->where('user_credits.credits', '>', 50)
+            ->select('users.id', 'users.email')
+            ->get()
+            ->toArray();
+    }
     
 }

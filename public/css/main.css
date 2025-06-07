@@ -745,7 +745,7 @@ hr {
 }
 
 .navbar-expand-md .navbar-nav .nav-item {
-  padding-left: 25px;
+  padding-left: 15px;
 }
 
 .navbar-expand-md .navbar-nav .nav-link {
@@ -1314,11 +1314,11 @@ hr {
 }
 
 .header-item-extra-padding{
-  padding-right: 40px;
+  padding-right: 20px;
 }
 
 .header-item-extra-padding-bulk{
-  padding-right: 1em;
+  padding-right: 25px;
 }
 /* #pricing .table {
   margin-top: 15px;
