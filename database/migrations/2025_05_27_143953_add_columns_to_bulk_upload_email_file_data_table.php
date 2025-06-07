@@ -37,7 +37,7 @@ class AddColumnsToBulkUploadEmailFileDataTable extends Migration
     public function down()
     {
         Schema::table('uploaded_and_download_file_names', function (Blueprint $table) {
-            $table->dropColumn(['list_id', 'tool_name', 'mc_user_id', 'mc_token', 'is_tools_integerate_email']);
+            $table->dropColumn(['list_id', 'tool_name', 'mc_user_id', 'mc_token','mc_dc', 'is_tools_integerate_email','unsubscribe_results']);
         });
  
         Schema::table('bulk_upload_email_file_data', function (Blueprint $table) {
