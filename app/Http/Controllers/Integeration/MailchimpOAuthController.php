@@ -68,7 +68,7 @@ class MailchimpOAuthController extends Controller
                 $exists = Integration::where('mc_user_id', $meta['user_id'])->exists();
                 if ($exists) { 
                     Session::flash('error', 'This Mailchimp account is already connected.');
-                    return redirect('/tools');
+                    return redirect('/Integration');
                 }
                 Session::put('mc_token', $accessToken);
                 Session::put('mc_dc', $meta['dc']);
@@ -90,13 +90,13 @@ class MailchimpOAuthController extends Controller
             } else { 
                 Session::flash('error', 'Mailchimp tool not found.');
             } 
-            return redirect('/tools');
+            return redirect('/Integration');
 
         }catch (\Exception $e) {
         // Flash error message  
             echo $e->getMessage();
             Session::flash('error', 'Failed to connect Mailchimp. Please try again.'); 
-            return redirect('/tools');
+            return redirect('/Integration');
         } 
     }
 
