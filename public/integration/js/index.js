@@ -65,12 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center gap-4">
                             <img class="w-10" src="${integration.tool.icon_url}" />
-                            <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.tool.name}</span>
+                            <span class="font-semibold text-md text-[#3F51B5] capitalize tracking-widest">${integration.tool.name}</span>
                         </div>
     
                         <h2 class="text-[13px] font-700">${integration.name}-${integration.emails}</h2>
                         <h2 class="text-[13px] font-bold uppercase">${integration.status==='verified' ?'<span class="text-green-800 font-semibold">active</span>' :'<span class="text-red-800 font-semibold"> N/A </span>'}</h2>
-                        <button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}','${integration.id}')" class="bg-blue-400 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-xl">Select</button>
+                        <button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button>
                          
                             <div class="relative inline-block text-left">
                                 <button onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 1; i <= lastPage; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.innerText = i;
-                pageBtn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+                pageBtn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-[#3F51B5] hover:bg-[#2a3898] text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
                 // pageBtn.onclick = () => changeModalPage(i);
                 pageBtn.setAttribute('data-page', i);
                 controls.appendChild(pageBtn);
@@ -203,11 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img class="w-10" src="${integration.icon_url}" />
-                    <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.name}</span>
+                    <span class="font-semibold text-md text-[#3F51B5] capitalize tracking-widest">${integration.name}</span>
                 </div>
                  ${
                     isMailchimp ?
-                    `<button class="bg-blue-400 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login'">
+                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login'">
                         Select
                     </button>`
                     :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
@@ -360,8 +360,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex items-center gap-4  pb-4 pt-2">
                     <img class="w-10" src="${imageUrl}" />
                     <div>
-                        <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${toolName}</span>
-                        <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${name}</span>
+                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${toolName}</span>
+                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name}</span>
                     </div> 
                 </div>
             <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">

@@ -60,7 +60,7 @@
     <div id="custom-api-section" class="container1 mx-auto p-4">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-xl font-bold">Connected Integrations</h1>
-            <button id="openModal" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Add Integration</button>
+            <button id="openModal" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded">Add Integration</button>
         </div>
 
         <div id="integrationsList"></div>
@@ -88,7 +88,7 @@
     <!-- Modal -->
     <div id="integrationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg md:max-w-2xl md:w-full sm:max-w-1xl">
-            <h2 class="text-lg font-bold mb-4 text-xl text-blue-400">Add a New Integration</h2>
+            <h2 class="text-lg font-bold mb-4 text-xl  text-[#3F51B5]">Add a New Integration</h2>
             <div id="availableIntegrationsList" class="max-h-[70vh] sm:max-h-[50vh] md:max-h-[60vh] overflow-y-auto"></div>
             <div class="mt-4 flex justify-between items-center">
                 <div id="pagination"></div>
@@ -99,7 +99,7 @@
     <!-- Import modal -->
     <div id="ImportEmails" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg md:max-w-2xl md:w-full sm:max-w-1xl">
-            <h2 class="text-lg font-bold mb-4 text-xl text-blue-400">Import List</h2>
+            <h2 class="text-lg font-bold mb-4 text-xl  text-[#3F51B5]">Import List</h2>
             <div id="availableImportEmails" class="max-h-[70vh] sm:max-h-[50vh] md:max-h-[60vh] overflow-y-auto"></div>
             <div class="mt-4 flex justify-between items-center"> 
                 <button id="closeModal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
