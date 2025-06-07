@@ -180,10 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img class="w-10" src="${integration.icon_url}" />
                     <span class="font-semibold text-md text-blue-700/50 capitalize tracking-widest">${integration.name}</span>
                 </div>
-                <button class="bg-blue-400 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md"
-                    ${isMailchimp ? `onclick="window.location.href='/mailchimp/login'"` : `onclick="addIntegration(${integration.id})"`}>
-                    Select
-                </button>
+                 ${
+                    isMailchimp ?
+                    `<button class="bg-blue-400 hover:bg-blue-600 text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login'">
+                        Select
+                    </button>`
+                    :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
+                }
             `;
             availableIntegrationsList.appendChild(item);
         });

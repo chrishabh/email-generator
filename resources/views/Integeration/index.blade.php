@@ -5,6 +5,40 @@
 @endphp
 @section('main-section')
     @push('styles')
+        <style>
+            .border-animation {
+            position: relative;
+            z-index: 0;
+            overflow: hidden;
+            }
+      
+            .border-animation::before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(130deg, #ff00cc, #3333ff, #00ffcc, #ffcc00);
+            background-size: 300% 300%;
+            animation: borderMove 4s linear infinite;
+            border-radius: inherit;
+            filter: blur(3px);
+            }
+      
+            @keyframes borderMove {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+      </style>
         {{-- <link rel="stylesheet" href="{{ asset('api/css/style.css') }}">  --}}
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
