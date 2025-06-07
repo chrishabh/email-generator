@@ -18,10 +18,14 @@ class MailchimpOAuthController extends Controller
 {
     public function redirectToMailchimp()
     {
+        $MAILCHIMP_CLIENT_ID       = envparam('MAILCHIMP_CLIENT_ID');
+        $MAILCHIMP_CLIENT_SECRET   = envparam('MAILCHIMP_CLIENT_SECRET');
+        $MAILCHIMP_REDIRECT_URI    = envparam('MAILCHIMP_REDIRECT_URI');
+
         $query = http_build_query([
             'response_type' => 'code',
-            'client_id' =>  '341572595287',
-            'redirect_uri' => 'http://127.0.0.1:8000/mailchimp/callback',
+            'client_id' =>   $MAILCHIMP_CLIENT_ID  ,
+            'redirect_uri' =>  $MAILCHIMP_REDIRECT_URI ,
         ]);
         // pp($query);
         return redirect("https://login.mailchimp.com/oauth2/authorize?$query");
@@ -40,12 +44,15 @@ class MailchimpOAuthController extends Controller
             ->first();
              
             if ($tool) {
+            $MAILCHIMP_CLIENT_ID       = envparam('MAILCHIMP_CLIENT_ID');
+            $MAILCHIMP_CLIENT_SECRET   = envparam('MAILCHIMP_CLIENT_SECRET');
+            $MAILCHIMP_REDIRECT_URI    = envparam('MAILCHIMP_REDIRECT_URI');
                 $response = $client->post('https://login.mailchimp.com/oauth2/token', [
                     'form_params' => [
                         'grant_type' => 'authorization_code',
-                        'client_id' =>  '341572595287',
-                        'client_secret' => 'ac45c64ef6402e49b1b229772020b1b31036f3c7f332140ede',
-                        'redirect_uri' => 'http://127.0.0.1:8000/mailchimp/callback',
+                        'client_id' =>  $MAILCHIMP_CLIENT_ID,
+                        'client_secret' => $MAILCHIMP_CLIENT_SECRET,
+                        'redirect_uri' => $MAILCHIMP_REDIRECT_URI,
                         'code' => $code,
                     ],
                 ]); 
