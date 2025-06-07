@@ -86,7 +86,7 @@
                     
                 </button>
             </div>
-        </div> --}}
+        </div>
     </div>
 
     <!-- Modal -->
