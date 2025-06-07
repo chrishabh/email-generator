@@ -27,8 +27,6 @@ use App\Http\Controllers\User\ProfileController;
 try{
 
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
-    Route::get('/generate-statement', [BankStatementController::class, 'generate']);
-    Route::get('/import', [BankStatementController::class, 'importTransactions']);
     Route::middleware(['guest','session.timeout'])->group(function(){
 
         Route::get('/', function () {
