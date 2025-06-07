@@ -79,6 +79,7 @@ class MailchimpOAuthController extends Controller
                 $integration->mc_token      = $accessToken;
                 $integration->mc_dc         = $meta['dc'];
                 $integration->mc_user_id    = $meta['user_id'];
+                $integration->user_id       = Auth::user()->id;
                 $integration->status        = 'verified';
                 $integration->service_name  = $tool->slug;
                 $integration->mc_dc         = $meta['dc'];

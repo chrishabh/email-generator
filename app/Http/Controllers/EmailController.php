@@ -368,7 +368,7 @@ class EmailController extends Controller
         if(!empty($data)){
             foreach($data as $key=>$value){ 
                 $iconUrl = null;
-                if($value->is_tools_integerate_email==1){ 
+                if($value->is_tools_integerate_email=='1'){ 
                     $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->first(); 
                     if($integrated)
                     $iconUrl = $integrated['tool']['icon_url'];
@@ -383,7 +383,7 @@ class EmailController extends Controller
                     $parts                                =  explode('_', $fileName);  
                     $fileName                             =  $parts[0];  
                     $fileExtension                        =  pathinfo($fileNameWithExtension, PATHINFO_EXTENSION); // Get file extension
-                    $dataArr['fileName']                  =  ($value->is_tools_integerate_email==1 &&  $value->tool_name) ? $value->tool_name:$fileName.'...'.$fileExtension;
+                    $dataArr['fileName']                  =  ($value->is_tools_integerate_email=='1' &&  $value->tool_name) ? $value->tool_name:$fileName.'...'.$fileExtension;
                     // $fileName                      =  $fileName.'...'.$fileExtension;
                     $dataArr['iconURL']                   =  $iconUrl; 
                     $dataArr['is_tools_integerate_email'] = $value->is_tools_integerate_email; 

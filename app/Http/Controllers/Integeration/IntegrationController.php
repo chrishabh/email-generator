@@ -41,7 +41,7 @@ class IntegrationController extends Controller
 
         $perPage = $validated['perPage'] ?? 10;  
         $integrations = Integration::with('tool')
-            ->where('status', 'verified')
+            ->where('status', 'verified')->where('user_id',Auth::user()->id)
             ->paginate($perPage);
 
         return response()->json([
