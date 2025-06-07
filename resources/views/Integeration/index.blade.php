@@ -6,9 +6,13 @@
 @section('main-section')
     @push('styles')
         <style>
-            #integrationsList button:focus{
+            #custom-api-section button:focus,#ImportEmails button:focus {
                 outline: none;
-                background-color: unset;
+                background-color: #2a3898 !important;
+            }
+            #importCloseModal button:focus{
+                outline: none;
+                background-color: rgb(107 114 128 / 1) !important;
             }
             .border-animation {
             position: relative;
@@ -102,7 +106,7 @@
             <h2 class="text-lg font-bold mb-4 text-xl  text-[#3F51B5]">Import List</h2>
             <div id="availableImportEmails" class="max-h-[70vh] sm:max-h-[50vh] md:max-h-[60vh] overflow-y-auto"></div>
             <div class="mt-4 flex justify-between items-center"> 
-                <button id="closeModal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
+                <button id="importCloseModal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
             </div>
         </div>
     </div> 

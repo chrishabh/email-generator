@@ -274,7 +274,9 @@ function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,c) {
         c.style.opacity = '0.5';
         return;
     }
+    let isModalOpen = false;
     if(isIntegerateTool===1){
+        isModalOpen =true
         const dataAttributeValue = c.getAttribute('data-status');
         window.statusArray = JSON.parse(dataAttributeValue);
         IntegerateFunction(event,fileid,isIntegerateTool,dataAttributeValue)
@@ -328,7 +330,12 @@ function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,c) {
         // Reset button on error
         c.innerHTML = originalText;
         c.disabled = false;
-    });
+    }).finally(() => {
+        if(isModalOpen){
+            isModalOpen = false; 
+            modal.classList.remove('hidden');
+        }
+    })
 
 }
 
@@ -538,7 +545,6 @@ document.addEventListener('DOMContentLoaded', function () {
         currentIsIntegrated = isIntegerateTool; 
         setActiveTab('downloadTab');
         loadDownloadContent(fileId);
-        modal.classList.add('hidden');
     }
 
     window.setActiveTab = function(tabId) {

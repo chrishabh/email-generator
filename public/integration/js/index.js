@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const availableImportEmails     = document.getElementById('availableImportEmails');
     const openModalButton = document.getElementById('openModal');
     const closeModalButton = document.getElementById('closeModal');
+    const importCloseModalButton = document.getElementById('importCloseModal');
     const fullScreenLoader = document.getElementById('fullScreenLoader');
 
     const notyf = new Notyf();
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await fetchIntegrations();
             integrationsList.innerHTML = ''; 
             if (!data || !data.data || data.data.length === 0) {
-                integrationsList.innerHTML = '<p class="text-gray-500">No integrations found.</p>';
+                integrationsList.innerHTML = `<p class="text-gray-500">Click on 'Add Integration' to add a new integration...</p>`;
                 requestAnimationFrame(() => {
                     setTimeout(() => $('#preloader').fadeOut(), 50);
                 });
@@ -235,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= lastModalPage; i++) {
             const pageBtn = document.createElement('button');
             pageBtn.innerText = i;
-            pageBtn.className = `px-3 py-1 rounded ${i === currentModalPage ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+            pageBtn.className = `px-3 py-1 rounded ${i === currentModalPage ? 'bg-[#3F51B5] text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
             // pageBtn.onclick = () => changeModalPage(i);
             pageBtn.setAttribute('data-page', i);
             controls.appendChild(pageBtn);
@@ -331,7 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModalButton.addEventListener('click', () => {
         integrationModal.classList.add('hidden');
-        availableImportEmails.classList.add('hidden');
+    });
+    importCloseModalButton.addEventListener('click', () => {
+        ImportEmailsModal.classList.add('hidden');
     });
 
     // itemsPerPageSelect.addEventListener('change', () => {
@@ -366,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
                 <h2 class="text-[18px] font-bolder text-capitalize">${name}</h2>
-                <button onclick="ImportData('${toolName}',${userId},'${token}','${mc_dc}','${toolId}')" class="bg-blue-400 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-xl">Import</button>
+                <button onclick="ImportData('${toolName}',${userId},'${token}','${mc_dc}','${toolId}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
             </div>
             `; 
         availableImportEmails.innerHTML=card.outerHTML; 
@@ -388,13 +391,14 @@ document.addEventListener('DOMContentLoaded', () => {
         window.currentDropdownId = id;
     }
 
-    document.addEventListener('click', (event) => {
-        const openDropdown = window.currentDropdownId ? document.getElementById(window.currentDropdownId) : null;
-        if (openDropdown && !openDropdown.contains(event.target) && !event.target.closest('button[onclick^="toggleDropdownMenu"]')) {
-            openDropdown.classList.add('hidden');
-            window.currentDropdownId = null;
-        }
-    });
+    // document.addEventListener('click', (event) => {
+    //     const openDropdown = window.currentDropdownId ? document.getElementById(window.currentDropdownId) : null;
+    //     if (openDropdown && !openDropdown.contains(event.target) && !event.target.closest('button[onclick^="toggleDropdownMenu"]')) {
+    //         openDropdown.classList.add('hidden');
+    //         window.currentDropdownId = null;
+    //     } 
+
+    // });
 
     window.removeIntegration  = (id, btn) => {
         alert('something went wrong ....');
