@@ -74,7 +74,15 @@
                                     <div class="info-line flex" id="list_{{$value['fileId']}}" data-attribute="{{$value['fileId']}}">
                                         <div class="info-line--left col-md-5">
                                             <div class="img-cont">
-                                                <img src="{{ asset('assets/doc.svg') }}" alt="">
+                                            @php
+                                                $image='';
+                                                if($value['is_tools_integerate_email']=='1'){
+                                                    $image = $value['iconURL'];
+                                                }else{
+                                                    $image =  asset('assets/doc.svg');
+                                                }
+                                            @endphp
+                                            <img src="{{ $image }}" alt="">
                                             </div>
                                             <div class="title-wrap">
                                                 <div class="title"><a href="javascript:void(0)"> {{ $value['fileName']}}</a></div>
