@@ -6,6 +6,10 @@
 @section('main-section')
     @push('styles')
         <style>
+            #integrationsList button:focus{
+                outline: none;
+                background-color: unset;
+            }
             .border-animation {
             position: relative;
             z-index: 0;
@@ -59,7 +63,7 @@
             <button id="openModal" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Add Integration</button>
         </div>
 
-        <div id="integrationsList" class="bg-white rounded-lg shadow p-4"></div>
+        <div id="integrationsList"></div>
 
         <div class="flex justify-between items-center mt-4">
             <div id="list-pagination">
@@ -100,6 +104,12 @@
             <div class="mt-4 flex justify-between items-center"> 
                 <button id="closeModal" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
             </div>
+        </div>
+    </div> 
+    <div id="preloaderAgain" class="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="relative w-12 h-12">
+            <div class="absolute w-full h-full rounded-full bg-blue-600 animate-bounce"></div>
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-blue-300 blur-sm opacity-70 rounded-full animate-pulse"></div>
         </div>
     </div>
 @endsection 
