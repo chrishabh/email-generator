@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await fetchIntegrations();
             integrationsList.innerHTML = ''; 
             if (!data || !data.data || data.data.length === 0) {
+                integrationsList.classList.add(...['bg-white','rounded-lg','shadow','p-4']);
                 integrationsList.innerHTML = `<p class="text-gray-500">Click on 'Add Integration' to add a new integration...</p>`;
                 requestAnimationFrame(() => {
                     setTimeout(() => $('#preloader').fadeOut(), 50);
