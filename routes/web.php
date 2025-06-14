@@ -92,6 +92,7 @@ try{
         Route::get('/Integration', [IntegrationController::class, 'index']);
         Route::get('/integrations', [IntegrationController::class, 'getListOfIntegeratedTools']);
         Route::get('/available-tools', [IntegrationController::class, 'availableTools']);
+        Route::delete('/remove-integration/{id}', [IntegrationController::class, 'removeIntegration']);
         
 
         Route::get('/mailchimp/login', [MailchimpOAuthController::class, 'redirectToMailchimp']);

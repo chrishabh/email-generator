@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Integration;
 use App\Models\IntegrationTool;
 use App\Models\singleVerification;
+use Exception;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class IntegrationController extends Controller
     public function index()
     {   
         $creditPoint ='Free';
-        $integrated = Integration::with('tool')->where('status','verified')->paginate(10); 
+        $integrated = Integration::with('tool')->where('status','verified')->whereNull('deleted_at')->paginate(10); 
         $headerData['creditPoint']         = $creditPoint;
         $sessionData = session()->all();
 
@@ -41,7 +42,7 @@ class IntegrationController extends Controller
 
         $perPage = $validated['perPage'] ?? 10;  
         $integrations = Integration::with('tool')
-            ->where('status', 'verified')->where('user_id',Auth::user()->id)
+            ->where('status', 'verified')->where('user_id',Auth::user()->id)->whereNull('deleted_at')
             ->paginate($perPage);
 
         return response()->json([
@@ -95,6 +96,33 @@ class IntegrationController extends Controller
         return view('publicIntegration.integration')->with(compact('tools')); 
 
         
+    }
+
+    public function removeIntegration($id)
+    {
+        try {
+            $integration = Integration::find($id);
+            if (!$integration) {
+                return response()->json([
+                    'success'  => false,
+                    'error'   => 'Integration not found.',
+                    'message' => 'Integration not found.'
+                ], 404);
+            }
+
+            $integration->delete(); // Soft delete
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Integration Removed successfully.'
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

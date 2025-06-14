@@ -65,15 +65,11 @@ class MailchimpOAuthController extends Controller
                 ]); 
 
                 $meta = json_decode($metaResponse->getBody(), true);
-                $exists = Integration::where('mc_user_id', $meta['user_id'])->exists();
+                $exists = Integration::where('mc_user_id', $meta['user_id'])->whereNull('deleted_at')->exists();
                 if ($exists) { 
                     Session::flash('error', 'This Mailchimp account is already connected.');
                     return redirect('/Integration');
                 }
-                Session::put('mc_token', $accessToken);
-                Session::put('mc_dc', $meta['dc']);
-                Session::put('mc_user_id', $meta['user_id']);
-                Session::put('mc_', $meta); 
                 $integration                = new Integration();
                 $integration->tool_id       = $tool->id;
                 $integration->mc_token      = $accessToken;

@@ -59,6 +59,7 @@
         <link rel="stylesheet" href="{{ asset('api/css/materialcss/materialfont.min.css') }}">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <script src="{{ asset('integration/css/tailwind/script.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @endpush
  
     <div id="custom-api-section" class="container1 mx-auto p-4">

@@ -402,9 +402,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
 
     window.removeIntegration  = (id, btn) => {
-        alert('something went wrong ....');
-        console.log(btn); 
-       console.log('Removing integration with ID:', id);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to undo this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: 'red',
+            confirmButtonText: 'Yes, delete it!',
+            reverseButtons: true
+        }).then((result) => {
+        if(result.isConfirmed) { 
+            $('#preloader').fadeIn()
+            makeApiHit(`/remove-integration/${id}`, 'DELETE')
+                .then(response => {
+                    notyf.success(response.message || 'Integration removed successfully!');
+                    // btn.closest('.bg-gray-100').remove(); // Remove the card
+                    window.location.reload(); // Reload the page to reflect changes
+                    $('#preloader').fadeOut()
+                })
+                .catch(error => {
+                    console.error('Error removing integration:', error);
+                    notyf.error(error.response?.data?.error || 'Failed to remove integration');
+                    $('#preloader').fadeOut()
+                });
+        }
+    })
     }
 
 
@@ -451,3 +474,24 @@ window.addEventListener('load', () => {
     if(localStorage.getItem('IntegerationList'))
         localStorage.removeItem('IntegerationList');
 });
+
+function makeApiHit(url, method = 'GET', data = null) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios({
+                method: method,
+                url: url,
+                data: data
+            });
+
+            if(response.data.success) {
+                resolve(response.data);
+            } else {
+                reject(new Error(response.data.error || 'Error fetching data'));
+            }
+        } catch (error) {
+            console.error('API Error:', error);
+            reject(error);
+        }
+    });
+}

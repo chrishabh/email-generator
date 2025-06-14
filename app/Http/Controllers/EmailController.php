@@ -369,7 +369,7 @@ class EmailController extends Controller
             foreach($data as $key=>$value){ 
                 $iconUrl = null;
                 if($value->is_tools_integerate_email=='1'){ 
-                    $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->first(); 
+                    $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->whereNull('deleted_at')->first(); 
                     if($integrated)
                     $iconUrl = $integrated['tool']['icon_url'];
                 }
