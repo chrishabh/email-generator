@@ -21,6 +21,7 @@ class CreateIntegrationsTable extends Migration
             $table->string('emails')->nullable();  
             $table->string('name')->nullable();
             $table->string('mc_token')->nullable();
+            $table->string('mc_refresh_token')->nullable();
             $table->string('mc_dc')->nullable();
             $table->string('mc_user_id')->nullable(); 
             $table->string('service_name'); 

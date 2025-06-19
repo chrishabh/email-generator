@@ -65,25 +65,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
                 card.innerHTML = ` 
                     <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-4 w-[20%]">
                             <img class="w-10" src="${integration.tool.icon_url}" />
                             <span class="font-semibold text-md text-[#3F51B5] capitalize tracking-widest">${integration.tool.name}</span>
                         </div>
     
-                        <h2 class="text-[13px] font-700">${integration.name}-${integration.emails}</h2>
-                        <h2 class="text-[13px] font-bold uppercase">${integration.status==='verified' ?'<span class="text-green-800 font-semibold">active</span>' :'<span class="text-red-800 font-semibold"> N/A </span>'}</h2>
-                        <button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button>
+                        <div class="text-[sm] font-700 w-[30%] truncate">${integration.name?integration.name:integration.service_name}${integration.emails ? `- ${integration.emails}` :''}</div>
+                        <div class="w-[10%] text-sm uppercase text-green-800 font-semibold">${integration.status==='verified' ?'active' :' N/A '}</div>
+                        <div class=""w-[15%]"><button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
                          
-                            <div class="relative inline-block text-left">
-                                <button onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
-                                <div id="${dropdownId}" class="absolute right-0 z-10 mt-2 w-[14em] origin-top-right bg-white border border-gray-200 rounded-md shadow-lg hidden">
-                                    <div class="py-1">
-                                        <button onclick="removeIntegration('${integration.id}', this)" class="w-full text-left px-2 py-2 text-sm text-gray-900 hover:text-gray-600">
-                                            🔗 Remove Integration
-                                        </button>
-                                    </div>
+                        <div class="relative inline-block text-left w-[5%]">
+                            <button onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
+                            <div id="${dropdownId}" class="absolute right-0 z-10 mt-2 w-[14em] origin-top-right bg-white border border-gray-200 rounded-md shadow-lg hidden">
+                                <div class="py-1">
+                                    <button onclick="removeIntegration('${integration.id}', this)" class="w-full text-left px-2 py-2 text-sm text-gray-900 hover:text-gray-600">
+                                        🔗 Remove Integration
+                                    </button>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 `;
                 integrationsList.appendChild(card);
@@ -202,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
             const isMailchimp = integration.name.toLowerCase() === 'mailchimp';
+            const isHubSpot   = integration.name.toLowerCase() === 'hubspot';
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img class="w-10" src="${integration.icon_url}" />
@@ -209,10 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                  ${
                     isMailchimp ?
-                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login'">
+                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
                         Select
-                    </button>`
-                    :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
+                    </button>`:
+                    isHubSpot ? 
+                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
+                        Select
+                    </button>` :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
                 }
             `;
             availableIntegrationsList.appendChild(item);
@@ -365,11 +369,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img class="w-10" src="${imageUrl}" />
                     <div>
                         <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${toolName}</span>
-                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name}</span>
+                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name!='null' ? name :'' }</span>
                     </div> 
                 </div>
             <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
-                <h2 class="text-[18px] font-bolder text-capitalize">${name}</h2>
+                <h2 class="text-[18px] font-bolder text-capitalize">${name!='null' ? name:toolName}</h2>
                 <button onclick="ImportData('${toolName}',${userId},'${token}','${mc_dc}','${toolId}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
             </div>
             `; 

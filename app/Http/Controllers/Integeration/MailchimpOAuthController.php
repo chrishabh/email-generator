@@ -13,87 +13,214 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\In;
 
 class MailchimpOAuthController extends Controller
 {
-    public function redirectToMailchimp()
+    public function redirectToMailchimp($toolId,$toolName)
     {
-        $MAILCHIMP_CLIENT_ID       = envparam('MAILCHIMP_CLIENT_ID');
-        $MAILCHIMP_CLIENT_SECRET   = envparam('MAILCHIMP_CLIENT_SECRET');
-        $MAILCHIMP_REDIRECT_URI    = envparam('MAILCHIMP_REDIRECT_URI');
+        $lowercaseofToolName  = strtolower($toolName);
+        $tool                 = IntegrationTool::where('name', $toolName)->where('id',  $toolId)->first();
+        if (!$tool) {
+            Session::flash('error', "$toolName tool not found.");
+            return redirect()->back();
+        }
 
-        $query = http_build_query([
-            'response_type' => 'code',
-            'client_id' =>   $MAILCHIMP_CLIENT_ID  ,
-            'redirect_uri' =>  $MAILCHIMP_REDIRECT_URI ,
-        ]);
-        // pp($query);
-        return redirect("https://login.mailchimp.com/oauth2/authorize?$query");
+        $MAILCHIMP_CLIENT_SECRET  = $tool['client_secret'];
+        $MAILCHIMP_CLIENT_ID      = $tool['client_id'];
+        $urls                     = $tool['url'];
+        $urls                     = json_decode($urls, true); 
+        $MAILCHIMP_REDIRECT_URI   = $urls['redirect_url'];
+        $auth_login_url           = $urls['auth_login_url'];
+        $data                     = self::redirectionToTools($lowercaseofToolName,$MAILCHIMP_CLIENT_ID,$MAILCHIMP_CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$auth_login_url);
+        if(empty($data)){
+            Session::flash('error', 'Invalid tool configuration.');
+            return redirect()->back();
+        }
+        return $data;
+        // switch ($lowercaseofToolName) {
+        //     case 'mailchimp':
+                 
+        //         $MAILCHIMP_CLIENT_ID      = $tool['client_secret'];
+        //         $MAILCHIMP_CLIENT_SECRET  = $tool['client_id'];
+        //         $urls                     = $tool['url'];
+        //         $urls                     = json_decode($urls, true); 
+        //         $MAILCHIMP_REDIRECT_URI   = $tool['redirect_url'];
+        //         $auth_login_url           = $tool['auth_login_url'];
+        //         if(empty(self::redirectionToTools($lowercaseofToolName,$MAILCHIMP_CLIENT_ID,$MAILCHIMP_REDIRECT_URI,$auth_login_url))){
+
+        //         }
+
+        //         break;
+        //     case 'hubspot':
+
+        //     default:
+        //         Session::flash('error', 'Unsupported tool.');
+        //         return redirect()->back();
+        // }
     }
 
-    public function handleCallback(Request $request)
+    private static function redirectionToTools($toolName,$clientId,$clientSecret,$redirect_uri,$auth_login_url,$token_url=null,$is_handle_callback = false,$code=null)
     {
-        $code = $request->input('code');
+        $queryBuildArray = [];
 
-        $client = new Client();
-
-        try{
-             
-            $tool = IntegrationTool::where('name', 'Mailchimp')
-            ->where('slug', 'mailchimp')
-            ->first();
-             
-            if ($tool) {
-            $MAILCHIMP_CLIENT_ID       = envparam('MAILCHIMP_CLIENT_ID');
-            $MAILCHIMP_CLIENT_SECRET   = envparam('MAILCHIMP_CLIENT_SECRET');
-            $MAILCHIMP_REDIRECT_URI    = envparam('MAILCHIMP_REDIRECT_URI');
-                $response = $client->post('https://login.mailchimp.com/oauth2/token', [
-                    'form_params' => [
-                        'grant_type' => 'authorization_code',
-                        'client_id' =>  $MAILCHIMP_CLIENT_ID,
-                        'client_secret' => $MAILCHIMP_CLIENT_SECRET,
-                        'redirect_uri' => $MAILCHIMP_REDIRECT_URI,
-                        'code' => $code,
-                    ],
-                ]); 
-                $data = json_decode($response->getBody(), true);
-                $accessToken = $data['access_token'];  
-    
-                // Get metadata
-                $metaResponse = $client->get('https://login.mailchimp.com/oauth2/metadata', [
-                    'headers' => ['Authorization' => "OAuth $accessToken"]
-                ]); 
-
-                $meta = json_decode($metaResponse->getBody(), true);
-                $exists = Integration::where('mc_user_id', $meta['user_id'])->whereNull('deleted_at')->exists();
-                if ($exists) { 
-                    Session::flash('error', 'This Mailchimp account is already connected.');
-                    return redirect('/Integration');
+        if (!$clientId || !$redirect_uri || !$auth_login_url) {
+            return;
+        }
+         
+        switch (strtolower($toolName)) {
+            case 'mailchimp':
+                if($is_handle_callback==false){ 
+                    $queryBuildArray['response_type'] = 'code';
+                }else {
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
                 }
-                $integration                = new Integration();
-                $integration->tool_id       = $tool->id;
-                $integration->mc_token      = $accessToken;
-                $integration->mc_dc         = $meta['dc'];
-                $integration->mc_user_id    = $meta['user_id'];
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                $auth_login_url                   = $auth_login_url;
+                if($is_handle_callback){    
+                    $client = new Client(); 
+                    $accessToken  =  self::getAccessTokenOftool($client,$token_url,$queryBuildArray,$toolName);
+                    return $accessToken;
+                }
+                break;
+            case 'hubspot':
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback==false){
+                    $queryBuildArray['scope']         = 'oauth crm.objects.deals.read crm.objects.contacts.read';
+                    $auth_login_url                   = $auth_login_url;
+                }else{
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client = new Client(); 
+                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                    return $accessToken;
+                }
+                // $queryBuildArray['response_type'] = 'code'; 
+                // $queryBuildArray['state']        = Str::random(16);
+                break;
+            default:
+                return;
+        }
+        
+        $query = http_build_query($queryBuildArray);
+        return redirect("$auth_login_url?$query");  
+    }
+
+    private static function getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolname){
+        if($toolname=='hubspot'){
+             $param = [
+                'form_params' => $queryBuildArray,
+            ];
+        }else{
+            $param = [
+            'form_params' => $queryBuildArray,
+             ];
+        }
+    // pp($param);
+        $response = $client->post("$token_url", $param);  
+        $data = json_decode($response->getBody(), true);
+        if($toolname=='hubspot'){
+            $accessToken =  $data;
+        }
+        else{
+
+            $accessToken = $data['access_token']; 
+        }
+        return $accessToken;
+
+    }
+
+    private static function getMetadataOfTool($client, $metadata_url, $accessToken,$toolName =''){
+        if($toolName=='hubspot'){
+            $header = ["Authorization"=> "Bearer $accessToken"];
+        }else{
+            $header = ["Authorization"=> "OAuth $accessToken"];
+        }
+
+        $metaResponse = $client->get($metadata_url, [
+            'headers' => $header
+        ]); 
+        $meta = json_decode($metaResponse->getBody(), true);
+        return $meta;
+    }
+    public function handleCallback(Request $request,$toolName)
+    {
+        $code     = $request->input('code');
+        $toolName = strtolower($toolName); 
+        
+        $client = new Client(); 
+        try{ 
+            $tool = IntegrationTool::where('slug', $toolName)->first();
+            if (empty($tool)) {
+                Session::flash('error', "tool not found.");
+               return redirect('/tools');
+            } 
+
+            if ($tool) {
+                $client                   = new Client(); 
+                $CLIENT_SECRET            = $tool['client_secret'];
+                $CLIENT_ID                = $tool['client_id'];
+                $urls                     = $tool['url'];
+                $originalToolName         = $tool['name'];
+                $toolName                 = strtolower($tool['name']);
+                $urls                     = json_decode($urls, true); 
+                $MAILCHIMP_REDIRECT_URI   = $urls['redirect_url']; 
+                $auth_login_url           = $urls['auth_login_url'];
+                $auth_token_url           = $urls['auth_token_url'];
+                $auth_metadata_url        = $urls['auth_metadata_url']; 
+                $accessToken              = self::redirectionToTools($toolName,$CLIENT_ID,$CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$auth_login_url,$auth_token_url,true,$code);
+                $refreshToken             = null;
+                if( $toolName == 'hubspot' && isset($accessToken['access_token']) ){
+                    $refreshToken = $accessToken['refresh_token']; 
+                    $accessToken = $accessToken['access_token'];
+                }else if($toolName == 'hubspot' && !isset($accessToken['access_token']) ) {
+                    Session::flash('error', "something went wrong with the access token of $originalToolName.");
+                    return redirect('/tools'); 
+                }
+                $meta                     = self::getMetadataOfTool($client,$auth_metadata_url,$accessToken,$toolName);
+                if( $toolName == 'hubspot'){
+                    $mc_user_id = $meta['portalId'];
+                    $mc_dc      = NULL; 
+                }else{
+                    $mc_user_id = $meta['user_id'];
+                    $mc_dc      = $meta['dc']; 
+                }
+                $userId                   = Auth::user()->id;
+                $exists                   = Integration::where('mc_user_id',  $mc_user_id)->where('service_name',"$toolName")->where('user_id',$userId)->whereNull('deleted_at')->exists();
+                if ($exists) { 
+                    Session::flash('error', "This $originalToolName account is already connected.");
+                    return redirect('/tools');
+                } 
+                $integration                    = new Integration();
+                $integration->tool_id           = $tool->id;
+                $integration->mc_token          = $accessToken;
+                $integration->mc_refresh_token  = $refreshToken;
+                $integration->mc_dc         = $mc_dc;
+                $integration->mc_user_id    = $mc_user_id;
                 $integration->user_id       = Auth::user()->id;
                 $integration->status        = 'verified';
-                $integration->service_name  = $tool->slug;
-                $integration->mc_dc         = $meta['dc'];
+                $integration->service_name  = $tool->slug; 
                 $integration->name          = $meta['accountname'] ?? null;
                 $integration->emails        = $meta['login']['email'] ?? null;
                 $integration->metadata      = json_encode($meta);
                 $success                    =  $integration->save(); 
-                Session::flash('success', 'Mailchimp connected successfully!');
-            } else { 
-                Session::flash('error', 'Mailchimp tool not found.');
+                Session::flash('success', "$originalToolName connected successfully!");
+            } else {  
+                Session::flash('error', "$toolName tool not found.");
             } 
-            return redirect('/Integration');
+            return redirect('/tools');
 
         }catch (\Exception $e) {
         // Flash error message  
             echo $e->getMessage();
             Session::flash('error', 'Failed to connect Mailchimp. Please try again.'); 
-            return redirect('/Integration');
+            return redirect('/tools');
         } 
     }
 
@@ -107,7 +234,7 @@ class MailchimpOAuthController extends Controller
         $toolName        = $request->query('toolName'); 
         $integeration_id = $request->query('integeration_id'); 
 
-         if(!$userId || !$token || !$mc_dc || !$toolName || !$integeration_id) {
+         if(!$userId || !$token || !$toolName || !$integeration_id) {
             return response()->json(
             [
                 'message' => 'Unauthorized',
@@ -115,46 +242,104 @@ class MailchimpOAuthController extends Controller
                 'error' => 'UserId and token are required'
             ], 401);
         }
+        $LoggedInuserId = Auth::user()->id;
+        $exists         = Integration::where('mc_user_id', $userId)->where('user_id',$LoggedInuserId)->where('service_name',strtolower($toolName))->where('mc_token',$token)->exists();
+        if(!$exists) {
+            return response()->json(
+            [
+                'message' => 'Unauthorized',
+                'success' => false,
+                'error' => 'Invalid userId, token or data center'
+            ], 401);
+        }
+ 
+        $accessToken = $token;
+        $dc          = $mc_dc; // Default data center if not set
+        $slug        = strtolower($toolName);
+        $header      = [];
 
-        // $exists = Integration::where('mc_user_id', $userId)->where('mc_dc',$mc_dc)->where('mc_token',$token)->exists();
+        if($slug == 'hubspot'){
+            $url    = 'https://api.hubapi.com/';
+            $header = ['Authorization' => "Bearer $accessToken"];
+            $error   = false;
+        }else if($slug == 'mailchimp'){
+            $url     = "https://$dc.api.mailchimp.com/3.0/";
+            $header  =  ['Authorization' => "OAuth $accessToken"];
+            $error   = true;
+        } 
 
-        // if(!$exists) {
-        //     return response()->json(
-        //     [
-        //         'message' => 'Unauthorized',
-        //         'success' => false,
-        //         'error' => 'Invalid userId, token or data center'
-        //     ], 401);
-        // }
-
-        // $accessToken = Session::get('mc_token');
-        // $dc = Session::get('mc_dc');
-        // if(!$accessToken){
-            $accessToken = $token;
-            $dc          = $mc_dc; // Default data center if not set
-        // }
         $client = new Client([
-            'base_uri' => "https://$dc.api.mailchimp.com/3.0/",
-            'headers' => ['Authorization' => "OAuth $accessToken"]
+            'base_uri' => "$url",
+            'headers' =>  $header,
+            'http_errors' => $error, 
         ]); 
         try {
             DB::beginTransaction(); // Start DB transaction
-
-            // Step 1: Get Lists
-            $lists = json_decode($client->get('lists')->getBody(), true);
-            if (empty($lists['lists'])) {
-                DB::rollBack();
-                return response()->json([
-                    'message' => 'No lists found',
-                    'success' => false,
-                    'error' => 'No Mailchimp lists available for this account'
-                ], 404);
+            switch($slug){
+                case 'mailchimp':
+                    $lists = json_decode($client->get('lists')->getBody(), true);
+                    if (empty($lists['lists'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No lists found',
+                            'success' => false,
+                            'error' => 'No Mailchimp lists available for this account'
+                        ], 404);
+                    }
+                    
+                    $listId = $lists['lists'][0]['id']; 
+                    // Step 2: Get members
+                    $members = json_decode($client->get("lists/$listId/members")->getBody(), true);
+                    $emails = array_column($members['members'], 'email_address'); 
+                break;
+                case 'hubspot':
+                    $response   = $client->get('contacts/v1/lists/all/contacts/all');
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode === 401) {
+                        $integration = Integration::with('tool')->find($integeration_id);
+                        if(!empty($integration)){
+                            $toolData    = $integration->tool; 
+                            $urlJson     = json_decode($toolData->url,true);
+                            $token_url   = $urlJson['auth_token_url']; 
+                            $queryBuildArray = [
+                                'grant_type'    => 'refresh_token',
+                                'client_id'     => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'redirect_uri'  => $urlJson['redirect_url'],
+                                'refresh_token' => $integration->mc_refresh_token
+                            ];
+                            $accessToken = self::getAccessTokenOftool($client, $token_url,$queryBuildArray, $slug);
+                            if(!empty($accessToken)){ 
+                                $integration->mc_token         = $accessToken['access_token'];
+                                $integration->mc_refresh_token = $accessToken['refresh_token'];
+                                $integration->save();
+                                $accessToken = $accessToken['access_token'];
+                                $header = ['Authorization' => "Bearer $accessToken"];
+                                $client = new Client([
+                                    'base_uri' => "$url",
+                                    'headers' =>  $header,
+                                    'http_errors' => $error, 
+                                ]);  
+                            }else{
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token'
+                                ], 401);
+                            }
+                        }else{
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'Invalid integration ID'
+                            ], 401);    
+                        }
+                    }
+                    $res     = json_decode($client->get('contacts/v1/lists/all/contacts/all')->getBody(), true);
+                    $listId  = $res['contacts'][0]['vid'];
+                    $emails  = array_map(fn($c)=>$c['identity-profiles'][0]['identities'][0]['value'], $res['contacts']);
+                break;
             }
-
-            $listId = $lists['lists'][0]['id']; 
-            // Step 2: Get members
-            $members = json_decode($client->get("lists/$listId/members")->getBody(), true);
-            $emails = array_column($members['members'], 'email_address'); 
             $results = []; 
             $upload = new uploadedAndDownloadFileName();
             $upload->fileName                  = $toolName.' Import - ' . now()->format('Ymd_His');
@@ -189,12 +374,7 @@ class MailchimpOAuthController extends Controller
                 $results[] = ['email' => $email];
             }
 
-            DB::commit(); // Commit DB transaction 
-            // return redirect('/tools')->with([
-            //     'success' => 'Emails validated and saved successfully!',
-            //     'uploadId' => $uploadId,
-            //     'results' => $results
-            // ]);
+            DB::commit();
              return response()->json([
                 'message' => 'Emails validated and saved successfully!',
                 'success' => true,
