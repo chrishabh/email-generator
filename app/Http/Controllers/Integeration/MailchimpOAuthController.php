@@ -299,12 +299,12 @@ class MailchimpOAuthController extends Controller
                 case  ToolNameEnum::HUBSPOT:
                     $client = new Client([
                         'base_uri'    => "$base_api_url",
-                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::MAILCHIMP,$accessToken),
-                        'http_errors' => true, 
+                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::HUBSPOT,$accessToken),
+                        'http_errors' => false, 
                     ]); 
                     $response   = $client->get('contacts/v1/lists/all/contacts/all');
                     $statusCode = $response->getStatusCode();
-                    if ($statusCode === 401) {
+                    if ($statusCode ==401) {
                         if(!empty($integration)){
                             $queryBuildArray = [
                                 'grant_type'    => 'refresh_token',
@@ -322,7 +322,7 @@ class MailchimpOAuthController extends Controller
                                 $header      = ['Authorization' => "Bearer $accessToken"];
                                 $client = new Client([
                                     'base_uri'    => "$base_api_url",
-                                    'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::MAILCHIMP,$accessToken),
+                                    'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::HUBSPOT,$accessToken),
                                     'http_errors' => true, 
                                 ]);  
                             }else{
@@ -345,8 +345,8 @@ class MailchimpOAuthController extends Controller
                     $emails  = array_map(fn($c)=>$c['identity-profiles'][0]['identities'][0]['value'], $res['contacts']);
                 break;
             }
-            $results = []; 
-            $upload = new uploadedAndDownloadFileName();
+            $results                           = []; 
+            $upload                            = new uploadedAndDownloadFileName();
             $upload->fileName                  = $toolName.' Import - ' . now()->format('Ymd_His');
             $upload->list_id                   = $listId;
             $upload->user_id                   = Auth::user()->id;
@@ -380,7 +380,7 @@ class MailchimpOAuthController extends Controller
             }
 
             DB::commit();
-             return response()->json([
+            return response()->json([
                 'message' => 'Emails validated and saved successfully!',
                 'success' => true,
                 'results' => $results
