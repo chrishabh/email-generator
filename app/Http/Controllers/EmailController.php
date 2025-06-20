@@ -8,6 +8,7 @@ use App\Jobs\VerifyEmailsJob;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\EmailVerificationLog;
 use App\Models\Integration;
+use App\Models\IntegrationTool;
 use App\Models\LeadFinder;
 use App\Models\LeadFinderPCEmailLogs;
 use App\Models\singleVerification;
@@ -370,8 +371,12 @@ class EmailController extends Controller
                 $iconUrl = null;
                 if($value->is_tools_integerate_email=='1'){ 
                     $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->whereNull('deleted_at')->first(); 
-                    if($integrated)
-                    $iconUrl = $integrated['tool']['icon_url'];
+                    if($value->tool_id){
+                        $iconUrl    = IntegrationTool::select('icon')->where('id',$value->tool_id)->first()->icon_url;
+                    }
+                     
+                    // if($integrated)
+                    // $iconUrl = $integrated['tool']['icon_url'];
                 }
                     $countOfValidAndInvalidEmails         =  BulkUploadEmailFileData::getCountOfValidAndInvalidEmails($value->id,$userid);
                     // pp($countOfValidAndInvalidEmails);

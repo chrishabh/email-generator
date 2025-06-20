@@ -265,6 +265,7 @@ class MailchimpOAuthController extends Controller
         }
         if(!empty($integration)){
             $toolData     = $integration->tool; 
+            $toolId       = $integration->tool_id; 
             $urlJson      = json_decode($toolData->url,true);
             $token_url    = $urlJson['auth_token_url']; 
             $base_api_url = $urlJson['base_api_url']; 
@@ -351,6 +352,7 @@ class MailchimpOAuthController extends Controller
             $upload->list_id                   = $listId;
             $upload->user_id                   = Auth::user()->id;
             $upload->tool_name                 = $toolName;
+            $upload->tool_id                   = $toolId;
             $upload->integeration_id           = $integeration_id;
             $upload->mc_user_id                = $userId;
             $upload->mc_dc                     = $mc_dc;
