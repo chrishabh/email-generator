@@ -89,7 +89,7 @@ try{
         Route::post('/check-verification-status', [EmailController::class, 'checkEmailVerificationStatus']); 
       
       
-        Route::get('/tools', [IntegrationController::class, 'index']);
+        Route::get('/Integration', [IntegrationController::class, 'index']);
         Route::get('/integrations', [IntegrationController::class, 'getListOfIntegeratedTools']);
         Route::get('/available-tools', [IntegrationController::class, 'availableTools']);
         Route::delete('/remove-integration/{id}', [IntegrationController::class, 'removeIntegration']);

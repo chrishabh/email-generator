@@ -1,5 +1,5 @@
 
-@if(request()->is('tools') || request()->path()=='Api' || request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history' ||request()->path()=='settings')
+@if(request()->is('Integration') || request()->path()=='Api' || request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history' ||request()->path()=='settings')
     @include('layout.header1',['headerData' =>$headerData??null])
 @elseif(request()->is('reference/*'))
     @include('layout.header2',['headerData' =>$headerData??null])

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Integeration;
 
+use App\Enums\ToolNameEnum;
 use App\Http\Controllers\Controller;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\Integration;
@@ -9,6 +10,7 @@ use App\Models\IntegrationTool;
 use App\Models\uploadedAndDownloadFileName;
 use Illuminate\Http\Request; 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -70,7 +72,7 @@ class MailchimpOAuthController extends Controller
         }
          
         switch (strtolower($toolName)) {
-            case 'mailchimp':
+            case  ToolNameEnum::MAILCHIMP:
                 if($is_handle_callback==false){ 
                     $queryBuildArray['response_type'] = 'code';
                 }else {
@@ -87,11 +89,11 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 }
                 break;
-            case 'hubspot':
+            case ToolNameEnum::HUBSPOT:
                 $queryBuildArray['client_id']     = $clientId;
                 $queryBuildArray['redirect_uri']  = $redirect_uri;
                 if($is_handle_callback==false){
-                    $queryBuildArray['scope']         = 'oauth crm.objects.deals.read crm.objects.contacts.read';
+                    $queryBuildArray['scope']         = 'content oauth crm.objects.deals.read crm.objects.contacts.read';
                     $auth_login_url                   = $auth_login_url;
                 }else{
                     $queryBuildArray['grant_type']     = 'authorization_code';
@@ -113,16 +115,15 @@ class MailchimpOAuthController extends Controller
     }
 
     private static function getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolname){
-        if($toolname=='hubspot'){
+        if($toolname==ToolNameEnum::HUBSPOT){
              $param = [
                 'form_params' => $queryBuildArray,
             ];
         }else{
             $param = [
-            'form_params' => $queryBuildArray,
-             ];
-        }
-    // pp($param);
+                'form_params' => $queryBuildArray,
+            ];
+        } 
         $response = $client->post("$token_url", $param);  
         $data = json_decode($response->getBody(), true);
         if($toolname=='hubspot'){
@@ -137,9 +138,10 @@ class MailchimpOAuthController extends Controller
     }
 
     private static function getMetadataOfTool($client, $metadata_url, $accessToken,$toolName =''){
-        if($toolName=='hubspot'){
+        
+        if($toolName== ToolNameEnum::HUBSPOT){
             $header = ["Authorization"=> "Bearer $accessToken"];
-        }else{
+        }elseif($toolName== ToolNameEnum::MAILCHIMP){
             $header = ["Authorization"=> "OAuth $accessToken"];
         }
 
@@ -159,7 +161,7 @@ class MailchimpOAuthController extends Controller
             $tool = IntegrationTool::where('slug', $toolName)->first();
             if (empty($tool)) {
                 Session::flash('error', "tool not found.");
-               return redirect('/tools');
+               return redirect('/Integration');
             } 
 
             if ($tool) {
@@ -181,7 +183,7 @@ class MailchimpOAuthController extends Controller
                     $accessToken = $accessToken['access_token'];
                 }else if($toolName == 'hubspot' && !isset($accessToken['access_token']) ) {
                     Session::flash('error', "something went wrong with the access token of $originalToolName.");
-                    return redirect('/tools'); 
+                    return redirect('/Integration'); 
                 }
                 $meta                     = self::getMetadataOfTool($client,$auth_metadata_url,$accessToken,$toolName);
                 if( $toolName == 'hubspot'){
@@ -195,7 +197,7 @@ class MailchimpOAuthController extends Controller
                 $exists                   = Integration::where('mc_user_id',  $mc_user_id)->where('service_name',"$toolName")->where('user_id',$userId)->whereNull('deleted_at')->exists();
                 if ($exists) { 
                     Session::flash('error', "This $originalToolName account is already connected.");
-                    return redirect('/tools');
+                    return redirect('/Integration');
                 } 
                 $integration                    = new Integration();
                 $integration->tool_id           = $tool->id;
@@ -214,13 +216,13 @@ class MailchimpOAuthController extends Controller
             } else {  
                 Session::flash('error', "$toolName tool not found.");
             } 
-            return redirect('/tools');
+            return redirect('/Integration');
 
         }catch (\Exception $e) {
         // Flash error message  
             echo $e->getMessage();
             Session::flash('error', 'Failed to connect Mailchimp. Please try again.'); 
-            return redirect('/tools');
+            return redirect('/Integration');
         } 
     }
 
@@ -257,26 +259,28 @@ class MailchimpOAuthController extends Controller
         $dc          = $mc_dc; // Default data center if not set
         $slug        = strtolower($toolName);
         $header      = [];
+        $integration = Integration::with('tool')->find($integeration_id);
+        if(empty($integration)) {
+            return response()->json(['success'=>false,'message'=>'invalid integeration','error' => 'invalid integeration'], 404);
+        }
+        if(!empty($integration)){
+            $toolData     = $integration->tool; 
+            $urlJson      = json_decode($toolData->url,true);
+            $token_url    = $urlJson['auth_token_url']; 
+            $base_api_url = $urlJson['base_api_url']; 
+        }
 
-        if($slug == 'hubspot'){
-            $url    = 'https://api.hubapi.com/';
-            $header = ['Authorization' => "Bearer $accessToken"];
-            $error   = false;
-        }else if($slug == 'mailchimp'){
-            $url     = "https://$dc.api.mailchimp.com/3.0/";
-            $header  =  ['Authorization' => "OAuth $accessToken"];
-            $error   = true;
-        } 
 
-        $client = new Client([
-            'base_uri' => "$url",
-            'headers' =>  $header,
-            'http_errors' => $error, 
-        ]); 
         try {
             DB::beginTransaction(); // Start DB transaction
             switch($slug){
-                case 'mailchimp':
+                case  ToolNameEnum::MAILCHIMP:
+                    $base_api_url = self::replaceMailchimpBaseUrl($base_api_url,$dc);
+                    $client = new Client([
+                        'base_uri'    => "$base_api_url",
+                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::MAILCHIMP,$accessToken),
+                        'http_errors' => true, 
+                    ]); 
                     $lists = json_decode($client->get('lists')->getBody(), true);
                     if (empty($lists['lists'])) {
                         DB::rollBack();
@@ -292,15 +296,16 @@ class MailchimpOAuthController extends Controller
                     $members = json_decode($client->get("lists/$listId/members")->getBody(), true);
                     $emails = array_column($members['members'], 'email_address'); 
                 break;
-                case 'hubspot':
+                case  ToolNameEnum::HUBSPOT:
+                    $client = new Client([
+                        'base_uri'    => "$base_api_url",
+                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::MAILCHIMP,$accessToken),
+                        'http_errors' => true, 
+                    ]); 
                     $response   = $client->get('contacts/v1/lists/all/contacts/all');
                     $statusCode = $response->getStatusCode();
                     if ($statusCode === 401) {
-                        $integration = Integration::with('tool')->find($integeration_id);
                         if(!empty($integration)){
-                            $toolData    = $integration->tool; 
-                            $urlJson     = json_decode($toolData->url,true);
-                            $token_url   = $urlJson['auth_token_url']; 
                             $queryBuildArray = [
                                 'grant_type'    => 'refresh_token',
                                 'client_id'     => $toolData->client_id,
@@ -314,11 +319,11 @@ class MailchimpOAuthController extends Controller
                                 $integration->mc_refresh_token = $accessToken['refresh_token'];
                                 $integration->save();
                                 $accessToken = $accessToken['access_token'];
-                                $header = ['Authorization' => "Bearer $accessToken"];
+                                $header      = ['Authorization' => "Bearer $accessToken"];
                                 $client = new Client([
-                                    'base_uri' => "$url",
-                                    'headers' =>  $header,
-                                    'http_errors' => $error, 
+                                    'base_uri'    => "$base_api_url",
+                                    'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::MAILCHIMP,$accessToken),
+                                    'http_errors' => true, 
                                 ]);  
                             }else{
                                 return response()->json([
@@ -391,90 +396,158 @@ class MailchimpOAuthController extends Controller
         }
     }
 
-    public function unsubscribeSelectedEmailsFromAllLists(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'emails' => 'required|array|min:1',
-            'emails.*' => 'string',
-            'fileId' => 'nullable|integer' // Optional if you're tracking fileId
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation failed.',
-                'error' => $validator->errors()
-            ], 422);
-        }
-
-        $emailsToUnsubscribe = $request->input('emails');
-        $fileId = $request->input('fileId');
-        $emailsToUnsubscribeNew = [];
-        $file = uploadedAndDownloadFileName::find($fileId);
-        if(!$file){
-            return response()->json(['status'=>false,'message'=> 'data is not found.','error' => 'File not found'], 404);
-        }
-
-        $builkUploadEmailFileData  = $file->bulkUploadEmailFileData;
-        if(($builkUploadEmailFileData->isNotEmpty())){
-            $filteredEmails   = $builkUploadEmailFileData->whereIn('apiStatus',$emailsToUnsubscribe);
-            if($filteredEmails->isNotEmpty()){
-                $emailsToUnsubscribeNew = $filteredEmails->pluck('email')->toArray();
-            }  
-        }
-
-        if(empty($emailsToUnsubscribeNew)){
-            return response()->json(['status'=>false,'message'=> 'No emails to unsubscribe.','error' => 'No emails to unsubscribe'], 404);
-        }
-
-        $mcUserId            = $file->mc_user_id;
-        $accessToken         = $file->mc_token;
-        $tool_name           = $file->tool_name;
-        $list_id             = $file->list_id;
-        $integeration_id     = $file->integeration_id;
-        $dc                  = $file->mc_dc;  
-        $emailsToUnsubscribe = $emailsToUnsubscribeNew;  
-
-        if (!$accessToken || !$dc || empty($emailsToUnsubscribe)) {
-            return response()->json(['success'=>false,'message'=>'Missing token, data center, or email list','error' => 'Missing token, data center, or email list'], 400);
-        }
-
-        $client = new Client([
-            'base_uri' => "https://$dc.api.mailchimp.com/3.0/",
-            'headers' => [
+    private static function createClientUrlWithHeadBasedOnTools($toolName,$accessToken){
+        $header = [];
+        if($toolName==ToolNameEnum::MAILCHIMP){
+            $header= [
                 'Authorization' => "OAuth $accessToken",
                 'Accept' => 'application/json',
-            ]
-        ]);
-
-        // Step 1: Get all lists
-        $listsResponse = $client->get('lists');
-        $lists = json_decode($listsResponse->getBody(), true)['lists'];
-
-        $results = []; 
-        // Step 2: Loop through each list and unsubscribe emails
-        foreach ($lists as $list) {
-            $listId = $list['id'];
-
-            foreach ($emailsToUnsubscribe as $email) {
-                $subscriberHash = md5(strtolower($email));
-
-                try {
-                    $client->patch("lists/$listId/members/$subscriberHash", [
-                        'json' => [
-                            'status' => 'unsubscribed'
-                        ]
-                    ]);
-                    $results[] = ['email' => $email, 'list' => $list['name'], 'status' => 'unsubscribed'];
-                } catch (\Exception $e) {
-                    $results[] = ['email' => $email, 'list' => $list['name'], 'status' => 'error', 'message' => $e->getMessage()];
-                }
-            }
+            ];
         }
-        // Step 3: Save results to the file
-        $file->unsubscribe_results = json_encode($results);
-        $file->save();
-        return response()->json(['status'=>true,'message'=>'Verification result for unsbscibe  has been completed','data'=> $results], 200);
+        else if($toolName==ToolNameEnum::HUBSPOT){
+            $header= [
+                'Authorization' => "Bearer $accessToken",
+                'Content-Type'  => 'application/json',
+
+            ];
+        }
+        return $header;
+    }
+
+    private static function replaceMailchimpBaseUrl($baseUrl, $dc) {
+        return str_replace('://.', "://$dc.", $baseUrl);
+    }
+    public function unsubscribeSelectedEmailsFromAllLists(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all(), [
+                'emails' => 'required|array|min:1',
+                'emails.*' => 'string',
+                'fileId' => 'nullable|integer' // Optional if you're tracking fileId
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation failed.',
+                    'error' => $validator->errors()
+                ], 422);
+            }
+ 
+            $emailsToUnsubscribe = $request->input('emails');
+            $fileId = $request->input('fileId');
+            $emailsToUnsubscribeNew = [];
+            $file = uploadedAndDownloadFileName::find($fileId);
+            if(!$file){
+                return response()->json(['status'=>false,'message'=> 'data is not found.','error' => 'File not found'], 404);
+            }
+ 
+            $builkUploadEmailFileData  = $file->bulkUploadEmailFileData;
+            if(($builkUploadEmailFileData->isNotEmpty())){
+                $filteredEmails   = $builkUploadEmailFileData->whereIn('apiStatus',$emailsToUnsubscribe);
+                if($filteredEmails->isNotEmpty()){
+                    $emailsToUnsubscribeNew = $filteredEmails->pluck('email')->toArray();
+                }  
+            } 
+            if(empty($emailsToUnsubscribeNew)){
+                return response()->json(['status'=>false,'message'=> 'No emails to unsubscribe.','error' => 'No emails to unsubscribe'], 404);
+            }
+            $mcUserId            = $file->mc_user_id;
+            $accessToken         = $file->mc_token;
+            $tool_name           = $file->tool_name;
+            $list_id             = $file->list_id;
+            $integeration_id     = $file->integeration_id;
+            $dc                  = $file->mc_dc;  
+            $emailsToUnsubscribe = $emailsToUnsubscribeNew; 
+            $integration = Integration::with('tool')->find($integeration_id);
+            if(empty($integration)) {
+                return response()->json(['success'=>false,'message'=>'invalid integeration','error' => 'invalid integeration'], 404);
+            }
+
+            if(!empty($integration)){
+                $toolData     = $integration->tool; 
+                $urlJson      = json_decode($toolData->url,true);
+                $base_api_url = $urlJson['base_api_url']; 
+                 
+            }
+            if (!$accessToken || empty($emailsToUnsubscribe)) {
+                return response()->json(['success'=>false,'message'=>'Missing token, data center, or email list','error' => 'Missing token, data center, or email list'], 400);
+            } 
+            $slug  = strtolower($tool_name);
+            switch($slug){
+                case ToolNameEnum::MAILCHIMP:
+                    $base_api_url = self::replaceMailchimpBaseUrl($base_api_url,$dc);
+                    $client  = new Client(['base_uri' => "$base_api_url", 'headers'=> self::createClientUrlWithHeadBasedOnTools($slug,$accessToken)]);
+                    $lists   = json_decode($client->get('lists')->getBody(), true)['lists']; 
+                    $results = []; 
+                    foreach ($lists as $list) {
+                        $listId = $list['id']; 
+                        foreach ($emailsToUnsubscribe as $email) {
+                            $subscriberHash = md5(strtolower($email)); 
+                            try {
+                                $client->patch("lists/$listId/members/$subscriberHash", [
+                                    'json' => [
+                                        'status' => 'unsubscribed'
+                                    ]
+                                ]);
+                                $results[] = ['email' => $email, 'list' => $list['name'], 'status' => 'unsubscribed'];
+                            } catch (\Exception $e) {
+                                return response()->json(['status'=>false,'message'=>$e->getMessage() ?? 'Unknown error','data'=> $email], 500);
+                            }
+                        }
+                    }
+                break;
+                case ToolNameEnum::HUBSPOT:  
+                        // $integration = Integration::with('tool')->find($integeration_id);
+                        // if(!empty($integration)){
+                        //     $toolData    = $integration->tool; 
+                        //     $urlJson     = json_decode($toolData->url,true);
+                        //     $token_url   = $urlJson['auth_token_url']; 
+                        //     $queryBuildArray = [
+                        //         'grant_type'    => 'refresh_token',
+                        //         'client_id'     => $toolData->client_id,
+                        //         'client_secret' => $toolData->client_secret,
+                        //         'redirect_uri'  => $urlJson['redirect_url'],
+                        //         'refresh_token' => $integration->mc_refresh_token
+                        //     ];
+                        //     $client = new Client();
+
+                        //     $accessToken = self::getAccessTokenOftool($client, $token_url,$queryBuildArray, $slug);
+                        //     $accessToken = $accessToken['access_token'];
+                        // }
+                    $client = new Client(['base_uri' => "$base_api_url",'headers'=> self::createClientUrlWithHeadBasedOnTools($slug,$accessToken), 'http_errors' => true ]);
+                    $results = [];
+                    foreach ($emailsToUnsubscribe as $email) {
+                        try { 
+                            $response  = $client->put( "/email/public/v1/subscriptions/$email", [
+                                'json' => ['subscriptionStatuses' => [],'unsubscribeFromAll'=>true]
+                            ]);
+                            $statusCode = $response->getStatusCode(); 
+                            $results[] = ['email'=>$email,'status'=>'unsubscribed','response'=>$response];
+                        } 
+                        catch(ClientException $e){
+                            $errorBody    = $e->getResponse()->getBody()->getContents(); 
+                            $decodedError = json_decode($errorBody, true);
+                            return response()->json(['status'=>false,'message'=>$decodedError['message'] ?? 'Unknown error','data'=>  $decodedError],  $e->getResponse()->getStatusCode());
+                        }
+                        catch (\Exception $e) { 
+                            return response()->json(['status'=>false,'message'=>$e->getMessage() ?? 'Unknown error','data'=> $email], 500);
+                        }
+                    }
+                break;
+            }  
+            $file->unsubscribe_results = json_encode($results);
+            $file->save();
+            return response()->json(['status'=>true,'message'=>'Verification result for unsbscibe  has been completed','data'=> $results], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Something went wrong',
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        
+        
     }   
 
 }
