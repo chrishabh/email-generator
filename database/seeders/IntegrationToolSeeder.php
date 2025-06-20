@@ -15,7 +15,7 @@ class IntegrationToolSeeder extends Seeder
     public function run()
     {
         $tools = [ 
-            ['icon' => 'mailchimp.svg', 'name' => 'Mailchimp', 'slug' => 'mailchimp','client_id'=>'341572595287','client_secret'=>'ac45c64ef6402e49b1b229772020b1b31036f3c7f332140ede','url'=>json_encode(['redirect_url'=>'http://127.0.0.1:8000/mailchimp/callback','auth_login_url'=>'https://login.mailchimp.com/oauth2/authorize','auth_token_url'=>'https://login.mailchimp.com/oauth2/token','auth_metadata_url'=>'https://login.mailchimp.com/oauth2/metadata','base_api_url'=>'https://.api.mailchimp.com/3.0/'])],
+            ['icon' => 'mailchimp.svg', 'name' => 'Mailchimp', 'slug' => 'mailchimp','client_id'=>'341572595287','client_secret'=>'ac45c64ef6402e49b1b229772020b1b31036f3c7f332140ede','url'=>json_encode(['redirect_url'=>'https://bouncee.net/mailchimp/callback','auth_login_url'=>'https://login.mailchimp.com/oauth2/authorize','auth_token_url'=>'https://login.mailchimp.com/oauth2/token','auth_metadata_url'=>'https://login.mailchimp.com/oauth2/metadata','base_api_url'=>'https://.api.mailchimp.com/3.0/'])],
             ['icon' => 'google-analytics.svg', 'name' => 'Google Analytics', 'slug' => 'google analytics'],
             ['icon' => 'google-ads.svg', 'name' => 'Google Ads', 'slug' => 'google ads'],
             ['icon' => 'facebook-ads.svg', 'name' => 'Facebook Ads', 'slug' => 'facebook ads'],
