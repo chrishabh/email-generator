@@ -16,6 +16,7 @@ class IntegrationToolSeeder extends Seeder
     {
         $tools = [ 
             ['icon' => 'mailchimp.svg', 'name' => 'Mailchimp', 'slug' => 'mailchimp','client_id'=>'341572595287','client_secret'=>'ac45c64ef6402e49b1b229772020b1b31036f3c7f332140ede','url'=>json_encode(['redirect_url'=>'https://bouncee.net/mailchimp/callback','auth_login_url'=>'https://login.mailchimp.com/oauth2/authorize','auth_token_url'=>'https://login.mailchimp.com/oauth2/token','auth_metadata_url'=>'https://login.mailchimp.com/oauth2/metadata','base_api_url'=>'https://.api.mailchimp.com/3.0/'])],
+            ['icon' => 'hubspot.png', 'name' => 'HubSpot', 'slug' => 'hubspot','client_id'=>'dca0fd66-10cd-4630-b904-b798d62a8bcb','client_secret'=>'ed770db5-6c85-4b44-a6ca-dec057d6f4bf','url'=>json_encode(['redirect_url'=> (strtolower(env('APP_ENV')) === 'production') ? 'https://bouncee.net/hubspot/callback' :'http://localhost:8000/hubspot/callback','auth_login_url'=>'https://app-na2.hubspot.com/oauth/authorize','auth_token_url'=>'https://api.hubapi.com/oauth/v1/token','auth_metadata_url'=>'https://api.hubapi.com/integrations/v1/me','base_api_url'=>'https://api.hubapi.com/'])],
             ['icon' => 'google-analytics.svg', 'name' => 'Google Analytics', 'slug' => 'google analytics'],
             ['icon' => 'google-ads.svg', 'name' => 'Google Ads', 'slug' => 'google ads'],
             ['icon' => 'facebook-ads.svg', 'name' => 'Facebook Ads', 'slug' => 'facebook ads'],
@@ -32,7 +33,6 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'freshsales.png', 'name' => 'Freshsales', 'slug' => 'freshsales'],
             ['icon' => 'freshservice.png', 'name' => 'Freshservice', 'slug' => 'freshservice'],
             ['icon' => 'klaviyo.png', 'name' => 'Klaviyo', 'slug' => 'klaviyo'],
-            ['icon' => 'hubspot.png', 'name' => 'HubSpot', 'slug' => 'hubspot','client_id'=>'dca0fd66-10cd-4630-b904-b798d62a8bcb','client_secret'=>'ed770db5-6c85-4b44-a6ca-dec057d6f4bf','url'=>json_encode(['redirect_url'=> (strtolower(env('APP_ENV')) === 'production') ? 'https://bouncee.net/hubspot/callback' :'http://localhost:8000/hubspot/callback','auth_login_url'=>'https://app-na2.hubspot.com/oauth/authorize','auth_token_url'=>'https://api.hubapi.com/oauth/v1/token','auth_metadata_url'=>'https://api.hubapi.com/integrations/v1/me','base_api_url'=>'https://api.hubapi.com/'])],
             ['icon' => 'microsoft-teams.svg', 'name' => 'Microsoft Teams', 'slug' => 'microsoft teams'],
             ['icon' => 'microsoft-outlook.svg', 'name' => 'Microsoft Outlook', 'slug' => 'microsoft outlook'],
             ['icon' => 'microsoft-onedrive.svg', 'name' => 'Microsoft OneDrive', 'slug' => 'microsoft onedrive'],
