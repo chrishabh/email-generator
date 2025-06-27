@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations = ['mailchimp', 'hubspot', 'dropbox'];
+        const activeIntegrations = ['mailchimp', 'hubspot', 'google sheets','dropbox'];
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';

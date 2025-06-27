@@ -103,6 +103,22 @@ class MailchimpOAuthController extends Controller
                     $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
                     return $accessToken;
                 }
+                case ToolNameEnum::GOOGLESHEETS:
+                    $queryBuildArray['client_id']     = $clientId;
+                    $queryBuildArray['redirect_uri']  = $redirect_uri;
+                    if($is_handle_callback==false){
+                        $queryBuildArray['scope']         = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+                        $queryBuildArray['response_type'] = 'code';
+                        $queryBuildArray['access_type']   = 'offline';
+                        $queryBuildArray['prompt']        = 'consent';
+                        $auth_login_url                   = $auth_login_url;
+                    }else{
+                        $queryBuildArray['client_secret']  = $clientSecret;
+                        $queryBuildArray['code']           = $code;
+                        $client = new Client(); 
+                        $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                        return $accessToken;
+                    }
                 // $queryBuildArray['response_type'] = 'code'; 
                 // $queryBuildArray['state']        = Str::random(16);
                 break;
@@ -111,6 +127,7 @@ class MailchimpOAuthController extends Controller
         }
         
         $query = http_build_query($queryBuildArray);
+        pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
@@ -154,14 +171,20 @@ class MailchimpOAuthController extends Controller
     public function handleCallback(Request $request,$toolName)
     {
         $code     = $request->input('code');
-        $toolName = strtolower($toolName); 
+        if($toolName == 'googleSheets'){
+            $toolName = 'Google Sheets';
+        }else{
+            $toolName = strtolower($toolName); 
+        }
+
         
         $client = new Client(); 
+        pp($toolName);
         try{ 
             $tool = IntegrationTool::where('slug', $toolName)->first();
             if (empty($tool)) {
                 Session::flash('error', "tool not found.");
-               return redirect('/Integration');
+               return redirect('/tools');
             } 
 
             if ($tool) {
@@ -183,7 +206,7 @@ class MailchimpOAuthController extends Controller
                     $accessToken = $accessToken['access_token'];
                 }else if($toolName == 'hubspot' && !isset($accessToken['access_token']) ) {
                     Session::flash('error', "something went wrong with the access token of $originalToolName.");
-                    return redirect('/Integration'); 
+                    return redirect('/tools'); 
                 }
                 $meta                     = self::getMetadataOfTool($client,$auth_metadata_url,$accessToken,$toolName);
                 if( $toolName == 'hubspot'){
@@ -197,7 +220,7 @@ class MailchimpOAuthController extends Controller
                 $exists                   = Integration::where('mc_user_id',  $mc_user_id)->where('service_name',"$toolName")->where('user_id',$userId)->whereNull('deleted_at')->exists();
                 if ($exists) { 
                     Session::flash('error', "This $originalToolName account is already connected.");
-                    return redirect('/Integration');
+                    return redirect('/tools');
                 } 
                 $integration                    = new Integration();
                 $integration->tool_id           = $tool->id;
@@ -216,13 +239,13 @@ class MailchimpOAuthController extends Controller
             } else {  
                 Session::flash('error', "$toolName tool not found.");
             } 
-            return redirect('/Integration');
+            return redirect('/tools');
 
         }catch (\Exception $e) {
         // Flash error message  
             echo $e->getMessage();
             Session::flash('error', 'Failed to connect Mailchimp. Please try again.'); 
-            return redirect('/Integration');
+            return redirect('/tools');
         } 
     }
 
