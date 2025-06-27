@@ -197,26 +197,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-    
+        const activeIntegrations = ['mailchimp', 'hubspot', 'dropbox'];
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
-            const isMailchimp = integration.name.toLowerCase() === 'mailchimp';
-            const isHubSpot   = integration.name.toLowerCase() === 'hubspot';
+            const isActive = activeIntegrations.includes(integration.name.toLowerCase());
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img class="w-10" src="${integration.icon_url}" />
                     <span class="font-semibold text-md text-[#3F51B5] capitalize tracking-widest">${integration.name}</span>
                 </div>
                  ${
-                    isMailchimp ?
+                    isActive ?
                     `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
                         Select
-                    </button>`:
-                    isHubSpot ? 
-                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
-                        Select
-                    </button>` :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
+                    </button>`
+                    :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
                 }
             `;
             availableIntegrationsList.appendChild(item);
