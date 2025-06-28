@@ -6,4 +6,5 @@ class ToolNameEnum {
     const MAILCHIMP='mailchimp';
     const HUBSPOT = 'hubspot';
     const GOOGLESHEETS = 'google sheets';
+    const DROPBOX = 'dropbox';
 }

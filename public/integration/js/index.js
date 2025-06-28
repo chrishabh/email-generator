@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                         <div class="text-[sm] font-700 w-[30%] truncate">${integration.name?integration.name:integration.service_name}${integration.emails ? `- ${integration.emails}` :''}</div>
                         <div class="w-[10%] text-sm uppercase text-green-800 font-semibold">${integration.status==='verified' ?'active' :' N/A '}</div>
-                        <div class=""w-[15%]"><button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_token}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
+                        <div class="w-[15%]"><button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
                          
                         <div class="relative inline-block text-left w-[5%]">
                             <button onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
 
 
-    window.openModalForImport=(toolName,imageUrl,name,userId,token,mc_dc,toolId)=>{
+    window.openModalForImport=(toolName,imageUrl,name,userId,mc_dc,toolId)=>{
         const card = document.createElement('div');
         card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
         card.innerHTML = ` 
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
                 <h2 class="text-[18px] font-bolder text-capitalize">${name!='null' ? name:toolName}</h2>
-                <button onclick="ImportData('${toolName}',${userId},'${token}','${mc_dc}','${toolId}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
+                <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
             </div>
             `; 
         availableImportEmails.innerHTML=card.outerHTML; 
@@ -432,10 +432,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
-    window.ImportData = async (toolName, userId, token,mc_dc,toolId) => {
+    window.ImportData = async (toolName, userId,mc_dc,toolId) => {
         try {
             $('#preloader').fadeIn()
-            const response = await axios.get(`/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&token=${token}&mc=${mc_dc}&integeration_id=${toolId}`);
+            const response = await axios.get(`/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
             if (!response.data.success) {
                 notyf.error(response.data.error || 'Error fetching available integrations');
                 $('#preloader').fadeIn()

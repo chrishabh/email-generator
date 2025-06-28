@@ -20,7 +20,7 @@ class CreateIntegrationsTable extends Migration
             $table->enum('status',['verified','pending'])->default('pending');
             $table->string('emails')->nullable();  
             $table->string('name')->nullable();
-            $table->string('mc_token')->nullable();
+            $table->text('mc_token')->nullable();
             $table->string('mc_refresh_token')->nullable();
             $table->string('mc_dc')->nullable();
             $table->string('mc_user_id')->nullable(); 
