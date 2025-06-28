@@ -19,4 +19,9 @@ class IntegrationTool extends Model
     public function getIconUrlAttribute(){
         return asset('/integration/integerated-icon/'.$this->icon);
     }
+
+    public function toolSelectedFiles()
+    {
+        return $this->hasMany(ToolSelectedFile::class, 'tool_id');
+    }
 }
