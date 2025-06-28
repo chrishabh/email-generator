@@ -7,4 +7,6 @@ class ToolNameEnum {
     const HUBSPOT = 'hubspot';
     const GOOGLESHEETS = 'google sheets';
     const DROPBOX = 'dropbox';
+    const ZOHO = 'zoho crm';
+
 }

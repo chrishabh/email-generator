@@ -163,6 +163,40 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 } 
             break;
+            case ToolNameEnum::GOOGLESHEETS:
+                    $queryBuildArray['client_id']     = $clientId;
+                    $queryBuildArray['redirect_uri']  = $redirect_uri;
+                    if($is_handle_callback==false){
+                        $queryBuildArray['scope']         = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+                        $queryBuildArray['response_type'] = 'code';
+                        $queryBuildArray['access_type']   = 'offline';
+                        $queryBuildArray['prompt']        = 'consent';
+                        $auth_login_url                   = $auth_login_url;
+                    }else{
+                        $queryBuildArray['client_secret']  = $clientSecret;
+                        $queryBuildArray['code']           = $code;
+                        $client = new Client(); 
+                        $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                        return $accessToken;
+                    }
+                break;
+                case ToolNameEnum::ZOHO:
+                    $queryBuildArray['client_id']     = $clientId;
+                    $queryBuildArray['redirect_uri']  = $redirect_uri;
+                    if($is_handle_callback==false){
+                        $queryBuildArray['scope']         = 'AaaServer.profile.Read,ZohoCRM.modules.ALL';
+                        $queryBuildArray['response_type'] = 'code';
+                        $queryBuildArray['access_type']   = 'offline';
+                        $queryBuildArray['prompt']        = 'consent';
+                        $auth_login_url                   = $auth_login_url;
+                    }else{
+                        $queryBuildArray['client_secret']  = $clientSecret;
+                        $queryBuildArray['code']           = $code;
+                        $client = new Client(); 
+                        $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                        return $accessToken;
+                    }
+                break;
             default:
                 return;
         }
