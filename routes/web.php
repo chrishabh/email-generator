@@ -99,6 +99,8 @@ try{
         Route::get('/{toolname}/callback', [MailchimpOAuthController::class, 'handleCallback']);
         Route::get('/mailchimp/validate-emails', [MailchimpOAuthController::class, 'validateEmails']);
         Route::post('/mailchimp/unsubscribe-emails', [MailchimpOAuthController::class, 'unsubscribeSelectedEmailsFromAllLists']);
+        Route::get('/get-listing-file-dropbox', [MailchimpOAuthController::class, 'getDropboxExcelFiles']);
+        Route::get('/import-integeration-emails', [MailchimpOAuthController::class, 'importDropboxExcelFiles']);
 
 
         Route::prefix('profile')->group(function(){

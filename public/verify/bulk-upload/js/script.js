@@ -266,7 +266,7 @@ function showError(message) {
                              
 }
  
-function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,c) {
+function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,toolName,c) {
     event.preventDefault();
     if(totalValidEmail==0){ 
         c.style.cursor = 'not-allowed'; 
@@ -274,8 +274,17 @@ function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,c) {
         c.style.opacity = '0.5';
         return;
     }
-    let isModalOpen = false;
+    let isModalOpen  = false;
+    const NotShowing = ['dropbox']
     if(isIntegerateTool===1){
+        uploadTab.textContent ='Update '+ toolName.charAt(0).toUpperCase() + toolName.slice(1)
+        if(NotShowing.includes(toolName.toLowerCase())){
+            uploadTab.disabled               = true;
+            uploadTab.style.cursor           = 'not-allowed'
+            uploadTab.style.color            = '#666'
+            uploadTab.style.backgroundColor  = '#ccc'
+            uploadTab.style.opacity          = '0.7'
+        }
         isModalOpen =true
         const dataAttributeValue = c.getAttribute('data-status');
         window.statusArray = JSON.parse(dataAttributeValue);
@@ -576,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
 
         document.getElementById("downloadBtn").addEventListener("click", (e) => {
-            downloadCsvFile(e, fileId, 1, '0', e.target);
+            downloadCsvFile(e, fileId, 1, '0',null, e.target);
         });
     }
 

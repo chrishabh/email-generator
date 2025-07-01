@@ -357,23 +357,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
 
 
-    window.openModalForImport=(toolName,imageUrl,name,userId,mc_dc,toolId)=>{
-        const card = document.createElement('div');
-        card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
-        card.innerHTML = ` 
-                <div class="flex items-center gap-4  pb-4 pt-2">
-                    <img class="w-10" src="${imageUrl}" />
-                    <div>
-                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${toolName}</span>
-                        <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name!='null' ? name :'' }</span>
-                    </div> 
-                </div>
-            <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
-                <h2 class="text-[18px] font-bolder text-capitalize">${name!='null' ? name:toolName}</h2>
+    window.openModalForImport=async (toolName,imageUrl,name,userId,mc_dc,toolId)=>{
+        let files      = [];
+        let result     = null;
+        let excelImage = null;
+        if(toolName.toLowerCase()=='dropbox'){
+            $('#preloader').fadeIn()
+            result  = await makeApiHit(`/get-listing-file-dropbox?userId=${userId}&toolName=${toolName}&toolId=${toolId}`)
+            $('#preloader').fadeOut()
+            excelImage = window.location.origin+'/integration/integerated-icon/google_sheet.svg'
+
+        }
+
+        if (toolName.toLowerCase()=='dropbox' && result && result.data && Array.isArray(result.data) && result.data.length > 0) {
+            files = result.data; 
+        }
+        let cardsHTML = '';
+        cardsHTML += `<div class="bg-gray-100 px-3 py-3 rounded shadow mb-4">
+                        <div class="flex items-center gap-4 pb-4 pt-2">
+                            <img class="w-10" src="${imageUrl}" />
+                            <div>
+                                <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${toolName}</span>
+                                <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name!='null' ? name :'' }</span>
+                            </div> 
+                        </div>`;
+
+        if(toolName.toLowerCase()=='dropbox' && files.length > 0) {
+            files.forEach(file => {
+                const fileSizeKB = (file.size / 1024).toFixed(2); // Size in KB
+                const fileSizeDisplay = fileSizeKB > 1024
+                    ? `${(fileSizeKB / 1024).toFixed(2)} MB`
+                    : `${fileSizeKB} KB`;
+
+                cardsHTML += ` 
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <img class="w-7" src="${excelImage}" />    
+                            <h2 class="text-[15px] font-bold">${file.name}</h2>
+                            <span class="block text-sm text-gray-600">Size: ${fileSizeDisplay}</span>
+                            <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${file.id}','${file.name}','${file.path_display}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }else if(toolName.toLowerCase()=='dropbox' && files.length ==0){
+            cardsHTML+= 
+            `<div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                <h2 class="text-[18px] font-bold">No Content Found!!!</h2>
+            </div>`
+        }
+        else{
+        cardsHTML+= 
+            `<div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                <h2 class="text-[18px] font-bold">${name !== 'null' ? name : toolName}</h2>
                 <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
-            </div>
-            `; 
-        availableImportEmails.innerHTML=card.outerHTML; 
+            </div>`;
+        }
+        cardsHTML+=`</div>`;
+        availableImportEmails.innerHTML = cardsHTML;
+        // availableImportEmails.innerHTML=card.outerHTML; 
         ImportEmailsModal.classList.remove('hidden');
     }
 
@@ -432,10 +473,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
-    window.ImportData = async (toolName, userId,mc_dc,toolId) => {
+    window.ImportData = async (toolName, userId,mc_dc,toolId,$fileId=null,$fileName='',$filePath='') => {
         try {
             $('#preloader').fadeIn()
-            const response = await axios.get(`/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
+            let url = toolName.toLowerCase() === 'dropbox' 
+            ? `/import-integeration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`
+            : `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`;
+
+            const response = await axios.get(url);
             if (!response.data.success) {
                 notyf.error(response.data.error || 'Error fetching available integrations');
                 $('#preloader').fadeIn()

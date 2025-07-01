@@ -11,22 +11,19 @@ use App\Models\uploadedAndDownloadFileName;
 use Illuminate\Http\Request; 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MailchimpOAuthController extends Controller
 {
-    /**
-     * Redirects the user to the OAuth provider's authorization URL.
-     *
-     * @param int $toolId The ID of the integration tool.
-     * @param string $toolName The name of the integration tool.
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
-    */
+
     public function redirectToMailchimp($toolId,$toolName)
     {
         $lowercaseofToolName  = strtolower($toolName);
@@ -152,7 +149,7 @@ class MailchimpOAuthController extends Controller
                     $queryBuildArray['client_id']         = $clientId;
                     $queryBuildArray['redirect_uri']      = $redirect_uri;
                     $queryBuildArray['state']             = Str::random(16);  
-                    $queryBuildArray['scope']             = 'account_info.read files.content.read files.content.write';
+                    $queryBuildArray['scope']             = 'account_info.read files.content.read files.content.write files.metadata.read';
                     $queryBuildArray['token_access_type'] = 'offline';
                 }else{
                     $queryBuildArray['grant_type']     = 'authorization_code';
@@ -815,4 +812,371 @@ class MailchimpOAuthController extends Controller
         
     }   
 
+    public function getDropboxExcelFiles(Request $request)
+    {
+        $userId           = $request->query('userId');
+        $integeration_id  = $request->query('toolId');
+        $toolName         = $request->query('toolName');
+
+        if (!$userId || !$integeration_id) {
+            return response()->json([
+                'message' => 'Missing parameters',
+                'success' => false,
+                'error' => 'userId and integeration_id are required.'
+            ], 400);
+        }
+
+        $integration = Integration::with('tool')->where('id',$integeration_id)->where('mc_user_id',"$userId")->where('user_id',Auth::user()->id)->where('service_name',strtolower($toolName))->find($integeration_id);
+        if (empty($integration)) {
+            return response()->json([
+                'message' => 'Invalid integration or not a Dropbox integration.',
+                'success' => false
+            ], 404);
+        }
+
+        $toolData    = $integration->tool;
+        $urlJson     = json_decode($toolData->url, true);
+        $base_api_url = $urlJson['base_api_url']; // This is 'https://api.dropboxapi.com/2/'
+
+        try {
+            $response = $this->handleTokenRefreshAndRetry(
+                $integration,
+                $toolData,
+                $urlJson,
+                function ($currentAccessToken) use ($base_api_url) {
+                    $dropboxClient = new Client([
+                        'base_uri' => $base_api_url,
+                        'headers' => [
+                            'Authorization' => "Bearer $currentAccessToken",
+                            'Content-Type' => 'application/json',
+                        ],
+                    ]);
+                    return $dropboxClient->post('files/list_folder', [
+                        'json' => [
+                            'path' => '',
+                            'recursive' => true,
+                            'limit' => 2000,
+                            'include_media_info' => false,
+                            'include_deleted' => false,
+                            'include_has_explicit_shared_members' => false,
+                        ]
+                    ]);
+                }
+            );
+
+            $files = json_decode($response->getBody(), true);
+            $excelFiles = [];
+
+            if (isset($files['entries']) && is_array($files['entries'])) {
+                foreach ($files['entries'] as $entry) {
+                    if ($entry['.tag'] === 'file') {
+                        $pathInfo = pathinfo($entry['name']);
+                        $extension = strtolower($pathInfo['extension'] ?? '');
+
+                        if (in_array($extension, ['xls', 'xlsx'])) {
+                            $excelFiles[] = [
+                                'id' => $entry['id'],
+                                'name' => $entry['name'],
+                                'path_display' => $entry['path_display'],
+                                'size' => $entry['size'],
+                            ];
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'message' => 'Dropbox Excel files retrieved successfully.',
+                'success' => true,
+                'data' => $excelFiles
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error("Error in getDropboxExcelFiles: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
+            return response()->json([
+                'message' => 'An error occurred while fetching Dropbox Excel files.',
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+ 
+    private function handleTokenRefreshAndRetry(Integration $integration, $toolData, array $urlJson, callable $originalApiCall)
+    {
+        $accessToken  = $integration->mc_token;
+        $refreshToken = $integration->mc_refresh_token;
+        $toolSlug     = strtolower($integration->service_name);
+        $token_url    = $urlJson['auth_token_url'];
+        $redirect_url = $urlJson['redirect_url']; 
+        try {
+            // Attempt the original API call with the current access token
+            return $originalApiCall($accessToken);
+        } catch (ClientException $e) {
+            $statusCode = $e->getResponse() ? $e->getResponse()->getStatusCode() : null;
+            if ($statusCode === 401) {
+                Log::warning("Token expired/unauthorized for {$toolSlug} (Integration ID: {$integration->id}). Attempting refresh.");
+                if ($refreshToken) {
+                    try {
+                        $client = new Client();
+                        $queryBuildArray = [
+                            'grant_type'    => 'refresh_token',
+                            'client_id'     => $toolData->client_id,
+                            'client_secret' => $toolData->client_secret,
+                            'refresh_token' => $refreshToken,
+                            // 'redirect_uri'  => $redirect_url, // Ensure redirect_uri is passed for refresh token flow
+                        ];
+                        $newAccessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolSlug);
+                        if (!empty($newAccessTokenData) && isset($newAccessTokenData['access_token'])) {
+                            $integration->mc_token = $newAccessTokenData['access_token'];
+                            // Update refresh token only if a new one is provided (optional for some providers)
+                            if (isset($newAccessTokenData['refresh_token'])) {
+                                $integration->mc_refresh_token = $newAccessTokenData['refresh_token'];
+                            }
+                            // $integration->status = 'verified'; // Mark as verified again after successful refresh
+                            $integration->save();
+                            $newAccessToken = $newAccessTokenData['access_token'];
+
+                            Log::info("Token refreshed successfully for {$toolSlug} (Integration ID: {$integration->id}). Retrying API call.");
+                            // Retry the original API call with the new token
+                            return $originalApiCall($newAccessToken);
+                        } else {
+                            // Refresh failed, even if refresh token existed (e.g., refresh token revoked)
+                            // $integration->status = 'reauth_required';
+                            // $integration->save();
+                            Log::error("Failed to get new access token during refresh for {$toolSlug} (Integration ID: {$integration->id}).");
+                            throw new \Exception('Failed to refresh access token. Please re-authenticate.');
+                        }
+                    } catch (\Exception $refreshE) {
+                        // Catch exceptions during the refresh process itself
+                        // $integration->status = 'reauth_required';
+                        // $integration->save();
+                        // pp( $refreshE->getMessage());
+                        Log::error("Exception during token refresh for {$toolSlug} (Integration ID: {$integration->id}): " . $refreshE->getMessage());
+                        throw new \Exception('Failed to refresh access token: ' . $refreshE->getMessage() . '. Please re-authenticate.');
+                    }
+                } else {
+                    // No refresh token available
+                    // $integration->status = 'reauth_required';
+                    // $integration->save();
+                    Log::warning("No refresh token available for {$toolSlug} (Integration ID: {$integration->id}). Re-authentication required.");
+                    throw new \Exception('Refresh token not available. Please re-authenticate.');
+                }
+            }
+            // Re-throw if it's a ClientException but not a 401, or if 401 was handled by refresh but original call still failed
+            throw $e;
+        }
+    }
+
+    public function importDropboxExcelFiles(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'integeration_id' => 'required',
+            'fileName'       => 'required|string', // The full path of the file to download, e.g., "/folder/my_emails.xlsx"
+            'filePath'       => 'required|string', // The original name of the file
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'success' => false,
+                'error' => $validator->errors()
+            ], 422);
+        }
+
+        $userId             = Auth::user()->id;
+        $integeration_id    = $request->input('integeration_id');
+        $fileName           = $request->input('fileName');
+        $integerationUserId = $request->input('userId');
+        $filePath           = $request->input('filePath');
+        $fileId             = $request->input('fileId');
+
+        $integration = Integration::with('tool')->where('id',$integeration_id)->where('mc_user_id',"$integerationUserId")->where('user_id',$userId)->find($integeration_id);
+        if (empty($integration) || strtolower($integration->service_name) !== ToolNameEnum::DROPBOX) {
+            return response()->json([
+                'message' => 'Invalid integration or not a Dropbox integration.',
+                'error' => $validator->errors(),
+                'success' => false
+            ], 404);
+        }
+
+        $toolData           = $integration->tool; 
+        $urlJson            = json_decode($toolData->url, true);
+        $base_api_url       = $urlJson['base_api_url']; // This is 'https://api.dropboxapi.com/2/' 
+        $tempFilePath = null; // Initialize to null for cleanup in finally block
+
+        try {
+            DB::beginTransaction();
+
+            // Use the new generalized token refresh and retry logic for downloading the file
+            $response = $this->handleTokenRefreshAndRetry(
+                $integration,
+                $toolData,
+                $urlJson,
+                function ($currentAccessToken) use ($base_api_url,$filePath) {
+                    $contentClient = new Client([
+                        'base_uri' => $base_api_url, // Dropbox content API base URL
+                        'headers' => [
+                            'Authorization' => "Bearer $currentAccessToken",
+                            'Dropbox-API-Arg' => json_encode(['path' => $filePath]),
+                            'Content-Type' => 'application/octet-stream',
+                        ],
+                        'stream' => true,
+                    ]);
+                    return $contentClient->post('files/download', ['body' => '']);
+                }
+            );
+
+            $statusCode = $response->getStatusCode(); 
+            if ($statusCode !== 200) {
+                DB::rollBack();
+                $responseBody = $response->getBody()->getContents();
+                Log::error("Dropbox file download failed after refresh attempt ($statusCode): " . $responseBody);
+                if ($integration) {
+                    $integration->status = 'error';
+                    $integration->save();
+                }
+                return response()->json([
+                    'message' => 'Failed to download file from Dropbox after refresh attempt.',
+                    'success' => false,
+                    'error' => $responseBody
+                ], $statusCode);
+            }
+
+            // Save the downloaded file temporarily
+            $tempFilePath = tempnam(sys_get_temp_dir(), 'dropbox_excel_') . '.' . pathinfo($fileName, PATHINFO_EXTENSION);
+            file_put_contents($tempFilePath, $response->getBody()->getContents());
+ 
+            $emails            = [];
+            $importedCount     = 0;
+            $skippedDuplicates = 0;
+
+            // Step 2: Parse the Excel file using PhpSpreadsheet
+            try {
+                $readerType  = IOFactory::identify($tempFilePath);
+                $reader      = IOFactory::createReader($readerType);
+                $spreadsheet = $reader->load($tempFilePath);
+                $sheet       = $spreadsheet->getActiveSheet();
+                $highestRow  = $sheet->getHighestRow();
+
+                for ($row = 1; $row <= $highestRow; $row++) {
+                    $email = trim($sheet->getCell('A' . $row)->getValue()); // Trim whitespace
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        // Check for duplicates in the current batch and existing in DB
+                        if (!isset($emails[$email]) && !isset($existingEmails[$email])) {
+                            $emails[$email] = $email; // Use email as key to prevent duplicates within current batch
+                        } else {
+                            $skippedDuplicates++;
+                            Log::info("Skipped duplicate email: {$email} during Dropbox import.");
+                        }
+                    }
+                }
+                $emails = array_values($emails);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error("Error parsing Excel file from Dropbox: " . $e->getMessage());
+                // if ($integration) {
+                //     $integration->status = 'error';
+                //     $integration->save();
+                // }
+                return response()->json([
+                    'message' => 'Failed to parse Excel file. Ensure it is a valid Excel format and emails are in the first column.',
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            if (empty($emails)) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'No valid emails found in the selected Excel file.',
+                    'success' => false,
+                    'error' => 'The selected Excel file does not contain any valid emails in the first column.'
+                ], 404);
+            }
+
+            // Step 3: Save emails to database
+            $upload                            = new uploadedAndDownloadFileName();
+            $upload->fileName                  = $fileName;
+            $upload->list_id                   = $fileId.'__'.$filePath;
+            $upload->user_id                   = $userId;
+            $upload->tool_name                 = $toolData->name;
+            $upload->tool_id                   = $toolData->id;
+            $upload->integeration_id           = $integeration_id;
+            $upload->mc_user_id                = $integration->mc_user_id;
+            $upload->mc_dc                     = null;
+            $upload->mc_token                  = $integration->mc_token; // Ensure this is the latest token after potential refresh
+            $upload->is_tools_integerate_email = '1';
+            $upload->downloadFileName          = NULL;
+            $upload->downloadFileLocation      = NULL;
+            $upload->created_at                = now();
+            $upload->updated_at                = now();
+            $upload->save(); // Save to get the $uploadId
+
+            $uploadId = $upload->id;
+
+            // Define the target directory path within the public disk
+            $targetDirectory = strtolower($toolData->name) . '/' . now()->format('Y-m-d') . '/' . $uploadId;
+            $finalFilePath   = $targetDirectory . '/' . $fileName;
+
+            // Move the file from temporary location to its final permanent storage location
+            try {
+                // Ensure the directory exists
+                Storage::disk('public')->makeDirectory($targetDirectory);
+                // Move the file
+                Storage::disk('public')->putFileAs($targetDirectory, new \Illuminate\Http\File($tempFilePath), $fileName);
+                $upload->uploadedFileLocation = $finalFilePath; // Store the new path
+                $upload->save(); // Save the updated path
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error("Failed to move imported Dropbox Excel file to permanent storage: " . $e->getMessage());
+                return response()->json([
+                    'message' => 'Failed to store the imported Excel file permanently.',
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            $results = [];
+            foreach ($emails as $email) {
+                $record                            = new BulkUploadEmailFileData();
+                $record->email                     = $email;
+                $record->file_id                   = $uploadId;
+                $record->importedBy                = $userId;
+                $record->is_tools_integerate_email = '1';
+                $record->type                      = 'bulk';
+                $record->created_at                = now();
+                $record->updated_at                = now();
+                $record->save();
+                $results[]                         = ['email' => $email];
+                $importedCount++;
+            }
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Emails imported successfully from Dropbox Excel file!',
+                'success' => true,
+                'imported_count' => count($emails),
+                'results' => $results
+            ], 201);
+
+        } catch (\Exception $e) {
+            pp($e->getMessage());
+            DB::rollBack();
+            Log::error("General error importing Dropbox Excel emails: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
+            // if ($integration) {
+            //     // $integration->status = 'error';
+            //     // $integration->save();
+            // }
+            return response()->json([
+                'message' => 'An unexpected error occurred during Dropbox Excel import.',
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        } finally {
+            // Ensure the temporary file is always deleted
+            if ($tempFilePath && file_exists($tempFilePath)) {
+                unlink($tempFilePath);
+            }
+        }
+    }
 }

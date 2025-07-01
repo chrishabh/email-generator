@@ -367,7 +367,7 @@ class EmailController extends Controller
         $data = uploadedAndDownloadFileName::getAllData($fileId,$userid,$searchContent );
         $fileData =array();
         if(!empty($data)){
-            foreach($data as $key=>$value){ 
+            foreach($data as $key=>$value){
                 $iconUrl = null;
                 if($value->is_tools_integerate_email=='1'){ 
                     $integrated = Integration::with('tool')->where('status','verified')->where('id',$value->integeration_id)->whereNull('deleted_at')->first(); 
@@ -400,6 +400,7 @@ class EmailController extends Controller
                     $dataArr['userId']                    =  $value->user_id; 
                     $dataArr['fileId']                    =  $value->id; 
                     $dataArr['isDownloadFileLocation']    =  (empty($value->downloadFileLocation) ||  ($value->downloadFileLocation==null) ) ? '0' : '1'; 
+                    $dataArr['toolName']                  =  $value->tool_name; 
                     array_push($fileData,$dataArr);
             }
         }

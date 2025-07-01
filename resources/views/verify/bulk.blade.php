@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <meta name="csrf-token" content="{{ csrf_token() }}">
-                                            <i class="fa-solid fa-download download-icon" data-status="{{json_encode($statusArray)}}" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},{{$value['is_tools_integerate_email']}},this)"></i>
+                                            <i class="fa-solid fa-download download-icon" data-status="{{json_encode($statusArray)}}" data-valid="{{$value['isDownloadFileLocation']}}" onclick="downloadCsvFile(event,{{$value['fileId']}},{{$value['isDownloadFileLocation']}},{{$value['is_tools_integerate_email']}},'{{$value['toolName']}}',this)"></i>
                                         </div> 
                                     </div>    
                                 @endif
