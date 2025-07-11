@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BulkUploadEmailFileData;
 use App\Models\Integration;
 use App\Models\IntegrationTool;
+use App\Models\ToolSelectedFile;
 use App\Models\uploadedAndDownloadFileName;
 use Illuminate\Http\Request; 
 use GuzzleHttp\Client;
@@ -160,45 +161,61 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 } 
             break;
-            case ToolNameEnum::GOOGLESHEETS:
-                    $queryBuildArray['client_id']     = $clientId;
-                    $queryBuildArray['redirect_uri']  = $redirect_uri;
-                    if($is_handle_callback==false){
-                        $queryBuildArray['scope']         = 'https://www.googleapis.com/auth/spreadsheets.readonly';
-                        $queryBuildArray['response_type'] = 'code';
-                        $queryBuildArray['access_type']   = 'offline';
-                        $queryBuildArray['prompt']        = 'consent';
-                        $auth_login_url                   = $auth_login_url;
-                    }else{
-                        $queryBuildArray['client_secret']  = $clientSecret;
-                        $queryBuildArray['code']           = $code;
-                        $client = new Client(); 
-                        $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
-                        return $accessToken;
-                    }
-                break;
-                case ToolNameEnum::ZOHO:
-                    $queryBuildArray['client_id']     = $clientId;
-                    $queryBuildArray['redirect_uri']  = $redirect_uri;
-                    if($is_handle_callback==false){
-                        $queryBuildArray['scope']         = 'AaaServer.profile.Read,ZohoCRM.modules.ALL';
-                        $queryBuildArray['response_type'] = 'code';
-                        $queryBuildArray['access_type']   = 'offline';
-                        $queryBuildArray['prompt']        = 'consent';
-                        $auth_login_url                   = $auth_login_url;
-                    }else{
-                        $queryBuildArray['client_secret']  = $clientSecret;
-                        $queryBuildArray['code']           = $code;
-                        $client = new Client(); 
-                        $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
-                        return $accessToken;
-                    }
-                break;
+            case ToolNameEnum::ZOHO:
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback==false){
+                    $queryBuildArray['scope']         = 'AaaServer.profile.Read,ZohoCRM.modules.ALL';
+                    $queryBuildArray['response_type'] = 'code';
+                    $queryBuildArray['access_type']   = 'offline';
+                    $queryBuildArray['prompt']        = 'consent';
+                    $auth_login_url                   = $auth_login_url;
+                }else{
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client = new Client(); 
+                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                    return $accessToken;
+                }
+            break;
+            case ToolNameEnum::CAMPAIGNMONITOR:
+                $queryBuildArray['client_id']    = $clientId;
+                $queryBuildArray['redirect_uri'] = $redirect_uri;
+                if ($is_handle_callback == false) {
+                    $queryBuildArray['scope']         = 'ManageLists,ImportSubscribers,ViewSubscribersInReports';
+                    $queryBuildArray['response_type'] = 'code';
+                    $auth_login_url                   = $auth_login_url;
+                } else {
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client                            = new Client();
+                    $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    return $accessToken;
+                }
+            break;
+            case ToolNameEnum::AWEBER:
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback == false){
+                    $queryBuildArray['response_type'] = 'code';
+                    $queryBuildArray['scope']         = 'account.read list.read subscriber.read subscriber.write'; // Use scope from DB
+                    $auth_login_url                   = $auth_login_url;
+                } else {
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client                            = new Client();
+                    $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    return $accessToken;
+                }
+            break;
             default:
                 return;
         }
         
         $query = http_build_query($queryBuildArray);
+        pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
@@ -207,7 +224,7 @@ class MailchimpOAuthController extends Controller
         $response   = $client->post("$token_url", $param);
         $data       = json_decode($response->getBody(), true);
 
-        if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS) { 
+        if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR) { 
             return $data;
         } else { 
             return $data['access_token'];
@@ -270,6 +287,9 @@ class MailchimpOAuthController extends Controller
         if($toolName=='googlesheets'){
             $toolName = 'google sheets';
         }
+        else if($toolName=='campaignmonitor'){
+            $toolName = 'campaign monitor';
+        }
         $client = new Client(); 
         try{ 
             $tool = IntegrationTool::where('slug', $toolName)->first();
@@ -277,7 +297,6 @@ class MailchimpOAuthController extends Controller
                 Session::flash('error', "tool not found.");
                return redirect('/tools');
             } 
-
             if ($tool) {
                 $client                   = new Client(); 
                 $CLIENT_SECRET            = $tool['client_secret'];
@@ -292,7 +311,6 @@ class MailchimpOAuthController extends Controller
                 $AUTH_METADATA_URL        = $urls['auth_metadata_url']; 
                 $BASE_API_URL             = $urls['base_api_url'] ?? null;
                 $accessTokenData          = self::redirectionToTools($toolName,$CLIENT_ID,$CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$AUTH_LOGIN_URL,$AUTH_TOKEN_URL,true,$code);                 
-               
                 if (empty($accessTokenData)) {
                     Session::flash('error', "Failed to retrieve access token for $originalToolName. Please try again.");
                     return redirect('/tools');
@@ -378,6 +396,52 @@ class MailchimpOAuthController extends Controller
                         $email       = $meta['email'] ?? null;
                         $mc_dc       = null;
                     break;
+                    case ToolNameEnum::CAMPAIGNMONITOR:
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken  = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        // For Campaign Monitor, you typically get client details via the API after authentication.
+                        // The base_api_url can be used to query user details or client details directly.
+                        // Campaign Monitor doesn't have a single /metadata endpoint like some others.
+                        // You'd typically query for the clients the user has access to.
+                        // For simplicity, we'll try to get the primary client details or user info if available.
+                        // If no specific metadata URL, you might fetch initial client data.
+                        try {
+                            $cmClient = new Client([
+                                'base_uri' => $BASE_API_URL,
+                                'headers' => ['Authorization' => "Bearer $accessToken"],
+                            ]);
+
+                            // Get authenticated user details to find their client ID(s)
+                            // API endpoint to get user details is often /api/v3.3/clients.json or similar
+                            $clientsResponse = $cmClient->get('clients.json'); // Get a list of clients
+                            $clients         = json_decode($clientsResponse->getBody(), true);
+                            if (empty($clients)) {
+                                Session::flash('error', "No Campaign Monitor clients found for this account.");
+                                return redirect('/tools');
+                            }
+
+                            // For simplicity, let's assume we integrate with the first client found or prompt user
+                            // In a real application, you might let the user choose which client to integrate with.
+                            $primaryClient = $clients[0]; 
+                            $mc_user_id    = $primaryClient['ClientID']; // Campaign Monitor uses ClientID
+                            $accountName   = $primaryClient['Name'];
+                            // Campaign Monitor's direct user email might not be available here, 
+                            // but you can fetch it if there's a user endpoint or link it to the authenticated user.
+                            $email         = null; // Or fetch it from a specific user endpoint if available
+                            $mc_dc         = null; // Not directly applicable in the same way as Mailchimp
+                            $meta          = $primaryClient; // Store the client details as metadata
+                        } catch (\Exception $e) {
+                            Log::error("Failed to retrieve Campaign Monitor client data: " . $e->getMessage());
+                            Session::flash('error', "Failed to retrieve Campaign Monitor client data. " . $e->getMessage());
+                            return redirect('/tools');
+                        }
+                    break;
+
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
                     return redirect('/tools');
@@ -600,6 +664,95 @@ class MailchimpOAuthController extends Controller
                             'error' => $response->getBody()->getContents()
                         ], $response->getStatusCode());
                     }
+                break;
+                case ToolNameEnum::CAMPAIGNMONITOR:
+                    $client = new Client([
+                        'base_uri'    => $base_api_url,
+                        'headers'     => ['Authorization' => "Bearer $accessToken"],
+                        'http_errors' => false, // Handle errors manually to check for 401
+                    ]);
+
+                    // Try to get lists
+                    $response = $client->get('clients/' . $integration->mc_user_id . '/lists.json');
+                    $statusCode = $response->getStatusCode();
+
+                    if ($statusCode === 401) {
+                        // Attempt token refresh
+                        if (!empty($integration->mc_refresh_token)) {
+                            $queryBuildArray = [
+                                'grant_type'    => 'refresh_token',
+                                'client_id'     => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'refresh_token' => $integration->mc_refresh_token,
+                            ];
+                            $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
+
+                            if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
+                                $integration->mc_token         = $accessTokenData['access_token'];
+                                $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token; // Update refresh token if new one is provided
+                                $integration->save();
+                                $accessToken = $accessTokenData['access_token'];
+
+                                // Retry with new token
+                                $client = new Client([
+                                    'base_uri'    => $base_api_url,
+                                    'headers'     => ['Authorization' => "Bearer $accessToken"],
+                                    'http_errors' => true,
+                                ]);
+                                $response = $client->get('clients/' . $integration->mc_user_id . '/lists.json');
+                                $statusCode = $response->getStatusCode();
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token for Campaign Monitor.'
+                                ], 401);
+                            }
+                        } else {
+                            DB::rollBack();
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'No refresh token available for Campaign Monitor. Please re-authenticate.'
+                            ], 401);
+                        }
+                    }
+
+                    if ($statusCode !== 200) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Failed to retrieve Campaign Monitor lists.',
+                            'success' => false,
+                            'error' => $response->getBody()->getContents()
+                        ], $statusCode);
+                    }
+
+                    $lists = json_decode($response->getBody(), true);
+                    if (empty($lists)) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No lists found for this Campaign Monitor account.',
+                            'success' => false,
+                            'error' => 'No Campaign Monitor lists available'
+                        ], 404);
+                    }
+
+                    // For simplicity, get subscribers from the first list.
+                    // In a production app, you might offer a selection of lists.
+                    $listId              = $lists[0]['ListID'];
+                    $subscribersResponse = $client->get('lists/' . $listId . '/active.json?pagesize=1000'); // Fetch active subscribers
+                    $subscribers         = json_decode($subscribersResponse->getBody(), true);
+
+                    if (empty($subscribers['Results'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No subscribers found in the selected Campaign Monitor list.',
+                            'success' => false,
+                            'error' => 'No subscribers available in the list'
+                        ], 404);
+                    }
+                    $emails = array_column($subscribers['Results'], 'EmailAddress');
                 break;
 
                 default:
@@ -1014,11 +1167,11 @@ class MailchimpOAuthController extends Controller
                 $urlJson,
                 function ($currentAccessToken) use ($base_api_url,$filePath) {
                     $contentClient = new Client([
-                        'base_uri' => $base_api_url, // Dropbox content API base URL
+                        'base_uri' => 'https://content.dropboxapi.com/2/', // Dropbox content API base URL
                         'headers' => [
                             'Authorization' => "Bearer $currentAccessToken",
                             'Dropbox-API-Arg' => json_encode(['path' => $filePath]),
-                            'Content-Type' => 'application/octet-stream',
+                            'Content-Type' => 'text/plain',
                         ],
                         'stream' => true,
                     ]);
@@ -1123,9 +1276,15 @@ class MailchimpOAuthController extends Controller
                 // Ensure the directory exists
                 Storage::disk('public')->makeDirectory($targetDirectory);
                 // Move the file
-                Storage::disk('public')->putFileAs($targetDirectory, new \Illuminate\Http\File($tempFilePath), $fileName);
-                $upload->uploadedFileLocation = $finalFilePath; // Store the new path
-                $upload->save(); // Save the updated path
+                Storage::disk('public')->putFileAs($targetDirectory, new \Illuminate\Http\File($tempFilePath), $fileName);     
+                $toolSelected                            = new ToolSelectedFile();
+                $toolSelected->file_id                   = $fileId;
+                $toolSelected->file_name                 = $fileName;
+                $toolSelected->file_path                 = $filePath;
+                $toolSelected->user_id                   = $userId; 
+                $toolSelected->tool_id                   = $toolData->id;
+                $toolSelected->upload_file_path          = $finalFilePath;
+                $toolSelected->save();  
             } catch (\Exception $e) {
                 DB::rollBack();
                 Log::error("Failed to move imported Dropbox Excel file to permanent storage: " . $e->getMessage());
@@ -1150,7 +1309,7 @@ class MailchimpOAuthController extends Controller
                 $results[]                         = ['email' => $email];
                 $importedCount++;
             }
-
+           
             DB::commit();
             return response()->json([
                 'message' => 'Emails imported successfully from Dropbox Excel file!',
@@ -1159,8 +1318,9 @@ class MailchimpOAuthController extends Controller
                 'results' => $results
             ], 201);
 
-        } catch (\Exception $e) {
-            pp($e->getMessage());
+        } catch (\Exception $e) { 
+            $responseBody = $e->getResponse()->getBody()->getContents();
+            // pp($responseBody);
             DB::rollBack();
             Log::error("General error importing Dropbox Excel emails: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
             // if ($integration) {
@@ -1170,13 +1330,122 @@ class MailchimpOAuthController extends Controller
             return response()->json([
                 'message' => 'An unexpected error occurred during Dropbox Excel import.',
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage().' '. $responseBody
             ], 500);
         } finally {
             // Ensure the temporary file is always deleted
             if ($tempFilePath && file_exists($tempFilePath)) {
                 unlink($tempFilePath);
             }
+        }
+    }
+
+
+    public function toolConnectionBasedOnApiKey(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'api_key'   => 'required|string|max:255',
+            'tool_id'   => 'required|integer',
+            'tool_name' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => $validator->errors()->first(),'message'=>'validation error'], 400);
+        }
+
+        $apiKey   = $request->input('api_key');
+        $toolId   = $request->input('tool_id');
+        $toolName = strtolower($request->input('tool_name'));
+        $userId   = Auth::id();
+
+        switch($toolName) {
+            case ToolNameEnum::MOOSEND:
+                break;
+            default:
+                return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
+        }
+
+        if ($toolName !== ToolNameEnum::MOOSEND) {
+            return response()->json(['success' => false, 'error' => 'Invalid tool specified for API key connection.'], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Verify the API Key with Moosend by fetching account details
+            $client = new Client();
+            $moosendBaseApiUrl = 'https://api.moosend.com/v3/';
+
+            $testResponse = $client->get($moosendBaseApiUrl . 'lists.json', [ // Changed from accounts.json to lists.json
+                'query' => ['apikey' => $apiKey]
+            ]);
+
+            $responseData = json_decode($testResponse->getBody()->getContents(), true);
+            if ($testResponse->getStatusCode() === 200 && isset($responseData['Code']) && $responseData['Code'] === 0) {
+                // API Key is valid
+                $accountInfo      = $responseData['Context']['Account'] ?? [];
+                $moosendAccountId = $accountInfo['ID'] ?? null;
+                $accountName      = $accountInfo['Name'] ?? 'Moosend Account';
+                $accountEmail     = $accountInfo['Email'] ?? null;
+                if (!$moosendAccountId) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'error' => 'Could not retrieve Moosend Account ID with the provided API key.'], 400);
+                }
+
+                // 2. Store or update the integration
+                $moosendTool = IntegrationTool::find($toolId);
+
+                if (!$moosendTool || $moosendTool->slug !== ToolNameEnum::MOOSEND) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'error' => 'Moosend tool not found or mismatched.'], 404);
+                }
+
+                $existingIntegration = Integration::where('user_id', $userId)
+                                                ->where('tool_id', $toolId)
+                                                ->where('service_name', ToolNameEnum::MOOSEND)
+                                                ->first();
+
+                if ($existingIntegration) {
+                    $existingIntegration->mc_token = $apiKey; // Store the API key in mc_token
+                    $existingIntegration->mc_user_id = $moosendAccountId; // Store Moosend Account ID
+                    $existingIntegration->status = 'verified';
+                    $existingIntegration->name = $accountName;
+                    $existingIntegration->emails = $accountEmail;
+                    $existingIntegration->metadata = json_encode($accountInfo);
+                    $existingIntegration->save();
+                } else {
+                    $integration = new Integration();
+                    $integration->user_id = $userId;
+                    $integration->tool_id = $toolId;
+                    $integration->service_name = ToolNameEnum::MOOSEND;
+                    $integration->mc_token = $apiKey; // Store the API key here
+                    $integration->mc_user_id = $moosendAccountId; // Store Moosend Account ID
+                    $integration->status = 'verified';
+                    $integration->name = $accountName;
+                    $integration->emails = $accountEmail;
+                    $integration->metadata = json_encode($accountInfo);
+                    $integration->save();
+                }
+
+                DB::commit();
+                return response()->json(['success' => true, 'message' => 'Moosend connected successfully!']);
+
+            } else {
+                $errorMessage = $responseData['Error']['Message'] ?? 'Invalid API Key or unable to connect.';
+                DB::rollBack();
+                return response()->json(['success' => false, 'error' => $errorMessage], 400);
+            }
+
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            DB::rollBack();
+            $responseBody = $e->getResponse()->getBody()->getContents();
+            Log::error("Moosend API Key verification Guzzle Client error: " . $e->getMessage() . " Response: " . $responseBody);
+            return response()->json(['success' => false, 'error' => 'Moosend API Key verification failed: ' . (json_decode($responseBody)->Error->Message ?? $e->getMessage())], $e->getCode());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            pp($e->getMessage());
+            Log::error("Error connecting Moosend: " . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting Moosend.'], 500);
         }
     }
 }

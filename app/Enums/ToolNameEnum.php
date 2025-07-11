@@ -8,5 +8,8 @@ class ToolNameEnum {
     const GOOGLESHEETS = 'google sheets';
     const DROPBOX = 'dropbox';
     const ZOHO = 'zoho crm';
+    // const CAMPAIGNMONITOR='campaign monitor';
+    const AWEBER='aweber';
+    const MOOSEND = 'moosend';
 
 }

@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const importCloseModalButton = document.getElementById('importCloseModal');
     const fullScreenLoader = document.getElementById('fullScreenLoader');
 
+
+
+    const moosendApiModal          = document.getElementById('moosendApiModal');
+    const moosendApiKeyInput       = document.getElementById('moosendApiKeyInput');
+    const moosendConnectButton     = document.getElementById('moosendConnectButton');
+    const moosendCancelButton      = document.getElementById('moosendCancelButton');
+    const moosendCloseModalButton  = document.getElementById('moosendCloseModalButton'); // New close button
+
     const notyf = new Notyf();
     let currentPage = 1;
     let currentModalPage = 1;
@@ -197,11 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations = ['mailchimp', 'hubspot', 'google sheets','dropbox', 'zoho crm'];
+        const activeIntegrations      = ['mailchimp', 'hubspot', 'google sheets','dropbox', 'zoho crm','moosend'];
+        const isModalOpenedForApiKey  = ['moosend']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
-            const isActive = activeIntegrations.includes(integration.name.toLowerCase());
+            const isActive    = activeIntegrations.includes(integration.name.toLowerCase());
+            const isModalOpen = isModalOpenedForApiKey.includes(integration.name.toLowerCase());
+            let onclickAction = ''
+    
+            if(isActive && isModalOpen){
+                onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
+            }else if(isActive){
+                onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
+            }
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img class="w-10" src="${integration.icon_url}" />
@@ -209,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                  ${
                     isActive ?
-                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
+                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="${onclickAction}">
                         Select
                     </button>`
                     :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
@@ -262,8 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-    };
-    
+    }
+
     function changeModalPage(page) {
         if(page >=1 && page <= lastModalPage){
             currentModalPage = page;
@@ -511,6 +528,78 @@ document.addEventListener('DOMContentLoaded', () => {
     
     }
 
+    window.showModalOfInputKey = (id, name) => {
+        moosendApiModal.classList.remove('hidden'); // This line opens the modal
+        moosendApiKeyInput.value = '';
+        moosendApiKeyInput.focus();
+        moosendModalTitle.setAttribute('data-tool-id', id);
+        moosendModalTitle.setAttribute('data-tool-name', name);
+        moosendModalTitle.innerText = `Connect ${name}`;
+    }
+
+    moosendConnectButton.addEventListener('click', async () => {
+        const apiKey = moosendApiKeyInput.value.trim();
+        if (!apiKey) {
+            notyf.error('Moosend API Key cannot be empty.');
+            return;
+        } 
+        moosendApiModal.classList.add('hidden'); // Hide the API key modal
+        $('#preloader').fadeIn(); // Show preloader
+
+        try {
+            const toolId   = moosendModalTitle.getAttribute('data-tool-id');
+            const toolName = moosendModalTitle.getAttribute('data-tool-name');
+            console.log(toolId, toolName); 
+            result  = await makeApiHit(`/tool-connection-based-on-api-key?api_key=${apiKey}&tool_name=${toolName}&tool_id=${toolId}`)
+            console.log(result);
+            // const availableToolsResponse = await axios.get(`/integrations/available?page=1&limit=100`);
+            // if (availableToolsResponse.data.success && availableToolsResponse.data.data) {
+            //     const moosendTool = availableToolsResponse.data.data.find(tool => tool.slug === 'mosend'); // Use 'mosend' slug from your seeder
+            //     if (moosendTool) {
+            //         moosendToolId = moosendTool.id;
+            //     }
+            // }
+
+            // if (!moosendToolId) {
+            //     notyf.error('Moosend tool configuration not found. Please refresh the page.');
+            //     $('#preloader').fadeOut();
+            //     return;
+            // }
+
+            // // Make an Axios POST request to your backend to save the API key
+            // // This '/connect-moosend' endpoint needs to be created in your Laravel routes and controller.
+            // const response = await axios.post('/connect-moosend', {
+            //     api_key: apiKey,
+            //     tool_id: moosendToolId,
+            //     tool_name: 'mosend' // Ensure slug matches your seeder and backend logic
+            // });
+
+            // if (response.data.success) {
+            //     notyf.success(response.data.message || 'Moosend connected successfully!');
+            //     renderIntegrations(currentPage); // Re-render the main integrations list to show updated status
+            // } else {
+            //     notyf.error(response.data.error || 'Failed to connect Moosend. Please check your API key.');
+            // }
+        } catch (error) {
+            console.error('Error connecting Moosend:', error);
+            notyf.error('An error occurred while connecting Moosend.');
+        } finally {
+            $('#preloader').fadeOut();
+        }
+    });
+
+    // Event listener for the 'Cancel' button in the Moosend API Key modal
+    moosendCancelButton.addEventListener('click', () => {
+        moosendApiModal.classList.add('hidden'); // Hide the modal
+        moosendApiKeyInput.value = ''; // Clear the input field
+    });
+
+    // Event listener for the 'x' close button in the Moosend API Key modal
+    moosendCloseModalButton.addEventListener('click', () => {
+        moosendApiModal.classList.add('hidden');
+        moosendApiKeyInput.value = '';
+    });
+
     renderIntegrations();
 });
 
@@ -540,3 +629,6 @@ function makeApiHit(url, method = 'GET', data = null) {
         }
     });
 }
+
+
+

@@ -101,6 +101,7 @@ try{
         Route::post('/mailchimp/unsubscribe-emails', [MailchimpOAuthController::class, 'unsubscribeSelectedEmailsFromAllLists']);
         Route::get('/get-listing-file-dropbox', [MailchimpOAuthController::class, 'getDropboxExcelFiles']);
         Route::get('/import-integeration-emails', [MailchimpOAuthController::class, 'importDropboxExcelFiles']);
+        Route::get('/tool-connection-based-on-api-key', [MailchimpOAuthController::class, 'toolConnectionBasedOnApiKey']);
 
 
         Route::prefix('profile')->group(function(){

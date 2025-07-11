@@ -35,6 +35,12 @@
             filter: blur(3px);
             }
       
+            #moosendApiKeyInput{
+                height: 2rem;
+                max-width: 100%;
+                width: 95%;
+                font-size: 14px;
+            }
             @keyframes borderMove {
                 0% {
                     background-position: 0% 50%;
@@ -117,6 +123,44 @@
             <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-blue-300 blur-sm opacity-70 rounded-full animate-pulse"></div>
         </div>
     </div>
+
+<!-- Moosend API Key Modal -->
+    <div id="moosendApiModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden" role="dialog" aria-modal="true" aria-labelledby="moosendModalTitle">
+        <div class="relative w-full max-w-xl mx-auto bg-white rounded-lg shadow-lg p-4">
+            <!-- Modal Header -->
+            <h2 id="moosendModalTitle" class="text-xl font-medium mb-4 text-gray-800">
+                Connect Moosend
+            </h2>
+
+            <!-- Close Button -->
+            <button type="button" id="moosendCloseModalButton" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-3xl leading-none" aria-label="Close modal">
+                &times;
+            </button>
+
+            <!-- Input -->
+            <div class="mb-4">
+                <label for="moosendApiKeyInput"
+                    class="block text-gray-700 text-sm font-bold mb-2">
+                    API Key:
+                </label>
+                <input type="text" id="moosendApiKeyInput" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter your Moosend API Key">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3">
+                <button type="button" id="moosendConnectButton"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Connect
+                </button>
+                <button type="button" id="moosendCancelButton"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-normal py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
 @endsection 
 
 
