@@ -210,6 +210,23 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 }
             break;
+            case ToolNameEnum::CONSTANTCONTACT: // Added for Constant Contact
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback == false){
+                    $queryBuildArray['response_type'] = 'code';
+                    $queryBuildArray['scope']         = 'contact_data campaign_data account_read offline_access'; // Example scopes, adjust as needed
+                     $queryBuildArray['state']        = Str::random(16);
+                    $auth_login_url                   = $auth_login_url;
+                } else {
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client                            = new Client();
+                    $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    return $accessToken;
+                }
+            break;
             default:
                 return;
         }
@@ -224,7 +241,7 @@ class MailchimpOAuthController extends Controller
         $response   = $client->post("$token_url", $param);
         $data       = json_decode($response->getBody(), true);
 
-        if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR) { 
+        if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT) { 
             return $data;
         } else { 
             return $data['access_token'];
@@ -249,7 +266,7 @@ class MailchimpOAuthController extends Controller
             $header = ["Authorization"=> "Bearer $accessToken"];
         }elseif($toolName== ToolNameEnum::MAILCHIMP){
             $header = ["Authorization"=> "OAuth $accessToken"];
-        } elseif ($toolName == ToolNameEnum::DROPBOX || $toolName == ToolNameEnum::GOOGLESHEETS) { // Added Dropbox
+        } elseif ($toolName == ToolNameEnum::DROPBOX || $toolName == ToolNameEnum::GOOGLESHEETS || ToolNameEnum::CONSTANTCONTACT) { // Added Dropbox
             $header = ["Authorization" => "Bearer $accessToken"];
         }
         try {
@@ -289,6 +306,9 @@ class MailchimpOAuthController extends Controller
         }
         else if($toolName=='campaignmonitor'){
             $toolName = 'campaign monitor';
+        }else if($toolName=='constantcontact'){
+            $toolName = 'constant contact';
+            
         }
         $client = new Client(); 
         try{ 
@@ -440,6 +460,29 @@ class MailchimpOAuthController extends Controller
                             Session::flash('error', "Failed to retrieve Campaign Monitor client data. " . $e->getMessage());
                             return redirect('/tools');
                         }
+                    break;
+                    case ToolNameEnum::CONSTANTCONTACT: // Added for Constant Contact
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        $ccClient = new Client(['base_uri' => $BASE_API_URL]);
+                        // pp($AUTH_METADATA_URL);
+                        $meta     = self::getMetadataOfTool($ccClient, $AUTH_METADATA_URL, $accessToken, $toolName);
+                        if (!$meta) {
+                            Session::flash('error', "Failed to retrieve metadata for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        // Constant Contact metadata typically returns an array of accounts, or a single account object
+                        // Assuming the first account or a direct account object
+                        $accountInfo = $meta[0] ?? $meta; // Adjust based on actual CC API response structure
+                        $mc_user_id  = $accountInfo['encoded_account_id'] ?? null; // Use account_id
+                        $accountName = $accountInfo['organization_name'] ?? ($accountInfo['first_name'] . ' ' . $accountInfo['last_name'] ?? null);
+                        $email       = $accountInfo['contact_email'] ?? null;
+                        $mc_dc       = null; // Not applicable for Constant Contact
                     break;
 
                     default:
@@ -753,6 +796,82 @@ class MailchimpOAuthController extends Controller
                         ], 404);
                     }
                     $emails = array_column($subscribers['Results'], 'EmailAddress');
+                break;
+                case ToolNameEnum::CONSTANTCONTACT: // Added for Constant Contact
+                    $client = new Client([
+                        'base_uri'    => $base_api_url,
+                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::CONSTANTCONTACT, $accessToken),
+                        'http_errors' => false, // Handle errors manually to check for 401
+                    ]);
+
+                    // Constant Contact uses /v3/contacts for email lists
+                    $response = $client->get('contacts'); // Get contacts (emails)
+                    $statusCode = $response->getStatusCode();
+
+                    if ($statusCode === 401) {
+                        // Attempt token refresh
+                        if (!empty($integration->mc_refresh_token)) {
+                            $queryBuildArray = [
+                                'grant_type'    => 'refresh_token',
+                                'client_id'     => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'refresh_token' => $integration->mc_refresh_token,
+                                'redirect_uri'  => $urlJson['redirect_url'],
+                            ];
+                            $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
+
+                            if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
+                                $integration->mc_token         = $accessTokenData['access_token'];
+                                $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token; // Update refresh token if new one is provided
+                                $integration->save();
+                                $accessToken = $accessTokenData['access_token'];
+
+                                // Retry with new token
+                                $client = new Client([
+                                    'base_uri'    => $base_api_url,
+                                    'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::CONSTANTCONTACT, $accessToken),
+                                    'http_errors' => true,
+                                ]);
+                                $response = $client->get('contacts');
+                                $statusCode = $response->getStatusCode();
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token for Constant Contact.'
+                                ], 401);
+                            }
+                        } else {
+                            DB::rollBack();
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'No refresh token available for Constant Contact. Please re-authenticate.'
+                            ], 401);
+                        }
+                    }
+
+                    if ($statusCode !== 200) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Failed to retrieve Constant Contact contacts.',
+                            'success' => false,
+                            'error' => $response->getBody()->getContents()
+                        ], $statusCode);
+                    }
+
+                    $contacts = json_decode($response->getBody(), true);
+                    if (empty($contacts['contacts'])) { // Constant Contact API returns contacts in 'contacts' key
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No contacts found for this Constant Contact account.',
+                            'success' => false,
+                            'error' => 'No Constant Contact contacts available'
+                        ], 404);
+                    }
+                    $emails = array_column($contacts['contacts'], 'email_address');
+                    $listId = 'all_contacts'; // Constant Contact doesn't have a single "list" ID like Mailchimp for all contacts. Use a placeholder.
                 break;
 
                 default:
@@ -1346,106 +1465,152 @@ class MailchimpOAuthController extends Controller
         $validator = Validator::make($request->all(), [
             'api_key'   => 'required|string|max:255',
             'tool_id'   => 'required|integer',
-            'tool_name' => 'required|string',
+            'tool_name' => 'required|string', // This should be the tool's slug (e.g., 'moosend')
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()->first(),'message'=>'validation error'], 400);
+            return response()->json(['success' => false, 'error' => $validator->errors()->first(), 'message' => 'Validation error'], 400);
         }
 
         $apiKey   = $request->input('api_key');
         $toolId   = $request->input('tool_id');
-        $toolName = strtolower($request->input('tool_name'));
+        $toolSlug = strtolower($request->input('tool_name'));
         $userId   = Auth::id();
-
-        switch($toolName) {
-            case ToolNameEnum::MOOSEND:
-                break;
-            default:
-                return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
-        }
-
-        if ($toolName !== ToolNameEnum::MOOSEND) {
-            return response()->json(['success' => false, 'error' => 'Invalid tool specified for API key connection.'], 400);
-        }
 
         try {
             DB::beginTransaction();
 
-            // 1. Verify the API Key with Moosend by fetching account details
+            $tool = IntegrationTool::where('id', $toolId)->where('slug', $toolSlug)->first();
+            if (!$tool) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'error' => 'Tool not found or mismatched.'], 404);
+            }
+
+            $urlJson = json_decode($tool->url, true);
+            $config = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
+
+            if (!$config) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
+            }
+
             $client = new Client();
-            $moosendBaseApiUrl = 'https://api.moosend.com/v3/';
+            $requestOptions = $config['request_options']($apiKey);
 
-            $testResponse = $client->get($moosendBaseApiUrl . 'lists.json', [ // Changed from accounts.json to lists.json
-                'query' => ['apikey' => $apiKey]
-            ]);
-
+            // Make the API call to verify the API key
+            $testResponse = $client->get($config['base_api_url'] . $config['verify_endpoint'], $requestOptions);
             $responseData = json_decode($testResponse->getBody()->getContents(), true);
-            if ($testResponse->getStatusCode() === 200 && isset($responseData['Code']) && $responseData['Code'] === 0) {
-                // API Key is valid
-                $accountInfo      = $responseData['Context']['Account'] ?? [];
-                $moosendAccountId = $accountInfo['ID'] ?? null;
-                $accountName      = $accountInfo['Name'] ?? 'Moosend Account';
-                $accountEmail     = $accountInfo['Email'] ?? null;
-                if (!$moosendAccountId) {
+
+            // Check for success based on tool-specific logic
+            if ($config['success_check']($responseData)) {
+                $accountInfo = $config['extract_account_info']($responseData);
+
+                $mcUserId    = $accountInfo['mc_user_id'];
+                $accountName = $accountInfo['account_name'];
+                $accountEmail = $accountInfo['account_email'];
+                $metadata    = $accountInfo['metadata'];
+
+                if (!$mcUserId) {
                     DB::rollBack();
-                    return response()->json(['success' => false, 'error' => 'Could not retrieve Moosend Account ID with the provided API key.'], 400);
+                    return response()->json(['success' => false, 'error' => 'Could not retrieve account ID with the provided API key.'], 400);
                 }
 
-                // 2. Store or update the integration
-                $moosendTool = IntegrationTool::find($toolId);
-
-                if (!$moosendTool || $moosendTool->slug !== ToolNameEnum::MOOSEND) {
-                    DB::rollBack();
-                    return response()->json(['success' => false, 'error' => 'Moosend tool not found or mismatched.'], 404);
-                }
-
+                // Store or update the integration
                 $existingIntegration = Integration::where('user_id', $userId)
                                                 ->where('tool_id', $toolId)
-                                                ->where('service_name', ToolNameEnum::MOOSEND)
+                                                ->where('service_name', $toolSlug)
                                                 ->first();
 
                 if ($existingIntegration) {
-                    $existingIntegration->mc_token = $apiKey; // Store the API key in mc_token
-                    $existingIntegration->mc_user_id = $moosendAccountId; // Store Moosend Account ID
-                    $existingIntegration->status = 'verified';
-                    $existingIntegration->name = $accountName;
-                    $existingIntegration->emails = $accountEmail;
-                    $existingIntegration->metadata = json_encode($accountInfo);
-                    $existingIntegration->save();
+                    $integration = $existingIntegration;
                 } else {
                     $integration = new Integration();
                     $integration->user_id = $userId;
                     $integration->tool_id = $toolId;
-                    $integration->service_name = ToolNameEnum::MOOSEND;
-                    $integration->mc_token = $apiKey; // Store the API key here
-                    $integration->mc_user_id = $moosendAccountId; // Store Moosend Account ID
-                    $integration->status = 'verified';
-                    $integration->name = $accountName;
-                    $integration->emails = $accountEmail;
-                    $integration->metadata = json_encode($accountInfo);
-                    $integration->save();
+                    $integration->service_name = $toolSlug;
                 }
 
+                $integration->mc_token = $apiKey; // Store the API key
+                $integration->mc_user_id = $mcUserId;
+                $integration->status = 'verified';
+                $integration->name = $accountName;
+                $integration->emails = $accountEmail;
+                $integration->metadata = json_encode($metadata);
+                $integration->save();
+
                 DB::commit();
-                return response()->json(['success' => true, 'message' => 'Moosend connected successfully!']);
+                return response()->json(['success' => true, 'message' => "{$tool->name} connected successfully!"]);
 
             } else {
-                $errorMessage = $responseData['Error']['Message'] ?? 'Invalid API Key or unable to connect.';
+                $errorMessage = $config['error_message_extractor']($responseData);
                 DB::rollBack();
                 return response()->json(['success' => false, 'error' => $errorMessage], 400);
             }
 
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             DB::rollBack();
             $responseBody = $e->getResponse()->getBody()->getContents();
-            Log::error("Moosend API Key verification Guzzle Client error: " . $e->getMessage() . " Response: " . $responseBody);
-            return response()->json(['success' => false, 'error' => 'Moosend API Key verification failed: ' . (json_decode($responseBody)->Error->Message ?? $e->getMessage())], $e->getCode());
+            Log::error("API Key verification Guzzle Client error for {$toolSlug}: " . $e->getMessage() . " Response: " . $responseBody);
+            $errorMessage = (json_decode($responseBody)->Error->Message ?? $e->getMessage());
+            return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack();
-            pp($e->getMessage());
-            Log::error("Error connecting Moosend: " . $e->getMessage());
-            return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting Moosend.'], 500);
+            Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
+        }
+    }
+
+    private function getApiKeyVerificationConfig(string $toolSlug, array $urlJson): ?array
+    {
+        switch ($toolSlug) {
+            case ToolNameEnum::MOOSEND:
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.moosend.com/v3/',
+                    'verify_endpoint' => 'lists.json', // A common endpoint to verify API key
+                    'request_options' => function($apiKey) {
+                        return ['query' => ['apikey' => $apiKey]];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['Code']) && $responseData['Code'] === 0;
+                    },
+                    'extract_account_info' => function($responseData) {
+                        $accountInfo = $responseData['Context']['Account'] ?? [];
+                        return [
+                            'mc_user_id' => $accountInfo['ID'] ?? null,
+                            'account_name' => $accountInfo['Name'] ?? 'Moosend Account',
+                            'account_email' => $accountInfo['Email'] ?? null,
+                            'metadata' => $accountInfo,
+                        ];
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['Error']['Message'] ?? 'Invalid API Key or unable to connect.';
+                    }
+                ];
+            // Add other API key-based tools here as needed
+            // case ToolNameEnum::SENDGRID:
+            //     return [
+            //         'base_api_url' => 'https://api.sendgrid.com/v3/',
+            //         'verify_endpoint' => 'user/account',
+            //         'request_options' => function($apiKey) {
+            //             return ['headers' => ['Authorization' => "Bearer $apiKey"]];
+            //         },
+            //         'success_check' => function($responseData) {
+            //             return isset($responseData['username']);
+            //         },
+            //         'extract_account_info' => function($responseData) {
+            //             return [
+            //                 'mc_user_id' => $responseData['user_id'] ?? null,
+            //                 'account_name' => $responseData['username'] ?? 'SendGrid Account',
+            //                 'account_email' => $responseData['email'] ?? null,
+            //                 'metadata' => $responseData,
+            //             ];
+            //         },
+            //         'error_message_extractor' => function($responseData) {
+            //             return $responseData['errors'][0]['message'] ?? 'Unknown SendGrid error.';
+            //         }
+            //     ];
+            default:
+                return null;
         }
     }
 }
