@@ -12,10 +12,12 @@ class ToolSelectedFile extends Model
     protected $table = 'tool_selected_files';
     protected $fillable = [
         'tool_id',
+        'file_id',
         'file_name',
         'file_path',
         'user_id',
         'tool_name',
+        'upload_file_path'
     ];
 
     public function integrationTool()

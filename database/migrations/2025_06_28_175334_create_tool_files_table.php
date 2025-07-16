@@ -16,8 +16,10 @@ class CreateToolFilesTable extends Migration
         Schema::create('tool_selected_files', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tool_id');
+            $table->string('file_id')->nullable();
             $table->string('file_name')->nullable();
             $table->string('file_path')->nullable();
+            $table->string('upload_file_path')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('tool_name')->nullable();
             $table->timestamps();

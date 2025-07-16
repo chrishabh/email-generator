@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const importCloseModalButton = document.getElementById('importCloseModal');
     const fullScreenLoader = document.getElementById('fullScreenLoader');
 
+
+
+    const moosendApiModal          = document.getElementById('moosendApiModal');
+    const moosendApiKeyInput       = document.getElementById('moosendApiKeyInput');
+    const moosendConnectButton     = document.getElementById('moosendConnectButton');
+    const moosendCancelButton      = document.getElementById('moosendCancelButton');
+    const moosendCloseModalButton  = document.getElementById('moosendCloseModalButton'); // New close button
+
     const notyf = new Notyf();
     let currentPage = 1;
     let currentModalPage = 1;
@@ -197,11 +205,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations = ['mailchimp', 'hubspot', 'google sheets','dropbox', 'zoho crm'];
+        const activeIntegrations      = ['mailchimp', 'hubspot', 'google sheets','dropbox', 'zoho crm','constant contact','moosend'];
+        const isModalOpenedForApiKey  = ['moosend']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
-            const isActive = activeIntegrations.includes(integration.name.toLowerCase());
+            const isActive    = activeIntegrations.includes(integration.name.toLowerCase());
+            const isModalOpen = isModalOpenedForApiKey.includes(integration.name.toLowerCase());
+            let onclickAction = ''
+    
+            if(isActive && isModalOpen){
+                onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
+            }else if(isActive){
+                onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
+            }
             item.innerHTML = `
                 <div class="flex items-center gap-4">
                     <img class="w-10" src="${integration.icon_url}" />
@@ -209,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                  ${
                     isActive ?
-                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="window.location.href='/mailchimp/login/${integration.id}/${integration.name}'">
+                    `<button class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-3 py-1 rounded shadow-md" onclick="${onclickAction}">
                         Select
                     </button>`
                     :`<button class="relative border-animation px-5 py-2 text-white bg-blue-600 rounded-md font-bold tracking-wider">Coming Soon </button>`
@@ -262,8 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-    };
-    
+    }
+
     function changeModalPage(page) {
         if(page >=1 && page <= lastModalPage){
             currentModalPage = page;
@@ -358,20 +375,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     window.openModalForImport=async (toolName,imageUrl,name,userId,mc_dc,toolId)=>{
-        let files      = [];
-        let result     = null;
-        let excelImage = null;
-        if(toolName.toLowerCase()=='dropbox'){
-            $('#preloader').fadeIn()
-            result  = await makeApiHit(`/get-listing-file-dropbox?userId=${userId}&toolName=${toolName}&toolId=${toolId}`)
-            $('#preloader').fadeOut()
-            excelImage = window.location.origin+'/integration/integerated-icon/google_sheet.svg'
-
+        const lowerToolName  =  toolName.toLowerCase();
+        const configMap = {
+            dropbox:{
+                apiEndpoint : `/get-listing-file-dropbox?userId=${userId}&toolName=${toolName}&toolId=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image : '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer :(item,image) =>{
+                    const fileSizeKB      = (item.size / 1024).toFixed(2); // Size in KB
+                    const fileSizeDisplay = fileSizeKB > 1024 ? `${(fileSizeKB / 1024).toFixed(2)} MB` : `${fileSizeKB} KB`;
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <img class="w-7" src="${image}" />
+                            <h2 class="text-[15px] font-bold">${item.name}</h2>
+                            <span class="block text-sm text-gray-600">Size: ${fileSizeDisplay}</span>
+                            <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.id}','${item.name}','${item.path_display}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
+                        </div>`
+                }
+            },
+            moosend:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/4 text-sm text-gray-600">
+                                Members: ${item.ActiveMemberCount}
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
+            }
         }
 
-        if (toolName.toLowerCase()=='dropbox' && result && result.data && Array.isArray(result.data) && result.data.length > 0) {
-            files = result.data; 
-        }
+        const toolConfig  = configMap[lowerToolName];
+        $('#preloader').fadeIn()
+        let result  =  toolConfig ? await makeApiHit(toolConfig.apiEndpoint) : null;
+        $('#preloader').fadeOut()
+        const excelImage = window.location.origin + toolConfig?.image || '/integration/integerated-icon/google_sheet.svg';
+        const items      = toolConfig ? toolConfig.listExtractor(result) : [];
         let cardsHTML = '';
         cardsHTML += `<div class="bg-gray-100 px-3 py-3 rounded shadow mb-4">
                         <div class="flex items-center gap-4 pb-4 pt-2">
@@ -381,31 +434,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="font-semibold text-md  text-[#3F51B5] capitalize tracking-widest">${name!='null' ? name :'' }</span>
                             </div> 
                         </div>`;
-
-        if(toolName.toLowerCase()=='dropbox' && files.length > 0) {
-            files.forEach(file => {
-                const fileSizeKB = (file.size / 1024).toFixed(2); // Size in KB
-                const fileSizeDisplay = fileSizeKB > 1024
-                    ? `${(fileSizeKB / 1024).toFixed(2)} MB`
-                    : `${fileSizeKB} KB`;
-
-                cardsHTML += ` 
-                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
-                            <img class="w-7" src="${excelImage}" />    
-                            <h2 class="text-[15px] font-bold">${file.name}</h2>
-                            <span class="block text-sm text-gray-600">Size: ${fileSizeDisplay}</span>
-                            <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${file.id}','${file.name}','${file.path_display}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }else if(toolName.toLowerCase()=='dropbox' && files.length ==0){
+        if(items.length>0 && toolConfig?.itemRenderer) {
+            items.forEach(item => {
+                cardsHTML += toolConfig.itemRenderer(item, excelImage);
+            })
+        }else if(toolConfig && files.length === 0){
             cardsHTML+= 
             `<div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
                 <h2 class="text-[18px] font-bold">No Content Found!!!</h2>
             </div>`
-        }
-        else{
+        }else{
         cardsHTML+= 
             `<div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
                 <h2 class="text-[18px] font-bold">${name !== 'null' ? name : toolName}</h2>
@@ -474,42 +512,123 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     window.ImportData = async (toolName, userId,mc_dc,toolId,$fileId=null,$fileName='',$filePath='') => {
+        
+        const lowerToolName   = toolName.toLowerCase();
+        const importConfitMap = {
+            dropbox: ()=> `/import-integration-emails?toolName=${tooName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
+            moosend: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+        }
+        
+        const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
+        
         try {
             $('#preloader').fadeIn()
-            let url = toolName.toLowerCase() === 'dropbox' 
-            ? `/import-integeration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`
-            : `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`;
-
-            const response = await axios.get(url);
+            const response = await axios.get(getUrl());
+             $('#preloader').fadeOut();
             if (!response.data.success) {
                 notyf.error(response.data.error || 'Error fetching available integrations');
                 $('#preloader').fadeIn()
                 ImportEmailsModal.classList.add('hidden');
-                // return {
-                //     data: [],
-                //     total: 0,
-                //     currentPage: 1,
-                //     lastPage: 1
-                // };
+                 return
             }
-            else if(response.data.success){
-                 $('#preloader').fadeIn()
-                notyf.success(response.data.message || 'Data imported successfully!'); 
-                setTimeout(() => {
-                    ImportEmailsModal.classList.add('hidden');
-                    location.href = '/bulk';  
-                }, 2000); 
-            }      
+            notyf.success(response.data.message || 'Data imported successfully!'); 
+            setTimeout(() => {
+                ImportEmailsModal.classList.add('hidden');
+                location.href = '/bulk';  
+            }, 2000);
+            // else if(response.data.success){
+            //      $('#preloader').fadeIn()
+            //     notyf.success(response.data.message || 'Data imported successfully!'); 
+            //     setTimeout(() => {
+            //         ImportEmailsModal.classList.add('hidden');
+            //         location.href = '/bulk';  
+            //     }, 2000); 
+            // }      
         } catch (error) {
-            $('#preloader').fadeIn()
-            console.error('Error fetching integrations:', error);
-            notyf.error('Error fetching integrations');
+            $('#preloader').fadeOut()
+            console.error('Error importing data:', error);
+            notyf.error('Something went wrong while importing data');
             // return [];
         }
     
         console.log('Importing data for', toolName);
     
     }
+
+    window.showModalOfInputKey = (id, name) => {
+        moosendApiModal.classList.remove('hidden'); // This line opens the modal
+        moosendApiKeyInput.value = '';
+        moosendApiKeyInput.focus();
+        moosendModalTitle.setAttribute('data-tool-id', id);
+        moosendModalTitle.setAttribute('data-tool-name', name);
+        moosendModalTitle.innerText = `Connect ${name}`;
+    }
+
+    moosendConnectButton.addEventListener('click', async () => {
+        const apiKey = moosendApiKeyInput.value.trim();
+        if (!apiKey) {
+            notyf.error('Moosend API Key cannot be empty.');
+            return;
+        } 
+        moosendApiModal.classList.add('hidden'); // Hide the API key modal
+        $('#preloader').fadeIn(); // Show preloader
+
+        try {
+            const toolId   = moosendModalTitle.getAttribute('data-tool-id');
+            const toolName = moosendModalTitle.getAttribute('data-tool-name');
+            result  = await makeApiHit(`/tool-connection-based-on-api-key?api_key=${apiKey}&tool_name=${toolName}&tool_id=${toolId}`)
+            if(result.success){
+                notyf.success(result.message || 'Integration added!');
+                integrationModal.classList.add('hidden');
+                await renderIntegrations();
+            }
+            // const availableToolsResponse = await axios.get(`/integrations/available?page=1&limit=100`);
+            // if (availableToolsResponse.data.success && availableToolsResponse.data.data) {
+            //     const moosendTool = availableToolsResponse.data.data.find(tool => tool.slug === 'mosend'); // Use 'mosend' slug from your seeder
+            //     if (moosendTool) {
+            //         moosendToolId = moosendTool.id;
+            //     }
+            // }
+
+            // if (!moosendToolId) {
+            //     notyf.error('Moosend tool configuration not found. Please refresh the page.');
+            //     $('#preloader').fadeOut();
+            //     return;
+            // }
+
+            // // Make an Axios POST request to your backend to save the API key
+            // // This '/connect-moosend' endpoint needs to be created in your Laravel routes and controller.
+            // const response = await axios.post('/connect-moosend', {
+            //     api_key: apiKey,
+            //     tool_id: moosendToolId,
+            //     tool_name: 'mosend' // Ensure slug matches your seeder and backend logic
+            // });
+
+            // if (response.data.success) {
+            //     notyf.success(response.data.message || 'Moosend connected successfully!');
+            //     renderIntegrations(currentPage); // Re-render the main integrations list to show updated status
+            // } else {
+            //     notyf.error(response.data.error || 'Failed to connect Moosend. Please check your API key.');
+            // }
+        } catch (error) {
+            console.error('Error connecting Moosend:', error);
+            notyf.error(error.response.data.error || `An error occurred while connecting ${toolName}.`);
+        } finally {
+            $('#preloader').fadeOut();
+        }
+    });
+
+    // Event listener for the 'Cancel' button in the Moosend API Key modal
+    moosendCancelButton.addEventListener('click', () => {
+        moosendApiModal.classList.add('hidden'); // Hide the modal
+        moosendApiKeyInput.value = ''; // Clear the input field
+    });
+
+    // Event listener for the 'x' close button in the Moosend API Key modal
+    moosendCloseModalButton.addEventListener('click', () => {
+        moosendApiModal.classList.add('hidden');
+        moosendApiKeyInput.value = '';
+    });
 
     renderIntegrations();
 });
@@ -540,3 +659,6 @@ function makeApiHit(url, method = 'GET', data = null) {
         }
     });
 }
+
+
+
