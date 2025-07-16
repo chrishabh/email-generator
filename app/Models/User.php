@@ -107,7 +107,7 @@ class User extends Authenticatable
     
         // Fetch paginated users with remaining credits
         $query = "
-            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, uc.credits,u.email_verified as verified
+            SELECT u.id as userId, u.name, u.email, u.mobile_number, u.work_experience_description, u.gender, 'Free' as credits,u.email_verified as verified
             FROM users u
             LEFT JOIN (SELECT * FROM user_credits WHERE deleted_at IS NULL ORDER BY id DESC) as uc
             ON uc.user_id = u.id
