@@ -69,15 +69,17 @@ class UserCredits extends Model
 
     public static function getUsedCredits()
     {
-            $usedCreditsQuery = DB::table('user_credits')->join('users', 'users.id', '=','user_id')
-                ->select(DB::raw('MAX(CAST(credits AS UNSIGNED)) - MIN(CAST(credits AS UNSIGNED)) AS used_credits'))->whereNull('users.deleted_at')
-                ->groupBy('user_id', 'order_id');
+            // $usedCreditsQuery = DB::table('user_credits')->join('users', 'users.id', '=','user_id')
+            //     ->select(DB::raw('MAX(CAST(credits AS UNSIGNED)) - MIN(CAST(credits AS UNSIGNED)) AS used_credits'))->whereNull('users.deleted_at')
+            //     ->groupBy('user_id', 'order_id');
 
-            // Step 2: Use the subquery to calculate the total used credits
-            $totalUsedCredits = DB::table(DB::raw("({$usedCreditsQuery->toSql()}) as sub"))
-                ->mergeBindings($usedCreditsQuery) // Merge bindings of the inner query
-                ->select(DB::raw('SUM(used_credits) as total_used_credits'))
-                ->value('total_used_credits');
+            // // Step 2: Use the subquery to calculate the total used credits
+            // $totalUsedCredits = DB::table(DB::raw("({$usedCreditsQuery->toSql()}) as sub"))
+            //     ->mergeBindings($usedCreditsQuery) // Merge bindings of the inner query
+            //     ->select(DB::raw('SUM(used_credits) as total_used_credits'))
+            //     ->value('total_used_credits');
+
+            $totalUsedCredits = \App\Models\EmailVerificationLog::count();
 
 
 
