@@ -30,7 +30,7 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'getresponse.png', 'name' => 'Get Response', 'slug' => 'get response'],
             ['icon' => 'brevo.png', 'name' => 'Brevo', 'slug' => 'brevo'],
             ['icon' => 'mailgun.png', 'name' => 'Mailgun', 'slug' => 'mailgun'],
-            ['icon' => 'moosend.png', 'name' => 'Moosend', 'slug' => 'moosend'],
+            ['icon' => 'moosend.png', 'name' => 'Moosend', 'slug' => 'moosend','url' => json_encode(['base_api_url' => 'https://api.moosend.com/v3/'])],
             ['icon' => 'zohocampaign.png', 'name' => 'Zoho Campaign', 'slug' => 'zoho campaign'],
             ['icon' => 'mailerlite.png', 'name' => 'MainerLite', 'slug' => 'mailerlite'],
             ['icon' => 'mailjet.svg', 'name' => 'Mailjet', 'slug' => 'mailjet'],

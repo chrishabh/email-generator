@@ -237,17 +237,27 @@ class MailchimpOAuthController extends Controller
     }
 
     private static function getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolname){
-        $param      = ['form_params' => $queryBuildArray];
-        $response   = $client->post("$token_url", $param);
-        $data       = json_decode($response->getBody(), true);
+         try {
+            $param      = ['form_params' => $queryBuildArray];
+            $response   = $client->post("$token_url", $param);
+            $data       = json_decode($response->getBody(), true);
 
-        if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT) { 
-            return $data;
-        } else { 
-            return $data['access_token'];
+            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT) { 
+                return $data;
+            } else { 
+                return $data['access_token'];
+            }
+            return $accessToken;
+        } catch (ClientException $e) {
+            $responseBody = $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'No response body';
+            pp($responseBody);
+            Log::error("ClientException getting access token for $toolname: " . $e->getMessage() . " Response: " . $responseBody);
+            throw $e; // Re-throw to be caught by handleCallback
+        } catch (\Exception $e) {
+            pp($e->getMessage());
+            Log::error("Exception getting access token for $toolname: " . $e->getMessage());
+            throw $e; // Re-throw to be caught by handleCallback
         }
-        return $accessToken;
-
     }
 
     /**
@@ -809,7 +819,7 @@ class MailchimpOAuthController extends Controller
                     $statusCode = $response->getStatusCode();
 
                     if ($statusCode === 401) {
-                        // Attempt token refresh
+                        // Attempt token refresh 
                         if (!empty($integration->mc_refresh_token)) {
                             $queryBuildArray = [
                                 'grant_type'    => 'refresh_token',
@@ -819,7 +829,6 @@ class MailchimpOAuthController extends Controller
                                 'redirect_uri'  => $urlJson['redirect_url'],
                             ];
                             $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
-
                             if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
                                 $integration->mc_token         = $accessTokenData['access_token'];
                                 $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token; // Update refresh token if new one is provided
@@ -832,7 +841,7 @@ class MailchimpOAuthController extends Controller
                                     'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::CONSTANTCONTACT, $accessToken),
                                     'http_errors' => true,
                                 ]);
-                                $response = $client->get('contacts');
+                                $response = $client->get('contacts');  
                                 $statusCode = $response->getStatusCode();
                             } else {
                                 DB::rollBack();
@@ -902,7 +911,7 @@ class MailchimpOAuthController extends Controller
 
                 // Step 3: Save each email
                 $record = new BulkUploadEmailFileData();
-                $record->email                     = $email;
+                $record->email                     = ($slug==ToolNameEnum::CONSTANTCONTACT)?$email['address']:$email;
                 $record->file_id                   = $uploadId;
                 $record->importedBy                = Auth::user()->id;
                 $record->is_tools_integerate_email = '1';
@@ -943,6 +952,12 @@ class MailchimpOAuthController extends Controller
                 'Authorization' => "Bearer $accessToken",
                 'Content-Type'  => 'application/json',
 
+            ];
+        }
+        else if($toolName==ToolNameEnum::CONSTANTCONTACT){ // Added for Constant Contact
+            $header= [
+                'Authorization' => "Bearer $accessToken",
+                'Content-Type'  => 'application/json',
             ];
         }
         return $header;
@@ -1066,6 +1081,59 @@ class MailchimpOAuthController extends Controller
                         }
                         catch (\Exception $e) { 
                             return response()->json(['status'=>false,'message'=>$e->getMessage() ?? 'Unknown error','data'=> $email], 500);
+                        }
+                    }
+                break;
+                case ToolNameEnum::CONSTANTCONTACT:
+                    $client = new Client([
+                        'base_uri' => "$base_api_url",
+                        'headers' => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::CONSTANTCONTACT, $accessToken),
+                        'http_errors' => false,
+                    ]); 
+                    foreach ($emailsToUnsubscribe as $email) {
+                        $email          = strtolower(trim($email));  
+                        $searchResponse = $client->get("contacts?email=$email");
+                        $searchStatus   = $searchResponse->getStatusCode();
+                        $searchBody     = json_decode($searchResponse->getBody(), true);
+                        if ($searchStatus === 200 && !empty($searchBody['contacts'])) {
+                             
+                            $contactId = $searchBody['contacts'][0]['contact_id'] ?? null;
+                            $verifyResponse = $client->get("contacts/$contactId");
+                            $verifyStatus = $verifyResponse->getStatusCode();
+                            if ($contactId) {
+                                // Confirm contact exists
+                                $verifyResponse = $client->get("contacts/$contactId");
+                                $verifyStatus = $verifyResponse->getStatusCode();
+                                $verifyBody = $verifyResponse->getBody()->getContents();  
+                                if ($verifyStatus === 200) { 
+                                    $updateResponse = $client->patch("contacts/$contactId", [
+                                        'json' => [
+                                            'email_address' => [
+                                                'address' => $email
+                                            ],
+                                            'list_memberships' => []
+                                        ],
+                                    ]);
+                                    $updateStatus = $updateResponse->getStatusCode();
+                                    $updateBody   = $updateResponse->getBody()->getContents(); 
+                                    if ($updateStatus === 200) {
+                                        $results[] = ['email' => $email, 'status' => 'unsubscribed'];
+                                    } else {
+                                        $results[] = ['email' => $email, 'status' => 'failed', 'response' => $updateBody];
+                                    }
+                                } elseif ($verifyStatus === 404) {
+                                    $results[] = ['email' => $email, 'status' => 'already_unsubscribed'];
+                                } else {
+                                    $results[] = ['email' => $email, 'status' => 'verify_failed', 'response' => $verifyBody];
+                                }
+                            } else {
+                                $results[] = ['email' => $email, 'status' => 'contact_id_missing'];
+                            }
+
+                        } elseif ($searchStatus === 404) {
+                            $results[] = ['email' => $email, 'status' => 'not_found'];
+                        } else {
+                            $results[] = ['email' => $email, 'status' => 'failed', 'reason' => 'Search failed'];
                         }
                     }
                 break;
@@ -1463,11 +1531,10 @@ class MailchimpOAuthController extends Controller
     public function toolConnectionBasedOnApiKey(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'api_key'   => 'required|string|max:255',
+            'api_key'   => 'required|string',
             'tool_id'   => 'required|integer',
             'tool_name' => 'required|string', // This should be the tool's slug (e.g., 'moosend')
         ]);
-
         if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->errors()->first(), 'message' => 'Validation error'], 400);
         }
@@ -1475,8 +1542,7 @@ class MailchimpOAuthController extends Controller
         $apiKey   = $request->input('api_key');
         $toolId   = $request->input('tool_id');
         $toolSlug = strtolower($request->input('tool_name'));
-        $userId   = Auth::id();
-
+        $userId   = Auth::user()->id;
         try {
             DB::beginTransaction();
 
@@ -1484,17 +1550,24 @@ class MailchimpOAuthController extends Controller
             if (!$tool) {
                 DB::rollBack();
                 return response()->json(['success' => false, 'error' => 'Tool not found or mismatched.'], 404);
-            }
-
-            $urlJson = json_decode($tool->url, true);
-            $config = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
+            } 
+            $urlJson = json_decode($tool->url, true); 
+            $config  = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
 
             if (!$config) {
                 DB::rollBack();
                 return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
             }
 
-            $client = new Client();
+            // Check if an integration with this API key already exists for the user and tool
+            $existingIntegration = Integration::where('user_id', $userId)->where('tool_id', $toolId)->where('service_name', $toolSlug)->where('mc_token', $apiKey)->first();
+
+            if ($existingIntegration) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'error' => "This {$tool->name} account is already connected with this API key."], 409); // 409 Conflict
+            }
+
+            $client         = new Client();
             $requestOptions = $config['request_options']($apiKey);
 
             // Make the API call to verify the API key
@@ -1503,44 +1576,28 @@ class MailchimpOAuthController extends Controller
 
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
-                $accountInfo = $config['extract_account_info']($responseData);
-
-                $mcUserId    = $accountInfo['mc_user_id'];
-                $accountName = $accountInfo['account_name'];
+                $accountInfo  = $config['extract_account_info']($responseData);  
+                $mcUserId     = $apiKey;
+                $accountName  = $accountInfo['account_name'];
                 $accountEmail = $accountInfo['account_email'];
-                $metadata    = $accountInfo['metadata'];
+                $metadata     = $accountInfo['metadata'];
 
                 if (!$mcUserId) {
-                    DB::rollBack();
-                    return response()->json(['success' => false, 'error' => 'Could not retrieve account ID with the provided API key.'], 400);
+                    $mcUserId = hash('sha256', $apiKey); // Generate a consistent ID 
                 }
-
-                // Store or update the integration
-                $existingIntegration = Integration::where('user_id', $userId)
-                                                ->where('tool_id', $toolId)
-                                                ->where('service_name', $toolSlug)
-                                                ->first();
-
-                if ($existingIntegration) {
-                    $integration = $existingIntegration;
-                } else {
-                    $integration = new Integration();
-                    $integration->user_id = $userId;
-                    $integration->tool_id = $toolId;
-                    $integration->service_name = $toolSlug;
-                }
-
-                $integration->mc_token = $apiKey; // Store the API key
-                $integration->mc_user_id = $mcUserId;
-                $integration->status = 'verified';
-                $integration->name = $accountName;
-                $integration->emails = $accountEmail;
-                $integration->metadata = json_encode($metadata);
-                $integration->save();
-
+                $integration               = new Integration();
+                $integration->user_id      = $userId;
+                $integration->tool_id      = $toolId;
+                $integration->service_name = $toolSlug; 
+                $integration->mc_token     = $apiKey; // Store the API key 
+                $integration->mc_user_id   = $mcUserId;
+                $integration->status       = 'verified';
+                $integration->name         = $accountName;
+                $integration->emails       = $accountEmail;
+                $integration->metadata     = json_encode($responseData);
+                $integration->save(); 
                 DB::commit();
-                return response()->json(['success' => true, 'message' => "{$tool->name} connected successfully!"]);
-
+                return response()->json(['success' => true, 'message' => "{$tool->name} connected successfully!"]); 
             } else {
                 $errorMessage = $config['error_message_extractor']($responseData);
                 DB::rollBack();
@@ -1555,25 +1612,28 @@ class MailchimpOAuthController extends Controller
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack();
+            // pp( $e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
     }
 
-    private function getApiKeyVerificationConfig(string $toolSlug, array $urlJson): ?array
+    private function getApiKeyVerificationConfig($toolSlug, $urlJson)
     {
         switch ($toolSlug) {
             case ToolNameEnum::MOOSEND:
                 return [
                     'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.moosend.com/v3/',
-                    'verify_endpoint' => 'lists.json', // A common endpoint to verify API key
+                    'verify_endpoint' => 'lists.json', // Changed to lists.json
                     'request_options' => function($apiKey) {
                         return ['query' => ['apikey' => $apiKey]];
                     },
                     'success_check' => function($responseData) {
-                        return isset($responseData['Code']) && $responseData['Code'] === 0;
+                        // Check for successful API response structure (Code 0 and Context present)
+                        return isset($responseData['Code']) && $responseData['Code'] === 0 && isset($responseData['Context']);
                     },
                     'extract_account_info' => function($responseData) {
+                        // Attempt to extract account info from Context.Account, which might be present in lists.json response
                         $accountInfo = $responseData['Context']['Account'] ?? [];
                         return [
                             'mc_user_id' => $accountInfo['ID'] ?? null,
@@ -1613,4 +1673,273 @@ class MailchimpOAuthController extends Controller
                 return null;
         }
     }
+
+    public function fetchApiKeyBasedListing(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'integeration_id' => 'required|integer',
+            'toolName'        => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ], 400);
+        }
+
+        $integeration_id = $request->input('integeration_id');
+        $toolName        = strtolower($request->input('toolName'));
+        $loggedInUserId  = Auth::user()->id;
+        $integration     = Integration::with('tool')->where('id', $integeration_id)->where('user_id', $loggedInUserId)->where('service_name', $toolName)->whereNull('deleted_at')->first();
+        if (!$integration) {
+            return response()->json(['success' => false, 'message' => 'Integration not found or unauthorized.'], 401);
+        }
+
+        $apiKey       = $integration->mc_token;
+        $toolUrlJson  = json_decode($integration->tool->url, true);
+        $base_api_url = $toolUrlJson['base_api_url'] ?? null; 
+        $config = $this->getIntegrationListConfig($toolName, $toolUrlJson);
+
+        if (!$config) {
+            return response()->json(['success' => false, 'error' => 'Unsupported tool for listing data.'], 400);
+        }
+
+        try {
+            $client = new Client([
+                'base_uri'    => $base_api_url,
+                'http_errors' => false, // Handle errors manually
+            ]);
+
+            $requestOptions = $config['request_options']($apiKey);
+            $response = $client->get($config['list_endpoint'], $requestOptions);
+            $statusCode = $response->getStatusCode();
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
+
+            if ($config['success_check']($responseData)) {
+                $lists = $config['extract_lists']($responseData);
+                return response()->json([
+                    'success' => true,
+                    'message' => "{$toolName} lists fetched successfully.",
+                    'data'    => $lists
+                ], 200);
+            } else {
+                $errorMessage = $config['error_message_extractor']($responseData);
+                return response()->json(['success' => false, 'error' => $errorMessage], $statusCode);
+            }
+
+        } catch (ClientException $e) {
+            $responseBody = $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'No response body';
+            Log::error("{$toolName} fetch listing ClientException: " . $e->getMessage() . " Response: " . $responseBody);
+            $errorMessage = json_decode($responseBody, true)['Error']['Message'] ?? $e->getMessage();
+            return response()->json(['success' => false, 'error' => "API call failed: " . $errorMessage], $e->getCode());
+        } catch (\Exception $e) {
+            Log::error("Error in fetchApiKeyBasedListing for {$toolName}: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
+            return response()->json(['success' => false, 'error' => 'An unexpected error occurred while fetching lists.'], 500);
+        }
+    }
+ 
+    public function fetchMoosendListSubscribers(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'integeration_id' => 'required|integer',
+            'list_id'         => 'required|string',
+            'toolName'        => 'required|string',
+            'userId'          => 'required|string',
+            'mc_dc'          => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ], 400);
+        }
+
+        $integeration_id = $request->input('integeration_id');
+        $listId          = $request->input('list_id');
+        $loggedInUserId  = Auth::user()->id;
+        $toolName        = strtolower($request->input('toolName'));
+        $mc_user_id      = $request->input('userId'); 
+        $mc_dc           = $request->input('mc_dc'); 
+
+        $integration = Integration::with('tool')->where('id', $integeration_id)->where('user_id', $loggedInUserId)->where('service_name',$toolName)->whereNull('deleted_at')->first();
+        if (!$integration) {
+            return response()->json(['success' => false, 'message' => 'Moosend integration not found or unauthorized.','error'=>'integration not found'], 401);
+        }
+
+        $apiKey       = $integration->mc_token;
+        $toolUrlJson  = json_decode($integration->tool->url, true);
+        $base_api_url = $toolUrlJson['base_api_url'] ?? 'https://api.moosend.com/v3/';
+
+        try {
+            DB::beginTransaction(); 
+            // Get the configuration for fetching subscribers using the new helper method
+            $subscriberConfig = $this->getSubscriberConfig($toolName, $toolUrlJson);
+            if (!$subscriberConfig) {
+                 DB::rollBack(); // Rollback on config error
+                return response()->json(['success' => false,'message'=>'Unsupported tool configuration for fetching subscribers.', 'error' => 'Unsupported tool configuration for fetching subscribers.'], 400);
+            }
+
+            $client = new Client([
+                'base_uri'    => $base_api_url,
+                'http_errors' => false, // Handle errors manually
+            ]);
+
+            $endpoint = $subscriberConfig['subscriber_endpoint']($listId);
+            $requestOptions = $subscriberConfig['request_options']($apiKey);
+
+            $response     = $client->get($endpoint, $requestOptions);
+            $statusCode   = $response->getStatusCode();
+            $responseData = json_decode($response->getBody()->getContents(), true); 
+            Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData));
+
+            if ($subscriberConfig['success_check']($responseData)) {
+                $emails = $subscriberConfig['extract_subscribers']($responseData);
+                if (empty($emails)) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'No valid emails found from the connected account.',
+                        'success' => false,
+                        'error' => 'No emails available or an issue occurred during fetching.'
+                    ], 404);
+                }
+                // Save emails to database
+                $upload                            = new uploadedAndDownloadFileName();
+                $upload->fileName                  = $toolName.' Import - ' . now()->format('Ymd_His');
+                $upload->list_id                   = $listId;
+                $upload->user_id                   = $loggedInUserId;
+                $upload->tool_name                 = $integration->tool->name; // Use tool's actual name
+                $upload->tool_id                   = $integration->tool->id;
+                $upload->integeration_id           = $integeration_id;
+                $upload->mc_user_id                = $mc_user_id; // Use mc_user_id from request
+                $upload->mc_dc                     = $mc_dc; // Use mc_dc from request
+                $upload->mc_token                  = $apiKey; // Store the API key
+                $upload->is_tools_integerate_email = '1';
+                $upload->uploadedFileLocation      = NULL; // Assuming no file upload for API import
+                $upload->downloadFileName          = NULL;
+                $upload->downloadFileLocation      = NULL;
+                $upload->created_at                = now();
+                $upload->updated_at                = now();
+                $upload->save(); 
+                
+                $uploadId      = $upload->id;
+                $importedCount = 0;
+
+                foreach ($emails as $email) {
+                    $record                            = new BulkUploadEmailFileData();
+                    $record->email                     = $email; // Assuming extract_subscribers returns simple email strings
+                    $record->file_id                   = $uploadId;
+                    $record->importedBy                = $loggedInUserId;
+                    $record->is_tools_integerate_email = '1';
+                    $record->type                      = 'bulk';
+                    $record->created_at                = now();
+                    $record->updated_at                = now();
+                    $record->save();
+                    $importedCount++;
+                }
+                
+                DB::commit(); // Commit transaction on success
+                return response()->json([
+                    'success'        => true,
+                    'message'        => "Successfully imported {$importedCount} subscriber(s) from list '{$listId}'.",
+                    'data'           => $emails, // Return the list of emails for confirmation
+                    'imported_count' => $importedCount
+                ], 200);
+            } elseif ($statusCode === 404) {
+                DB::rollBack(); // Rollback on 404
+                return response()->json(['success' => false, 'message' => 'List not found or invalid List ID.','error' => 'List not found or invalid List ID.'], 404);
+            } else {
+                DB::rollBack(); // Rollback on other API errors
+                $errorMessage = $subscriberConfig['error_message_extractor']($responseData);
+                return response()->json(['success' => false,'message'=>'something went wrong', 'error' => $errorMessage], $statusCode);
+            }
+
+        } catch (ClientException $e) {
+            DB::rollBack(); // Rollback on Guzzle ClientException
+            $responseBody = $e->getResponse()->getBody()->getContents();
+            Log::error("Moosend fetchListSubscribers ClientException for list $listId: " . $e->getMessage() . " Response: " . $responseBody);
+            $errorMessage = json_decode($responseBody, true)['Error']['Message'] ?? $e->getMessage();
+            return response()->json(['success' => false,'message'=>'API call failed', 'error' => "API call failed: " . $errorMessage], $e->getCode());
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback on any other unexpected exception
+            Log::error("Error in fetchMoosendListSubscribers for list $listId: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred while fetching Moosend subscribers.','error'=>'An unexpected error occurred while fetching Moosend subscribers.'], 500);
+        }
+    }
+
+    private function getIntegrationListConfig($toolSlug, $urlJson)
+    {
+        switch ($toolSlug) {
+            case ToolNameEnum::MOOSEND:
+                return [
+                    'list_endpoint' => 'lists.json',
+                    'request_options' => function($apiKey) {
+                        return ['query' => ['apikey' => $apiKey]];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['Code']) && $responseData['Code'] === 0 && isset($responseData['Context']['MailingLists']);
+                    },
+                    'extract_lists' => function($responseData) {
+                        return $responseData['Context']['MailingLists'] ?? [];
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['Error']['Message'] ?? 'Failed to fetch Moosend lists.';
+                    }
+                ];
+                // Add other API key-based tools here as needed
+                // case ToolNameEnum::SENDGRID:
+                //     return [
+                //         'list_endpoint' => 'marketing/lists',
+                //         'request_options' => function($apiKey) {
+                //             return ['headers' => ['Authorization' => "Bearer $apiKey"]];
+                //         },
+                //         'success_check' => function($responseData) {
+                //             return is_array($responseData) && !isset($responseData['errors']);
+                //         },
+                //         'extract_lists' => function($responseData) {
+                //             // Assuming SendGrid returns an array of lists directly
+                //             return $responseData ?? [];
+                //         },
+                //         'error_message_extractor' => function($responseData) {
+                //             return $responseData['errors'][0]['message'] ?? 'Failed to fetch SendGrid lists.';
+                //         }
+                //     ];
+                default:
+                    return null;
+        }
+    }
+
+    private function getSubscriberConfig($toolSlug, $urlJson)
+    {
+        switch ($toolSlug) {
+            case ToolNameEnum::MOOSEND:
+                return [
+                    'subscriber_endpoint' => function($listId) {
+                        return "lists/$listId/subscribers.json";
+                    },
+                    'request_options' => function($apiKey) {
+                        // Moosend API for subscribers might need pagination. Defaulting to PageSize=1000.
+                        return ['query' => ['apikey' => $apiKey, 'PageSize' => 1000]];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['Code']) && $responseData['Code'] === 0 && isset($responseData['Context']['Subscribers']);
+                    },
+                    'extract_subscribers' => function($responseData) {
+                        return array_column($responseData['Context']['Subscribers'] ?? [], 'Email');
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['Error']['Message'] ?? 'Failed to fetch Moosend subscribers.';
+                    }
+                ];
+            // Add other API key-based tools for fetching subscribers here if needed
+            default:
+                return null;
+        }
+    }
+
 }

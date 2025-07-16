@@ -102,6 +102,8 @@ try{
         Route::get('/get-listing-file-dropbox', [MailchimpOAuthController::class, 'getDropboxExcelFiles']);
         Route::get('/import-integeration-emails', [MailchimpOAuthController::class, 'importDropboxExcelFiles']);
         Route::get('/tool-connection-based-on-api-key', [MailchimpOAuthController::class, 'toolConnectionBasedOnApiKey']);
+        Route::get('/fetch-api-key-based-listing', [MailchimpOAuthController::class, 'fetchApiKeyBasedListing']);
+        Route::get('/import-emails-based-on-api-key', [MailchimpOAuthController::class, 'fetchMoosendListSubscribers']);
 
 
         Route::prefix('profile')->group(function(){
