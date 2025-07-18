@@ -12,5 +12,6 @@ class ToolNameEnum {
     const AWEBER='aweber';
     const MOOSEND = 'moosend';
     const CONSTANTCONTACT = 'constant contact';
+    CONST GETRESPONSE = 'get response';
 
 }

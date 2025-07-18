@@ -122,7 +122,7 @@ class MailchimpOAuthController extends Controller
                     $queryBuildArray['grant_type']     = 'authorization_code';
                     $queryBuildArray['client_secret']  = $clientSecret;
                     $queryBuildArray['code']           = $code;
-                    $client = new Client(); 
+                    $client      = new Client(); 
                     $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
                     return $accessToken;
                 }
@@ -196,15 +196,24 @@ class MailchimpOAuthController extends Controller
             break;
             case ToolNameEnum::AWEBER:
                 $queryBuildArray['client_id']     = $clientId;
-                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                $queryBuildArray['redirect_uri']  = $redirect_uri; 
                 if($is_handle_callback == false){
-                    $queryBuildArray['response_type'] = 'code';
-                    $queryBuildArray['scope']         = 'account.read list.read subscriber.read subscriber.write'; // Use scope from DB
-                    $auth_login_url                   = $auth_login_url;
+                    $codeVerifier  = self::generateCodeVerifier();
+                    $codeChallenge = self::generateCodeChallenge($codeVerifier);
+                    Session::put('aweber_code_verifier', $codeVerifier);
+                    $queryBuildArray['response_type']         = 'code';
+                    $queryBuildArray['scope']                 = 'account.read list.read subscriber.read subscriber.write';
+                    // $queryBuildArray['code_challenge'] = $codeChallenge;
+                    // $queryBuildArray['code_challenge_method'] = 'S256';
+                    $auth_login_url                           = $auth_login_url; 
                 } else {
+
                     $queryBuildArray['grant_type']     = 'authorization_code';
                     $queryBuildArray['client_secret']  = $clientSecret;
-                    $queryBuildArray['code']           = $code;
+                    $codeVerifierFromSession           = Session::pull('aweber_code_verifier');  
+                    $queryBuildArray['code']           = $code; 
+                    $queryBuildArray['code_verifier']  = $codeVerifierFromSession;  
+                    
                     $client                            = new Client();
                     $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
                     return $accessToken;
@@ -224,6 +233,7 @@ class MailchimpOAuthController extends Controller
                     $queryBuildArray['code']           = $code;
                     $client                            = new Client();
                     $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    pp($accessToken);
                     return $accessToken;
                 }
             break;
@@ -236,13 +246,22 @@ class MailchimpOAuthController extends Controller
         return redirect("$auth_login_url?$query");  
     }
 
+    private static function generateCodeVerifier()
+    {
+        return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+    }
+    private static function generateCodeChallenge($codeVerifier)
+    {
+        return rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
+    }
+
     private static function getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolname){
          try {
             $param      = ['form_params' => $queryBuildArray];
             $response   = $client->post("$token_url", $param);
             $data       = json_decode($response->getBody(), true);
 
-            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT) { 
+            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT ||  $toolname == ToolNameEnum::AWEBER) { 
                 return $data;
             } else { 
                 return $data['access_token'];
@@ -341,6 +360,7 @@ class MailchimpOAuthController extends Controller
                 $AUTH_METADATA_URL        = $urls['auth_metadata_url']; 
                 $BASE_API_URL             = $urls['base_api_url'] ?? null;
                 $accessTokenData          = self::redirectionToTools($toolName,$CLIENT_ID,$CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$AUTH_LOGIN_URL,$AUTH_TOKEN_URL,true,$code);                 
+               pp($accessTokenData);
                 if (empty($accessTokenData)) {
                     Session::flash('error', "Failed to retrieve access token for $originalToolName. Please try again.");
                     return redirect('/tools');
@@ -494,7 +514,42 @@ class MailchimpOAuthController extends Controller
                         $email       = $accountInfo['contact_email'] ?? null;
                         $mc_dc       = null; // Not applicable for Constant Contact
                     break;
+                    case ToolNameEnum::AWEBER:
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken  = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        try {
+                            $aweberClient = new Client([
+                                'base_uri' => $BASE_API_URL,
+                                'headers' => ['Authorization' => "Bearer $accessToken"],
+                            ]);
 
+                            $accountsResponse = $aweberClient->get('accounts');
+                            $accounts = json_decode($accountsResponse->getBody(), true);
+
+                            // Fix: AWeber accounts are in 'entries' key
+                            if (empty($accounts['entries']) || !isset($accounts['entries'][0])) {
+                                Session::flash('error', "No AWeber accounts found for this user.");
+                                return redirect('/tools');
+                            }
+                            
+                            $primaryAccount = $accounts['entries'][0];
+                            $mc_user_id    = $primaryAccount['id'];
+                            $accountName   = $primaryAccount['name'] ?? 'AWeber Account';
+                            $email         = $primaryAccount['email'] ?? null; 
+                            $mc_dc         = null; 
+                            $meta          = $primaryAccount; 
+
+                        } catch (\Exception $e) {
+                            Log::error("Failed to retrieve AWeber account data: " . $e->getMessage());
+                            Session::flash('error', "Failed to retrieve AWeber account data. " . $e->getMessage());
+                            return redirect('/tools');
+                        }
+                    break;
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
                     return redirect('/tools');
@@ -1553,7 +1608,6 @@ class MailchimpOAuthController extends Controller
             } 
             $urlJson = json_decode($tool->url, true); 
             $config  = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
-
             if (!$config) {
                 DB::rollBack();
                 return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
@@ -1577,14 +1631,18 @@ class MailchimpOAuthController extends Controller
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
                 $accountInfo  = $config['extract_account_info']($responseData);  
-                $mcUserId     = $apiKey;
-                $accountName  = $accountInfo['account_name'];
-                $accountEmail = $accountInfo['account_email'];
-                $metadata     = $accountInfo['metadata'];
-
-                if (!$mcUserId) {
-                    $mcUserId = hash('sha256', $apiKey); // Generate a consistent ID 
+                $mcUserId     = $apiKey; 
+                if( $toolSlug == ToolNameEnum::GETRESPONSE){
+                    $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
+                    $mcUserId     = $accountInfo['mc_user_id'];
+                    $metadata     = $accountInfo['metadata'];
                 }
+                else if( $toolSlug == ToolNameEnum::MOOSEND){
+                    $accountName  = $accountInfo['account_name'];
+                    $mcUserId     = hash('sha256', $apiKey);
+                    $metadata     = $responseData;
+                }
+                $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
                 $integration->user_id      = $userId;
                 $integration->tool_id      = $toolId;
@@ -1594,7 +1652,7 @@ class MailchimpOAuthController extends Controller
                 $integration->status       = 'verified';
                 $integration->name         = $accountName;
                 $integration->emails       = $accountEmail;
-                $integration->metadata     = json_encode($responseData);
+                $integration->metadata     = json_encode($metadata);
                 $integration->save(); 
                 DB::commit();
                 return response()->json(['success' => true, 'message' => "{$tool->name} connected successfully!"]); 
@@ -1612,7 +1670,7 @@ class MailchimpOAuthController extends Controller
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack();
-            // pp( $e->getMessage());
+            pp( $e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
@@ -1646,29 +1704,31 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Error']['Message'] ?? 'Invalid API Key or unable to connect.';
                     }
                 ];
-            // Add other API key-based tools here as needed
-            // case ToolNameEnum::SENDGRID:
-            //     return [
-            //         'base_api_url' => 'https://api.sendgrid.com/v3/',
-            //         'verify_endpoint' => 'user/account',
-            //         'request_options' => function($apiKey) {
-            //             return ['headers' => ['Authorization' => "Bearer $apiKey"]];
-            //         },
-            //         'success_check' => function($responseData) {
-            //             return isset($responseData['username']);
-            //         },
-            //         'extract_account_info' => function($responseData) {
-            //             return [
-            //                 'mc_user_id' => $responseData['user_id'] ?? null,
-            //                 'account_name' => $responseData['username'] ?? 'SendGrid Account',
-            //                 'account_email' => $responseData['email'] ?? null,
-            //                 'metadata' => $responseData,
-            //             ];
-            //         },
-            //         'error_message_extractor' => function($responseData) {
-            //             return $responseData['errors'][0]['message'] ?? 'Unknown SendGrid error.';
-            //         }
-            //     ];
+            case ToolNameEnum::GETRESPONSE:
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.getresponse.com/v3/',
+                    'verify_endpoint' => 'accounts', // Endpoint to verify API key and get account info
+                    'request_options' => function($apiKey) {
+                        // Trim the API key to remove any leading/trailing whitespace
+                        $trimmedApiKey = trim($apiKey);
+                        return ['headers' => ['X-Auth-Token' => "api-key $trimmedApiKey"]];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['accountId']); // Check for a key that indicates a successful account fetch
+                    },
+                    'extract_account_info' => function($responseData) {
+                        return [
+                            'mc_user_id' => $responseData['accountId'] ?? null,
+                            'account_name' => ($responseData['firstName'] ?? '') . ' ' . ($responseData['lastName'] ?? 'GetResponse Account'),
+                            'account_email' => $responseData['email'] ?? null,
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        // Provide a more specific error message for GetResponse
+                        return $responseData['message'] ?? 'Invalid API Key or unable to connect to GetResponse. Please ensure your API key is correct and matches the GetResponse account region (e.g., api.getresponse.com or api.getresponse.eu).';
+                    }
+                ];
             default:
                 return null;
         }
@@ -1713,10 +1773,9 @@ class MailchimpOAuthController extends Controller
             ]);
 
             $requestOptions = $config['request_options']($apiKey);
-            $response = $client->get($config['list_endpoint'], $requestOptions);
-            $statusCode = $response->getStatusCode();
-            $responseData = json_decode($response->getBody()->getContents(), true);
-
+            $response       = $client->get($config['list_endpoint'], $requestOptions);
+            $statusCode     = $response->getStatusCode();
+            $responseData   = json_decode($response->getBody()->getContents(), true);
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
 
             if ($config['success_check']($responseData)) {
@@ -1790,14 +1849,14 @@ class MailchimpOAuthController extends Controller
                 'http_errors' => false, // Handle errors manually
             ]);
 
-            $endpoint = $subscriberConfig['subscriber_endpoint']($listId);
+            $endpoint       = $subscriberConfig['subscriber_endpoint']($listId);
             $requestOptions = $subscriberConfig['request_options']($apiKey);
 
             $response     = $client->get($endpoint, $requestOptions);
             $statusCode   = $response->getStatusCode();
-            $responseData = json_decode($response->getBody()->getContents(), true); 
-            Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData));
-
+            $rawResponseBody = $response->getBody()->getContents(); // Get raw body
+            $responseData = json_decode($rawResponseBody, true); // Decode to array
+            Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData)); 
             if ($subscriberConfig['success_check']($responseData)) {
                 $emails = $subscriberConfig['extract_subscribers']($responseData);
                 if (empty($emails)) {
@@ -1891,24 +1950,29 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Error']['Message'] ?? 'Failed to fetch Moosend lists.';
                     }
                 ];
-                // Add other API key-based tools here as needed
-                // case ToolNameEnum::SENDGRID:
-                //     return [
-                //         'list_endpoint' => 'marketing/lists',
-                //         'request_options' => function($apiKey) {
-                //             return ['headers' => ['Authorization' => "Bearer $apiKey"]];
-                //         },
-                //         'success_check' => function($responseData) {
-                //             return is_array($responseData) && !isset($responseData['errors']);
-                //         },
-                //         'extract_lists' => function($responseData) {
-                //             // Assuming SendGrid returns an array of lists directly
-                //             return $responseData ?? [];
-                //         },
-                //         'error_message_extractor' => function($responseData) {
-                //             return $responseData['errors'][0]['message'] ?? 'Failed to fetch SendGrid lists.';
-                //         }
-                //     ];
+            case ToolNameEnum::GETRESPONSE:
+                return [
+                    'list_endpoint' => 'campaigns', // GetResponse uses 'campaigns' as lists
+                    'request_options' => function($apiKey) {
+                        return ['headers' => ['X-Auth-Token' => "api-key $apiKey"]];
+                    },
+                    'success_check' => function($responseData) {
+                        return is_array($responseData) && !isset($responseData['errorCode']); // Check if it's an array and no error code
+                    },
+                    'extract_lists' => function($responseData) {
+                        // Map GetResponse campaigns to a common list format
+                        return array_map(function($campaign) {
+                            return [
+                                'ID' => $campaign['campaignId'],
+                                'Name' => $campaign['name'],
+                                'SubscribersCount' => $campaign['subscribers'] ?? 0, // GetResponse campaigns might not directly have subscriber count here, might need another API call
+                            ];
+                        }, $responseData);
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch GetResponse campaigns.';
+                    }
+                ];
                 default:
                     return null;
         }
@@ -1936,7 +2000,24 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Error']['Message'] ?? 'Failed to fetch Moosend subscribers.';
                     }
                 ];
-            // Add other API key-based tools for fetching subscribers here if needed
+             case ToolNameEnum::GETRESPONSE:
+                return [
+                    'subscriber_endpoint' => function($campaignId) {
+                        return "campaigns/$campaignId/contacts"; // GetResponse contacts for a campaign
+                    },
+                    'request_options' => function($apiKey) {
+                        return ['headers' => ['X-Auth-Token' => "api-key $apiKey"]];
+                    },
+                    'success_check' => function($responseData) {
+                        return is_array($responseData) && !isset($responseData['errorCode']);
+                    },
+                    'extract_subscribers' => function($responseData) {
+                        return array_column($responseData ?? [], 'email');
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch GetResponse subscribers.';
+                    }
+                ];
             default:
                 return null;
         }
