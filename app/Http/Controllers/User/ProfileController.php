@@ -263,9 +263,9 @@ class ProfileController extends Controller
     {
         // try{
             $credits                 = UserCredits::join('users', 'users.id', '=','user_id')->whereNull('users.deleted_at')->get(); 
-            $totalCredits            = $credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
+            $totalCredits            = "Free";;//$credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
             $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
-            $availableCredits        = $totalCredits;  
+            $availableCredits        = "Free";  //$totalCredits
             $creditAvailableOfAdmin  = 0;
             if(env('API_PLATFORM')=='debouncee'){
                 $creditAvailableOfAdmin = getDebounceCreditBalance();
