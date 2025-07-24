@@ -242,7 +242,6 @@ class MailchimpOAuthController extends Controller
         }
         
         $query = http_build_query($queryBuildArray);
-        pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
