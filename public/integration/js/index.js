@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const normalizeToolName = (str) => str.toLowerCase().replace(/\s+/g, '_');
         const lowerToolName     = normalizeToolName(toolName);
         const importConfitMap = {
-            dropbox: ()=> `/import-integration-emails?toolName=${tooName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
+            dropbox: ()=> `/import-integration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
             get_response: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             moosend: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
