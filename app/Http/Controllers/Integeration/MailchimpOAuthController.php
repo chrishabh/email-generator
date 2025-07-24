@@ -233,7 +233,6 @@ class MailchimpOAuthController extends Controller
                     $queryBuildArray['code']           = $code;
                     $client                            = new Client();
                     $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
-                    pp($accessToken);
                     return $accessToken;
                 }
             break;
@@ -271,7 +270,6 @@ class MailchimpOAuthController extends Controller
             Log::error("ClientException getting access token for $toolname: " . $e->getMessage() . " Response: " . $responseBody);
             throw $e; // Re-throw to be caught by handleCallback
         } catch (\Exception $e) {
-            pp($e->getMessage());
             Log::error("Exception getting access token for $toolname: " . $e->getMessage());
             throw $e; // Re-throw to be caught by handleCallback
         }
@@ -311,7 +309,6 @@ class MailchimpOAuthController extends Controller
             $meta = json_decode($metaResponse->getBody(), true);
             return $meta;
         } catch (\Exception $e) {
-            pp($e->getMessage());
             Log::error("Failed to get metadata for $toolName: " . $e->getMessage());
         }
     }
@@ -579,8 +576,7 @@ class MailchimpOAuthController extends Controller
             } 
             return redirect('/tools');
 
-        }catch (\Exception $e) { 
-            pp( $e->getMessage());
+        }catch (\Exception $e) {  
             Session::flash('error',  $e->getMessage()); 
             return redirect('/tools');
         } 
@@ -1666,8 +1662,7 @@ class MailchimpOAuthController extends Controller
             $errorMessage = (json_decode($responseBody)->Error->Message ?? $e->getMessage());
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
-            DB::rollBack();
-            pp( $e->getMessage());
+            DB::rollBack(); 
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
