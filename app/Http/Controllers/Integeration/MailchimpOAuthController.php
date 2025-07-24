@@ -1558,7 +1558,7 @@ class MailchimpOAuthController extends Controller
             ], 201);
 
         } catch (\Exception $e) { 
-            $responseBody = $e->getResponse()->getBody()->getContents();
+            // $responseBody = $e->getResponse()->getBody()->getContents();
             // pp($responseBody);
             DB::rollBack();
             Log::error("General error importing Dropbox Excel emails: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
@@ -1569,7 +1569,7 @@ class MailchimpOAuthController extends Controller
             return response()->json([
                 'message' => 'An unexpected error occurred during Dropbox Excel import.',
                 'success' => false,
-                'error' => $e->getMessage().' '. $responseBody
+                'error' => $e->getMessage()
             ], 500);
         } finally {
             // Ensure the temporary file is always deleted
