@@ -268,7 +268,6 @@ class MailchimpOAuthController extends Controller
             return $accessToken;
         } catch (ClientException $e) {
             $responseBody = $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'No response body';
-            pp($responseBody);
             Log::error("ClientException getting access token for $toolname: " . $e->getMessage() . " Response: " . $responseBody);
             throw $e; // Re-throw to be caught by handleCallback
         } catch (\Exception $e) {
@@ -359,7 +358,6 @@ class MailchimpOAuthController extends Controller
                 $AUTH_METADATA_URL        = $urls['auth_metadata_url']; 
                 $BASE_API_URL             = $urls['base_api_url'] ?? null;
                 $accessTokenData          = self::redirectionToTools($toolName,$CLIENT_ID,$CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$AUTH_LOGIN_URL,$AUTH_TOKEN_URL,true,$code);                 
-               pp($accessTokenData);
                 if (empty($accessTokenData)) {
                     Session::flash('error', "Failed to retrieve access token for $originalToolName. Please try again.");
                     return redirect('/tools');
