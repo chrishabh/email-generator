@@ -275,7 +275,7 @@ function downloadCsvFile(event, fileid,totalValidEmail,isIntegerateTool,toolName
         return;
     }
     let isModalOpen  = false;
-    const NotShowing = ['dropbox','constant contact','moosend','get response']
+    const NotShowing = ['dropbox','constant contact','moosend','get response','active campaign'];
     if(isIntegerateTool===1){
         uploadTab.textContent ='Update '+ toolName.charAt(0).toUpperCase() + toolName.slice(1)
         if(NotShowing.includes(toolName.toLowerCase())){

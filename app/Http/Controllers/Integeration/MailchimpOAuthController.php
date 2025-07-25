@@ -236,6 +236,22 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 }
             break;
+            case ToolNameEnum::INTERCOM: // Added for Intercom
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback == false){
+                    $queryBuildArray['response_type'] = 'code';
+                    $queryBuildArray['scope']         = 'read_users write_users'; // Scopes for reading and writing users/contacts
+                    $auth_login_url                   = $auth_login_url;
+                } else {
+                    $queryBuildArray['grant_type']     = 'authorization_code';
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client                            = new Client();
+                    $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    return $accessToken;
+                }
+            break;
             default:
                 return;
         }
@@ -340,7 +356,8 @@ class MailchimpOAuthController extends Controller
             if (empty($tool)) {
                 Session::flash('error', "tool not found.");
                return redirect('/tools');
-            } 
+            }
+            pp($tool); 
             if ($tool) {
                 $client                   = new Client(); 
                 $CLIENT_SECRET            = $tool['client_secret'];
@@ -1582,6 +1599,7 @@ class MailchimpOAuthController extends Controller
             'api_key'   => 'required|string',
             'tool_id'   => 'required|integer',
             'tool_name' => 'required|string', // This should be the tool's slug (e.g., 'moosend')
+            'api_url'   => 'nullable|url',
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->errors()->first(), 'message' => 'Validation error'], 400);
@@ -1591,19 +1609,27 @@ class MailchimpOAuthController extends Controller
         $toolId   = $request->input('tool_id');
         $toolSlug = strtolower($request->input('tool_name'));
         $userId   = Auth::user()->id;
+        $apiUrl   = $request->input('api_url'); // For ActiveCampaign
         try {
             DB::beginTransaction();
 
             $tool = IntegrationTool::where('id', $toolId)->where('slug', $toolSlug)->first();
             if (!$tool) {
                 DB::rollBack();
-                return response()->json(['success' => false, 'error' => 'Tool not found or mismatched.'], 404);
+                return response()->json(['success' => false,'message'=>'Tool not found or mismatched.', 'error' => 'Tool not found or mismatched.'], 404);
             } 
             $urlJson = json_decode($tool->url, true); 
             $config  = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
             if (!$config) {
                 DB::rollBack();
-                return response()->json(['success' => false, 'error' => 'Unsupported tool for API key connection.'], 400);
+                return response()->json(['success' => false,'message'=>'Unsupported tool for API key connection.', 'error' => 'Unsupported tool for API key connection.'], 400);
+            }
+            $baseApiUrlToUse = $config['base_api_url'];
+            if (in_array($toolSlug, [ToolNameEnum::ACTIVECAMPAIGN]) && !empty($apiUrl)) {
+                $baseApiUrlToUse = $apiUrl;
+            } elseif (in_array($toolSlug, [ToolNameEnum::ACTIVECAMPAIGN]) && empty($apiUrl)) {
+                DB::rollBack();
+                return response()->json(['success' => false, 'error' => "{$tool->name} API URL is required.",'message'=>"{$tool->name} API URL is required."], 400);
             }
 
             // Check if an integration with this API key already exists for the user and tool
@@ -1618,9 +1644,9 @@ class MailchimpOAuthController extends Controller
             $requestOptions = $config['request_options']($apiKey);
 
             // Make the API call to verify the API key
-            $testResponse = $client->get($config['base_api_url'] . $config['verify_endpoint'], $requestOptions);
-            $responseData = json_decode($testResponse->getBody()->getContents(), true);
 
+            $testResponse = $client->get($baseApiUrlToUse . $config['verify_endpoint'], $requestOptions);
+            $responseData = json_decode($testResponse->getBody()->getContents(), true);
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
                 $accountInfo  = $config['extract_account_info']($responseData);  
@@ -1634,6 +1660,11 @@ class MailchimpOAuthController extends Controller
                     $accountName  = $accountInfo['account_name'];
                     $mcUserId     = hash('sha256', $apiKey);
                     $metadata     = $responseData;
+                }else if($toolSlug == ToolNameEnum::ACTIVECAMPAIGN){
+                    $accountName         = $accountInfo['metadata']['user']? $accountInfo['metadata']['user']['firstName'].' '.$accountInfo['metadata']['user']['lastName'] :  $accountInfo['account_name'];
+                    $mcUserId            = $accountInfo['mc_user_id'];
+                    $metadata            = $accountInfo['metadata'];
+                    $metadata['api_url'] = $baseApiUrlToUse;
                 }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
@@ -1663,6 +1694,7 @@ class MailchimpOAuthController extends Controller
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack(); 
+            pp($e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
@@ -1721,8 +1753,35 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Invalid API Key or unable to connect to GetResponse. Please ensure your API key is correct and matches the GetResponse account region (e.g., api.getresponse.com or api.getresponse.eu).';
                     }
                 ];
+            case ToolNameEnum::ACTIVECAMPAIGN:
+                return [
+                    'base_api_url' => '', // Placeholder, will be set from request input
+                    'verify_endpoint' => '/api/3/users/me', // Endpoint to verify API key and get user info
+                    'request_options' => function($apiKey) {
+                        return ['headers' => ['Api-Token' => $apiKey]]; // ActiveCampaign uses Api-Token for direct API key authentication
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['user']['id']) && isset($responseData['user']['email']);
+                    },
+                    'extract_account_info' => function($responseData) {
+                        $accountName = 'ActiveCampaign Account';
+                        if (isset($responseData['user']['account'])) {
+                            $accountName = $responseData['user']['account']['name'] ?? $accountName;
+                        }
+                        return [
+                            'mc_user_id' => $responseData['user']['id'] ?? null,
+                            'account_name' => $accountName,
+                            'account_email' => $responseData['user']['email'] ?? null,
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['errors'][0]['message'] ?? 'Invalid ActiveCampaign API Key or unable to connect.';
+                    }
+                ];
+            
             default:
-                return null;
+            return null;
         }
     }
 
@@ -1751,7 +1810,18 @@ class MailchimpOAuthController extends Controller
 
         $apiKey       = $integration->mc_token;
         $toolUrlJson  = json_decode($integration->tool->url, true);
-        $base_api_url = $toolUrlJson['base_api_url'] ?? null; 
+        $base_api_url = $toolUrlJson['base_api_url'] ?? null;  
+        if (in_array($toolName, [ToolNameEnum::ACTIVECAMPAIGN])) {
+            $metadata     = json_decode($integration->metadata, true);
+            $base_api_url = $metadata['api_url'] ?? $base_api_url; // Use API URL from metadata if available
+            if (empty($base_api_url)) {
+                return response()->json([
+                    'message' => "{$integration->tool->name} API URL not found in integration metadata. Please re-authenticate.",
+                    'success' => false,
+                    'error' => "{$integration->tool->name} API URL missing."
+                ], 400);
+            }
+        }
         $config = $this->getIntegrationListConfig($toolName, $toolUrlJson);
 
         if (!$config) {
@@ -1825,7 +1895,18 @@ class MailchimpOAuthController extends Controller
 
         $apiKey       = $integration->mc_token;
         $toolUrlJson  = json_decode($integration->tool->url, true);
-        $base_api_url = $toolUrlJson['base_api_url'] ?? 'https://api.moosend.com/v3/';
+        $base_api_url = $toolUrlJson['base_api_url'] ?? null; // Default from tool config
+        if (in_array($toolName,  [ToolNameEnum::ACTIVECAMPAIGN])) {
+            $metadata = json_decode($integration->metadata, true);
+            $base_api_url = $metadata['api_url'] ?? $base_api_url; // Use API URL from metadata if available
+            if (empty($base_api_url)) {
+                return response()->json([
+                    'message' => "{$integration->tool->name} API URL not found in integration metadata. Please re-authenticate.",
+                    'success' => false,
+                    'error' => "{$integration->tool->name} API URL missing."
+                ], 400);
+            }
+        }
 
         try {
             DB::beginTransaction(); 
@@ -1965,7 +2046,29 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch GetResponse campaigns.';
                     }
                 ];
-                default:
+            case ToolNameEnum::ACTIVECAMPAIGN:
+                return [
+                    'list_endpoint' => '/api/3/lists', // Corrected endpoint for ActiveCampaign
+                    'request_options' => function($apiKey) {
+                        return ['headers' => ['Api-Token' => $apiKey]];
+                    },
+                    'success_check' => function($responseData) {
+                        return is_array($responseData) && isset($responseData['lists']); // ActiveCampaign returns lists in a 'lists' array
+                    },
+                    'extract_lists' => function($responseData) {
+                        return array_map(function($list) {
+                            return [
+                                'ID' => $list['id'],
+                                'Name' => $list['name'],
+                                'SubscribersCount' => $list['subscriber_count'] ?? 0, // ActiveCampaign lists have subscriber_count
+                            ];
+                        }, $responseData['lists'] ?? []);
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['errors'][0]['message'] ?? 'Failed to fetch ActiveCampaign lists.';
+                    }
+                ];
+            default:
                     return null;
         }
     }
@@ -1992,7 +2095,7 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Error']['Message'] ?? 'Failed to fetch Moosend subscribers.';
                     }
                 ];
-             case ToolNameEnum::GETRESPONSE:
+            case ToolNameEnum::GETRESPONSE:
                 return [
                     'subscriber_endpoint' => function($campaignId) {
                         return "campaigns/$campaignId/contacts"; // GetResponse contacts for a campaign
@@ -2010,6 +2113,28 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch GetResponse subscribers.';
                     }
                 ];
+            case ToolNameEnum::ACTIVECAMPAIGN:
+                return [
+                    'subscriber_endpoint' => function($listId) {
+                        // For ActiveCampaign, to get contacts for a specific list, you'd use:
+                        // return "/api/3/lists/$listId/contacts";
+                        // However, for general import, fetching all contacts is more common.
+                        return "/api/3/contacts"; // Corrected endpoint for ActiveCampaign
+                    },
+                    'request_options' => function($apiKey) {
+                        return ['headers' => ['Api-Token' => $apiKey]];
+                    },
+                    'success_check' => function($responseData) {
+                        return is_array($responseData) && isset($responseData['contacts']);
+                    },
+                    'extract_subscribers' => function($responseData) {
+                        return array_column($responseData['contacts'] ?? [], 'email');
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['errors'][0]['message'] ?? 'Failed to fetch ActiveCampaign contacts.';
+                    }
+                ];
+
             default:
                 return null;
         }

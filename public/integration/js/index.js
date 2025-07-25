@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const moosendApiModal          = document.getElementById('moosendApiModal');
     const moosendApiKeyInput       = document.getElementById('moosendApiKeyInput');
+    const apiUrlInput              = document.getElementById('moosendApiKeyInputURL');
     const moosendConnectButton     = document.getElementById('moosendConnectButton');
     const moosendCancelButton      = document.getElementById('moosendCancelButton');
     const moosendCloseModalButton  = document.getElementById('moosendCloseModalButton'); // New close button
@@ -205,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response'];
-        const isModalOpenedForApiKey  = ['moosend','get response']
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign'];
+        const isModalOpenedForApiKey  = ['moosend','get response','active campaign']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
@@ -438,6 +439,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`
                 }
                 
+            },
+            active_campaign:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
             }
         }
 
@@ -541,6 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dropbox: ()=> `/import-integeration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
             get_response: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             moosend: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            active_campaign: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
@@ -586,21 +609,43 @@ document.addEventListener('DOMContentLoaded', () => {
         moosendModalTitle.setAttribute('data-tool-id', id);
         moosendModalTitle.setAttribute('data-tool-name', name);
         moosendModalTitle.innerText = `Connect ${name}`;
+
+        // Reset the API URL input
+        const apiUrlInput = document.getElementById('moosendApiKeyInputURL');
+        apiUrlInput.value = '';
+
+        // Get the parent div of the API URL input to toggle visibility
+        const apiUrlDiv = apiUrlInput.closest('div');
+        // Show API URL input only for "active campaign"
+        if (name.trim().toLowerCase() === 'active campaign') {
+            apiUrlDiv.classList.remove('hidden');
+        } else {
+            apiUrlDiv.classList.add('hidden');
+        }
     }
 
     moosendConnectButton.addEventListener('click', async () => {
-        const apiKey = moosendApiKeyInput.value.trim();
+        const apiKey   = moosendApiKeyInput.value.trim();
+        const apiUrl   = apiUrlInput.value.trim();
+        const toolId   = moosendModalTitle.getAttribute('data-tool-id');
+        const toolName = moosendModalTitle.getAttribute('data-tool-name');
         if (!apiKey) {
-            notyf.error('Moosend API Key cannot be empty.');
+            notyf.error('API Key cannot be empty.');
             return;
         } 
-        moosendApiModal.classList.add('hidden'); // Hide the API key modal
-        $('#preloader').fadeIn(); // Show preloader
+        if(toolName.trim().toLowerCase() === 'active campaign' && !apiUrl) {
+            notyf.error('API URL cannot be empty for Active Campaign.'); 
+            return
+        }
 
         try {
-            const toolId   = moosendModalTitle.getAttribute('data-tool-id');
-            const toolName = moosendModalTitle.getAttribute('data-tool-name');
-            result  = await makeApiHit(`/tool-connection-based-on-api-key?api_key=${apiKey}&tool_name=${toolName}&tool_id=${toolId}`)
+            moosendApiModal.classList.add('hidden');
+            $('#preloader').fadeIn();
+            let query = `/tool-connection-based-on-api-key?api_key=${apiKey}&tool_name=${toolName}&tool_id=${toolId}`;
+            if (toolName.trim().toLowerCase() === 'active campaign' && apiUrl) {
+                query += `&api_url=${apiUrl}`;
+            }
+            result  = await makeApiHit(query)
             if(result.success){
                 notyf.success(result.message || 'Integration added!');
                 integrationModal.classList.add('hidden');

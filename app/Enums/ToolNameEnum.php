@@ -13,5 +13,7 @@ class ToolNameEnum {
     const MOOSEND = 'moosend';
     const CONSTANTCONTACT = 'constant contact';
     CONST GETRESPONSE = 'get response';
+    CONST INTERCOM = 'intercom';
+    const ACTIVECAMPAIGN='active campaign';
 
 }
