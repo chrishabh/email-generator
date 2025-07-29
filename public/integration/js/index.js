@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
                 image: '/integration/integerated-icon/google_sheet.svg',
                 itemRenderer: (item,image) => {
-                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const isDisabled   = item.SubscribersCount === 0;
                     const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
                     return `
                         <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
                 image: '/integration/integerated-icon/google_sheet.svg',
                 itemRenderer: (item,image) => {
-                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const isDisabled   = item.SubscribersCount === 0;
                     const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
                     return `
                         <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
                 image: '/integration/integerated-icon/google_sheet.svg',
                 itemRenderer: (item,image) => {
-                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const isDisabled   = item.SubscribersCount === 0;
                     const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
                     return `
                         <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
                 image: '/integration/integerated-icon/google_sheet.svg',
                 itemRenderer: (item,image) => {
-                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const isDisabled   = item.SubscribersCount === 0;
                     const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
                     return `
                         <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
                 image: '/integration/integerated-icon/google_sheet.svg',
                 itemRenderer: (item,image) => {
-                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const isDisabled   = item.SubscribersCount === 0;
                     const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
                     return `
                         <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
@@ -519,6 +519,30 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
                                     ${item.Name}
                                 </h2>
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
+            },
+            benchmark:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.SubscribersCount === 0;
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/3 text-sm text-gray-600">
+                                Contact Count: ${item.SubscribersCount}
                             </div>
                             <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
                                 <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
@@ -634,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
             brevo: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             mailer_lite: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             convertkit: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            benchmark: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);

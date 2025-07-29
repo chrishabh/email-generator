@@ -1669,8 +1669,7 @@ class MailchimpOAuthController extends Controller
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
                 $accountInfo  = $config['extract_account_info']($responseData); 
-                $mcUserId     = $apiKey;
-                pp($accountInfo);
+                $mcUserId     = $apiKey; 
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
                     $mcUserId     = $accountInfo['mc_user_id'];
@@ -1693,6 +1692,10 @@ class MailchimpOAuthController extends Controller
                 }else if($toolSlug == ToolNameEnum::CONVERTKIT){
                     $accountName         = $accountInfo['account_name']? $accountInfo['account_name'] : 'ConvertKit Account';
                     $mcUserId            = $accountInfo['mc_user_id'];
+                    $metadata            = $accountInfo['metadata'];    
+                }else if($toolSlug == ToolNameEnum::BENCHMARK){
+                    $accountName         = $accountInfo['account_name'];
+                    $mcUserId            = $accountInfo['mc_user_id']?? $mcUserId;
                     $metadata            = $accountInfo['metadata'];    
                 }
                 $accountEmail              = $accountInfo['account_email']; 
@@ -1892,30 +1895,26 @@ class MailchimpOAuthController extends Controller
                 ];
             case ToolNameEnum::BENCHMARK: // Added for Benchmark
                 return [
-                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.benchmarkemail.com/v1/', // Updated base URL
-                    'verify_endpoint' => 'User', // Updated endpoint for user details
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://clientapi.benchmarkemail.com/', // Updated base URL
+                    'verify_endpoint' => 'Contact/', // Updated endpoint for user details
                     'request_options' => function ($apiKey) {
-                        return [
-                            'headers' => [
-                                'Authorization' => 'ApiKey ' . $apiKey,
-                                'Content-Type'  => 'application/json',
-                                'Accept'        => 'application/json',
-                            ]
-                        ];
+                        return ['headers' => ['AuthToken' => $apiKey, 'Accept' => 'application/json']];
                     },
-                    'success_check' => function ($responseData) {
-                        return isset($responseData['email']) || isset($responseData['user_name']);
+                    'success_check' => function ($responseData) { 
+                        // Check for successful API response structure for Client/ProfileDetails
+                        return isset($responseData['Response']['Data']) && isset($responseData['Response']['Count']);
                     },
                     'extract_account_info' => function ($responseData) {
                         return [
-                            'mc_user_id'    => $responseData['user_id'] ?? hash('sha256', $responseData['email'] ?? ''),
-                            'account_name'  => $responseData['user_name'] ?? $responseData['email'],
-                            'account_email' => $responseData['email'] ?? null,
-                            'metadata'      => $responseData,
+                            'mc_user_id'    =>  NULL, // Use ClientID as user ID
+                            'account_name'  => 'Benchmark Account',
+                            'account_email' =>  NULL,
+                            'metadata' => $responseData,
                         ];
                     },
                     'error_message_extractor' => function ($responseData) {
-                        return $responseData['message'] ?? 'Invalid Benchmark API Key or unable to connect.';
+                        // Benchmark errors might have a 'Message' field or be a simple string
+                        return $responseData['Message'] ?? 'Invalid Benchmark API Key or unable to connect. Please check your API key.';
                     }
                 ];
             
@@ -1976,10 +1975,10 @@ class MailchimpOAuthController extends Controller
             $requestOptions = $config['request_options']($apiKey);
             $response       = $client->get($config['list_endpoint'], $requestOptions);
             $statusCode     = $response->getStatusCode();
-            $responseData   = json_decode($response->getBody()->getContents(), true);
+            $responseData   = json_decode($response->getBody()->getContents(), true); 
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
-            if ($config['success_check']($responseData)) {
-                $lists = $config['extract_lists']($responseData);
+            if ($config['success_check']($responseData)) { 
+                $lists = $config['extract_lists']($responseData); 
                 return response()->json([
                     'success' => true,
                     'message' => "{$toolName} lists fetched successfully.",
@@ -2313,6 +2312,29 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch ConvertKit tags.';
                     }
                 ];
+            case ToolNameEnum::BENCHMARK:  // Added for Benchmark
+                return [
+                    'list_endpoint' => 'Contact/', // Endpoint to get lists/groups
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['AuthToken' => $apiKey, 'Accept' => 'application/json']];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Benchmark returns lists as a direct array
+                        return is_array($responseData) && !isset($responseData['Message']);
+                    },
+                    'extract_lists' => function ($responseData) { 
+                        return array_map(function ($list) {
+                            return [
+                                'ID'               => $list['ID'] ?? null,
+                                'Name'             => $list['Name'] ?? 'Unnamed List',
+                                'SubscribersCount' => $list['ContactCount'] ?? 0,
+                            ];
+                        }, $responseData['Response']['Data'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['Message'] ?? 'Failed to fetch Benchmark lists.';
+                    }
+                ];
 
             default:
                     return null;
@@ -2485,6 +2507,28 @@ class MailchimpOAuthController extends Controller
                     },
                     'error_message_extractor' => function ($responseData) {
                         return $responseData['message'] ?? 'Failed to fetch ConvertKit subscribers.';
+                    }
+                ];
+            case ToolNameEnum::BENCHMARK: // Added for Benchmark
+                return [
+                    'subscriber_endpoint' => function ($listId) {
+                        // Benchmark Email API for subscribers within a list
+                        return "/Contact/{$listId}/ContactDetails";
+                    },
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['AuthToken' => $apiKey, 'Accept' => 'application/json']];
+                    },
+                    'query_params'    => ['Filter' => 1],
+                    'success_check' => function ($responseData) {
+                        // Benchmark returns subscribers nested under 'Response' and 'Data'
+                        return isset($responseData['Response']['Data']) && is_array($responseData['Response']['Data']) && !isset($responseData['Message']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        // Access the 'Data' array within the 'Response' object
+                        return array_column($responseData['Response']['Data'] ?? [], 'Email');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['Message'] ?? 'Failed to fetch Benchmark subscribers.';
                     }
                 ];
 
