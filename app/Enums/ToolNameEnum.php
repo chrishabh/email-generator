@@ -17,5 +17,8 @@ class ToolNameEnum {
     const ACTIVECAMPAIGN='active campaign';
     const ZOHOCAMPAIGN ='zoho campaign';
     const BREVO = 'brevo';
+    const MAILERLITE = 'mailer lite';
+    const CONVERTKIT ='convertkit';
+    const BENCHMARK ='benchmark';
 
 }

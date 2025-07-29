@@ -1669,26 +1669,31 @@ class MailchimpOAuthController extends Controller
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
                 $accountInfo  = $config['extract_account_info']($responseData); 
-                $mcUserId     = $apiKey; 
+                $mcUserId     = $apiKey;
+                pp($accountInfo);
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
                     $mcUserId     = $accountInfo['mc_user_id'];
-                    $metadata     = $accountInfo['metadata'];
+                    $metadata     = $accountInfo['metadata']; 
+                    $accountEmail = $accountInfo['account_email']; 
                 }
                 else if( $toolSlug == ToolNameEnum::MOOSEND){
                     $accountName  = $accountInfo['account_name'];
                     $mcUserId     = hash('sha256', $apiKey);
-                    $metadata     = $responseData;
+                    $metadata     = $responseData; 
                 }else if($toolSlug == ToolNameEnum::ACTIVECAMPAIGN){
                     $accountName         = $accountInfo['metadata']['user']? $accountInfo['metadata']['user']['firstName'].' '.$accountInfo['metadata']['user']['lastName'] :  $accountInfo['account_name'];
                     $mcUserId            = $accountInfo['mc_user_id'];
-                    $metadata            = $accountInfo['metadata'];
+                    $metadata            = $accountInfo['metadata']; 
                     $metadata['api_url'] = $baseApiUrlToUse;
                 }else if($toolSlug == ToolNameEnum::BREVO){
                     $accountName         = $accountInfo['metadata']? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName'] :  $accountInfo['account_name'];
                     $mcUserId            = $accountInfo['mc_user_id'];
-                    $metadata            = $accountInfo['metadata'];
-                    $metadata['api_url'] = $baseApiUrlToUse;
+                    $metadata            = $accountInfo['metadata']; 
+                }else if($toolSlug == ToolNameEnum::CONVERTKIT){
+                    $accountName         = $accountInfo['account_name']? $accountInfo['account_name'] : 'ConvertKit Account';
+                    $mcUserId            = $accountInfo['mc_user_id'];
+                    $metadata            = $accountInfo['metadata'];    
                 }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
@@ -1711,14 +1716,14 @@ class MailchimpOAuthController extends Controller
             }
 
         } catch (ClientException $e) {
-            DB::rollBack();
+            DB::rollBack(); 
             $responseBody = $e->getResponse()->getBody()->getContents();
             Log::error("API Key verification Guzzle Client error for {$toolSlug}: " . $e->getMessage() . " Response: " . $responseBody);
             $errorMessage = (json_decode($responseBody)->Error->Message ?? $e->getMessage());
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack(); 
-            pp($e->getMessage());
+            // pp($e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
@@ -1826,6 +1831,93 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Invalid Brevo API Key or unable to connect.';
                     }
                 ];
+            case ToolNameEnum::MAILERLITE: // Added for MailerLite
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.mailerlite.com/api/v2/',
+                    'verify_endpoint' => 'me', // MailerLite endpoint to get account details
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json']];
+                    },
+                    'success_check' => function ($responseData) {
+                        // MailerLite 'me' endpoint returns 'id' and 'email' on success
+                        return isset($responseData['id']) && isset($responseData['email']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        return [
+                            'mc_user_id' => $responseData['id'], // MailerLite provides an account ID
+                            'account_name' => $responseData['name'] ?? $responseData['email'],
+                            'account_email' => $responseData['email'],
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        // MailerLite errors often have an 'error' object with 'message'
+                        return $responseData['error']['message'] ?? 'Invalid MailerLite API Key or unable to connect.';
+                    }
+                ];
+
+            case ToolNameEnum::CONVERTKIT: // Added for ConvertKit
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.convertkit.com/v3/',
+                    'verify_endpoint' => 'account', // ConvertKit endpoint for account info
+                    'request_options' => function ($apiKey) {
+                        return ['query' => ['api_secret' => $apiKey]]; // ConvertKit uses 'api_secret' as a query parameter
+                    },
+                    'success_check' => function ($responseData) {
+                        // ConvertKit account endpoint returns 'name' and 'primary_email_address' directly
+                        // Also check for the absence of a top-level 'error' key or 'message' key indicating an API error
+                        return isset($responseData['name']) &&
+                               isset($responseData['primary_email_address']) &&
+                               !isset($responseData['error']) && // Ensure no top-level 'error' object
+                               !isset($responseData['message']); // Ensure no top-level 'message' indicating error
+                    },
+                    'extract_account_info' => function ($responseData) {
+                         return [
+                            'mc_user_id' => hash('sha256', $responseData['primary_email_address']), // Using hash of email as unique ID
+                            'account_name' => $responseData['name'],
+                            'account_email' => $responseData['primary_email_address'],
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        // ConvertKit errors often have a 'message' field at the root or within an 'error' object
+                        if (isset($responseData['error']['message'])) {
+                            return $responseData['error']['message'];
+                        }
+                        if (isset($responseData['message'])) {
+                            return $responseData['message'];
+                        }
+                        return 'Invalid ConvertKit API Secret or unable to connect. Please check your API secret and try again.';
+                    }
+                ];
+            case ToolNameEnum::BENCHMARK: // Added for Benchmark
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.benchmarkemail.com/v1/', // Updated base URL
+                    'verify_endpoint' => 'User', // Updated endpoint for user details
+                    'request_options' => function ($apiKey) {
+                        return [
+                            'headers' => [
+                                'Authorization' => 'ApiKey ' . $apiKey,
+                                'Content-Type'  => 'application/json',
+                                'Accept'        => 'application/json',
+                            ]
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['email']) || isset($responseData['user_name']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        return [
+                            'mc_user_id'    => $responseData['user_id'] ?? hash('sha256', $responseData['email'] ?? ''),
+                            'account_name'  => $responseData['user_name'] ?? $responseData['email'],
+                            'account_email' => $responseData['email'] ?? null,
+                            'metadata'      => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Invalid Benchmark API Key or unable to connect.';
+                    }
+                ];
             
             default:
             return null;
@@ -1886,7 +1978,6 @@ class MailchimpOAuthController extends Controller
             $statusCode     = $response->getStatusCode();
             $responseData   = json_decode($response->getBody()->getContents(), true);
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
-
             if ($config['success_check']($responseData)) {
                 $lists = $config['extract_lists']($responseData);
                 return response()->json([
@@ -2153,6 +2244,76 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch Brevo contacts/lists.';
                     }
                 ];
+            case ToolNameEnum::MAILERLITE: // Added for MailerLite
+                return [
+                    'list_endpoint' => 'groups', // MailerLite uses 'groups' as lists
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json']];
+                    },
+                    'success_check' => function ($responseData) {
+                        // MailerLite returns groups as a direct array
+                        return is_array($responseData) && !isset($responseData['error']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($group) {
+                            return [
+                                'ID' => $group['id'],
+                                'Name' => $group['name'],
+                                'SubscribersCount' => $group['subscribers_count'] ?? 0, // MailerLite groups have subscribers_count
+                            ];
+                        }, $responseData);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['error']['message'] ?? 'Failed to fetch MailerLite groups.';
+                    }
+                ];
+                case ToolNameEnum::CONVERTKIT: // Added for ConvertKit
+                return [
+                    'list_endpoint' => 'tags', // ConvertKit uses 'tags' as lists/segments
+                    'request_options' => function ($apiKey) {
+                        return ['query' => ['api_secret' => $apiKey]];
+                    },
+                    'success_check' => function ($responseData) {
+                        // ConvertKit returns tags in a 'tags' array
+                        return isset($responseData['tags']) && is_array($responseData['tags']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($tag) {
+                            return [
+                                'ID' => $tag['id'],
+                                'Name' => $tag['name'],
+                                'SubscribersCount' => $tag['subscribers_count'] ?? 0, // ConvertKit tags have subscribers_count
+                            ];
+                        }, $responseData['tags'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch ConvertKit tags.';
+                    }
+                ];
+            case ToolNameEnum::CONVERTKIT: // Added for ConvertKit
+                return [
+                    'list_endpoint' => 'tags', // ConvertKit uses 'tags' as lists/segments
+                    'request_options' => function ($apiKey) {
+                        return ['query' => ['api_secret' => $apiKey]];
+                    },
+                    'success_check' => function ($responseData) {
+                        // ConvertKit returns tags in a 'tags' array
+                        return isset($responseData['tags']) && is_array($responseData['tags']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($tag) {
+                            return [
+                                'ID' => $tag['id'],
+                                'Name' => $tag['name'],
+                                'SubscribersCount' => $tag['subscribers_count'] ?? 0, // ConvertKit tags have subscribers_count
+                            ];
+                        }, $responseData['tags'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch ConvertKit tags.';
+                    }
+                ];
+
             default:
                     return null;
         }
@@ -2259,6 +2420,71 @@ class MailchimpOAuthController extends Controller
                     },
                     'error_message_extractor' => function ($responseData) {
                         return $responseData['message'] ?? 'Failed to fetch Brevo subscribers.';
+                    }
+                ];
+            case ToolNameEnum::MAILERLITE: // Added for MailerLite
+                return [
+                    'subscriber_endpoint' => function ($listId) {
+                        // MailerLite has a dedicated endpoint for subscribers within a group.
+                        if ($listId === 'all_contacts') {
+                            // Fetch all subscribers, potentially paginated
+                            return "subscribers";
+                        }
+                        return "groups/{$listId}/subscribers";
+                    },
+                    'request_options' => function ($apiKey) {
+                        return [
+                            'headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json'],
+                            'query' => [
+                                'limit' => 1000, // MailerLite's default limit is 1000
+                                'offset' => 0, // Will be handled by pagination loop
+                            ]
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        // MailerLite returns subscribers as a direct array
+                        return is_array($responseData) && !isset($responseData['error']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        return array_column($responseData, 'email');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['error']['message'] ?? 'Failed to fetch MailerLite subscribers.';
+                    }
+                ];
+            case ToolNameEnum::CONVERTKIT: // Added for ConvertKit
+                return [
+                    'subscriber_endpoint' => function ($tagId) {
+                        // ConvertKit API for subscribers within a tag (form or sequence)
+                        // If it's a tag, fetch subscribers by tag. If 'all_contacts', fetch all subscribers.
+                        if ($tagId === 'all_contacts') {
+                            return "subscribers"; // Endpoint to get all subscribers
+                        }
+                        return "tags/{$tagId}/subscriptions"; // Endpoint for subscribers in a specific tag
+                    },
+                    'request_options' => function ($apiKey) {
+                        return [
+                            'query' => ['api_secret' => $apiKey],
+                            'headers' => ['Accept' => 'application/json']
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Check for the 'subscriptions' array in the response
+                        return isset($responseData['subscriptions']) && is_array($responseData['subscriptions']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        $emails = [];
+                        // Iterate through the 'subscriptions' array
+                        foreach (($responseData['subscriptions'] ?? []) as $subscription) {
+                            // Extract email_address from the nested 'subscriber' object
+                            if (isset($subscription['subscriber']['email_address'])) {
+                                $emails[] = $subscription['subscriber']['email_address'];
+                            }
+                        }
+                        return $emails;
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch ConvertKit subscribers.';
                     }
                 ];
 

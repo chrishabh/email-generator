@@ -32,18 +32,25 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'mailgun.png', 'name' => 'Mailgun', 'slug' => 'mailgun'],
             ['icon' => 'moosend.png', 'name' => 'Moosend', 'slug' => 'moosend','url' => json_encode(['base_api_url' => 'https://api.moosend.com/v3/'])],
             ['icon' => 'zohocampaign.png', 'name' => 'Zoho Campaign', 'slug' => 'zoho campaign', 'client_id' => env('ZOHO_CAMPAIGN_CLIENT_ID'), 'client_secret' => env('ZOHO_CAMPAIGN_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => (strtolower(env('APP_ENV')) === 'Production') ? 'https://bouncee.net/zoho/callback':'http://localhost:8000/zoho/callback','auth_login_url' => 'https://accounts.zoho.com/oauth/v2/auth','auth_token_url' => 'https://accounts.zoho.com/oauth/v2/token','auth_metadata_url' => 'https://accounts.zoho.com/oauth/v2/user/info','base_api_url' => 'https://campaigns.zoho.com/api/v1.1/'])],
-            ['icon' => 'mailerlite.png', 'name' => 'MainerLite', 'slug' => 'mailerlite'],
+            ['icon' => 'mailerlite.png', 'name' => 'Mailer Lite', 'slug' => 'mailer lite','url' => json_encode(['base_api_url' => 'https://api.mailerlite.com/api/v2/'])],
             ['icon' => 'mailjet.svg', 'name' => 'Mailjet', 'slug' => 'mailjet'],
             ['icon' => 'gist.png', 'name' => 'Gist', 'slug' => 'gist'],
-            ['icon' => 'convertkit.png', 'name' => 'ConvertKit', 'slug' => 'convertkit'],
-            ['icon' => 'Benchmark.png', 'name' => 'Benchmark', 'slug' => 'benchmark'],
+            ['icon' => 'convertkit.png', 'name' => 'ConvertKit', 'slug' => 'convertkit','url' => json_encode(['base_api_url' => 'https://api.convertkit.com/v3/'])],
+            ['icon' => 'Benchmark.png', 'name' => 'Benchmark', 'slug' => 'benchmark','url' => json_encode(['base_api_url' => 'https://api.benchmarkemail.com/v1/'])],
             ['icon' => 'intercom.svg', 'name' => 'Intercom', 'slug' => 'intercom'],
              ['icon' => 'intercom.png', 'name' => 'Intercom', 'slug' => 'intercom', 'client_id' => env('INTERCOM_CLIENT_ID'), 'client_secret' => env('INTERCOM_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => 'http://localhost:8000/intercom/callback', 'auth_login_url' => 'https://app.intercom.com/oauth', 'auth_token_url' => 'https://api.intercom.io/auth/eagle/token', 'auth_metadata_url' => 'https://api.intercom.io/me','base_api_url' => 'https://api.intercom.io/'])],
             ['icon' => 'zapier.png', 'name' => 'Zapier', 'slug' => 'zapier'],
         ];
 
-        foreach ($tools as $tool) {
-            IntegrationTool::updateOrCreate(['name' => $tool['name']], $tool);
+        foreach ($tools as $tool) { 
+             $existingTool = IntegrationTool::where('name', $tool['name'])->first(); 
+            if ($existingTool) {
+                // Update all columns
+                $existingTool->update($tool);
+            } else {
+                // Create new if not exists
+                IntegrationTool::create($tool);
+            }
         }
     }
 }
