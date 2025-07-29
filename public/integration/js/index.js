@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign'];
-        const isModalOpenedForApiKey  = ['moosend','get response','active campaign']
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign','zoho campaign','brevo'];
+        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
@@ -460,7 +460,32 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`
                 }
                 
+            },
+            brevo:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.ActiveMemberCount === 0;
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/3 text-sm text-gray-600">
+                                Subscribers Count: ${item.SubscribersCount}
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
             }
+
         }
 
         const toolConfig  = configMap[lowerToolName];
@@ -564,6 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
             get_response: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             moosend: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             active_campaign: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            brevo: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);

@@ -252,11 +252,30 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 }
             break;
+            case ToolNameEnum::ZOHOCAMPAIGN: 
+                $queryBuildArray['client_id']     = $clientId;
+                $queryBuildArray['redirect_uri']  = $redirect_uri;
+                if($is_handle_callback==false){
+                    // Removed 'AaaServer.profile.Read' as it was causing the error
+                    $queryBuildArray['scope']         = 'ZohoCampaigns.campaign.ALL,ZohoCampaigns.contact.ALL'; 
+                    $queryBuildArray['response_type'] = 'code';
+                    $queryBuildArray['access_type']   = 'offline'; // For refresh tokens
+                    $queryBuildArray['prompt']        = 'consent'; // To ensure consent screen is shown
+                    $auth_login_url                   = $auth_login_url;
+                }else{
+                    $queryBuildArray['client_secret']  = $clientSecret;
+                    $queryBuildArray['code']           = $code;
+                    $client = new Client(); 
+                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                    return $accessToken;
+                }
+            break;
             default:
                 return;
         }
         
         $query = http_build_query($queryBuildArray);
+        pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
@@ -1649,7 +1668,7 @@ class MailchimpOAuthController extends Controller
             $responseData = json_decode($testResponse->getBody()->getContents(), true);
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
-                $accountInfo  = $config['extract_account_info']($responseData);  
+                $accountInfo  = $config['extract_account_info']($responseData); 
                 $mcUserId     = $apiKey; 
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
@@ -1662,6 +1681,11 @@ class MailchimpOAuthController extends Controller
                     $metadata     = $responseData;
                 }else if($toolSlug == ToolNameEnum::ACTIVECAMPAIGN){
                     $accountName         = $accountInfo['metadata']['user']? $accountInfo['metadata']['user']['firstName'].' '.$accountInfo['metadata']['user']['lastName'] :  $accountInfo['account_name'];
+                    $mcUserId            = $accountInfo['mc_user_id'];
+                    $metadata            = $accountInfo['metadata'];
+                    $metadata['api_url'] = $baseApiUrlToUse;
+                }else if($toolSlug == ToolNameEnum::BREVO){
+                    $accountName         = $accountInfo['metadata']? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName'] :  $accountInfo['account_name'];
                     $mcUserId            = $accountInfo['mc_user_id'];
                     $metadata            = $accountInfo['metadata'];
                     $metadata['api_url'] = $baseApiUrlToUse;
@@ -1777,6 +1801,29 @@ class MailchimpOAuthController extends Controller
                     },
                     'error_message_extractor' => function($responseData) {
                         return $responseData['errors'][0]['message'] ?? 'Invalid ActiveCampaign API Key or unable to connect.';
+                    }
+                ];
+            case ToolNameEnum::BREVO:
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.brevo.com/v3/',
+                    'verify_endpoint' => 'account', // Brevo endpoint to get account details
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['api-key' => $apiKey, 'Accept' => 'application/json']];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Brevo account endpoint returns email on success
+                        return isset($responseData['email']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        return [
+                            'mc_user_id' => md5($responseData['email']), // Using email hash as a unique ID
+                            'account_name' => $responseData['companyName'] ?? $responseData['email'],
+                            'account_email' => $responseData['email'],
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Invalid Brevo API Key or unable to connect.';
                     }
                 ];
             
@@ -2068,6 +2115,44 @@ class MailchimpOAuthController extends Controller
                         return $responseData['errors'][0]['message'] ?? 'Failed to fetch ActiveCampaign lists.';
                     }
                 ];
+            case ToolNameEnum::BREVO:
+                return [
+                    'list_endpoint' => 'contacts', // Brevo lists are effectively all contacts or segments
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['api-key' => $apiKey, 'Accept' => 'application/json']];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Brevo returns contacts in a 'contacts' array
+                        return isset($responseData['contacts']) && is_array($responseData['contacts']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        // For Brevo, we'll return a single "All Contacts" list and potentially segments
+                        $lists = [
+                            [
+                                'ID' => 'all_contacts', // A placeholder ID for all contacts
+                                'Name' => 'All Contacts',
+                                'SubscribersCount' => $responseData['count'] ?? count($responseData['contacts']),
+                            ]
+                        ];
+                        // You could also fetch and add segments here if needed
+                        // Example: Fetching lists (folders) from Brevo
+                        // $segmentsResponse = $client->get('contacts/folders', $requestOptions);
+                        // $segmentsData = json_decode($segmentsResponse->getBody()->getContents(), true);
+                        // if (isset($segmentsData['folders'])) {
+                        //     foreach ($segmentsData['folders'] as $folder) {
+                        //         $lists[] = [
+                        //             'ID' => $folder['id'],
+                        //             'Name' => $folder['name'],
+                        //             'SubscribersCount' => $folder['contactsCount'] ?? 0,
+                        //         ];
+                        //     }
+                        // }
+                        return $lists;
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Brevo contacts/lists.';
+                    }
+                ];
             default:
                     return null;
         }
@@ -2132,6 +2217,48 @@ class MailchimpOAuthController extends Controller
                     },
                     'error_message_extractor' => function($responseData) {
                         return $responseData['errors'][0]['message'] ?? 'Failed to fetch ActiveCampaign contacts.';
+                    }
+                ];
+            case ToolNameEnum::BREVO:
+                return [
+                    'subscriber_endpoint' => function ($listId) {
+                        // Brevo API for contacts. If a listId (segmentId) is provided, filter by it.
+                        // Otherwise, fetch all contacts.
+                        if ($listId === 'all_contacts') {
+                            return "contacts";
+                        }
+                        // If it's a specific list/folder ID (segment), you'd typically filter contacts by listId.
+                        // Brevo does not have a direct endpoint like "lists/{id}/contacts".
+                        // You'd fetch all contacts and then filter by 'listIds' property if available, or use a segment endpoint.
+                        // For simplicity, we'll assume 'all_contacts' for now for general import.
+                        // If you need segment-specific import, you'd adjust this logic.
+                        return "contacts";
+                    },
+                    'request_options' => function ($apiKey) {
+                        // Brevo API for contacts supports pagination.
+                        // Defaulting to limit=500 (max) and offset.
+                        return [
+                            'headers' => ['api-key' => $apiKey, 'Accept' => 'application/json'],
+                            'query' => [
+                                'limit' => 500, // Max limit per request
+                                'offset' => 0, // Will be handled by pagination loop
+                            ]
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['contacts']) && is_array($responseData['contacts']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        $emails = [];
+                        foreach ($responseData['contacts'] as $contact) {
+                            if (isset($contact['email'])) {
+                                $emails[] = $contact['email'];
+                            }
+                        }
+                        return $emails;
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Brevo subscribers.';
                     }
                 ];
 

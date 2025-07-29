@@ -15,5 +15,7 @@ class ToolNameEnum {
     CONST GETRESPONSE = 'get response';
     CONST INTERCOM = 'intercom';
     const ACTIVECAMPAIGN='active campaign';
+    const ZOHOCAMPAIGN ='zoho campaign';
+    const BREVO = 'brevo';
 
 }
