@@ -19,6 +19,6 @@ class ToolNameEnum {
     const BREVO = 'brevo';
     const MAILERLITE = 'mailer lite';
     const CONVERTKIT ='convertkit';
+    
     const BENCHMARK ='benchmark';
-
 }

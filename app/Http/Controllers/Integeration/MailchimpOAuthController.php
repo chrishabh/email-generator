@@ -1669,7 +1669,7 @@ class MailchimpOAuthController extends Controller
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
                 $accountInfo  = $config['extract_account_info']($responseData); 
-                $mcUserId     = $apiKey; 
+                $mcUserId     = $apiKey;   
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
                     $mcUserId     = $accountInfo['mc_user_id'];
@@ -1693,9 +1693,9 @@ class MailchimpOAuthController extends Controller
                     $accountName         = $accountInfo['account_name']? $accountInfo['account_name'] : 'ConvertKit Account';
                     $mcUserId            = $accountInfo['mc_user_id'];
                     $metadata            = $accountInfo['metadata'];    
-                }else if($toolSlug == ToolNameEnum::BENCHMARK){
+                }else if($toolSlug == ToolNameEnum::BENCHMARK || $toolSlug == ToolNameEnum::MAILERLITE){
                     $accountName         = $accountInfo['account_name'];
-                    $mcUserId            = $accountInfo['mc_user_id']?? $mcUserId;
+                    $mcUserId            = $accountInfo['mc_user_id']?? hash('sha256', $mcUserId);
                     $metadata            = $accountInfo['metadata'];    
                 }
                 $accountEmail              = $accountInfo['account_email']; 
@@ -1721,12 +1721,13 @@ class MailchimpOAuthController extends Controller
         } catch (ClientException $e) {
             DB::rollBack(); 
             $responseBody = $e->getResponse()->getBody()->getContents();
+             pp($e->getMessage());
             Log::error("API Key verification Guzzle Client error for {$toolSlug}: " . $e->getMessage() . " Response: " . $responseBody);
             $errorMessage = (json_decode($responseBody)->Error->Message ?? $e->getMessage());
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack(); 
-            // pp($e->getMessage());
+            pp($e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
@@ -1837,24 +1838,22 @@ class MailchimpOAuthController extends Controller
             case ToolNameEnum::MAILERLITE: // Added for MailerLite
                 return [
                     'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.mailerlite.com/api/v2/',
-                    'verify_endpoint' => 'me', // MailerLite endpoint to get account details
+                    'verify_endpoint' => 'subscribers', // MailerLite endpoint to get account details
                     'request_options' => function ($apiKey) {
-                        return ['headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json']];
+                        return ['headers' => ['X-MailerLite-ApiKey' => $apiKey, 'Accept' => 'application/json']];
                     },
-                    'success_check' => function ($responseData) {
-                        // MailerLite 'me' endpoint returns 'id' and 'email' on success
-                        return isset($responseData['id']) && isset($responseData['email']);
+                    'success_check' => function ($responseData) { 
+                       return is_array($responseData) && count($responseData) > 0;
                     },
                     'extract_account_info' => function ($responseData) {
                         return [
-                            'mc_user_id' => $responseData['id'], // MailerLite provides an account ID
-                            'account_name' => $responseData['name'] ?? $responseData['email'],
-                            'account_email' => $responseData['email'],
-                            'metadata' => $responseData,
+                            'mc_user_id'    =>  NULL,
+                            'account_name'  => 'Mailerlite Account',
+                            'account_email' => NULL,
+                            'metadata'      => $responseData,
                         ];
                     },
                     'error_message_extractor' => function ($responseData) {
-                        // MailerLite errors often have an 'error' object with 'message'
                         return $responseData['error']['message'] ?? 'Invalid MailerLite API Key or unable to connect.';
                     }
                 ];
@@ -1976,9 +1975,11 @@ class MailchimpOAuthController extends Controller
             $response       = $client->get($config['list_endpoint'], $requestOptions);
             $statusCode     = $response->getStatusCode();
             $responseData   = json_decode($response->getBody()->getContents(), true); 
+            // PP($responseData);
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
             if ($config['success_check']($responseData)) { 
-                $lists = $config['extract_lists']($responseData); 
+                $lists = $config['extract_lists']($responseData);
+                // pp($lists); 
                 return response()->json([
                     'success' => true,
                     'message' => "{$toolName} lists fetched successfully.",
@@ -2247,18 +2248,18 @@ class MailchimpOAuthController extends Controller
                 return [
                     'list_endpoint' => 'groups', // MailerLite uses 'groups' as lists
                     'request_options' => function ($apiKey) {
-                        return ['headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json']];
+                         return ['headers' => ['X-MailerLite-ApiKey' => $apiKey, 'Accept' => 'application/json']];
                     },
                     'success_check' => function ($responseData) {
                         // MailerLite returns groups as a direct array
-                        return is_array($responseData) && !isset($responseData['error']);
+                        return is_array($responseData) && count($responseData) > 0 && !isset($responseData['error']);
                     },
                     'extract_lists' => function ($responseData) {
                         return array_map(function ($group) {
                             return [
-                                'ID' => $group['id'],
-                                'Name' => $group['name'],
-                                'SubscribersCount' => $group['subscribers_count'] ?? 0, // MailerLite groups have subscribers_count
+                                'ID'               => (String)$group['id'], 
+                                'Name'             => $group['name'],
+                                'SubscribersCount' => $group['total'] ?? 0, // MailerLite groups have subscribers_count
                             ];
                         }, $responseData);
                     },
@@ -2455,17 +2456,11 @@ class MailchimpOAuthController extends Controller
                         return "groups/{$listId}/subscribers";
                     },
                     'request_options' => function ($apiKey) {
-                        return [
-                            'headers' => ['Authorization' => "Bearer $apiKey", 'Accept' => 'application/json'],
-                            'query' => [
-                                'limit' => 1000, // MailerLite's default limit is 1000
-                                'offset' => 0, // Will be handled by pagination loop
-                            ]
-                        ];
+                        return ['headers' => ['X-MailerLite-ApiKey' => $apiKey, 'Accept' => 'application/json']];
                     },
-                    'success_check' => function ($responseData) {
+                    'success_check' => function ($responseData) { 
                         // MailerLite returns subscribers as a direct array
-                        return is_array($responseData) && !isset($responseData['error']);
+                        return is_array($responseData) && count($responseData) >= 0 && !isset($responseData['error']);
                     },
                     'extract_subscribers' => function ($responseData) {
                         return array_column($responseData, 'email');

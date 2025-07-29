@@ -499,6 +499,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                     ${item.Name}
                                 </h2>
                             </div>
+                            <div class="w-1/3 text-sm text-gray-600">
+                                Subscribers Count: ${item.SubscribersCount}
+                            </div>
                             <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
                                 <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
                             </div>
