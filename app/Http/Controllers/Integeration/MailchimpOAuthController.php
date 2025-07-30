@@ -253,20 +253,21 @@ class MailchimpOAuthController extends Controller
                 }
             break;
             case ToolNameEnum::ZOHOCAMPAIGN: 
-                $queryBuildArray['client_id']     = $clientId;
-                $queryBuildArray['redirect_uri']  = $redirect_uri;
-                if($is_handle_callback==false){
+                 $queryBuildArray['client_id']   = $clientId;
+                $queryBuildArray['redirect_uri'] = $redirect_uri;
+                if ($is_handle_callback == false) {
                     // Removed 'AaaServer.profile.Read' as it was causing the error
-                    $queryBuildArray['scope']         = 'ZohoCampaigns.campaign.ALL,ZohoCampaigns.contact.ALL'; 
+                    $queryBuildArray['scope']         = 'ZohoCampaigns.campaign.ALL,ZohoCampaigns.contact.ALL,AaaServer.profile.Read';
                     $queryBuildArray['response_type'] = 'code';
                     $queryBuildArray['access_type']   = 'offline'; // For refresh tokens
                     $queryBuildArray['prompt']        = 'consent'; // To ensure consent screen is shown
                     $auth_login_url                   = $auth_login_url;
-                }else{
-                    $queryBuildArray['client_secret']  = $clientSecret;
-                    $queryBuildArray['code']           = $code;
-                    $client = new Client(); 
-                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray,$toolName); 
+                } else {
+                    $queryBuildArray['grant_type']    = 'authorization_code';
+                    $queryBuildArray['client_secret'] = $clientSecret;
+                    $queryBuildArray['code']          = $code;
+                    $client                           = new Client();
+                    $accessToken                      = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
                     return $accessToken;
                 }
             break;
@@ -294,7 +295,7 @@ class MailchimpOAuthController extends Controller
             $response   = $client->post("$token_url", $param);
             $data       = json_decode($response->getBody(), true);
 
-            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT ||  $toolname == ToolNameEnum::AWEBER) { 
+            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT ||  $toolname == ToolNameEnum::AWEBER || $toolname == ToolNameEnum::ZOHOCAMPAIGN) { 
                 return $data;
             } else { 
                 return $data['access_token'];
@@ -302,9 +303,11 @@ class MailchimpOAuthController extends Controller
             return $accessToken;
         } catch (ClientException $e) {
             $responseBody = $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'No response body';
+            // pp($responseBody);
             Log::error("ClientException getting access token for $toolname: " . $e->getMessage() . " Response: " . $responseBody);
             throw $e; // Re-throw to be caught by handleCallback
         } catch (\Exception $e) {
+            // pp($e->getMessage());
             Log::error("Exception getting access token for $toolname: " . $e->getMessage());
             throw $e; // Re-throw to be caught by handleCallback
         }
@@ -328,6 +331,8 @@ class MailchimpOAuthController extends Controller
             $header = ["Authorization"=> "OAuth $accessToken"];
         } elseif ($toolName == ToolNameEnum::DROPBOX || $toolName == ToolNameEnum::GOOGLESHEETS || ToolNameEnum::CONSTANTCONTACT) { // Added Dropbox
             $header = ["Authorization" => "Bearer $accessToken"];
+        }elseif ($toolName == ToolNameEnum::ZOHOCAMPAIGN) {
+            $header = ["Authorization" => "Zoho-oauthtoken $accessToken"];
         }
         try {
             if($toolName == ToolNameEnum::DROPBOX) { 
@@ -344,6 +349,7 @@ class MailchimpOAuthController extends Controller
             $meta = json_decode($metaResponse->getBody(), true);
             return $meta;
         } catch (\Exception $e) {
+            pp($e->getMessage());
             Log::error("Failed to get metadata for $toolName: " . $e->getMessage());
         }
     }
@@ -366,8 +372,9 @@ class MailchimpOAuthController extends Controller
         else if($toolName=='campaignmonitor'){
             $toolName = 'campaign monitor';
         }else if($toolName=='constantcontact'){
-            $toolName = 'constant contact';
-            
+            $toolName = 'constant contact';   
+        }else if($toolName=='zoho'){
+            $toolName = 'zoho campaign';   
         }
         $client = new Client(); 
         try{ 
@@ -376,7 +383,6 @@ class MailchimpOAuthController extends Controller
                 Session::flash('error', "tool not found.");
                return redirect('/tools');
             }
-            pp($tool); 
             if ($tool) {
                 $client                   = new Client(); 
                 $CLIENT_SECRET            = $tool['client_secret'];
@@ -395,7 +401,7 @@ class MailchimpOAuthController extends Controller
                     Session::flash('error', "Failed to retrieve access token for $originalToolName. Please try again.");
                     return redirect('/tools');
                 }
-
+                // pp($accessTokenData);
                 $accessToken  = null;
                 $refreshToken = null;
                 $mc_user_id   = null;
@@ -580,6 +586,27 @@ class MailchimpOAuthController extends Controller
                             return redirect('/tools');
                         }
                     break;
+                    case ToolNameEnum::ZOHOCAMPAIGN:
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        $zohoCampaignsClient = new Client(['base_uri' => $BASE_API_URL]);
+                        $meta = self::getMetadataOfTool($zohoCampaignsClient, $AUTH_METADATA_URL, $accessToken, $toolName);
+                        if (!$meta) {
+                            Session::flash('error', "Failed to retrieve metadata for $originalToolName.");
+                            return redirect('/tools');
+                        } 
+                        // Zoho Campaign user info is typically nested under 'users' or directly in the response
+                        $userInfo    = $meta['users'][0] ?? $meta; // Adjust based on actual Zoho API response structure
+                        $mc_user_id  = $userInfo['ZUID'] ?? null; // Zoho User ID
+                        $accountName = $userInfo['Display_Name'] ?? ($userInfo['First_Name'] . ' ' . $userInfo['Last_Name'] ?? 'Zoho Campaign Account');
+                        $email       = $userInfo['Email'] ?? null;
+                        $mc_dc       = null; // Not applicable for Zoho Campaign in this context
+                        break;
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
                     return redirect('/tools');
@@ -966,6 +993,92 @@ class MailchimpOAuthController extends Controller
                     $emails = array_column($contacts['contacts'], 'email_address');
                     $listId = 'all_contacts'; // Constant Contact doesn't have a single "list" ID like Mailchimp for all contacts. Use a placeholder.
                 break;
+                case ToolNameEnum::ZOHOCAMPAIGN:
+                    $client = new Client([
+                        'base_uri' => $base_api_url,
+                        'headers' => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::ZOHOCAMPAIGN, $accessToken),
+                        'http_errors' => false,
+                    ]);
+                    // pp($accessToken);
+                    // Zoho Campaigns uses 'getmailinglists' to get lists
+                    $response = $client->get('getmailinglists?resfmt=JSON');
+                    $statusCode = $response->getStatusCode(); 
+                    if ($statusCode === 401) {
+                        // Attempt token refresh
+                        if (!empty($integration->mc_refresh_token)) {
+                            $queryBuildArray = [
+                                'grant_type' => 'refresh_token',
+                                'client_id' => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'refresh_token' => $integration->mc_refresh_token,
+                                'redirect_uri' => $urlJson['redirect_url'],
+                            ];
+                            $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
+                            if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
+                                $integration->mc_token = $accessTokenData['access_token'];
+                                $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token;
+                                $integration->save();
+                                $accessToken = $accessTokenData['access_token'];
+
+                                // Retry with new token
+                                $client = new Client([
+                                    'base_uri' => $base_api_url,
+                                    'headers' => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::ZOHOCAMPAIGN, $accessToken),
+                                    'http_errors' => true,
+                                ]);
+                                $response = $client->get('getmailinglists?resfmt=JSON');
+                                $statusCode = $response->getStatusCode();
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token for Zoho Campaign.'
+                                ], 401);
+                            }
+                        } else {
+                            DB::rollBack();
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'No refresh token available for Zoho Campaign. Please re-authenticate.'
+                            ], 401);
+                        }
+                    }
+
+                    if ($statusCode !== 200) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Failed to retrieve Zoho Campaign mailing lists.',
+                            'success' => false,
+                            'error' => $response->getBody()->getContents()
+                        ], $statusCode);
+                    } 
+                    $lists = json_decode($response->getBody(), true); 
+                    if (empty($lists['list_of_details'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No mailing lists found for this Zoho Campaign account.',
+                            'success' => false,
+                            'error' => 'No Zoho Campaign mailing lists available'
+                        ], 404);
+                    }
+
+                    // For simplicity, get subscribers from the first list.
+                    $listId = $lists['list_of_details'][0]['listkey'];
+                   
+                    $subscribersResponse = $client->get("getlistsubscribers?listkey={$listId}&resfmt=JSON");
+                    $subscribers = json_decode($subscribersResponse->getBody(), true);
+                    if (empty($subscribers['list_of_details'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No subscribers found in the selected Zoho Campaign mailing list.',
+                            'success' => false,
+                            'error' => 'No subscribers available in the list'
+                        ], 404);
+                    }
+                    $emails = array_column($subscribers['list_of_details'], 'contact_email');
+                break;
 
                 default:
                     DB::rollBack();
@@ -1014,6 +1127,7 @@ class MailchimpOAuthController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            pp($e->getMessage());
             DB::rollBack(); // Roll back DB transaction on error
             return response()->json([
                 'message' => 'Something went wrong',
@@ -1024,27 +1138,35 @@ class MailchimpOAuthController extends Controller
     }
 
     private static function createClientUrlWithHeadBasedOnTools($toolName,$accessToken){
-        $header = [];
-        if($toolName==ToolNameEnum::MAILCHIMP){
-            $header= [
-                'Authorization' => "OAuth $accessToken",
-                'Accept' => 'application/json',
-            ];
-        }
-        else if($toolName==ToolNameEnum::HUBSPOT){
-            $header= [
-                'Authorization' => "Bearer $accessToken",
-                'Content-Type'  => 'application/json',
+        $headers = [];
+        switch (strtolower($toolName)) {
+            case ToolNameEnum::MAILCHIMP:
+                $headers = [
+                    'Authorization' => "OAuth $accessToken",
+                    'Accept' => 'application/json',
+                ];
+            break;
+            case ToolNameEnum::HUBSPOT:
+                $headers = [
+                    'Authorization' => "Bearer $accessToken",
+                    'Content-Type' => 'application/json',
 
-            ];
+                ];
+            break;
+            case ToolNameEnum::CONSTANTCONTACT: // Added for Constant Contact
+                $headers = [
+                    'Authorization' => "Bearer $accessToken",
+                    'Content-Type' => 'application/json',
+                ];
+            break;
+            case ToolNameEnum::ZOHOCAMPAIGN:
+                $headers = [
+                    'Authorization' => "Zoho-oauthtoken $accessToken",
+                    'Accept' => 'application/json',
+                ];
+            break;
         }
-        else if($toolName==ToolNameEnum::CONSTANTCONTACT){ // Added for Constant Contact
-            $header= [
-                'Authorization' => "Bearer $accessToken",
-                'Content-Type'  => 'application/json',
-            ];
-        }
-        return $header;
+        return $headers;
     }
 
     private static function replaceMailchimpBaseUrl($baseUrl, $dc) {
