@@ -39,7 +39,7 @@ class MailchimpOAuthController extends Controller
         $urls                     = $tool['url'];
         $urls                     = json_decode($urls, true); 
         $MAILCHIMP_REDIRECT_URI   = $urls['redirect_url'];
-        $auth_login_url           = $urls['auth_login_url'];
+        $auth_login_url           = $urls['auth_login_url']; 
         $data                     = self::redirectionToTools($lowercaseofToolName,$MAILCHIMP_CLIENT_ID,$MAILCHIMP_CLIENT_SECRET,$MAILCHIMP_REDIRECT_URI,$auth_login_url);
         if(empty($data)){
             Session::flash('error', 'Invalid tool configuration.');
@@ -89,8 +89,8 @@ class MailchimpOAuthController extends Controller
 
         if (!$clientId || !$redirect_uri || !$auth_login_url) {
             return;
-        }
-         
+        } 
+
         switch (strtolower($toolName)) {
             case  ToolNameEnum::MAILCHIMP:
                 if($is_handle_callback==false){ 
@@ -179,20 +179,21 @@ class MailchimpOAuthController extends Controller
                 }
             break;
             case ToolNameEnum::CAMPAIGNMONITOR:
-                $queryBuildArray['client_id']    = $clientId;
+                $queryBuildArray['client_id'] = $clientId;
                 $queryBuildArray['redirect_uri'] = $redirect_uri;
                 if ($is_handle_callback == false) {
-                    $queryBuildArray['scope']         = 'ManageLists,ImportSubscribers,ViewSubscribersInReports';
+                    $queryBuildArray['scope'] = 'ManageLists,ImportSubscribers,ViewSubscribersInReports';
                     $queryBuildArray['response_type'] = 'code';
-                    $auth_login_url                   = $auth_login_url;
+                    $auth_login_url = $auth_login_url;
                 } else {
-                    $queryBuildArray['grant_type']     = 'authorization_code';
-                    $queryBuildArray['client_secret']  = $clientSecret;
-                    $queryBuildArray['code']           = $code;
-                    $client                            = new Client();
-                    $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    $queryBuildArray['grant_type'] = 'authorization_code';
+                    $queryBuildArray['client_secret'] = $clientSecret;
+                    $queryBuildArray['code'] = $code;
+                    $client = new Client();
+                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
                     return $accessToken;
                 }
+                break;
             break;
             case ToolNameEnum::AWEBER:
                 $queryBuildArray['client_id']     = $clientId;
@@ -325,14 +326,20 @@ class MailchimpOAuthController extends Controller
     private static function getMetadataOfTool($client, $metadata_url, $accessToken,$toolName =''){
         
         $header = [];
-        if($toolName== ToolNameEnum::HUBSPOT){
-            $header = ["Authorization"=> "Bearer $accessToken"];
-        }elseif($toolName== ToolNameEnum::MAILCHIMP){
-            $header = ["Authorization"=> "OAuth $accessToken"];
-        } elseif ($toolName == ToolNameEnum::DROPBOX || $toolName == ToolNameEnum::GOOGLESHEETS || ToolNameEnum::CONSTANTCONTACT) { // Added Dropbox
-            $header = ["Authorization" => "Bearer $accessToken"];
-        }elseif ($toolName == ToolNameEnum::ZOHOCAMPAIGN) {
-            $header = ["Authorization" => "Zoho-oauthtoken $accessToken"];
+        switch ($toolName) {
+            case ToolNameEnum::DROPBOX:
+            case ToolNameEnum::GOOGLESHEETS:
+            case ToolNameEnum::CONSTANTCONTACT:
+            case ToolNameEnum::CAMPAIGNMONITOR: 
+            case ToolNameEnum::HUBSPOT: 
+                $header = ["Authorization" => "Bearer $accessToken"];
+            break;
+            case ToolNameEnum::MAILCHIMP:
+                $header = ["Authorization"=> "OAuth $accessToken"];
+            break;
+            case ToolNameEnum::ZOHOCAMPAIGN:
+                $header = ["Authorization" => "Zoho-oauthtoken $accessToken"];
+            break; 
         }
         try {
             if($toolName == ToolNameEnum::DROPBOX) { 
@@ -906,8 +913,8 @@ class MailchimpOAuthController extends Controller
                     // In a production app, you might offer a selection of lists.
                     $listId              = $lists[0]['ListID'];
                     $subscribersResponse = $client->get('lists/' . $listId . '/active.json?pagesize=1000'); // Fetch active subscribers
-                    $subscribers         = json_decode($subscribersResponse->getBody(), true);
-
+                    $subscribers         = json_decode($subscribersResponse->getBody(), true); 
+                    
                     if (empty($subscribers['Results'])) {
                         DB::rollBack();
                         return response()->json([
