@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor'];
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip'];
         const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark']
         data.data.forEach(integration => {
             const item = document.createElement('div');
@@ -669,7 +669,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             $('#preloader').fadeIn()
             const response = await axios.get(getUrl());
-             $('#preloader').fadeOut();
             if (!response.data.success) {
                 notyf.error(response.data.error || 'Error fetching available integrations');
                 $('#preloader').fadeIn()
@@ -680,7 +679,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 ImportEmailsModal.classList.add('hidden');
                 location.href = '/bulk';  
-            }, 2000);
+                $('#preloader').fadeOut();
+            }, 1000);
             // else if(response.data.success){
             //      $('#preloader').fadeIn()
             //     notyf.success(response.data.message || 'Data imported successfully!'); 

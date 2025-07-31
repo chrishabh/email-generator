@@ -272,6 +272,21 @@ class MailchimpOAuthController extends Controller
                     return $accessToken;
                 }
             break;
+            case ToolNameEnum::DRIP: // Added for Drip
+                $queryBuildArray['client_id'] = $clientId;
+                $queryBuildArray['redirect_uri'] = $redirect_uri;
+                if ($is_handle_callback == false) {
+                    $queryBuildArray['response_type'] = 'code'; 
+                    $auth_login_url = $auth_login_url;
+                } else {
+                    $queryBuildArray['grant_type'] = 'authorization_code';
+                    $queryBuildArray['client_secret'] = $clientSecret;
+                    $queryBuildArray['code'] = $code;
+                    $client = new Client();
+                    $accessToken = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
+                    return $accessToken;
+                }
+            break;
             default:
                 return;
         }
@@ -296,7 +311,7 @@ class MailchimpOAuthController extends Controller
             $response   = $client->post("$token_url", $param);
             $data       = json_decode($response->getBody(), true);
 
-            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT ||  $toolname == ToolNameEnum::AWEBER || $toolname == ToolNameEnum::ZOHOCAMPAIGN) { 
+            if ($toolname == ToolNameEnum::HUBSPOT || $toolname == ToolNameEnum::DROPBOX ||  $toolname == ToolNameEnum::GOOGLESHEETS || $toolname == ToolNameEnum::CAMPAIGNMONITOR ||ToolNameEnum::CONSTANTCONTACT ||  $toolname == ToolNameEnum::AWEBER || $toolname == ToolNameEnum::ZOHOCAMPAIGN | $toolname == ToolNameEnum::DRIP) { 
                 return $data;
             } else { 
                 return $data['access_token'];
@@ -332,6 +347,7 @@ class MailchimpOAuthController extends Controller
             case ToolNameEnum::CONSTANTCONTACT:
             case ToolNameEnum::CAMPAIGNMONITOR: 
             case ToolNameEnum::HUBSPOT: 
+            case ToolNameEnum::DRIP:
                 $header = ["Authorization" => "Bearer $accessToken"];
             break;
             case ToolNameEnum::MAILCHIMP:
@@ -613,7 +629,40 @@ class MailchimpOAuthController extends Controller
                         $accountName = $userInfo['Display_Name'] ?? ($userInfo['First_Name'] . ' ' . $userInfo['Last_Name'] ?? 'Zoho Campaign Account');
                         $email       = $userInfo['Email'] ?? null;
                         $mc_dc       = null; // Not applicable for Zoho Campaign in this context
-                        break;
+                    break;
+                    case ToolNameEnum::DRIP: // Handle Drip callback
+                    if (isset($accessTokenData['access_token'])) {
+                        $accessToken = $accessTokenData['access_token'];
+                        $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                    } else {
+                        Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                        return redirect('/tools');
+                    }
+                    try {
+                        $dripClient = new Client([
+                            'base_uri' => $BASE_API_URL,
+                            'headers' => ['Authorization' => "Bearer $accessToken"],
+                        ]);
+
+                        $accountsResponse = $dripClient->get('accounts');
+                        $accounts = json_decode($accountsResponse->getBody(), true);
+
+                        if (empty($accounts['accounts']) || !isset($accounts['accounts'][0])) {
+                            Session::flash('error', "No Drip accounts found for this user.");
+                            return redirect('/tools');
+                        } 
+                        $primaryAccount = $accounts['accounts'][0];
+                        $mc_user_id     = $primaryAccount['id'];
+                        $accountName    = $primaryAccount['name'] ?? 'Drip Account';
+                        $email          = null;
+                        $mc_dc          = null;
+                        $meta           = $primaryAccount;
+                    } catch (\Exception $e) {
+                        Log::error("Failed to retrieve Drip account data: " . $e->getMessage());
+                        Session::flash('error', "Failed to retrieve Drip account data. " . $e->getMessage());
+                        return redirect('/tools');
+                    }
+                    break;
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
                     return redirect('/tools');
@@ -1086,7 +1135,77 @@ class MailchimpOAuthController extends Controller
                     }
                     $emails = array_column($subscribers['list_of_details'], 'contact_email');
                 break;
+                case ToolNameEnum::DRIP: // Fetch Drip subscribers
+                    $client = new Client([
+                        'base_uri' => $base_api_url,
+                        'headers' => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::DRIP, $accessToken),
+                        'http_errors' => false,
+                    ]);
 
+                    $response = $client->get($integration->mc_user_id . '/subscribers');
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode === 401) {
+                        if (!empty($integration->mc_refresh_token)) {
+                            $queryBuildArray = [
+                                'grant_type' => 'refresh_token',
+                                'client_id' => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'refresh_token' => $integration->mc_refresh_token,
+                            ];
+                            $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
+
+                            if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
+                                $integration->mc_token = $accessTokenData['access_token'];
+                                $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token;
+                                $integration->save();
+                                $accessToken = $accessTokenData['access_token'];
+
+                                $client = new Client([
+                                    'base_uri' => $base_api_url,
+                                    'headers' => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::DRIP, $accessToken),
+                                    'http_errors' => true,
+                                ]);
+                                $response   = $client->get($integration->mc_user_id . '/subscribers');
+                                $statusCode = $response->getStatusCode();
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token for Drip.'
+                                ], 401);
+                            }
+                        } else {
+                            DB::rollBack();
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'No refresh token available for Drip. Please re-authenticate.'
+                            ], 401);
+                        }
+                    }
+
+                    if ($statusCode !== 200) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Failed to retrieve Drip campaigns.',
+                            'success' => false,
+                            'error' => $response->getBody()->getContents()
+                        ], $statusCode);
+                    }
+
+                    $campaigns = json_decode($response->getBody(), true); 
+                    $listId    = NULL;
+                    if (empty($campaigns['subscribers'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No subscribers found in the selected Drip campaign.',
+                            'success' => false,
+                            'error' => 'No subscribers available in the campaign'
+                        ], 404);
+                    } 
+                    $emails = array_column($campaigns['subscribers'], 'email');
+                    break;
                 default:
                     DB::rollBack();
                     return response()->json(['success' => false, 'message' => 'Unsupported tool for email validation.', 'error' => 'Unsupported tool'], 400);
@@ -1154,6 +1273,7 @@ class MailchimpOAuthController extends Controller
                 ];
             break;
             case ToolNameEnum::HUBSPOT:
+            case ToolNameEnum::DRIP:
                 $headers = [
                     'Authorization' => "Bearer $accessToken",
                     'Content-Type' => 'application/json',
