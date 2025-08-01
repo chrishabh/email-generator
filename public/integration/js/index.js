@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'zoho crm','constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip'];
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip'];
         const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark']
         data.data.forEach(integration => {
             const item = document.createElement('div');
