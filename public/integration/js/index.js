@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let currentModalPage = 1;
     let lastModalPage = lastPage = 1;
-    let itemsPerPage = 10;
+    let itemsPerPage = 20;
 
     const fetchIntegrations = async () => {
         try {
