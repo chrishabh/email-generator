@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip'];
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets'];
         const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark']
         data.data.forEach(integration => {
             const item = document.createElement('div');
@@ -392,6 +392,27 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h2 class="text-[15px] font-bold">${item.name}</h2>
                             <span class="block text-sm text-gray-600">Size: ${fileSizeDisplay}</span>
                             <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.id}','${item.name}','${item.path_display}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
+                        </div>`
+                }
+            },
+            google_sheets:{
+                apiEndpoint : `/get-listing-file-dropbox?userId=${userId}&toolName=${toolName}&toolId=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image : '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer :(item,image) =>{
+                    // const fileSizeKB      = (item.size / 1024).toFixed(2); // Size in KB
+                    // const fileSizeDisplay = fileSizeKB > 1024 ? `${(fileSizeKB / 1024).toFixed(2)} MB` : `${fileSizeKB} KB`;
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/5 pr-2"> 
+                                <img class="w-7" src="${image}" />
+                            </div> 
+                            <div class="w-1/2 pr-2"> 
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">${item.name}</h2> 
+                            </div>   
+                            <div class="w-1/6 text-sm text-gray-600">
+                                <button onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.id}','${item.name}','${item.path_display}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>  
                         </div>`
                 }
             },
@@ -655,6 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const lowerToolName     = normalizeToolName(toolName);
         const importConfitMap = {
             dropbox: ()=> `/import-integeration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
+            google_sheets: ()=> `/import-integeration-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&fileId=${$fileId}&fileName=${$fileName}&filePath=${$filePath}`,
             get_response: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             moosend: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             active_campaign: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
