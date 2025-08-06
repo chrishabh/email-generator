@@ -2484,7 +2484,7 @@ class MailchimpOAuthController extends Controller
             $responseData = json_decode($testResponse->getBody()->getContents(), true);
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
-                $accountInfo  = $config['extract_account_info']($responseData); 
+                $accountInfo  = $config['extract_account_info']($responseData);  
                 $mcUserId     = $apiKey;   
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
@@ -2513,6 +2513,10 @@ class MailchimpOAuthController extends Controller
                     $accountName         = $accountInfo['account_name'];
                     $mcUserId            = $accountInfo['mc_user_id']?? hash('sha256', $mcUserId);
                     $metadata            = $accountInfo['metadata'];    
+                }else if ($toolSlug == ToolNameEnum::GIST) { // Added for Gist
+                    $accountName  = $accountInfo['account_name'];
+                    $mcUserId     = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);
+                    $metadata     = $accountInfo['metadata']; 
                 }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
@@ -2554,7 +2558,7 @@ class MailchimpOAuthController extends Controller
         switch ($toolSlug) {
             case ToolNameEnum::MOOSEND:
                 return [
-                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.moosend.com/v3/',
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.moosend.com/',
                     'verify_endpoint' => 'lists.json', // Changed to lists.json
                     'request_options' => function($apiKey) {
                         return ['query' => ['apikey' => $apiKey]];
@@ -2732,7 +2736,28 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Message'] ?? 'Invalid Benchmark API Key or unable to connect. Please check your API key.';
                     }
                 ];
-            
+            case ToolNameEnum::GIST: // Added for Gist
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.getgist.com/',
+                    'verify_endpoint' => 'segments', // Gist endpoint to get current user/account details
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Bearer $apiKey"]];
+                    },
+                    'success_check' => function ($responseData) { 
+                       return isset($responseData['segments']) && is_array($responseData['segments']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        return [
+                            'mc_user_id'     => null, // Using a hash of the API key as a unique identifier
+                            'account_name'   => 'Gist Account', // Generic name as user details aren't directly available here
+                            'account_email'  => null, // Email not directly available from segments endpoint
+                            'metadata'       => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Invalid Gist API Key or unable to connect. Please check your API key.';
+                    }
+                ];
             default:
             return null;
         }
@@ -2795,7 +2820,6 @@ class MailchimpOAuthController extends Controller
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
             if ($config['success_check']($responseData)) { 
                 $lists = $config['extract_lists']($responseData);
-                // pp($lists); 
                 return response()->json([
                     'success' => true,
                     'message' => "{$toolName} lists fetched successfully.",
@@ -3152,7 +3176,32 @@ class MailchimpOAuthController extends Controller
                         return $responseData['Message'] ?? 'Failed to fetch Benchmark lists.';
                     }
                 ];
-
+            case ToolNameEnum::GIST: // Added for Gist
+                return [
+                    'list_endpoint' => 'segments/?include_count=true', // Gist endpoint for segments (which function as lists)
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Token {$apiKey}"]];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Gist returns segments in a 'segments' array
+                        return isset($responseData['segments']) && is_array($responseData['segments']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($segment) {
+                            return [
+                                'ID'               => $segment['id'],
+                                'Name'             => $segment['name'],
+                                'SubscribersCount' => $segment['count'] ?? 0, // Gist segments have contacts_count
+                            ];
+                        }, $responseData['segments'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Gist segments.';
+                    }
+                ];
+            
+            
+            
             default:
                     return null;
         }
@@ -3343,6 +3392,29 @@ class MailchimpOAuthController extends Controller
                     }
                 ];
 
+            case ToolNameEnum::GIST: // Added for Gist
+                return [
+                    'subscriber_endpoint' => function ($segmentId) {
+                        // Gist API for contacts within a segment
+                        if ($segmentId === 'all_contacts') {
+                            return "contacts"; // Endpoint to get all contacts
+                        }
+                        return "contacts?segment_id={$segmentId}"; // Endpoint for contacts in a specific segment
+                    },
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Token {$apiKey}"]];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Gist returns contacts in a 'contacts' array
+                        return isset($responseData['contacts']) && is_array($responseData['contacts']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        return array_column($responseData['contacts'] ?? [], 'email');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Gist subscribers.';
+                    }
+                ]; 
             default:
                 return null;
         }

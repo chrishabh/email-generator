@@ -84,10 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="w-[15%]"><button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
                          
                         <div class="relative inline-block text-left w-[5%]">
-                            <button onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
+                            <button id="toggleDropdown" onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
                             <div id="${dropdownId}" class="absolute right-0 z-10 mt-2 w-[14em] origin-top-right bg-white border border-gray-200 rounded-md shadow-lg hidden">
                                 <div class="py-1">
-                                    <button onclick="removeIntegration('${integration.id}', this)" class="w-full text-left px-2 py-2 text-sm text-gray-900 hover:text-gray-600">
+                                    <button id="removeIntegration" onclick="removeIntegration('${integration.id}', this)" class="w-full text-left px-2 py-2 text-sm text-gray-900 hover:text-gray-600">
                                         🔗 Remove Integration
                                     </button>
                                 </div>
@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets'];
-        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark']
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist'];
+        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
@@ -574,6 +574,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`
                 }
                 
+            },
+            gist:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.SubscribersCount === 0;
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/3 text-sm text-gray-600">
+                                Contact Count: ${item.SubscribersCount}
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${item.Name}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
             }
 
         }
@@ -645,8 +669,8 @@ document.addEventListener('DOMContentLoaded', () => {
             text: "You won't be able to undo this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: 'red',
+            confirmButtonColor: 'red',
+            cancelButtonColor: 'grey',
             confirmButtonText: 'Yes, delete it!',
             reverseButtons: true
         }).then((result) => {
@@ -665,6 +689,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     $('#preloader').fadeOut()
                 });
         }
+        const dropdown = document.getElementById('dropdown-'.id);
+        if (dropdown) {
+            dropdown.classList.toggle('hidden');
+        } 
     })
     }
 
@@ -684,6 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mailer_lite: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             convertkit: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             benchmark: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            gist: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
@@ -761,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             moosendApiModal.classList.add('hidden');
             $('#preloader').fadeIn();
-            let query = `/tool-connection-based-on-api-key?api_key=${apiKey}&tool_name=${toolName}&tool_id=${toolId}`;
+            let query = `/tool-connection-based-on-api-key?api_key=${encodeURIComponent(apiKey)}&tool_name=${toolName}&tool_id=${toolId}`;
             if (toolName.trim().toLowerCase() === 'active campaign' && apiUrl) {
                 query += `&api_url=${apiUrl}`;
             }

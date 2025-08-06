@@ -21,4 +21,5 @@ class ToolNameEnum {
     const CONVERTKIT ='convertkit';
     const BENCHMARK ='benchmark';
     const DRIP='drip';
+    const GIST ='gist';
 }

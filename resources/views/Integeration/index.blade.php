@@ -6,9 +6,14 @@
 @section('main-section')
     @push('styles')
         <style>
-            #custom-api-section button:focus,#ImportEmails button:focus {
+            #custom-api-section button:focus:not(#toggleDropdown):not(#removeIntegration),
+            #ImportEmails button:focus:not(#toggleDropdown):not(#removeIntegration) {
                 outline: none;
                 background-color: #2a3898 !important;
+            }
+            #removeIntegration:focus {
+            background-color: #f0f0f0 !important;
+            outline: none;
             }
             #importCloseModal button:focus{
                 outline: none;
