@@ -2484,7 +2484,7 @@ class MailchimpOAuthController extends Controller
             $responseData = json_decode($testResponse->getBody()->getContents(), true);
             // Check for success based on tool-specific logic
             if ($config['success_check']($responseData)) {
-                $accountInfo  = $config['extract_account_info']($responseData);  
+                $accountInfo  = $config['extract_account_info']($responseData);
                 $mcUserId     = $apiKey;   
                 if( $toolSlug == ToolNameEnum::GETRESPONSE){
                     $accountName  = $accountInfo['metadata']['companyName'] ? $accountInfo['metadata']['companyName']  : ($accountInfo['metadata']['firstName'] ? $accountInfo['metadata']['firstName'].' '.$accountInfo['metadata']['lastName']:nULL);
@@ -2516,6 +2516,11 @@ class MailchimpOAuthController extends Controller
                 }else if ($toolSlug == ToolNameEnum::GIST) { // Added for Gist
                     $accountName  = $accountInfo['account_name'];
                     $mcUserId     = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);
+                    $metadata     = $accountInfo['metadata']; 
+                }
+                else if ($toolSlug == ToolNameEnum::MAILGUN) { // Added for Mailgun
+                    $accountName  = $accountInfo['account_name'];
+                    $mcUserId     = $accountInfo['mc_user_id'] ?? hash('sha256', $mcUserId);;
                     $metadata     = $accountInfo['metadata']; 
                 }
                 $accountEmail              = $accountInfo['account_email']; 
@@ -2758,6 +2763,36 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Invalid Gist API Key or unable to connect. Please check your API key.';
                     }
                 ];
+
+            case ToolNameEnum::MAILGUN: // Added for Mailgun
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.mailgun.net/v3/', // Default to US region
+                    'verify_endpoint' => 'domains', // Endpoint to list domains
+                    'request_options' => function ($apiKey) {
+                        return ['auth' => ['api', $apiKey]]; // Mailgun uses Basic Auth with 'api' as username
+                    },
+                    'success_check' => function ($responseData) {
+                        // Mailgun returns domains in an 'items' array
+                        return isset($responseData['items']) && is_array($responseData['items']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        // Extract account info. Mailgun doesn't have a direct 'account' endpoint like some others.
+                        // We'll use the first domain's name as a proxy for account name if available, or a generic name.
+                        $accountName = 'Mailgun Account';
+                        if (!empty($responseData['items'])) {
+                            $accountName = $responseData['items'][0]['name'] ?? $accountName;
+                        }
+                        return [
+                            'mc_user_id' =>  NULL, // Use hash of API key as unique ID
+                            'account_name' => $accountName,
+                            'account_email' => null, // Email not directly available from domains endpoint
+                            'metadata' => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Invalid Mailgun API Key or unable to connect. Please check your API key and ensure the correct region API URL is used.';
+                    }
+                ];
             default:
             return null;
         }
@@ -2816,10 +2851,9 @@ class MailchimpOAuthController extends Controller
             $response       = $client->get($config['list_endpoint'], $requestOptions);
             $statusCode     = $response->getStatusCode();
             $responseData   = json_decode($response->getBody()->getContents(), true); 
-            // PP($responseData);
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
             if ($config['success_check']($responseData)) { 
-                $lists = $config['extract_lists']($responseData);
+                $lists = $config['extract_lists']($responseData); 
                 return response()->json([
                     'success' => true,
                     'message' => "{$toolName} lists fetched successfully.",
@@ -2830,12 +2864,12 @@ class MailchimpOAuthController extends Controller
                 return response()->json(['success' => false, 'error' => $errorMessage], $statusCode);
             }
 
-        } catch (ClientException $e) {
+        } catch (ClientException $e) { 
             $responseBody = $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'No response body';
             Log::error("{$toolName} fetch listing ClientException: " . $e->getMessage() . " Response: " . $responseBody);
             $errorMessage = json_decode($responseBody, true)['Error']['Message'] ?? $e->getMessage();
             return response()->json(['success' => false, 'error' => "API call failed: " . $errorMessage], $e->getCode());
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { 
             Log::error("Error in fetchApiKeyBasedListing for {$toolName}: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while fetching lists.'], 500);
         }
@@ -3199,11 +3233,33 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch Gist segments.';
                     }
                 ];
+            case ToolNameEnum::MAILGUN: // Added for Mailgun
+                return [
+                    'list_endpoint' => 'lists', // Mailgun endpoint for mailing lists
+                    'request_options' => function ($apiKey) {
+                        return ['auth' => ['api', $apiKey]]; // Mailgun uses Basic Auth
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['items']) && is_array($responseData['items']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($list) {
+                            return [
+                                'ID' => $list['address'], // Use address as ID for mailing lists
+                                'Name' => $list['name'] ?? $list['address'],
+                                'SubscribersCount' => $list['members_count'] ?? 0,
+                            ];
+                        }, $responseData['items'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Mailgun mailing lists.';
+                    }
+                ];
             
             
             
             default:
-                    return null;
+                return null;
         }
     }
 
@@ -3415,6 +3471,26 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch Gist subscribers.';
                     }
                 ]; 
+
+            case ToolNameEnum::MAILGUN: // Added for Mailgun
+                return [
+                    'subscriber_endpoint' => function ($domain) {
+                        // Mailgun API for members within a mailing list (domain)
+                        return "lists/$domain/members";
+                    },
+                    'request_options' => function ($apiKey) {
+                        return ['auth' => ['api', $apiKey]]; // Mailgun uses Basic Auth
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['items']) && is_array($responseData['items']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        return array_column($responseData['items'] ?? [], 'address');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Mailgun subscribers.';
+                    }
+                ];
             default:
                 return null;
         }

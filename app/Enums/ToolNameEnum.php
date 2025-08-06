@@ -22,4 +22,5 @@ class ToolNameEnum {
     const BENCHMARK ='benchmark';
     const DRIP='drip';
     const GIST ='gist';
+    const MAILGUN = 'mailgun';
 }

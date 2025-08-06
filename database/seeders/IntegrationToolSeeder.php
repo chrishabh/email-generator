@@ -28,7 +28,7 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'active_campaign.svg', 'name' => 'Active Campaign', 'slug' => 'active campaign'],
             ['icon' => 'getresponse.png', 'name' => 'Get Response', 'slug' => 'get response', 'url' => json_encode(['base_api_url' => 'https://api.getresponse.com/v3/'])],
             ['icon' => 'brevo.png', 'name' => 'Brevo', 'slug' => 'brevo' ,'url' => json_encode(['base_api_url' => 'https://api.brevo.com/v3/'])],
-            ['icon' => 'mailgun.png', 'name' => 'Mailgun', 'slug' => 'mailgun'],
+            ['icon' => 'mailgun.png', 'name' => 'Mailgun', 'slug' => 'mailgun','url' => json_encode(['base_api_url' => 'https://api.mailgun.net/v3/'])],
             ['icon' => 'moosend.png', 'name' => 'Moosend', 'slug' => 'moosend','url' => json_encode(['base_api_url' => 'https://api.moosend.com/v3/'])],
             ['icon' => 'zohocampaign.png', 'name' => 'Zoho Campaign', 'slug' => 'zoho campaign', 'client_id' => env('ZOHO_CAMPAIGN_CLIENT_ID'), 'client_secret' => env('ZOHO_CAMPAIGN_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => (strtolower(env('APP_ENV')) === 'Production') ? 'https://bouncee.net/zoho/callback':'https://bouncee.net/zoho/callback','auth_login_url' => 'https://accounts.zoho.in/oauth/v2/auth','auth_token_url' => 'https://accounts.zoho.in/oauth/v2/token','auth_metadata_url' => 'https://accounts.zoho.in/oauth/user/info','base_api_url' => 'https://campaigns.zoho.in/api/v1.1/'])],
             ['icon' => 'mailerlite.png', 'name' => 'Mailer Lite', 'slug' => 'mailer lite','url' => json_encode(['base_api_url' => 'https://api.mailerlite.com/api/v2/'])],
