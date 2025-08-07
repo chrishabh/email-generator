@@ -69,7 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
             integrationsList.classList.add(...['bg-white','rounded-lg','shadow','p-4']);
             lastPage = data.lastPage || 1;
             data.data.forEach(integration => {
-                const card       = document.createElement('div');
+                const card            = document.createElement('div');
+                let OpenModalImport = null;
+
+                if(integration.tool.name.toLowerCase() === 'web engage'){ 
+                    OpenModalImport = `ImportData('${integration.tool.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}','webengage')`
+                }else{
+                   OpenModalImport =  `openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')`
+                }
                 const dropdownId = `dropdown-${integration.id}`;
                 card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
                 card.innerHTML = ` 
@@ -81,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                         <div class="text-[sm] font-700 w-[30%] truncate">${integration.name?integration.name:integration.service_name}${integration.emails ? `- ${integration.emails}` :''}</div>
                         <div class="w-[10%] text-sm uppercase text-green-800 font-semibold">${integration.status==='verified' ?'active' :' N/A '}</div>
-                        <div class="w-[15%]"><button onclick="openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
+                        <div class="w-[15%]"><button onclick="${OpenModalImport}" class="bg-[#3F51B5] hover:bg-[#2a3898] text-white px-4 py-2 rounded shadow-xl">Select</button></div>
                          
                         <div class="relative inline-block text-left w-[5%]">
                             <button id="toggleDropdown" onclick="toggleDropdownMenu('${dropdownId}')" class="text-xl px-2 py-1 hover:bg-gray-300 rounded-full">&#8942;</button>
@@ -206,8 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun'];
-        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun']
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage'];
+        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun','web engage']
         data.data.forEach(integration => {
             const item = document.createElement('div');
             item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
@@ -215,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const isModalOpen = isModalOpenedForApiKey.includes(integration.name.toLowerCase());
             let onclickAction = ''
     
-            if(isActive && isModalOpen){
+            if(isActive && isModalOpen && integration.name.toLowerCase()){
                 onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
             }else if(isActive){
                 onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
@@ -738,6 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
             benchmark: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             gist: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             mailgun: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            web_engage: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
@@ -793,6 +801,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show API URL input only for "active campaign"
         if (name.trim().toLowerCase() === 'active campaign') {
             apiUrlDiv.classList.remove('hidden');
+            apiUrlInput.placeholder = 'Enter your ActiveCampaign API URL';
+        }else if(name.trim().toLowerCase() === 'web engage'){
+            apiUrlDiv.classList.remove('hidden');
+            const apiUrlLabel     = apiUrlDiv.querySelector('label');
+            apiUrlLabel.innerText = 'Licence Key:';
+            apiUrlInput.placeholder = 'Enter your WebEngage License';
         } else {
             apiUrlDiv.classList.add('hidden');
         }
@@ -807,16 +821,16 @@ document.addEventListener('DOMContentLoaded', () => {
             notyf.error('API Key cannot be empty.');
             return;
         } 
-        if(toolName.trim().toLowerCase() === 'active campaign' && !apiUrl) {
-            notyf.error('API URL cannot be empty for Active Campaign.'); 
+        if(toolName.trim().toLowerCase() === 'active campaign' || toolName.trim().toLowerCase() === 'web engage' && !apiUrl) {
+
+            notyf.error(`API ${toolName==='web engage'? 'license':'URL'} cannot be empty for ${toolName}`); 
             return
         }
-
         try {
             moosendApiModal.classList.add('hidden');
             $('#preloader').fadeIn();
             let query = `/tool-connection-based-on-api-key?api_key=${encodeURIComponent(apiKey)}&tool_name=${toolName}&tool_id=${toolId}`;
-            if (toolName.trim().toLowerCase() === 'active campaign' && apiUrl) {
+            if (toolName.trim().toLowerCase() === 'active campaign' || toolName.trim().toLowerCase() === 'web engage' && apiUrl) {
                 query += `&api_url=${apiUrl}`;
             }
             result  = await makeApiHit(query)

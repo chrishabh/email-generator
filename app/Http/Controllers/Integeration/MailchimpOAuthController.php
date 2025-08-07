@@ -2434,7 +2434,7 @@ class MailchimpOAuthController extends Controller
             'api_key'   => 'required|string',
             'tool_id'   => 'required|integer',
             'tool_name' => 'required|string', // This should be the tool's slug (e.g., 'moosend')
-            'api_url'   => 'nullable|url',
+            'api_url'   => 'nullable'
         ]);
         if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->errors()->first(), 'message' => 'Validation error'], 400);
@@ -2453,7 +2453,7 @@ class MailchimpOAuthController extends Controller
                 DB::rollBack();
                 return response()->json(['success' => false,'message'=>'Tool not found or mismatched.', 'error' => 'Tool not found or mismatched.'], 404);
             } 
-            $urlJson = json_decode($tool->url, true); 
+            $urlJson = json_decode($tool->url, true);
             $config  = $this->getApiKeyVerificationConfig($toolSlug, $urlJson);
             if (!$config) {
                 DB::rollBack();
@@ -2466,13 +2466,30 @@ class MailchimpOAuthController extends Controller
                 DB::rollBack();
                 return response()->json(['success' => false, 'error' => "{$tool->name} API URL is required.",'message'=>"{$tool->name} API URL is required."], 400);
             }
+            // Handle WebEngage specific requirement for license code in URL
+            if ($toolSlug === ToolNameEnum::WEBENGAGE) {//apiUrl = license key
+                if (empty($apiUrl)) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'error' => "WebEngage License Code is required.",'message'=>"WebEngage License Code is required."], 400);
+                }
+                // Append license code to the base API URL
+                $baseApiUrlToUse =  $baseApiUrlToUse . "accounts/{$apiUrl}/";
+            }
 
             // Check if an integration with this API key already exists for the user and tool
             $existingIntegration = Integration::where('user_id', $userId)->where('tool_id', $toolId)->where('service_name', $toolSlug)->where('mc_token', $apiKey)->first();
 
             if ($existingIntegration) {
-                DB::rollBack();
-                return response()->json(['success' => false, 'error' => "This {$tool->name} account is already connected with this API key."], 409); // 409 Conflict
+                if ($toolSlug === ToolNameEnum::WEBENGAGE) {
+                    $existingMetadata = json_decode($existingIntegration->metadata, true);
+                    if (isset($existingMetadata['license_code']) && $existingMetadata['license_code'] === $apiUrl) {
+                        DB::rollBack();
+                        return response()->json(['success' => false, 'error' => "This {$tool->name} account with this License Code is already connected with this API key."], 409); // 409 Conflict
+                    }else{
+                        DB::rollBack();
+                        return response()->json(['success' => false, 'error' => "This {$tool->name} account is already connected with this API key."], 409); // 409 Conflict
+                    }
+                }
             }
 
             $client         = new Client();
@@ -2520,8 +2537,19 @@ class MailchimpOAuthController extends Controller
                 }
                 else if ($toolSlug == ToolNameEnum::MAILGUN) { // Added for Mailgun
                     $accountName  = $accountInfo['account_name'];
+                    $mcUserId     = $accountInfo['mc_user_id'] ?? hash('sha256', $mcUserId);
+                    $metadata     = $accountInfo['metadata']; 
+                }
+                else if ($toolSlug == ToolNameEnum::WEBENGAGE) { // Added for Mailgun
+                    $accountName  = $accountInfo['account_name'];
                     $mcUserId     = $accountInfo['mc_user_id'] ?? hash('sha256', $mcUserId);;
                     $metadata     = $accountInfo['metadata']; 
+
+                    $accountName              = $accountInfo['account_name'];
+                    $mcUserId                 = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);// Use license code as mc_user_id
+                    $metadata                 = $accountInfo['metadata'];
+                    $metadata['api_url']      = $baseApiUrlToUse; // Store the provided API URL (base domain)
+                    $metadata['license_code'] = $apiUrl; // Store the license code
                 }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
@@ -2793,6 +2821,32 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Invalid Mailgun API Key or unable to connect. Please check your API key and ensure the correct region API URL is used.';
                     }
                 ];
+
+            case ToolNameEnum::WEBENGAGE: // Added for WebEngage
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.webengage.com/v1/', // Placeholder, will be constructed with license_code
+                    'verify_endpoint' => '', // Using segments endpoint for verification
+                    'request_options' => function ($apiKey) {
+                        return ['headers' => ['Authorization' => "Bearer {$apiKey}"]]; // WebEngage uses Bearer token
+                    },
+                    'success_check' => function ($responseData) {
+                        // WebEngage segments endpoint returns 'segments' array on success
+                        return isset($responseData['response']['data']) && is_array($responseData['response']['data']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        // WebEngage segments API doesn't provide direct account info, so use a generic name and API key hash
+                        return [
+                            // mc_user_id will be the license_code, set in toolConnectionBasedOnApiKey
+                            'account_name'  => $responseData['response']['data']['name'] ?? 'WebEngage Account',
+                            'account_email' => null, // Email not directly available from this endpoint
+                            'metadata'      => $responseData,
+                            'mc_user_id'    =>  NULL, 
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Invalid WebEngage API Key or License Code, or unable to connect. Please check your credentials and ensure the correct API URL is used.';
+                    }
+                ];
             default:
             return null;
         }
@@ -2908,7 +2962,7 @@ class MailchimpOAuthController extends Controller
         $apiKey       = $integration->mc_token;
         $toolUrlJson  = json_decode($integration->tool->url, true);
         $base_api_url = $toolUrlJson['base_api_url'] ?? null; // Default from tool config
-        if (in_array($toolName,  [ToolNameEnum::ACTIVECAMPAIGN])) {
+        if (in_array($toolName,  [ToolNameEnum::ACTIVECAMPAIGN,ToolNameEnum::WEBENGAGE])) {
             $metadata = json_decode($integration->metadata, true);
             $base_api_url = $metadata['api_url'] ?? $base_api_url; // Use API URL from metadata if available
             if (empty($base_api_url)) {
@@ -2919,7 +2973,6 @@ class MailchimpOAuthController extends Controller
                 ], 400);
             }
         }
-
         try {
             DB::beginTransaction(); 
             // Get the configuration for fetching subscribers using the new helper method
@@ -2928,17 +2981,15 @@ class MailchimpOAuthController extends Controller
                  DB::rollBack(); // Rollback on config error
                 return response()->json(['success' => false,'message'=>'Unsupported tool configuration for fetching subscribers.', 'error' => 'Unsupported tool configuration for fetching subscribers.'], 400);
             }
-
             $client = new Client([
                 'base_uri'    => $base_api_url,
                 'http_errors' => false, // Handle errors manually
             ]);
 
-            $endpoint       = $subscriberConfig['subscriber_endpoint']($listId);
-            $requestOptions = $subscriberConfig['request_options']($apiKey);
-
-            $response     = $client->get($endpoint, $requestOptions);
-            $statusCode   = $response->getStatusCode();
+            $endpoint        = $subscriberConfig['subscriber_endpoint']($listId);
+            $requestOptions  = $subscriberConfig['request_options']($apiKey);
+            $response        = $client->get($endpoint, $requestOptions);
+            $statusCode      = $response->getStatusCode();
             $rawResponseBody = $response->getBody()->getContents(); // Get raw body
             $responseData = json_decode($rawResponseBody, true); // Decode to array
             Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData)); 
@@ -3491,6 +3542,26 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch Mailgun subscribers.';
                     }
                 ];
+            case ToolNameEnum::WEBENGAGE: // Added for WebEngage
+                return [
+                    'subscriber_endpoint' => function ($segmentId) {
+                        return "users"; 
+                    },
+                    'request_options' => function ($apiKey) {
+                         return ['headers' => ['Authorization' => "Bearer {$apiKey}"]];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['response']['data']['contents']) && is_array($responseData['response']['data']['contents']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        return array_column($responseData['response']['data']['contents'] ?? [], 'email');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch WebEngage subscribers.';
+                    }
+                ];
+            
+
             default:
                 return null;
         }

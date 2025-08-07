@@ -23,4 +23,5 @@ class ToolNameEnum {
     const DRIP='drip';
     const GIST ='gist';
     const MAILGUN = 'mailgun';
+    const WEBENGAGE = 'web engage';
 }

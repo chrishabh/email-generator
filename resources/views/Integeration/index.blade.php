@@ -157,7 +157,7 @@
                     API URL:
                 </label>
                 <input type="text" id="moosendApiKeyInputURL" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Enter your Moosend API Url">
+                    placeholder="Enter your API Url">
             </div>
 
             <!-- Action Buttons -->
