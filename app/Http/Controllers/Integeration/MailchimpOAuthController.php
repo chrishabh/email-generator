@@ -199,9 +199,9 @@ class MailchimpOAuthController extends Controller
                 $queryBuildArray['client_id']     = $clientId;
                 $queryBuildArray['redirect_uri']  = $redirect_uri; 
                 if($is_handle_callback == false){
-                    $codeVerifier  = self::generateCodeVerifier();
-                    $codeChallenge = self::generateCodeChallenge($codeVerifier);
-                    Session::put('aweber_code_verifier', $codeVerifier);
+                    // $codeVerifier  = self::generateCodeVerifier();
+                    // $codeChallenge = self::generateCodeChallenge($codeVerifier);
+                    // Session::put('aweber_code_verifier', $codeVerifier);
                     $queryBuildArray['response_type']         = 'code';
                     $queryBuildArray['scope']                 = 'account.read list.read subscriber.read subscriber.write';
                     // $queryBuildArray['code_challenge'] = $codeChallenge;
@@ -213,7 +213,7 @@ class MailchimpOAuthController extends Controller
                     $queryBuildArray['client_secret']  = $clientSecret;
                     $codeVerifierFromSession           = Session::pull('aweber_code_verifier');  
                     $queryBuildArray['code']           = $code; 
-                    $queryBuildArray['code_verifier']  = $codeVerifierFromSession;  
+                    // $queryBuildArray['code_verifier']  = $codeVerifierFromSession;  
                     
                     $client                            = new Client();
                     $accessToken                       = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $toolName);
@@ -292,7 +292,7 @@ class MailchimpOAuthController extends Controller
         }
         
         $query = http_build_query($queryBuildArray);
-        // pp("$auth_login_url?$query");
+        pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
@@ -589,7 +589,6 @@ class MailchimpOAuthController extends Controller
 
                             $accountsResponse = $aweberClient->get('accounts');
                             $accounts = json_decode($accountsResponse->getBody(), true);
-
                             // Fix: AWeber accounts are in 'entries' key
                             if (empty($accounts['entries']) || !isset($accounts['entries'][0])) {
                                 Session::flash('error', "No AWeber accounts found for this user.");
@@ -597,11 +596,11 @@ class MailchimpOAuthController extends Controller
                             }
                             
                             $primaryAccount = $accounts['entries'][0];
-                            $mc_user_id    = $primaryAccount['id'];
-                            $accountName   = $primaryAccount['name'] ?? 'AWeber Account';
-                            $email         = $primaryAccount['email'] ?? null; 
-                            $mc_dc         = null; 
-                            $meta          = $primaryAccount; 
+                            $mc_user_id     = $primaryAccount['id'];
+                            $accountName    = $primaryAccount['company'] ?? 'AWeber Account';
+                            $email          = $primaryAccount['email'] ?? null; 
+                            $mc_dc          = $primaryAccount['uuid'] ?? null; // AWeber uses account_id
+                            $meta           = $primaryAccount; 
 
                         } catch (\Exception $e) {
                             Log::error("Failed to retrieve AWeber account data: " . $e->getMessage());
@@ -631,37 +630,37 @@ class MailchimpOAuthController extends Controller
                         $mc_dc       = null; // Not applicable for Zoho Campaign in this context
                     break;
                     case ToolNameEnum::DRIP: // Handle Drip callback
-                    if (isset($accessTokenData['access_token'])) {
-                        $accessToken = $accessTokenData['access_token'];
-                        $refreshToken = $accessTokenData['refresh_token'] ?? null;
-                    } else {
-                        Session::flash('error', "Something went wrong with the access token for $originalToolName.");
-                        return redirect('/tools');
-                    }
-                    try {
-                        $dripClient = new Client([
-                            'base_uri' => $BASE_API_URL,
-                            'headers' => ['Authorization' => "Bearer $accessToken"],
-                        ]);
-
-                        $accountsResponse = $dripClient->get('accounts');
-                        $accounts = json_decode($accountsResponse->getBody(), true);
-
-                        if (empty($accounts['accounts']) || !isset($accounts['accounts'][0])) {
-                            Session::flash('error', "No Drip accounts found for this user.");
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null;
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
                             return redirect('/tools');
-                        } 
-                        $primaryAccount = $accounts['accounts'][0];
-                        $mc_user_id     = $primaryAccount['id'];
-                        $accountName    = $primaryAccount['name'] ?? 'Drip Account';
-                        $email          = null;
-                        $mc_dc          = null;
-                        $meta           = $primaryAccount;
-                    } catch (\Exception $e) {
-                        Log::error("Failed to retrieve Drip account data: " . $e->getMessage());
-                        Session::flash('error', "Failed to retrieve Drip account data. " . $e->getMessage());
-                        return redirect('/tools');
-                    }
+                        }
+                        try {
+                            $dripClient = new Client([
+                                'base_uri' => $BASE_API_URL,
+                                'headers' => ['Authorization' => "Bearer $accessToken"],
+                            ]);
+
+                            $accountsResponse = $dripClient->get('accounts');
+                            $accounts = json_decode($accountsResponse->getBody(), true);
+
+                            if (empty($accounts['accounts']) || !isset($accounts['accounts'][0])) {
+                                Session::flash('error', "No Drip accounts found for this user.");
+                                return redirect('/tools');
+                            } 
+                            $primaryAccount = $accounts['accounts'][0];
+                            $mc_user_id     = $primaryAccount['id'];
+                            $accountName    = $primaryAccount['name'] ?? 'Drip Account';
+                            $email          = null;
+                            $mc_dc          = null;
+                            $meta           = $primaryAccount;
+                        } catch (\Exception $e) {
+                            Log::error("Failed to retrieve Drip account data: " . $e->getMessage());
+                            Session::flash('error', "Failed to retrieve Drip account data. " . $e->getMessage());
+                            return redirect('/tools');
+                        }
                     break;
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
@@ -2896,13 +2895,32 @@ class MailchimpOAuthController extends Controller
         }
 
         try {
-            $client = new Client([
-                'base_uri'    => $base_api_url,
-                'http_errors' => false, // Handle errors manually
-            ]);
-
-            $requestOptions = $config['request_options']($apiKey);
-            $response       = $client->get($config['list_endpoint'], $requestOptions);
+            if($toolName === ToolNameEnum::AWEBER){
+                $apiCall = function($currentAccessToken) use ($base_api_url, $config, $toolName, $integration) {
+                    $client = new Client([
+                        'base_uri'    => $base_api_url,
+                        'http_errors' => true, // Let Guzzle throw exceptions for non-2xx responses
+                    ]); 
+                    // Special handling for AWeber to include account ID in the endpoint
+                    if ($toolName === ToolNameEnum::AWEBER) {
+                        $accountId = $integration->mc_user_id; // AWeber account ID is stored in mc_user_id
+                        if (empty($accountId)) {
+                            throw new \Exception('AWeber account ID not found.');
+                        }
+                        $requestOptions = $config['request_options']($currentAccessToken);
+                        $endpoint       = str_replace('{accountId}', $accountId, $config['list_endpoint']);
+                    }  
+                    return $client->get($endpoint,$requestOptions);
+                }; 
+                $response     = $this->handleTokenRefreshAndRetry($integration, $integration->tool, $toolUrlJson, $apiCall);
+            }else{ 
+                $client = new Client([
+                    'base_uri'    => $base_api_url,
+                    'http_errors' => false, // Handle errors manually
+                ]);  
+                $requestOptions = $config['request_options']($apiKey);
+                $response       = $client->get($config['list_endpoint'], $requestOptions);
+            }  
             $statusCode     = $response->getStatusCode();
             $responseData   = json_decode($response->getBody()->getContents(), true); 
             Log::info("{$toolName} fetch listing Response: " . json_encode($responseData));
@@ -2981,17 +2999,35 @@ class MailchimpOAuthController extends Controller
                  DB::rollBack(); // Rollback on config error
                 return response()->json(['success' => false,'message'=>'Unsupported tool configuration for fetching subscribers.', 'error' => 'Unsupported tool configuration for fetching subscribers.'], 400);
             }
-            $client = new Client([
-                'base_uri'    => $base_api_url,
-                'http_errors' => false, // Handle errors manually
-            ]);
-
-            $endpoint        = $subscriberConfig['subscriber_endpoint']($listId);
-            $requestOptions  = $subscriberConfig['request_options']($apiKey);
-            $response        = $client->get($endpoint, $requestOptions);
+            if($toolName === ToolNameEnum::AWEBER){
+                $apiCall = function($currentAccessToken) use ($base_api_url, $subscriberConfig, $toolName, $integration,$listId) {
+                    $client = new Client([
+                        'base_uri'    => $base_api_url,
+                        'http_errors' => true, // Let Guzzle throw exceptions for non-2xx responses
+                    ]); 
+                    // Special handling for AWeber to include account ID in the endpoint
+                    if ($toolName === ToolNameEnum::AWEBER) {
+                        $accountId = $integration->mc_user_id; // AWeber account ID is stored in mc_user_id
+                        if (empty($accountId)) {
+                            throw new \Exception('AWeber account ID not found.');
+                        }
+                        $requestOptions = $subscriberConfig['request_options']($currentAccessToken);
+                        $endpoint = str_replace(['{accountId}', '{listId}'], [$accountId, $listId], $subscriberConfig['subscriber_endpoint']($listId));
+                    }  
+                    return $client->get($endpoint,$requestOptions);
+                }; 
+                $response     = $this->handleTokenRefreshAndRetry($integration, $integration->tool, $toolUrlJson, $apiCall);
+            }else{ 
+                $client = new Client([
+                    'base_uri'    => $base_api_url,
+                    'http_errors' => false, // Handle errors manually
+                ]);  
+                $requestOptions = $subscriberConfig['request_options']($apiKey);
+                $response       = $client->get($subscriberConfig['list_endpoint'], $requestOptions);
+            } 
             $statusCode      = $response->getStatusCode();
             $rawResponseBody = $response->getBody()->getContents(); // Get raw body
-            $responseData = json_decode($rawResponseBody, true); // Decode to array
+            $responseData    = json_decode($rawResponseBody, true); // Decode to array
             Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData)); 
             if ($subscriberConfig['success_check']($responseData)) {
                 $emails = $subscriberConfig['extract_subscribers']($responseData);
@@ -3306,6 +3342,35 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch Mailgun mailing lists.';
                     }
                 ];
+
+            case ToolNameEnum::AWEBER:
+                return [
+                    'list_endpoint' => 'accounts/{accountId}/lists', // AWeber lists endpoint
+                    'request_options' => function($accessToken) {
+                        return ['headers' => 
+                        [
+                            'Authorization' => "Bearer $accessToken",
+                            'Content-Type'  => 'application/json',
+                            'Accept'        => 'application/json'
+                        ]];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData['entries']) && is_array($responseData['entries']);
+                    },
+                    'extract_lists' => function($responseData) {
+                        return array_map(function($list) {
+                            return [
+                                'ID' => (string)$list['id'],
+                                'Name' => $list['name'],
+                                'SubscribersCount' => $list['total_subscribers'] ?? 0,
+                            ];
+                        }, $responseData['entries'] ?? []);
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch AWeber lists.';
+                    }
+                ];
+
             
             
             
@@ -3560,7 +3625,31 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch WebEngage subscribers.';
                     }
                 ];
-            
+            case ToolNameEnum::AWEBER:
+                return [
+                    'subscriber_endpoint' => function ($listId) {
+                        return 'accounts/{accountId}/lists/' . $listId . '/subscribers';
+                    },
+                    'request_options' => function ($accessToken) {
+                        return [
+                            'headers' => [
+                                'Authorization' => "Bearer $accessToken",
+                                'Accept' => 'application/json',
+                                'Content-Type' => 'application/json',
+                            ]
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['entries']) && is_array($responseData['entries']);
+                    },
+                    'extract_subscribers' => function ($responseData) {
+                        return array_column($responseData['entries'] ?? [], 'email');
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch AWeber subscribers.';
+                    }
+                ];
+
 
             default:
                 return null;

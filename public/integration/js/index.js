@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage'];
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage','aweber'];
         const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun','web engage']
         data.data.forEach(integration => {
             const item = document.createElement('div');
@@ -629,6 +629,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`
                 }
                 
+            }, 
+            aweber:{
+                apiEndpoint : `/fetch-api-key-based-listing?toolName=${toolName}&integeration_id=${toolId}`,
+                listExtractor : (res) => Array.isArray(res?.data) ? res.data : [],
+                image: '/integration/integerated-icon/google_sheet.svg',
+                itemRenderer: (item,image) => {
+                    const isDisabled   = item.SubscribersCount === 0;
+                    const safeName     = item.Name.replace(/'/g, "\\'");
+                    const buttonStyle  =  isDisabled ? 'cursor-not-allowed opacity-50 pointer-events-none' : 'hover:bg-[#2a3898]';
+                    return `
+                        <div class="flex justify-between items-center mb-2 border border-gray-500 px-3 py-2">
+                            <div class="w-1/2 pr-2">
+                                <h2 class="text-[15px] font-bold truncate" title="${item.Name}">
+                                    ${item.Name}
+                                </h2>
+                            </div>
+                            <div class="w-1/3 text-sm text-gray-600">
+                                Contact Count: ${item.SubscribersCount}
+                            </div>
+                            <div class="w-1/4 flex justify-end ${isDisabled ? 'cursor-not-allowed':''}">
+                                <button ${!isDisabled ? `onclick="ImportData('${toolName}','${userId}','${mc_dc}','${toolId}','${item.ID}','${safeName}')"` :''} class="bg-[#3F51B5] ${buttonStyle} text-white px-4 py-2 rounded shadow-xl">Import</button>
+                            </div>
+                        </div>`
+                }
+                
             }
 
         }
@@ -746,6 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gist: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             mailgun: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             web_engage: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            aweber: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
