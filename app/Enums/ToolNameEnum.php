@@ -24,4 +24,5 @@ class ToolNameEnum {
     const GIST ='gist';
     const MAILGUN = 'mailgun';
     const WEBENGAGE = 'web engage';
+    const MAILJET = 'mailjet';
 }

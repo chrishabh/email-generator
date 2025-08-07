@@ -32,7 +32,7 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'moosend.png', 'name' => 'Moosend', 'slug' => 'moosend','url' => json_encode(['base_api_url' => 'https://api.moosend.com/v3/'])],
             ['icon' => 'zohocampaign.png', 'name' => 'Zoho Campaign', 'slug' => 'zoho campaign', 'client_id' => env('ZOHO_CAMPAIGN_CLIENT_ID'), 'client_secret' => env('ZOHO_CAMPAIGN_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => (strtolower(env('APP_ENV')) === 'Production') ? 'https://bouncee.net/zoho/callback':'https://bouncee.net/zoho/callback','auth_login_url' => 'https://accounts.zoho.in/oauth/v2/auth','auth_token_url' => 'https://accounts.zoho.in/oauth/v2/token','auth_metadata_url' => 'https://accounts.zoho.in/oauth/user/info','base_api_url' => 'https://campaigns.zoho.in/api/v1.1/'])],
             ['icon' => 'mailerlite.png', 'name' => 'Mailer Lite', 'slug' => 'mailer lite','url' => json_encode(['base_api_url' => 'https://api.mailerlite.com/api/v2/'])],
-            ['icon' => 'mailjet.svg', 'name' => 'Mailjet', 'slug' => 'mailjet'],
+            ['icon' => 'mailjet.svg', 'name' => 'Mailjet', 'slug' => 'mailjet','url' => json_encode(['base_api_url' => 'https://api.mailjet.com/v3/REST/'])],
             ['icon' => 'gist.png', 'name' => 'Gist', 'slug' => 'gist', 'url' => json_encode(['base_api_url' => 'https://api.getgist.com/'])],
             ['icon' => 'convertkit.png', 'name' => 'ConvertKit', 'slug' => 'convertkit','url' => json_encode(['base_api_url' => 'https://api.convertkit.com/v3/'])],
             ['icon' => 'Benchmark.png', 'name' => 'Benchmark', 'slug' => 'benchmark','url' => json_encode(['base_api_url' => 'https://clientapi.benchmarkemail.com/'])],

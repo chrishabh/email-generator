@@ -2492,10 +2492,10 @@ class MailchimpOAuthController extends Controller
             }
 
             $client         = new Client();
-            $requestOptions = $config['request_options']($apiKey);
+            $requestOptions = $config['request_options']($apiKey,($toolSlug === ToolNameEnum::MAILJET) ? $apiUrl : null); // Pass apiUrl for WebEngage
 
-            // Make the API call to verify the API key
-
+            // Make the API call to verify the API key 
+            
             $testResponse = $client->get($baseApiUrlToUse . $config['verify_endpoint'], $requestOptions);
             $responseData = json_decode($testResponse->getBody()->getContents(), true);
             // Check for success based on tool-specific logic
@@ -2539,23 +2539,26 @@ class MailchimpOAuthController extends Controller
                     $mcUserId     = $accountInfo['mc_user_id'] ?? hash('sha256', $mcUserId);
                     $metadata     = $accountInfo['metadata']; 
                 }
-                else if ($toolSlug == ToolNameEnum::WEBENGAGE) { // Added for Mailgun
-                    $accountName  = $accountInfo['account_name'];
-                    $mcUserId     = $accountInfo['mc_user_id'] ?? hash('sha256', $mcUserId);;
-                    $metadata     = $accountInfo['metadata']; 
-
+                else if($toolSlug == ToolNameEnum::WEBENGAGE) {  
                     $accountName              = $accountInfo['account_name'];
                     $mcUserId                 = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);// Use license code as mc_user_id
                     $metadata                 = $accountInfo['metadata'];
                     $metadata['api_url']      = $baseApiUrlToUse; // Store the provided API URL (base domain)
                     $metadata['license_code'] = $apiUrl; // Store the license code
                 }
+                else if($toolSlug == ToolNameEnum::MAILJET) {  
+                    $accountName              = $accountInfo['account_name'];
+                    $mcUserId                 = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);// Use license code as mc_user_id
+                    $metadata                 = $accountInfo['metadata']; 
+                    $metadata['api_key']      = $apiKey; // Store the license code
+                    $metadata['api_secret']   = $apiUrl; // Store the license code
+                }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
                 $integration->user_id      = $userId;
                 $integration->tool_id      = $toolId;
                 $integration->service_name = $toolSlug; 
-                $integration->mc_token     = $apiKey; // Store the API key 
+                $integration->mc_token     = ($toolSlug == ToolNameEnum::MAILJET) ? $apiKey.':'.$apiUrl:$apiKey; // Store the API key 
                 $integration->mc_user_id   = $mcUserId;
                 $integration->status       = 'verified';
                 $integration->name         = $accountName;
@@ -2846,6 +2849,39 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Invalid WebEngage API Key or License Code, or unable to connect. Please check your credentials and ensure the correct API URL is used.';
                     }
                 ];
+            case ToolNameEnum::MAILJET: // Added for Mailjet
+                return [
+                    'base_api_url' => $urlJson['base_api_url'] ?? 'https://api.mailjet.com/v3/REST/',
+                    'verify_endpoint' => 'user', // Endpoint to verify API key by fetching contact lists
+                    'request_options' => function ($apiKey,$apiSecret) {
+                        $publicKey = $apiKey;
+                        $secretKey = $apiSecret; // Assuming secret key might be part of the input or fetched separately
+
+                        return [
+                            'auth' => [$publicKey, $secretKey], // Basic Auth: [username, password]
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        // Mailjet returns a 'Data' array on success for contactslist
+                        return isset($responseData['Data']) && is_array($responseData['Data']);
+                    },
+                    'extract_account_info' => function ($responseData) {
+                        // Mailjet doesn't have a direct 'account' endpoint for a name/email.
+                        // Use a generic account name and hash of API key for mc_user_id.
+                        return [
+                            'mc_user_id'    => $responseData['Data'][0]['ID'], // Use first list ID or generic
+                            'account_name'  => 'Mailjet Account',
+                            'account_email' => $responseData['Data'][0]['Email'], // Not directly available from this endpoint
+                            'metadata'      => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['ErrorMessage'] ?? 'Invalid Mailjet API Key or unable to connect.';
+                    }
+                ];
+            
             default:
             return null;
         }
@@ -3021,16 +3057,21 @@ class MailchimpOAuthController extends Controller
                 $client = new Client([
                     'base_uri'    => $base_api_url,
                     'http_errors' => false, // Handle errors manually
-                ]);  
-                $requestOptions = $subscriberConfig['request_options']($apiKey);
-                $response       = $client->get($subscriberConfig['list_endpoint'], $requestOptions);
+                ]);   
+                $endpoint        = $subscriberConfig['subscriber_endpoint']($listId);
+                $requestOptions  = $subscriberConfig['request_options']($apiKey);
+                $response        = $client->get($endpoint, $requestOptions);
             } 
             $statusCode      = $response->getStatusCode();
             $rawResponseBody = $response->getBody()->getContents(); // Get raw body
             $responseData    = json_decode($rawResponseBody, true); // Decode to array
             Log::info("Moosend fetchListSubscribers Response for list $listId: " . json_encode($responseData)); 
             if ($subscriberConfig['success_check']($responseData)) {
-                $emails = $subscriberConfig['extract_subscribers']($responseData);
+                if($toolName === ToolNameEnum::MAILJET){
+                    $emails = $subscriberConfig['extract_subscribers']($responseData, new Client(['base_uri' => $base_api_url]), $apiKey);
+                }else{
+                    $emails = $subscriberConfig['extract_subscribers']($responseData);
+                } 
                 if (empty($emails)) {
                     DB::rollBack();
                     return response()->json([
@@ -3096,7 +3137,7 @@ class MailchimpOAuthController extends Controller
             Log::error("Moosend fetchListSubscribers ClientException for list $listId: " . $e->getMessage() . " Response: " . $responseBody);
             $errorMessage = json_decode($responseBody, true)['Error']['Message'] ?? $e->getMessage();
             return response()->json(['success' => false,'message'=>'API call failed', 'error' => "API call failed: " . $errorMessage], $e->getCode());
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { 
             DB::rollBack(); // Rollback on any other unexpected exception
             Log::error("Error in fetchMoosendListSubscribers for list $listId: " . $e->getMessage() . " Stack: " . $e->getTraceAsString());
             return response()->json(['success' => false, 'message' => 'An unexpected error occurred while fetching Moosend subscribers.','error'=>'An unexpected error occurred while fetching Moosend subscribers.'], 500);
@@ -3368,6 +3409,35 @@ class MailchimpOAuthController extends Controller
                     },
                     'error_message_extractor' => function($responseData) {
                         return $responseData['message'] ?? 'Failed to fetch AWeber lists.';
+                    }
+                ];
+            case ToolNameEnum::MAILJET: // Added for Mailjet
+                return [
+                    'list_endpoint' => 'contactslist', // Mailjet endpoint for contact lists
+                    'request_options' => function ($apiKey) {
+                        $apiKeyParts = explode(':', $apiKey);
+                        $publicKey = $apiKeyParts[0];
+                        $secretKey = $apiKeyParts[1] ?? '';
+                        return [
+                            'auth' => [$publicKey, $secretKey],
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['Data']) && is_array($responseData['Data']);
+                    },
+                    'extract_lists' => function ($responseData) {
+                        return array_map(function ($list) {
+                            return [
+                                'ID' => (string)$list['ID'],
+                                'Name' => $list['Name'],
+                                'SubscribersCount' => $list['SubscriberCount'] ?? 0, // Mailjet lists have Subscribers count
+                            ];
+                        }, $responseData['Data'] ?? []);
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['ErrorMessage'] ?? 'Failed to fetch Mailjet contact lists.';
                     }
                 ];
 
@@ -3649,6 +3719,62 @@ class MailchimpOAuthController extends Controller
                         return $responseData['message'] ?? 'Failed to fetch AWeber subscribers.';
                     }
                 ];
+            case ToolNameEnum::MAILJET: // Updated for Mailjet
+                return [
+                    'subscriber_endpoint' => function ($listId) {
+                        // Use the listrecipient endpoint for fetching contacts within a list
+                        return "listrecipient?ContactsList={$listId}";
+                    },
+                    'request_options' => function ($apiKey) {
+                        $apiKeyParts = explode(':', $apiKey);
+                        $publicKey = $apiKeyParts[0];
+                        $secretKey = $apiKeyParts[1] ?? '';
+                        return [
+                            'auth' => [$publicKey, $secretKey],
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                        ];
+                    },
+                    'success_check' => function ($responseData) {
+                        return isset($responseData['Data']) && is_array($responseData['Data']);
+                    },
+                    // Modified extract_subscribers to make a second API call for each contact ID
+                    'extract_subscribers' => function ($responseData, $client, $apiKey) {
+                        $emails = [];
+                        $apiKeyParts = explode(':', $apiKey);
+                        $publicKey = $apiKeyParts[0];
+                        $secretKey = $apiKeyParts[1] ?? '';
+                        $auth = [$publicKey, $secretKey];
+                        foreach ($responseData['Data'] as $listRecipient) {
+                            $contactId = $listRecipient['ContactID'] ?? null;
+                            if ($contactId) {
+                                try {
+                                    // Make a second API call to get contact details (email)
+                                    $contactResponse = $client->get("contact/{$contactId}", [
+                                        'auth' => $auth,
+                                        'Accept' => 'application/json',
+                                        'Content-Type' => 'application/json',
+                                    ]);
+                                    $contactData = json_decode($contactResponse->getBody()->getContents(), true);
+                                    if (isset($contactData['Data'][0]['Email'])) {
+                                        $emails[] = $contactData['Data'][0]['Email'];
+                                    }
+                                } catch (ClientException $e) {
+                                    Log::warning("Failed to fetch Mailjet contact {$contactId}: " . $e->getMessage());
+                                    // Continue to next contact even if one fails
+                                } catch (\Exception $e) {
+                                    Log::error("Unexpected error fetching Mailjet contact {$contactId}: " . $e->getMessage());
+                                    // Continue to next contact
+                                }
+                            }
+                        }
+                        return $emails;
+                    },
+                    'error_message_extractor' => function ($responseData) {
+                        return $responseData['ErrorMessage'] ?? 'Failed to fetch Mailjet subscribers.';
+                    }
+                ];
+
 
 
             default:
