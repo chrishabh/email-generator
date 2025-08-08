@@ -2575,7 +2575,7 @@ class MailchimpOAuthController extends Controller
                     return response()->json(['success' => false, 'error' => "WebEngage License Code is required.",'message'=>"WebEngage License Code is required."], 400);
                 }
                 // Append license code to the base API URL
-                $baseApiUrlToUse =  $baseApiUrlToUse . "accounts/{$apiUrl}/";
+                $baseApiUrlToUse =  $baseApiUrlToUse . "accounts/{$apiUrl}";
             }
 
             // Check if an integration with this API key already exists for the user and tool
@@ -2646,7 +2646,7 @@ class MailchimpOAuthController extends Controller
                     $accountName              = $accountInfo['account_name'];
                     $mcUserId                 = $accountInfo['mc_user_id']  ?? hash('sha256', $mcUserId);// Use license code as mc_user_id
                     $metadata                 = $accountInfo['metadata'];
-                    $metadata['api_url']      = $baseApiUrlToUse; // Store the provided API URL (base domain)
+                    $metadata['api_url']      = $baseApiUrlToUse.'/'; // Store the provided API URL (base domain)
                     $metadata['license_code'] = $apiUrl; // Store the license code
                 }
                 else if($toolSlug == ToolNameEnum::MAILJET) {  
