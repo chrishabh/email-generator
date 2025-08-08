@@ -292,7 +292,7 @@ class MailchimpOAuthController extends Controller
         }
         
         $query = http_build_query($queryBuildArray);
-        pp("$auth_login_url?$query");
+        // pp("$auth_login_url?$query");
         return redirect("$auth_login_url?$query");  
     }
 
@@ -349,6 +349,9 @@ class MailchimpOAuthController extends Controller
             case ToolNameEnum::HUBSPOT: 
             case ToolNameEnum::DRIP:
                 $header = ["Authorization" => "Bearer $accessToken"];
+            break;
+            case ToolNameEnum::INTERCOM: 
+                $header = ["Authorization" => "Bearer $accessToken",'Accept'        => 'application/json'];
             break;
             case ToolNameEnum::MAILCHIMP:
                 $header = ["Authorization"=> "OAuth $accessToken"];
@@ -661,6 +664,26 @@ class MailchimpOAuthController extends Controller
                             Session::flash('error', "Failed to retrieve Drip account data. " . $e->getMessage());
                             return redirect('/tools');
                         }
+                    break;
+                    case ToolNameEnum::INTERCOM: // Handle Intercom callback
+                        if (isset($accessTokenData['access_token'])) {
+                            $accessToken = $accessTokenData['access_token'];
+                            $refreshToken = $accessTokenData['refresh_token'] ?? null; // Intercom also provides refresh tokens
+                        } else {
+                            Session::flash('error', "Something went wrong with the access token for $originalToolName.");
+                            return redirect('/tools');
+                        }
+                        $intercomClient = new Client(['base_uri' => $BASE_API_URL]);
+                        $meta           = self::getMetadataOfTool($intercomClient, $AUTH_METADATA_URL, $accessToken, $toolName);
+                        if (!$meta) {
+                            Session::flash('error', "Failed to retrieve metadata for $originalToolName.");
+                            return redirect('/tools');
+                        }
+
+                        $mc_user_id   = $meta['id']; // Intercom uses 'id' for the authenticated user
+                        $accountName  = $meta['name'] ?? ($meta['name'] ?? null); // App name or user name
+                        $email        = $meta['email'] ?? null; // User's email
+                        $mc_dc        = null; // Intercom doesn't have a 'dc' equivalent
                     break;
                     default:
                         Session::flash('error', 'Unsupported tool encountered during callback.');
@@ -1204,7 +1227,81 @@ class MailchimpOAuthController extends Controller
                         ], 404);
                     } 
                     $emails = array_column($campaigns['subscribers'], 'email');
-                    break;
+                break;
+                case ToolNameEnum::INTERCOM: // Fetch Intercom subscribers/users
+                    $client = new Client([
+                        'base_uri'    => $base_api_url,
+                        'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::INTERCOM, $accessToken),
+                        'http_errors' => false,
+                    ]);
+                    
+                    $response = $client->get('users'); // Fetch all users/subscribers
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode === 401) {
+                        // Attempt token refresh
+                        if (!empty($integration->mc_refresh_token)) {
+                            $queryBuildArray = [
+                                'grant_type'    => 'refresh_token',
+                                'client_id'     => $toolData->client_id,
+                                'client_secret' => $toolData->client_secret,
+                                'refresh_token' => $integration->mc_refresh_token,
+                                'redirect_uri'  => $urlJson['redirect_url'], // Ensure redirect_uri is passed for refresh if required
+                            ];
+                            $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
+                            pp($accessTokenData);
+                            if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
+                                $integration->mc_token         = $accessTokenData['access_token'];
+                                $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token;
+                                $integration->save();
+                                $accessToken = $accessTokenData['access_token'];
+
+                                // Retry with new token
+                                $client = new Client([
+                                    'base_uri'    => $base_api_url,
+                                    'headers'     => self::createClientUrlWithHeadBasedOnTools(ToolNameEnum::INTERCOM, $accessToken),
+                                    'http_errors' => true,
+                                ]);
+                                $response   = $client->get('users');
+                                $statusCode = $response->getStatusCode();
+                            } else {
+                                DB::rollBack();
+                                return response()->json([
+                                    'message' => 'Unauthorized',
+                                    'success' => false,
+                                    'error' => 'Failed to refresh access token for Intercom.'
+                                ], 401);
+                            }
+                        } else {
+                            DB::rollBack();
+                            return response()->json([
+                                'message' => 'Unauthorized',
+                                'success' => false,
+                                'error' => 'No refresh token available for Intercom. Please re-authenticate.'
+                            ], 401);
+                        }
+                    }
+
+                    if ($statusCode !== 200) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Failed to retrieve Intercom users.',
+                            'success' => false,
+                            'error' => $response->getBody()->getContents()
+                        ], $statusCode);
+                    }
+
+                    $users = json_decode($response->getBody(), true);
+                    if (empty($users['data'])) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'No users found for this Intercom account.',
+                            'success' => false,
+                            'error' => 'No Intercom users available'
+                        ], 404);
+                    }
+                    $emails = array_column($users['data'], 'email');
+                    $listId = 'all_users'; // Placeholder for all users/contacts in Intercom
+                break;
                 default:
                     DB::rollBack();
                     return response()->json(['success' => false, 'message' => 'Unsupported tool for email validation.', 'error' => 'Unsupported tool'], 400);
@@ -1288,6 +1385,12 @@ class MailchimpOAuthController extends Controller
             case ToolNameEnum::ZOHOCAMPAIGN:
                 $headers = [
                     'Authorization' => "Zoho-oauthtoken $accessToken",
+                    'Accept' => 'application/json',
+                ];
+            break;
+            case ToolNameEnum::INTERCOM:
+                $headers = [
+                    'Authorization' => "Bearer $accessToken",
                     'Accept' => 'application/json',
                 ];
             break;

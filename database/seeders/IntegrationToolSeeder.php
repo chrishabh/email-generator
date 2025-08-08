@@ -36,7 +36,7 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'gist.png', 'name' => 'Gist', 'slug' => 'gist', 'url' => json_encode(['base_api_url' => 'https://api.getgist.com/'])],
             ['icon' => 'convertkit.png', 'name' => 'ConvertKit', 'slug' => 'convertkit','url' => json_encode(['base_api_url' => 'https://api.convertkit.com/v3/'])],
             ['icon' => 'Benchmark.png', 'name' => 'Benchmark', 'slug' => 'benchmark','url' => json_encode(['base_api_url' => 'https://clientapi.benchmarkemail.com/'])],
-            ['icon' => 'intercom.png', 'name' => 'Intercom', 'slug' => 'intercom', 'client_id' => env('INTERCOM_CLIENT_ID'), 'client_secret' => env('INTERCOM_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => 'http://localhost:8000/intercom/callback', 'auth_login_url' => 'https://app.intercom.com/oauth', 'auth_token_url' => 'https://api.intercom.io/auth/eagle/token', 'auth_metadata_url' => 'https://api.intercom.io/me','base_api_url' => 'https://api.intercom.io/'])],
+            ['icon' => 'intercom.svg', 'name' => 'Intercom', 'slug' => 'intercom', 'client_id' => env('INTERCOM_CLIENT_ID'), 'client_secret' => env('INTERCOM_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => 'http://localhost:8000/intercom/callback', 'auth_login_url' => 'https://app.intercom.com/oauth', 'auth_token_url' => 'https://api.intercom.io/auth/eagle/token', 'auth_metadata_url' => 'https://api.intercom.io/me','base_api_url' => 'https://api.intercom.io/'])],
             ['icon' => 'zapier.png', 'name' => 'Zapier', 'slug' => 'zapier'],
             ['icon' => 'clay.png', 'name' => 'Clay', 'slug' => 'clay'],
         ];
