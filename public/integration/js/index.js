@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(integration.tool.name.toLowerCase() === 'web engage'){ 
                     OpenModalImport = `ImportData('${integration.tool.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}','webengage')`
                 }else{
-                   OpenModalImport =  `openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${integration.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')`
+                    const safeName     = integration.name.replace(/'/g, "\\'"); 
+                   OpenModalImport =  `openModalForImport('${integration.tool.name}','${integration.tool.icon_url}','${safeName}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}')`
                 }
                 const dropdownId = `dropdown-${integration.id}`;
                 card.className = 'bg-gray-100 px-3 py-3 rounded shadow mb-4';
