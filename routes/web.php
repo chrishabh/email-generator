@@ -112,6 +112,7 @@ try{
         Route::get('/tool-connection-based-on-api-key', [MailchimpOAuthController::class, 'toolConnectionBasedOnApiKey']);
         Route::get('/fetch-api-key-based-listing', [MailchimpOAuthController::class, 'fetchApiKeyBasedListing']);
         Route::get('/import-emails-based-on-api-key', [MailchimpOAuthController::class, 'fetchMoosendListSubscribers']);
+        Route::get('/clay',  [IntegrationController::class, 'getClayIntegration']);
 
 
         Route::prefix('profile')->group(function(){

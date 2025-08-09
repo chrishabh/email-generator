@@ -124,4 +124,14 @@ class IntegrationController extends Controller
         }
     }
 
+
+    public static function getClayIntegration(){
+        $creditPoint ='Free';
+        $integrated = Integration::with('tool')->where('status','verified')->whereNull('deleted_at')->paginate(10); 
+        $headerData['creditPoint']         = $creditPoint;
+        $sessionData = session()->all();
+        return view('Integeration.clay')->with(compact('headerData')); 
+
+    }
+
 }
