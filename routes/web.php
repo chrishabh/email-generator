@@ -13,6 +13,7 @@ use App\Http\Controllers\Integeration\IntegrationController;
 use App\Http\Controllers\Integeration\MailchimpOAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\ProfileController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +30,15 @@ try{
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 
+        // Route::get('/', function () {
+        //     return view('index');
+        // });
         Route::get('/', function () {
-            return view('index');
+            // If a logged-in user somehow reaches here, redirect them to the 'single' route
+            if (Auth::check()) {
+                return redirect()->route('single'); // Redirect to your main authenticated page
+            }
+            return view('index'); // Show the homepage for guests
         });
       
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
