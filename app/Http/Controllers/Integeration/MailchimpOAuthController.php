@@ -1235,7 +1235,7 @@ class MailchimpOAuthController extends Controller
                         'http_errors' => false,
                     ]);
                     
-                    $response = $client->get('users'); // Fetch all users/subscribers
+                    $response = $client->get('contacts'); // Fetch all users/subscribers
                     $statusCode = $response->getStatusCode();
                     if ($statusCode === 401) {
                         // Attempt token refresh
@@ -1248,7 +1248,6 @@ class MailchimpOAuthController extends Controller
                                 'redirect_uri'  => $urlJson['redirect_url'], // Ensure redirect_uri is passed for refresh if required
                             ];
                             $accessTokenData = self::getAccessTokenOftool($client, $token_url, $queryBuildArray, $slug);
-                            pp($accessTokenData);
                             if (!empty($accessTokenData) && isset($accessTokenData['access_token'])) {
                                 $integration->mc_token         = $accessTokenData['access_token'];
                                 $integration->mc_refresh_token = $accessTokenData['refresh_token'] ?? $integration->mc_refresh_token;
@@ -1300,7 +1299,7 @@ class MailchimpOAuthController extends Controller
                         ], 404);
                     }
                     $emails = array_column($users['data'], 'email');
-                    $listId = 'all_users'; // Placeholder for all users/contacts in Intercom
+                    $listId = NULL; // Placeholder for all users/contacts in Intercom
                 break;
                 default:
                     DB::rollBack();
