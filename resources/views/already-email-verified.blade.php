@@ -72,7 +72,7 @@
             <a href="{{ url('/') }}" class="button">Go to Dashboard</a>
         </div>
         <div class="footer">
-            <p>&copy; 2024 bouncee. All rights reserved.</p>
+            <p>&copy; 2025 bouncee. All rights reserved.</p>
         </div>
     </div>
 </body>

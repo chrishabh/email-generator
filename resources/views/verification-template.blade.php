@@ -79,7 +79,7 @@
 
         <div class="footer">
             <p>Need help? <a href="mailto::support@bouncee.net">Contact Support</a></p>
-            <p>&copy; 2024 bouncee. All rights reserved.</p>
+            <p>&copy; 2025 bouncee. All rights reserved.</p>
         </div>
     </div>
 

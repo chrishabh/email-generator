@@ -74,7 +74,7 @@
              <a style="margin-top: 3em;" href="{{ url('/verification') }}" class="button">Request a New Verification Email</a>.
         </div>
         <div class="footer">
-            &copy; 2024 bouncee. All rights reserved.
+            &copy; 2025 bouncee. All rights reserved.
         </div>
     </div>
 </body>

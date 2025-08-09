@@ -55,7 +55,7 @@
         const countdownElement = document.getElementById('countdown');
 
         // Set the date we're counting down to
-        const countDownDate = new Date("2024-09-22T23:59:59").getTime();
+        const countDownDate = new Date("2025-09-22T23:59:59").getTime();
 
         // Update the count down every 1 second
         const x = setInterval(function() {

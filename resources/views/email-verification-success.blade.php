@@ -74,7 +74,7 @@
             <a style="margin-top: 3em;" href="{{ url('/signin') }}" class="button">Log In</a>
         </div>
         <div class="footer">
-            &copy; 2024 bouncee. All rights reserved.
+            &copy; 2025 bouncee. All rights reserved.
         </div>
     </div>
 </body>

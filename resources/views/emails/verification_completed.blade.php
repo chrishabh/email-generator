@@ -22,7 +22,7 @@
         <hr style="border: 1px solid #333;">
         <p style="text-align: center; font-size: 12px; color: #bbb;">
             Have any questions? Contact <a href="mailto:support@bouncee.net" style="color: #7da6ff;">support@bouncee.net</a> 
-            <br> &copy; Bouncee 2024
+            <br> &copy; Bouncee 2025
         </p>
     </div>
 </body>
