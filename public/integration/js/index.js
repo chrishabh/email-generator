@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
             }
             if(isActive && integration.name.toLowerCase()==='clay'){
-                onclickAction = `window.location.href= ${window.location.origin}'/clay'`;  
+                onclickAction = `window.location.href= '${window.location.origin}/clay'`;  
             }
             else if(isActive){
                 onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
