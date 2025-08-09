@@ -105,8 +105,10 @@
             <div class="mb-6">
                 <h4 class="text-[1rem] font-bold text-gray-700 mb-2">Step 9</h4>
                 <p class="text-gray-600">   
-                    <div>Choose whether to create new columns to store additional data returned during the email validation process (e.g., status, SMTP details, sub-status, free email indicator).</div> 
-                    <div>Click<b> Save & Run.</b></div> 
+                    <ul class="mt-2 list-disc pl-10"> 
+                        <li class="list-disc">Choose whether to create new columns to store additional data returned during the email validation process (e.g., status, SMTP details, sub-status, free email indicator).</li> 
+                        <li class="list-disc">Click<b> Save & Run.</b></li> 
+                    </ul>
                 </p>
             </div>
 
