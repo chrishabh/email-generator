@@ -220,15 +220,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage','aweber','mailjet','intercom'];
         const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun','web engage','mailjet']
         data.data.forEach(integration => {
-            const item = document.createElement('div');
-            item.className = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
+            const item        = document.createElement('div');
+            item.className    = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
             const isActive    = activeIntegrations.includes(integration.name.toLowerCase());
             const isModalOpen = isModalOpenedForApiKey.includes(integration.name.toLowerCase());
             let onclickAction = ''
     
             if(isActive && isModalOpen && integration.name.toLowerCase()){
                 onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
-            }else if(isActive){
+            }
+            if(isActive && integration.name.toLowerCase()==='clay'){
+                const url     =  window.location.origin +'/'+'clay';
+                onclickAction = `${url}`;  
+            }
+            else if(isActive){
                 onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
             }
             item.innerHTML = `
