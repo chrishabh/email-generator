@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(isActive && integration.name.toLowerCase()==='clay'){
                 const url     =  window.location.origin +'/'+'clay';
-                onclickAction = `${url}`;  
+                onclickAction = `window.location.href='${url}'`;  
             }
             else if(isActive){
                 onclickAction =`window.location.href='/mailchimp/login/${integration.id}/${integration.name}'`;
