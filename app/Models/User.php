@@ -120,13 +120,15 @@ class User extends Authenticatable
         FROM users u
         LEFT JOIN email_verification_logs evl 
             ON u.id = evl.user_id
-        LEFT JOIN (
-            SELECT * 
+        LEFT JOIN user_credits uc
+        ON uc.user_id = u.id
+        AND uc.deleted_at IS NULL
+        AND uc.id = (
+            SELECT MAX(id) 
             FROM user_credits 
-            WHERE deleted_at IS NULL 
-            ORDER BY id DESC
-        ) AS uc 
-            ON uc.user_id = u.id
+            WHERE user_id = u.id 
+                AND deleted_at IS NULL
+        )
         WHERE u.deleted_at IS NULL 
         AND u.role = 'user'
         GROUP BY 
