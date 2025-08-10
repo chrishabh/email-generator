@@ -116,10 +116,13 @@ class User extends Authenticatable
             u.gender, 
             uc.credits, 
             u.email_verified AS verified, 
-            COUNT(evl.id) AS used_credits
+            COALESCE(evl.used_credits, 0) AS used_credits
         FROM users u
-        LEFT JOIN email_verification_logs evl 
-            ON u.id = evl.user_id
+        LEFT JOIN (
+            SELECT user_id, COUNT(id) AS used_credits
+            FROM email_verification_logs
+            GROUP BY user_id
+        ) evl ON u.id = evl.user_id
         LEFT JOIN (
             SELECT * 
             FROM user_credits 
@@ -129,15 +132,6 @@ class User extends Authenticatable
             ON uc.user_id = u.id
         WHERE u.deleted_at IS NULL 
         AND u.role = 'user'
-        GROUP BY 
-            u.id, 
-            u.name, 
-            u.email, 
-            u.mobile_number, 
-            u.work_experience_description, 
-            u.gender, 
-            uc.credits, 
-            u.email_verified
             LIMIT ?, ?
         ";
 
