@@ -38,6 +38,7 @@ class IntegrationToolSeeder extends Seeder
             ['icon' => 'Benchmark.png', 'name' => 'Benchmark', 'slug' => 'benchmark','url' => json_encode(['base_api_url' => 'https://clientapi.benchmarkemail.com/'])],
             ['icon' => 'intercom.svg', 'name' => 'Intercom', 'slug' => 'intercom', 'client_id' => env('INTERCOM_CLIENT_ID'), 'client_secret' => env('INTERCOM_CLIENT_SECRET'), 'url' => json_encode(['redirect_url' => 'https://bouncee.net/intercom/callback', 'auth_login_url' => 'https://app.intercom.com/oauth', 'auth_token_url' => 'https://api.intercom.io/auth/eagle/token', 'auth_metadata_url' => 'https://api.intercom.io/me','base_api_url' => 'https://api.intercom.io/'])],
             ['icon' => 'clay.png', 'name' => 'Clay', 'slug' => 'clay'],
+            ['icon' => 'klenty.png', 'name' => 'Klenty', 'slug' => 'klenty'],
         ];
 
         foreach ($tools as $tool) { 
