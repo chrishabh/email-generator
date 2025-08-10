@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let currentModalPage = 1;
     let lastModalPage = lastPage = 1;
-    let itemsPerPage = 20;
+    let itemsPerPage =10;
 
     const fetchIntegrations = async () => {
         try {
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.target && e.target.tagName === 'BUTTON') {
                     const page = parseInt(e.target.getAttribute('data-page'), 10);
                     if (!isNaN(page)) {
-                        changeModalPage(page);
+                        changeIntegerationModalPage(page);
                     }
                 }
             });
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
  
-    function changeModalPage(page) {
+    function changeIntegerationModalPage(page) {
         if(page >=1 && page <= lastPage){
             currentPage = page;
             $('#preloader').fadeIn()
