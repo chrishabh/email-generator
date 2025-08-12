@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card            = document.createElement('div');
                 let OpenModalImport = null;
 
-                if(integration.tool.name.toLowerCase() === 'web engage'){ 
+                if(integration.tool.name.toLowerCase() === 'web engage'||integration.tool.name.toLowerCase() === 'klenty'){ 
                     OpenModalImport = `ImportData('${integration.tool.name}','${integration.mc_user_id}','${integration.mc_dc}','${integration.id}','webengage')`
                 }else{
                     let safeName = '';
@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         lastModalPage = data.lastPage || 1;
-        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage','aweber','mailjet','intercom','clay'];
-        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun','web engage','mailjet']
+        const activeIntegrations      = ['mailchimp', 'hubspot','dropbox', 'constant contact','moosend','get response','active campaign','zoho campaign','brevo','mailer lite','convertkit','benchmark','zoho campaign','campaign monitor','drip','google sheets','gist','mailgun','web engage','aweber','mailjet','intercom','clay','klenty'];
+        const isModalOpenedForApiKey  = ['moosend','get response','active campaign','brevo','mailer lite','convertkit','benchmark','gist','mailgun','web engage','mailjet','klenty'];
         data.data.forEach(integration => {
             const item        = document.createElement('div');
             item.className    = 'flex justify-between items-center bg-gray-100 p-2 px-3 rounded mb-3 shadow-md';
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(isActive && isModalOpen && integration.name.toLowerCase()){
                 onclickAction = `showModalOfInputKey('${integration.id}','${integration.name}')`;
             }
-            if(isActive && integration.name.toLowerCase()==='clay'){
+            else if(isActive && integration.name.toLowerCase()==='clay'){
                 onclickAction = `window.location.href='${window.location.origin}/clay'`;  
             }
             else if(isActive){
@@ -806,6 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             web_engage: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             aweber: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
             mailjet: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
+            klenty: ()=> `/import-emails-based-on-api-key?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}&list_id=${$fileId}`,
         }
         
         const getUrl = importConfitMap[lowerToolName] || (()=> `/mailchimp/validate-emails?toolName=${toolName}&userId=${userId}&mc=${mc_dc}&integeration_id=${toolId}`);
@@ -872,6 +873,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const apiUrlLabel     = apiUrlDiv.querySelector('label');
             apiUrlLabel.innerText = 'API Secret Key:';
             apiUrlInput.placeholder = 'Enter your API Secret key';
+        }else if(name.trim().toLowerCase() === 'klenty'){
+            apiUrlDiv.classList.remove('hidden');
+            const apiUrlLabel     = apiUrlDiv.querySelector('label');
+            apiUrlLabel.innerText = 'Klenty Account email:';
+            apiUrlInput.placeholder = 'Enter your klenty account email';
         } else {
             apiUrlDiv.classList.add('hidden');
         }
@@ -895,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
             moosendApiModal.classList.add('hidden');
             $('#preloader').fadeIn();
             let query = `/tool-connection-based-on-api-key?api_key=${encodeURIComponent(apiKey)}&tool_name=${toolName}&tool_id=${toolId}`;
-            if (toolName.trim().toLowerCase() === 'active campaign' || toolName.trim().toLowerCase() === 'web engage' || toolName.trim().toLowerCase() === 'mailjet' && apiUrl) {
+            if (toolName.trim().toLowerCase() === 'active campaign' || toolName.trim().toLowerCase() === 'web engage' || toolName.trim().toLowerCase() === 'mailjet' ||  toolName.trim().toLowerCase() === 'klenty' && apiUrl) {
                 query += `&api_url=${apiUrl}`;
             }
             result  = await makeApiHit(query)

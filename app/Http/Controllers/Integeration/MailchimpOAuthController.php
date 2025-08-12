@@ -2575,6 +2575,12 @@ class MailchimpOAuthController extends Controller
                 }
                 // Append license code to the base API URL
                 $baseApiUrlToUse =  $baseApiUrlToUse . "accounts/{$apiUrl}";
+            }elseif ($toolSlug === ToolNameEnum::KLENTY) { // Klenty needs email in base URL
+                if (empty($apiUrl)) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'error' => "Klenty requires an email address for connection.", 'message' => "Klenty requires an email address for connection."], 400);
+                }
+                $baseApiUrlToUse = $baseApiUrlToUse . "user/{$apiUrl}/";
             }
 
             // Check if an integration with this API key already exists for the user and tool
@@ -2655,6 +2661,13 @@ class MailchimpOAuthController extends Controller
                     $metadata['api_key']      = $apiKey; // Store the license code
                     $metadata['api_secret']   = $apiUrl; // Store the license code
                 }
+                else if($toolSlug == ToolNameEnum::KLENTY) {  
+                    $accountName              = $accountInfo['account_name'];
+                    $mcUserId                 = $accountInfo['mc_user_id']  ?? $apiUrl;// Use license code as mc_user_id
+                    $metadata                 = $accountInfo['metadata']; 
+                    $metadata['api_key']      = $apiKey;
+                    $metadata['api_url']      = $baseApiUrlToUse;  
+                }
                 $accountEmail              = $accountInfo['account_email']; 
                 $integration               = new Integration();
                 $integration->user_id      = $userId;
@@ -2678,13 +2691,12 @@ class MailchimpOAuthController extends Controller
         } catch (ClientException $e) {
             DB::rollBack(); 
             $responseBody = $e->getResponse()->getBody()->getContents();
-             pp($e->getMessage());
             Log::error("API Key verification Guzzle Client error for {$toolSlug}: " . $e->getMessage() . " Response: " . $responseBody);
             $errorMessage = (json_decode($responseBody)->Error->Message ?? $e->getMessage());
             return response()->json(['success' => false, 'error' => "API Key verification failed: " . $errorMessage], $e->getCode());
         } catch (\Exception $e) {
             DB::rollBack(); 
-            pp($e->getMessage());
+            // pp($e->getMessage());
             Log::error("Error connecting {$toolSlug} via API key: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => 'An unexpected error occurred while connecting via API key.'], 500);
         }
@@ -2983,6 +2995,36 @@ class MailchimpOAuthController extends Controller
                         return $responseData['ErrorMessage'] ?? 'Invalid Mailjet API Key or unable to connect.';
                     }
                 ];
+            case ToolNameEnum::KLENTY:
+                return [
+                    'base_api_url'    => $urlJson['base_api_url'] ?? 'https://api.klenty.com/apis/v1/', // Base URL, email appended later
+                    'verify_endpoint' => 'prospects?startDate=2025/01/01', // Endpoint after /user/{email}/
+                    'request_options' => function($apiKey) {
+                        return [
+                            'headers' => [
+                                'x-API-key' => $apiKey,
+                                'Accept'    => 'application/json',
+                            ],
+                            // Klenty doesn't seem to require Content-Type for GET requests
+                        ];
+                    },
+                    'success_check' => function($responseData) {
+                        // Klenty /prospects endpoint returns a 'prospects' array on success
+                        return isset($responseData) && is_array($responseData);
+                    },
+                    'extract_account_info' => function($responseData) {
+                        return [
+                            'mc_user_id'    =>  NULL, // Use hash of email as a unique ID
+                            'account_name'  => 'klenty account', // Use email as account name, or generic
+                            'account_email' => $responseData[0]['assignTo']??NULL,
+                            'metadata'      => $responseData,
+                        ];
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        // Klenty might return errors like {'error': 'Unauthorized'} or similar
+                        return $responseData['message'] ?? 'Invalid Klenty API Key or Email, or unable to connect.';
+                    }
+                ];
             
             default:
             return null;
@@ -3118,8 +3160,8 @@ class MailchimpOAuthController extends Controller
         $apiKey       = $integration->mc_token;
         $toolUrlJson  = json_decode($integration->tool->url, true);
         $base_api_url = $toolUrlJson['base_api_url'] ?? null; // Default from tool config
-        if (in_array($toolName,  [ToolNameEnum::ACTIVECAMPAIGN,ToolNameEnum::WEBENGAGE])) {
-            $metadata = json_decode($integration->metadata, true);
+        if (in_array($toolName,  [ToolNameEnum::ACTIVECAMPAIGN,ToolNameEnum::WEBENGAGE,ToolNameEnum::KLENTY])) {
+            $metadata     = json_decode($integration->metadata, true);
             $base_api_url = $metadata['api_url'] ?? $base_api_url; // Use API URL from metadata if available
             if (empty($base_api_url)) {
                 return response()->json([
@@ -3173,6 +3215,7 @@ class MailchimpOAuthController extends Controller
                     $emails = $subscriberConfig['extract_subscribers']($responseData, new Client(['base_uri' => $base_api_url]), $apiKey);
                 }else{
                     $emails = $subscriberConfig['extract_subscribers']($responseData);
+                    // pp($emails);
                 } 
                 if (empty($emails)) {
                     DB::rollBack();
@@ -3877,6 +3920,29 @@ class MailchimpOAuthController extends Controller
                     }
                 ];
 
+            case ToolNameEnum::KLENTY:
+                return [
+                    'subscriber_endpoint' => function ($listId) { 
+                        return "prospects?startDate=2025/01/01"; // Use listName for filtering
+                    },
+                    'request_options' => function($apiKey) {
+                        return [
+                            'headers' => [
+                                'x-API-key' => $apiKey,
+                                'Accept'    => 'application/json',
+                            ],
+                        ];
+                    },
+                    'success_check' => function($responseData) {
+                        return isset($responseData) && is_array($responseData);
+                    },
+                    'extract_subscribers' => function($responseData) { 
+                        return array_column($responseData ?? [], 'Email'); // Extract 'Email' field
+                    },
+                    'error_message_extractor' => function($responseData) {
+                        return $responseData['message'] ?? 'Failed to fetch Klenty subscribers.';
+                    }
+                ];
 
 
             default:

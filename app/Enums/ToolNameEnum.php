@@ -25,4 +25,5 @@ class ToolNameEnum {
     const MAILGUN = 'mailgun';
     const WEBENGAGE = 'web engage';
     const MAILJET = 'mailjet';
+    const KLENTY = 'klenty';
 }
