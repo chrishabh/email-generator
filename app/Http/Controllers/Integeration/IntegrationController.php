@@ -40,7 +40,7 @@ class IntegrationController extends Controller
             return $response;
         }
 
-        $perPage = $validated['perPage'] ?? 20;  
+        $perPage = $validated['perPage'] ?? 10;  
         $integrations = Integration::with('tool')
             ->where('status', 'verified')->where('user_id',Auth::user()->id)->whereNull('deleted_at')->orderBy('id', 'DESC')->paginate($perPage);
 
