@@ -55,6 +55,10 @@ try{
             return view('single-verification');
         });
              
+        Route::get('/plans', function () {
+            return view('pricing');
+        });
+
         Route::get('/bulk-verification', function () {
             return view('bulk-verification');
         });

@@ -72,7 +72,7 @@
                             </li> -->
                         @endif
                             <li class="nav-item header-item-extra-padding">
-                                <a class="nav-link" href="#pricing">
+                                <a class="nav-link" href="/plans">
                                     Pricing
                                 </a>
                             </li>
