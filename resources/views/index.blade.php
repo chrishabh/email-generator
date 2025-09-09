@@ -995,4 +995,133 @@
     </div>
   </section>
 
+  <!-- Cookie Consent (Bouncee) -->
+<div id="cc-banner" class="cc-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
+  <div class="cc-content">
+    <div class="cc-emoji" aria-hidden="true">🍪</div>
+    <div class="cc-text">
+      We use cookies to improve your experience. 
+      <a href="/privacy-policy" target="_blank" rel="noopener">Learn more</a>.
+    </div>
+  </div>
+  <div class="cc-actions">
+    <button class="cc-btn cc-accept" type="button">Accept</button>
+    <button class="cc-icon cc-close" type="button" aria-label="Dismiss">✕</button>
+  </div>
+</div>
+
+<style>
+  /* --- Cookie Banner (modern, sleek) --- */
+  #cc-banner {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translate(-50%, 24px);
+    width: min(92vw, 680px);
+    background: linear-gradient(135deg,rgb(78, 122, 245),rgb(122, 150, 235));
+    color: #fff;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    z-index: 99999;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .4s ease, opacity .4s ease;
+    /* Subtle glass look if supported */
+    backdrop-filter: saturate(140%) blur(6px);
+  }
+  #cc-banner[data-open="true"] {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  #cc-banner a { color: #fff; text-decoration: underline; font-weight: 500; }
+  .cc-content { display: flex; align-items: center; gap: 12px; }
+  .cc-emoji { font-size: 20px; }
+  .cc-text { line-height: 1.4; font-size: 14px; }
+  .cc-actions { display: flex; align-items: center; gap: 8px; }
+  .cc-btn {
+    border: none;
+    padding: 10px 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cc-accept { background: #10b981; color: #fff; }
+  .cc-accept:hover { background: #059669; }
+  .cc-icon {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .cc-icon:hover { background: rgba(255,255,255,0.25); }
+  @media (max-width: 520px) {
+    #cc-banner { grid-template-columns: 1fr; }
+    .cc-actions { justify-content: flex-end; }
+  }
+</style>
+
+<script>
+  (function () {
+    const KEY = "bouncee_cc"; // storage/cookie key
+    function hasConsent() {
+      try { if (localStorage.getItem(KEY) === "1") return true; } catch(e){}
+      return document.cookie.split("; ").some(c => c.startsWith(KEY + "="));
+    }
+    function setConsent() {
+      try { localStorage.setItem(KEY, "1"); } catch(e){}
+      // 1 year cookie
+      document.cookie = KEY + "=1; max-age=" + (60*60*24*365) + "; path=/; SameSite=Lax";
+    }
+    function openBanner() {
+      var el = document.getElementById("cc-banner");
+      if (el) el.setAttribute("data-open", "true");
+    }
+    function closeBanner() {
+      var el = document.getElementById("cc-banner");
+      if (el) el.removeAttribute("data-open");
+    }
+
+    function init() {
+      var banner = document.getElementById("cc-banner");
+      if (!banner) return;
+      var accept = banner.querySelector(".cc-accept");
+      var close = banner.querySelector(".cc-close");
+
+      if (!hasConsent()) {
+        // small async tick so transition plays
+        setTimeout(openBanner, 50);
+      }
+
+      if (accept) {
+        accept.addEventListener("click", function () {
+          setConsent();
+          closeBanner();
+        });
+      }
+      if (close) {
+        close.addEventListener("click", function () {
+          // dismiss without consenting; will show again next visit
+          closeBanner();
+        });
+      }
+    }
+
+    // Ensure DOM is ready even if script is moved around
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  })();
+</script>
+
+
   @endsection
