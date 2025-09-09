@@ -54,6 +54,10 @@ try{
         Route::get('/single-verification', function () {
             return view('single-verification');
         });
+
+        Route::get('/thankyou', function () {
+            return view('auth.thankyou');
+        });
              
         Route::get('/plans', function () {
             return view('pricing');

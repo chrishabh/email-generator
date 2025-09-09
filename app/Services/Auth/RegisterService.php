@@ -45,7 +45,7 @@ class RegisterService{
             UserCredits::initialFreeCredit(User::getUserId($request->email));
 
             Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('New Account Notification',['User'=>$request->name,'account_email' => $request->email,'account_creation_date'=>Carbon::now()],'new-account'));
-            return redirect()->route('signin')->with('success', "Registration successful!");
+            return redirect()->route('thankyou');
 
         //}
         
