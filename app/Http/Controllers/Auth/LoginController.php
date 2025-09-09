@@ -30,6 +30,10 @@ class LoginController extends Controller
     {
         return view('auth.reset-password');
     }
+    public function showThankyou()
+    {
+        return view('auth.thankyou');
+    }
 
     public function login(Request $request)
     {

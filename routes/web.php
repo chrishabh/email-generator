@@ -44,6 +44,7 @@ try{
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+        Route::get('/thankyou',[LoginController::class,'showThankyou'])->name('thankyou');
         Route::post('/signin',[LoginController::class,'login']);
         Route::get('/recovery',[LoginController::class,'showResetForm'])->name('recovery');
         Route::post('/recovery',[LoginController::class,'resetPassword']); 
@@ -53,10 +54,6 @@ try{
       
         Route::get('/single-verification', function () {
             return view('single-verification');
-        });
-
-        Route::get('/thankyou', function () {
-            return view('auth.thankyou');
         });
              
         Route::get('/plans', function () {
