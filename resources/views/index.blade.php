@@ -1001,7 +1001,7 @@
     <div class="cc-emoji" aria-hidden="true">🍪</div>
     <div class="cc-text">
       We use cookies to improve your experience. 
-      <a href="/privacy-policy" target="_blank" rel="noopener">Learn more</a>.
+      <a href="/privacy" target="_blank" rel="noopener">Learn more</a>.
     </div>
   </div>
   <div class="cc-actions">
