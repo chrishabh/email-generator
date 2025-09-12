@@ -1,6 +1,32 @@
 @extends('layout.main')
 
 @section('main-section')
+@extends('layout.main')
+
+@php
+    $headerData = array();
+    $headerData['whichPageRequest'] ='spamPage';
+@endphp
+
+@section('main-section')
+    @push('title')
+        <title>Spam & Invalid Email Checker – Verify Email for Free</title>
+        <meta name="description" content="Instantly check if an email is disposable, invalid, or spam-trap. Use Bouncee’s free email address verifier to ensure deliverability and protect your sending reputation.">
+        <meta name="keywords" content="spam email checker, invalid email verification, disposable email, email deliverability, email verification free, bouncee">
+        <meta name="author" content="bouncee">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:title" content="Spam & Invalid Email Checker – Verify Email for Free">
+        <meta property="og:description" content="Instantly check if an email is disposable, invalid, or spam-trap. Use Bouncee’s free email address verifier to ensure deliverability and protect your sending reputation.">
+        <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+        <meta property="og:type" content="website">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Spam & Invalid Email Checker – Verify Email for Free">
+        <meta name="twitter:description" content="Instantly check if an email is disposable, invalid, or spam-trap. Use Bouncee’s free email address verifier to ensure deliverability and protect your sending reputation.">
+        <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
+    @endpush
     @push('styles')
         <link rel="stylesheet" href="{{ asset('verify/single/css/style.css') }}">
         <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">

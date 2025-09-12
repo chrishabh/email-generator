@@ -7,8 +7,23 @@
 @endphp
 
 @section('main-section')
-    @push('title')
-        <title>Term of Use | bouncee</title>
+@push('title')
+    <title>Terms of Use – Bouncee Email Verification Services</title>
+    <meta name="description" content="Review the terms governing use of Bouncee’s email verification services including credits, usage rules, policies, and your responsibilities when using the platform.">
+    <meta name="keywords" content="terms of use, bouncee terms, email verification rules, platform usage policy, bouncee services, user responsibilities">
+    <meta name="author" content="bouncee">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Terms of Use – Bouncee Email Verification Services">
+    <meta property="og:description" content="Review the terms governing use of Bouncee’s email verification services including credits, usage rules, policies, and your responsibilities when using the platform.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Terms of Use – Bouncee Email Verification Services">
+    <meta name="twitter:description" content="Review the terms governing use of Bouncee’s email verification services including credits, usage rules, policies, and your responsibilities when using the platform.">
+    <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

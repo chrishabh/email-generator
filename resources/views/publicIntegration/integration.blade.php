@@ -7,7 +7,22 @@ $headerData['whichPageRequest'] ='singlePage';
 
 @section('main-section')
 @push('title')
-<title>Integrations | bouncee</title>
+<title>Email Verification Integrations – Connect Bouncee with Your Tools</title>
+<meta name="description" content="Connect Bouncee’s email verification to Mailchimp, HubSpot, Google Sheets, and more. Clean email data across platforms effortlessly with our easy-to-use integrations.">
+<meta name="keywords" content="email verification integrations, bouncee integrations, mailchimp, hubspot, google sheets, clean email data, email tools">
+<meta name="author" content="bouncee">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:title" content="Email Verification Integrations – Connect Bouncee with Your Tools">
+<meta property="og:description" content="Connect Bouncee’s email verification to Mailchimp, HubSpot, Google Sheets, and more. Clean email data across platforms effortlessly with our easy-to-use integrations.">
+<meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+<meta property="og:type" content="website">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Email Verification Integrations – Connect Bouncee with Your Tools">
+<meta name="twitter:description" content="Connect Bouncee’s email verification to Mailchimp, HubSpot, Google Sheets, and more. Clean email data across platforms effortlessly with our easy-to-use integrations.">
+<meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
 @endpush
 @push('styles')
 <style>

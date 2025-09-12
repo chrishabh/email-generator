@@ -8,7 +8,22 @@
 
 @section('main-section')
     @push('title')
-        <title>Data Policy | bouncee</title>
+    <title>Bouncee Data Policy – Retention & Security Practices</title>
+    <meta name="description" content="Understand how Bouncee handles your data. We retain email lists & verification results for 30 days, support user deletion requests, and ensure GDPR-compliant security.">
+    <meta name="keywords" content="bouncee data policy, email data retention, email verification security, GDPR compliance, user data deletion, email privacy">
+    <meta name="author" content="bouncee">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Bouncee Data Policy – Retention & Security Practices">
+    <meta property="og:description" content="Understand how Bouncee handles your data. We retain email lists & verification results for 30 days, support user deletion requests, and ensure GDPR-compliant security.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bouncee Data Policy – Retention & Security Practices">
+    <meta name="twitter:description" content="Understand how Bouncee handles your data. We retain email lists & verification results for 30 days, support user deletion requests, and ensure GDPR-compliant security.">
+    <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

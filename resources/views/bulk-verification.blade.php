@@ -4,8 +4,23 @@
     $headerData['whichPageRequest'] ='singlePage';
 @endphp
 @section('main-section')
-    @push('title')
-        <title>Bulk Email Email Verification | bouncee</title>
+@push('title')
+        <title>Bulk Email Verification Tool – Clean Your Email List for Free</title>
+        <meta name="description" content="Upload and clean your entire email list with Bouncee’s bulk email verification—free, accurate (99%), and lightning-fast. Improve campaign ROI, reduce bounces, no credit card.">
+        <meta name="keywords" content="bulk email verification, email list cleaning, bounce reduction, free email checker, verify email list, improve campaign ROI">
+        <meta name="author" content="bouncee">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:title" content="Bulk Email Verification Tool – Clean Your Email List for Free">
+        <meta property="og:description" content="Upload and clean your entire email list with Bouncee’s bulk email verification—free, accurate (99%), and lightning-fast. Improve campaign ROI, reduce bounces, no credit card.">
+        <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+        <meta property="og:type" content="website">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Bulk Email Verification Tool – Clean Your Email List for Free">
+        <meta name="twitter:description" content="Upload and clean your entire email list with Bouncee’s bulk email verification—free, accurate (99%), and lightning-fast. Improve campaign ROI, reduce bounces, no credit card.">
+        <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

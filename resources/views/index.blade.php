@@ -6,23 +6,32 @@
 @endphp
 @section('main-section')
   @push('title')
-    <title>bouncee</title>
-     <!-- Description (for SEO) -->
-     <meta name="description" content="Cheap and Best Email Verification Tool.">
-    
-    <!-- Keywords (for SEO) -->
-    <meta name="keywords" content="email verification, email validation, bouncee pricing, neverbounce, zerobounce, bulk email verifier, affordable email checker">
+   <!-- Meta Title -->
+  <title>Free Email Verification Tool | Clean & Verify Emails Fast</title>
 
-    <!-- Author Information -->
-    <meta name="author" content="bouncee">
+  <!-- Meta Description -->
+  <meta name="description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
 
-    <!-- Social Media Optimization -->
-    <!-- Facebook Open Graph -->
-    <meta property="og:title" content="bouncee">
-    <meta property="og:description" content="Cheap and Best Email Verification Tool.">
-    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
-    <meta property="og:url" content="https://bouncee.net/">
-    <meta property="og:type" content="website">
+  <!-- Keywords (for SEO) -->
+  <meta name="keywords" content="email verification, email validation, bouncee, bulk email verifier, free email checker, clean email list, reduce bounces">
+
+  <!-- Author Information -->
+  <meta name="author" content="Bouncee">
+
+  <!-- Social Media Optimization -->
+  <!-- Facebook Open Graph -->
+  <meta property="og:title" content="Free Email Verification Tool | Clean & Verify Emails Fast">
+  <meta property="og:description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
+  <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+  <meta property="og:url" content="https://bouncee.net/">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Email Verification Tool | Clean & Verify Emails Fast">
+  <meta name="twitter:description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
+  <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
+
   @endpush
     <!-- Hero Area Start -->
     <div id="hero-area" class="hero-area-bg">

@@ -8,7 +8,22 @@
 
 @section('main-section')
     @push('title')
-        <title>Refund Policy | bouncee</title>
+    <title>Bouncee Refund & Free Trial Policy – 100 Free Credits</title>
+    <meta name="description" content="Learn about Bouncee’s refund policy and free trial offer. New users get 100 complimentary verification credits to test accuracy risk-free before purchasing more.">
+    <meta name="keywords" content="bouncee refund policy, free trial, email verification credits, risk-free, test email verification, 100 free credits">
+    <meta name="author" content="bouncee">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Bouncee Refund & Free Trial Policy – 100 Free Credits">
+    <meta property="og:description" content="Learn about Bouncee’s refund policy and free trial offer. New users get 100 complimentary verification credits to test accuracy risk-free before purchasing more.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bouncee Refund & Free Trial Policy – 100 Free Credits">
+    <meta name="twitter:description" content="Learn about Bouncee’s refund policy and free trial offer. New users get 100 complimentary verification credits to test accuracy risk-free before purchasing more.">
+    <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

@@ -7,8 +7,23 @@
 @endphp
 
 @section('main-section')
-    @push('title')
-        <title>Single Email Verification | bouncee</title>
+@push('title')
+        <title>Free Single Email Verification Tool – Verify Email Address Online</title>
+        <meta name="description" content="Verify any individual email address instantly for free. Bouncee’s real-time single email verification tool delivers fast, 99% accurate results—no sign-up required.">
+        <meta name="keywords" content="email verification, single email verification, verify email online, bouncee, free email checker, accurate email validation">
+        <meta name="author" content="bouncee">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:title" content="Free Single Email Verification Tool – Verify Email Address Online">
+        <meta property="og:description" content="Verify any individual email address instantly for free. Bouncee’s real-time single email verification tool delivers fast, 99% accurate results—no sign-up required.">
+        <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+        <meta property="og:type" content="website">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Free Single Email Verification Tool – Verify Email Address Online">
+        <meta name="twitter:description" content="Verify any individual email address instantly for free. Bouncee’s real-time single email verification tool delivers fast, 99% accurate results—no sign-up required.">
+        <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

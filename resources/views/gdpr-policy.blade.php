@@ -8,7 +8,22 @@
 
 @section('main-section')
     @push('title')
-        <title>GDPR Policy | bouncee</title>
+    <title>GDPR Privacy Policy – Bouncee’s Data Protection Standards</title>
+    <meta name="description" content="Read how Bouncee complies with GDPR. Learn about data rights, processing principles, and how we protect personal data with transparency and security.">
+    <meta name="keywords" content="GDPR privacy policy, bouncee data protection, personal data security, data rights, GDPR compliance, email verification privacy">
+    <meta name="author" content="bouncee">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="GDPR Privacy Policy – Bouncee’s Data Protection Standards">
+    <meta property="og:description" content="Read how Bouncee complies with GDPR. Learn about data rights, processing principles, and how we protect personal data with transparency and security.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GDPR Privacy Policy – Bouncee’s Data Protection Standards">
+    <meta name="twitter:description" content="Read how Bouncee complies with GDPR. Learn about data rights, processing principles, and how we protect personal data with transparency and security.">
+    <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">

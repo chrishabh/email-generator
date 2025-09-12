@@ -7,8 +7,23 @@
 @endphp
 
 @section('main-section')
-    @push('title')
-        <title>Privacy Policy | bouncee</title>
+@push('title')
+    <title>Privacy Policy – Bouncee’s Commitment to Your Data Privacy</title>
+    <meta name="description" content="See how Bouncee collects, uses, and safeguards your information. We protect your privacy with encryption, analytics, and respect user preferences—no data selling.">
+    <meta name="keywords" content="privacy policy, bouncee data privacy, personal data protection, email verification privacy, secure email verification, user privacy">
+    <meta name="author" content="bouncee">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Privacy Policy – Bouncee’s Commitment to Your Data Privacy">
+    <meta property="og:description" content="See how Bouncee collects, uses, and safeguards your information. We protect your privacy with encryption, analytics, and respect user preferences—no data selling.">
+    <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Privacy Policy – Bouncee’s Commitment to Your Data Privacy">
+    <meta name="twitter:description" content="See how Bouncee collects, uses, and safeguards your information. We protect your privacy with encryption, analytics, and respect user preferences—no data selling.">
+    <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
     @endpush
     @push('styles')
         <link rel="stylesheet" href="singleEmailVerification-assets/css/index.css">
