@@ -14,6 +14,7 @@ use App\Http\Controllers\Integeration\MailchimpOAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Sitemap\SitemapGenerator;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,15 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 try{
+    
+
+    Route::get('/generate-sitemap', function () {
+        SitemapGenerator::create(config('app.url'))
+            ->writeToFile(public_path('sitemap.xml'));
+
+        return 'Sitemap generated!';
+    });
+
 
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
