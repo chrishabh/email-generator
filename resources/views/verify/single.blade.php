@@ -2,13 +2,6 @@
 
 @section('main-section')
 @extends('layout.main')
-
-@php
-    $headerData = array();
-    $headerData['whichPageRequest'] ='spamPage';
-@endphp
-
-@section('main-section')
     @push('title')
         <title>Spam & Invalid Email Checker – Verify Email for Free</title>
         <meta name="description" content="Instantly check if an email is disposable, invalid, or spam-trap. Use Bouncee’s free email address verifier to ensure deliverability and protect your sending reputation.">
