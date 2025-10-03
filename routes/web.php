@@ -165,7 +165,8 @@ try{
         // });
 
         Route::middleware('auth:web')->group(function(){
-            Route::post('/create-order', [PaymentController::class, 'createOrder'])->name('create.Order');
+            Route::get('/create-order/limited/{plan}', [PaymentController::class, 'createLimitedOrder'])->name('create.limited.Order');
+            Route::get('/create-order/unlimited/{plan}', [PaymentController::class, 'createUnLimitedOrder'])->name('create.unlimited.Order');
             Route::post('/handle-payment', [PaymentController::class, 'handlePayment'])->name('handlePayment');
             Route::post('/verification-code', [LoginController::class, 'verification'])->name('verification.code');
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');

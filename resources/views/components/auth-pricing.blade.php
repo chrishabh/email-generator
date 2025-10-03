@@ -1,99 +1,104 @@
-
-@php
-    $plans = [
-            [
-                'name' => 'Single Email Verification',
-                'price' => '0',
-                'color' => '  text-white', // Green
-                'transform'=>'',
-                'header'=> 'background:#0E866D;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free Single Email Check',
-                    'Unlimited Email Credits',
-                    'Unlimited Users',
-                    'Free API Integration',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
-            ],
-            [
-                'name' => 'Bulk Email Verification',
-                'price' => '0',
-                'color' => 'text-white', // Blue
-                'transform' =>'transform',
-                'header'=> 'background:#3F51B5;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free Bulk Email Check',
-                    'Unlimited Email Credits',
-                    'Unlimited Users',
-                    'Free API Integration',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
-            ],
-            [
-                'name' => 'B2B Email Finder',
-                'price' => '0',
-                'color' => '  text-white', // Orange
-                'transform'=>'',
-                'header'=> 'background:#D6721D;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free B2B Email Finding',
-                    'Unlimited Email Credits',
-                    'Unlimited User Access',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
-            ]
-        ];
-
-@endphp
-
-
-
 <section id="pricing" class="section-padding">
     <div class="min-vh-100 bg-light d-flex align-items-center py-5 price-custom-section">
         <div class="container">
-            <div class="section-header text-center">
-                <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
-                <h6 class="pricing-sub-header wow fadeInDown" data-wow-delay="0.4s">Try first, decide later, No credit card
-                    required!</h6>
-                <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
+
+            <!-- Page Header -->
+            <div class="section-header text-center mb-5">
+                <h2 class="section-title">Plans & Pricing</h2>
+                <h6 class="pricing-sub-header">Choose Limited or Unlimited — No credit card required!</h6>
             </div>
 
-            <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center wow fadeInDown custom-margin">
-                @foreach($plans as $plan)
-                    <div class="col padding-bottom">
-                        <div class="custom-card h-100 shadow-sm {{$plan['transform']}}"  >
-                            <div class="card-header {{ $plan['color'] }} text-white text-center fw-bold" style="{{$plan['header']}}">
-                                <h3 class="h5 mb-0 font-weight-bold ">{{ $plan['name'] }}</h3>
-                            </div>
+            <!-- Tabs -->
+            <ul class="nav nav-pills justify-content-center mb-4" id="pricingTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button 
+                        class="nav-link active" 
+                        id="limited-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#limited" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="limited" 
+                        aria-selected="true">
+                        Limited Plans
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button 
+                        class="nav-link" 
+                        id="unlimited-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#unlimited" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="unlimited" 
+                        aria-selected="false">
+                        Unlimited Plans
+                    </button>
+                </li>
+            </ul>
 
-                            <div class="card-body text-center p-4">
-                                <div class="display-6 fw-bold mb-1" style="{{$plan['priceCss']}}">${{ $plan['price'] }}</div>
-                                <div class="text-muted small font-weight-normal">per month</div>
+            <!-- Tab Content -->
+            <div class="tab-content" id="pricingTabsContent">
 
-                                <ul class="features">
-                                    @foreach($plan['features'] as $feature) 
-                                        <li class="included">{{ $feature }}</li>
-                                    @endforeach 
-                                </ul>
+                <!-- Limited Plans -->
+                <div class="tab-pane fade show active" id="limited" role="tabpanel" aria-labelledby="limited-tab">
+                    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+                        @foreach([
+                            ['price'=>'5', 'credits'=>'2,000'],
+                            ['price'=>'10', 'credits'=>'10,000'],
+                            ['price'=>'20', 'credits'=>'25,000'],
+                            ['price'=>'50', 'credits'=>'100,000'],
+                            ['price'=>'100', 'credits'=>'250,000'],
+                            ['price'=>'200', 'credits'=>'600,000'],
+                            ['price'=>'400', 'credits'=>'1.5M'],
+                            ['price'=>'800', 'credits'=>'5M'],
+                            ['price'=>'1500', 'credits'=>'10M'],
+                            ['price'=>'3000', 'credits'=>'25M'],
+                        ] as $plan)
+                        <div class="col" style="padding: 10px;">
+                            <div class="custom-card h-100 shadow-sm">
+                                <div class="card-header text-center bg-success text-white fw-bold">
+                                    ${{ $plan['price'] }}
+                                </div>
+                                <div class="card-body text-center p-4">
+                                    <h5>{{ $plan['credits'] }} Credits</h5>
+                                    <a href="/create-order/limited/{{ $plan['price'] }}" class="btn btn-success mt-3">Purchase</a>
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
-            {{-- <div class="section-header text-center"> 
-                <div class="header-button" style="margin-top:2rem;">
-                    <a rel="nofollow" href="/signup" class="btn btn-home-common">Sign up now and get 100 FREE Credits</a>
                 </div>
-                <p class="checkbox-text">
-                    <img decoding="async" src="assets/checkmark.png" width="15px" height="15px"> No monthly payment, no upfront fee, credits never expire. <br>
-                </p>
-            </div> --}}
+
+                <!-- Unlimited Plans -->
+                <div class="tab-pane fade" id="unlimited" role="tabpanel" aria-labelledby="unlimited-tab">
+                    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+                        @foreach([
+                            ['price'=>'19', 'duration'=>'7 Days'],
+                            ['price'=>'49', 'duration'=>'1 Month'],
+                            ['price'=>'129', 'duration'=>'3 Months'],
+                            ['price'=>'249', 'duration'=>'6 Months'],
+                        ] as $plan)
+                        <div class="col" style="padding: 10px;">
+                            <div class="custom-card h-100 shadow-sm">
+                                <div class="card-header text-center bg-primary text-white fw-bold">
+                                    ${{ $plan['price'] }}
+                                </div>
+                                <div class="card-body text-center p-4">
+                                    <h5>Unlimited for {{ $plan['duration'] }}</h5>
+                                    <a href="/create-order/unlimited/{{ $plan['price'] }}" class="btn btn-primary mt-3">Purchase</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </section>
+
+<!-- Make sure you have Bootstrap JS included -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

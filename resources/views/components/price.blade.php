@@ -393,55 +393,59 @@
 
 
 @php
-    $plans = [
-            [
-                'name' => 'Single Email Verification',
-                'price' => '0',
-                'color' => '  text-white', // Green
-                'transform'=>'',
-                'header'=> 'background:#0E866D;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free Single Email Check',
-                    'Unlimited Email Credits',
-                    'Unlimited Users',
-                    'Free API Integration',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
-            ],
-            [
-                'name' => 'Bulk Email Verification',
-                'price' => '0',
-                'color' => 'text-white', // Blue
-                'transform' =>'transform',
-                'header'=> 'background:#3F51B5;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free Bulk Email Check',
-                    'Unlimited Email Credits',
-                    'Unlimited Users',
-                    'Free API Integration',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
-            ],
-            [
-                'name' => 'B2B Email Finder',
-                'price' => '0',
-                'color' => '  text-white', // Orange
-                'transform'=>'',
-                'header'=> 'background:#D6721D;font-weight:bold',
-                'priceCss'=>"font-size: 36px;font-weight: 400;color: #4A4A4A;font-family: 'Arial', sans-serif;text-align: center;display: block;",
-                'features' => [
-                    'Free B2B Email Finding',
-                    'Unlimited Email Credits',
-                    'Unlimited User Access',
-                    '24x7 Customer Support',
-                    'No Credit Card Required'
-                ]
+
+$plans = [
+        [
+            'name' => 'Basic Limited Plan',
+            'price' => '',
+            'color' => 'text-white',
+            'transform' => '',
+            'header'=> 'background:#0E866D;font-weight:bold',
+            'priceCss'=>"display:none;", // hide single price
+            'features' => [
+                'Limited: $5 → 2,000 credits',
+                'Limited: $10 → 10,000 credits',
+                'Limited: $20 → 25,000 credits',
+                'Limited: $50 → 100,000 credits',
+                'Limited: $100 → 250,000 credits',
+               
             ]
-        ];
+        ],
+        [
+            'name' => 'Unlimited Plan',
+            'price' => '',
+            'color' => 'text-white',
+            'transform' =>'transform',
+            'header'=> 'background:#3F51B5;font-weight:bold',
+            'priceCss'=>"display:none;",
+            'features' => [
+                'Unlimited: $19 → 7 Days',
+                'Unlimited: $49 → 1 Month',
+                'Unlimited: $129 → 3 Months',
+                'Unlimited: $249 → 6 Months',
+            ]
+        ],
+        [
+            'name' => 'Pro Limited Plan',
+            'price' => '',
+            'color' => 'text-white',
+            'transform'=>'',
+            'header'=> 'background:#D6721D;font-weight:bold',
+            'priceCss'=>"display:none;",
+            'features' => [
+                'Limited: $200 → 600,000 credits',
+                'Limited: $400 → 1.5M credits',
+                'Limited: $800 → 5M credits',
+                'Limited: $1500 → 10M credits',
+                'Limited: $3000 → 25M credits',
+               
+            ]
+        ]
+
+
+
+      
+    ];
 
 @endphp
 
@@ -500,7 +504,6 @@
 .price-custom-section .features li {
     display: flex;
     align-items: center;
-    gap: 10px;
     padding: 12px 20px;
     font-size: 14px;
     /* font-weight: bold; */

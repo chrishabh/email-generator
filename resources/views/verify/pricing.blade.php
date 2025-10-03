@@ -57,7 +57,6 @@
         .price-custom-section .features li {
             display: flex;
             align-items: center;
-            gap: 10px;
             padding: 12px 20px;
             font-size: 14px;
             /* font-weight: bold; */

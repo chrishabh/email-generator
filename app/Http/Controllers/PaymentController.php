@@ -22,23 +22,24 @@ class PaymentController extends Controller
         $this->razorpay = $razorpay;
     }
 
-    public function createOrder(Request $request)
+    public function createLimitedOrder($plan)
     {
-        //return view('notice');
+        return view('notice');
 
         $verification_credits = [
-            '5' => 2000,
-            '9' => 5000,
-            '14' => 10000,
-            '28' => 25000,
-            '45' => 50000,
-            '75' => 100000,
-            '125' => 200000,
-            '250' => 500000,
-            '450' => 1000000,
+            '5'    => 2000,
+            '10'   => 10000,
+            '20'   => 25000,
+            '50'   => 100000,
+            '100'  => 250000,
+            '200'  => 600000,
+            '400'  => 1500000,
+            '800'  => 5000000,
+            '1500' => 10000000,
+            '3000' => 25000000,
         ];
 
-        $pack_amount = $request->input('input_value');
+        $pack_amount = $plan;
         $timestamp = Carbon::now()->timestamp;
         $receipt = "bouncee_".$timestamp;
         $currency = 'USD';
@@ -78,6 +79,65 @@ class PaymentController extends Controller
         ]);
         return view('payment', $bind_data);
     }
+
+    public function createUnLimitedOrder($plan)
+    {
+        return view('notice');
+
+        $verification_credits = [
+            '5' => 2000,
+            '9' => 5000,
+            '14' => 10000,
+            '28' => 25000,
+            '45' => 50000,
+            '75' => 100000,
+            '125' => 200000,
+            '250' => 500000,
+            '450' => 1000000,
+        ];
+
+        //$pack_amount = $request->input('input_value');
+        print_r($plan); exit;
+        $timestamp = Carbon::now()->timestamp;
+        $receipt = "bouncee_".$timestamp;
+        $currency = 'USD';
+        
+        $order_exists = Order::checkOrderExists(Auth::User()->id,$pack_amount);
+        if(!empty($order_exists)){
+            $order['id'] = $order_exists->order_id;
+        }else{
+            $order = $this->razorpay->order->create([
+                'receipt' => $receipt,
+                'amount' => $pack_amount*100, // amount in paise
+                'currency' => $currency
+            ]);
+        }
+        
+
+        $bind_data = [
+            'orderId' => $order['id'],
+            'amount' => $pack_amount*100,
+            'currency' => $currency,
+            'company_name' => "bouncee",
+            'description' => '',
+            'prefill_name' => Auth::User()->name,
+            'prefill_email' => Auth::User()->email,
+            'created_at' => Carbon::now(),
+            'credits' => $verification_credits[$pack_amount],
+        ];
+        Order::createOrder([
+            'receipt' => $receipt,
+            'order_id' => $order['id'],
+            'user_id' => Auth::User()->id,
+            'amount' => $pack_amount,
+            'currency' => $currency,
+            'company_name' => "bouncee",
+            'prefill_name' => Auth::User()->name,
+            'prefill_email' => Auth::User()->email,
+        ]);
+        return view('payment', $bind_data);
+    }
+
 
     public function handlePayment(Request $request)
     {
