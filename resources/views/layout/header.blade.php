@@ -71,6 +71,12 @@
                                 </a>
                             </li> -->
                         @endif
+                        <li class="nav-item header-item-extra-padding">
+                                <a class="nav-link" href="/aboutus">
+                                    About Us
+                                </a>
+                        </li>
+
                             <li class="nav-item header-item-extra-padding">
                                 <a class="nav-link" href="/plans">
                                     Pricing

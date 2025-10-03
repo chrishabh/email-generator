@@ -70,6 +70,10 @@ try{
             return view('pricing');
         });
 
+        Route::get('/aboutus', function () {
+            return view('aboutus');
+        });
+
         Route::get('/bulk-verification', function () {
             return view('bulk-verification');
         });
