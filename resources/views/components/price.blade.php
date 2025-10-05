@@ -579,7 +579,6 @@ $plans = [
 
                             <div class="card-body text-center p-4">
                                 <div class="display-6 fw-bold mb-1" style="{{$plan['priceCss']}}">${{ $plan['price'] }}</div>
-                                <div class="text-muted small font-weight-normal">per month</div>
 
                                 <ul class="features">
                                     @foreach($plan['features'] as $feature) 
