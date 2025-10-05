@@ -28,6 +28,7 @@
                         <li><a href="/bulk-verification">Bulk Email Verifiction</a></li>
                         <li><a href="/why-us">Why Us</a></li>
                         <li><a href="/faq">FAQ</a></li>
+                        <li><a href="/blog">Blog</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12">

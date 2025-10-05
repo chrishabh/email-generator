@@ -71,6 +71,11 @@
                                 </a>
                             </li> -->
                         @endif
+                        <!-- <li class="nav-item header-item-extra-padding">
+                                <a class="nav-link" href="/about-us">
+                                    Blogs
+                                </a>
+                        </li> -->
                         <li class="nav-item header-item-extra-padding">
                                 <a class="nav-link" href="/about-us">
                                     About Us

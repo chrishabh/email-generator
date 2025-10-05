@@ -34,6 +34,7 @@
     // Retrieve the logged-in user's name
     $fullName = Auth::user()->name;
     $role = Auth::user()->role;
+    $seo = Auth::user()->is_seo;
 
     // Check if the name contains at least two parts
     $nameParts = explode(' ', $fullName);
@@ -126,6 +127,9 @@
                                 <a href="/payment-history">Payment History</a>
                                 @if($role == 'admin')
                                     <a href="/settings">Settings</a>
+                                @endif
+                                @if($seo)
+                                    <a href="/posts">Create Posts</a>
                                 @endif
                                 <!-- <div class="dropdown-divider" id="dive"></div> -->
                                 <a href="/logout" id="out">Sign Out</a>
