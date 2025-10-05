@@ -58,12 +58,13 @@
                         ] as $plan)
                         <div class="col" style="padding: 10px;">
                             <div class="custom-card h-100 shadow-sm">
-                                <div class="card-header text-center bg-success text-white fw-bold">
-                                    ${{ $plan['price'] }}
+                                <div class="card-header text-center btn-primary text-white fw-bold" style="
+    background: #007bff;">
+                                    ₹{{ $plan['price'] }}
                                 </div>
                                 <div class="card-body text-center p-4">
                                     <h5>{{ $plan['credits'] }} Credits</h5>
-                                    <a href="/create-order/limited/{{ $plan['price'] }}" class="btn btn-success mt-3">Purchase</a>
+                                    <a href="/create-order/limited/{{ $plan['price'] }}" class="btn btn-primary mt-3">Purchase</a>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +84,7 @@
                         <div class="col" style="padding: 10px;">
                             <div class="custom-card h-100 shadow-sm">
                                 <div class="card-header text-center bg-primary text-white fw-bold">
-                                    ${{ $plan['price'] }}
+                                    ₹{{ $plan['price'] }}
                                 </div>
                                 <div class="card-body text-center p-4">
                                     <h5>Unlimited for {{ $plan['duration'] }}</h5>
