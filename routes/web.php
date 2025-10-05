@@ -70,6 +70,14 @@ try{
             return view('pricing');
         });
 
+        Route::get('/whyus', function () {
+            return view('whyus');
+        });
+
+        Route::get('/faq', function () {
+            return view('faq');
+        });
+
         Route::get('/aboutus', function () {
             return view('aboutus');
         });
