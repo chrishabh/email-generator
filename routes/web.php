@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sitemap\SitemapGenerator;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,8 @@ try{
         return 'Sitemap generated!';
     });
 
-
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::post('blog-details', [BlogController::class, 'show'])->name('blog.show');
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 
@@ -185,6 +187,9 @@ try{
             Route::get('/resend-code', [LoginController::class, 'resendCode'])->name('resend.code');
             Route::get('/payment-history', [PaymentController::class, 'getPaymentHistory'])->name('payment.history');
             Route::post('/invoice-pdf', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
+            Route::get('/posts', [BlogController::class, 'create'])->name('posts.create');
+            Route::post('/posts/store', [BlogController::class, 'store'])->name('posts.store');
+            Route::delete('/posts/{id}', [BlogController::class, 'destroy'])->name('posts.destroy');
       
         });
          

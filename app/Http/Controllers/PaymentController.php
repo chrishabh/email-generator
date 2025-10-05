@@ -24,7 +24,7 @@ class PaymentController extends Controller
 
     public function createLimitedOrder($plan)
     {
-        return view('notice');
+        //return view('notice');
 
         $verification_credits = [
             '5'    => 2000,
