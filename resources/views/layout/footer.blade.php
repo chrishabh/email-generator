@@ -26,7 +26,7 @@
                     <ul class="footer-link">
                         <li><a href="/single-verification">Single Email Verification</a></li>
                         <li><a href="/bulk-verification">Bulk Email Verifiction</a></li>
-                        <li><a href="/whyus">Why Us</a></li>
+                        <li><a href="/why-us">Why Us</a></li>
                         <li><a href="/faq">FAQ</a></li>
                     </ul>
                 </div>

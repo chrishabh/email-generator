@@ -72,7 +72,7 @@
                             </li> -->
                         @endif
                         <li class="nav-item header-item-extra-padding">
-                                <a class="nav-link" href="/aboutus">
+                                <a class="nav-link" href="/about-us">
                                     About Us
                                 </a>
                         </li>

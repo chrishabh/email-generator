@@ -70,7 +70,7 @@ try{
             return view('pricing');
         });
 
-        Route::get('/whyus', function () {
+        Route::get('/why-us', function () {
             return view('whyus');
         });
 
@@ -78,7 +78,7 @@ try{
             return view('faq');
         });
 
-        Route::get('/aboutus', function () {
+        Route::get('/about-us', function () {
             return view('aboutus');
         });
 
