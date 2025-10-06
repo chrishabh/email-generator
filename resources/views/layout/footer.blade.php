@@ -11,9 +11,9 @@
                                 services. Reduce bounce rates and enhance deliverability effortlessly.</p>
                         </div>
                         <div class="social-icon">
-                            <a class="facebook" href="#"><i class="lni-facebook-filled"></i></a>
+                            <!-- <a class="facebook" href="#"><i class="lni-facebook-filled"></i></a>
                             <a class="twitter" href="#"><i class="lni-twitter-filled"></i></a>
-                            <a class="instagram" href="#"><i class="lni-instagram-filled"></i></a>
+                            <a class="instagram" href="#"><i class="lni-instagram-filled"></i></a> -->
                             <a class="linkedin" href="https://www.linkedin.com/company/bouncee-net/"><i class="lni-linkedin-filled"></i></a>
                         </div>
                         <div>
