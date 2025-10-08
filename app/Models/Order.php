@@ -48,7 +48,7 @@ class Order extends Model
 
     public static function getOrderDetails($user_id)
     {
-        return Order::select('id','order_id','prefill_name','status','amount','created_at')->whereNull('deleted_at')->where('user_id',$user_id)->get();
+        return Order::whereNull('deleted_at')->where('user_id',$user_id)->get();
     }
 
     public static function getInvoiceData($id)

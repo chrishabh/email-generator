@@ -153,7 +153,7 @@
                                                 <span>{{$value['credit_points']}}</span>
                                             </td>
                                             <td class="cell-with-media">
-                                                <span>$ {{$value['amount']}}</span>
+                                                <span>{{ $amount_currency }} {{$value['amount']}}</span>
                                             </td>
                                             <td class="cell-with-media">
                                                 <span>{{$value['created_at']}}</span>
