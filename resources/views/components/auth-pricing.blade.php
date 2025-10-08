@@ -64,7 +64,7 @@
                         <div class="col" style="padding: 10px;">
                             <div class="custom-card h-100 shadow-sm">
                                 <div class="card-header text-center btn-primary text-white fw-bold" style="background: #007bff;">
-                                    ₹{{ $plan['price'] }}
+                                    ${{ $plan['price'] }}
                                 </div>
                                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4 text-center">
                                     <h5 class="mb-3">{{ $plan['credits'] }} Credits</h5>
@@ -98,7 +98,7 @@
                         <div class="col" style="padding: 10px;">
                             <div class="custom-card h-100 shadow-sm">
                                 <div class="card-header text-center bg-primary text-white fw-bold">
-                                    ₹{{ $plan['price'] }}
+                                    ${{ $plan['price'] }}
                                 </div>
                                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4 text-center">
                                     <h5 class="mb-3">Unlimited for {{ $plan['duration'] }}</h5>

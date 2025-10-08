@@ -403,11 +403,11 @@ $plans = [
             'header'=> 'background:#0E866D;font-weight:bold',
             'priceCss'=>"display:none;", // hide single price
             'features' => [
-                'Limited: ₹5 → 2,000 credits',
-                'Limited: ₹10 → 10,000 credits',
-                'Limited: ₹20 → 25,000 credits',
-                'Limited: ₹50 → 100,000 credits',
-                'Limited: ₹100 → 250,000 credits',
+                'Limited: $5 → 2,000 credits',
+                'Limited: $10 → 10,000 credits',
+                'Limited: $20 → 25,000 credits',
+                'Limited: $50 → 100,000 credits',
+                'Limited: $100 → 250,000 credits',
                
             ]
         ],
@@ -419,10 +419,10 @@ $plans = [
             'header'=> 'background:#3F51B5;font-weight:bold',
             'priceCss'=>"display:none;",
             'features' => [
-                'Unlimited: ₹19 → 7 Days',
-                'Unlimited: ₹49 → 1 Month',
-                'Unlimited: ₹129 → 3 Months',
-                'Unlimited: ₹249 → 6 Months',
+                'Unlimited: $19 → 7 Days',
+                'Unlimited: $49 → 1 Month',
+                'Unlimited: $129 → 3 Months',
+                'Unlimited: $249 → 6 Months',
             ]
         ],
         [
@@ -433,11 +433,11 @@ $plans = [
             'header'=> 'background:#D6721D;font-weight:bold',
             'priceCss'=>"display:none;",
             'features' => [
-                'Limited: ₹200 → 600,000 credits',
-                'Limited: ₹400 → 1.5M credits',
-                'Limited: ₹800 → 5M credits',
-                'Limited: ₹1500 → 10M credits',
-                'Limited: ₹3000 → 25M credits',
+                'Limited: $200 → 600,000 credits',
+                'Limited: $400 → 1.5M credits',
+                'Limited: $800 → 5M credits',
+                'Limited: $1500 → 10M credits',
+                'Limited: $3000 → 25M credits',
                
             ]
         ]
