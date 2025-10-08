@@ -759,10 +759,11 @@ class PaymentController extends Controller
                 'logo_url' => url("/assets/logo.png"),
                 'client' => $data->name,
                 'company' => "bouncee",
+                'amount_currency' => $currencySymbols[$data->currency].' ',
                 'items' => [[
                     'description' =>  number_format($credit_points[$data->plan_amount])." Verifications",
                     'amount' => $data->amount,
-                    'amount_currency' => $currencySymbols[$data->currency].' ',
+                    
                 ]],
                 'total' => $data->amount
             ];

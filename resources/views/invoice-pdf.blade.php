@@ -99,12 +99,12 @@
                 @foreach ($items as $k=>$value)
                 <tr>
                     <td>{{ $value['description'] }}</td>
-                    <td>{{ $value['amount_currency'] }}{{ number_format($value['amount'], 2) }}</td>
+                    <td>{{ $amount_currency }}{{ number_format($value['amount'], 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <h3 class="total">Total: {{ $value['amount_currency'] }}{{ number_format($total, 2) }}</h3>
+        <h3 class="total">Total: {{ $amount_currency }}{{ number_format($total, 2) }}</h3>
     </div>
 
 </body>
