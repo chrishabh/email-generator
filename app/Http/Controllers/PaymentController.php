@@ -196,6 +196,7 @@ class PaymentController extends Controller
         $converted_details = getConvertedAmount($request->price,$ip_currency);
         $pack_amount = $converted_details['amount'];
         $gst_amount = ($pack_amount*env('gst_percentage'))/100;
+        
         $pack_amount = $pack_amount+$gst_amount;
         $currency =  $converted_details['currency'];
         // You can pass plan details here when user clicks “Purchase”

@@ -100,7 +100,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const basePrice = parseFloat('{{ $price }}');
+    const basePrice = parseFloat('{{ $base_price }}');
     const gstRate = parseFloat('{{ $gst }}') / 100;
     let discount = 0;
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             discount = 0;
         }
 
-        const gst = (basePrice - discount) * gstRate;
+        const gst = (basePrice) * gstRate;
         const total = (basePrice - discount + gst).toFixed(2);
 
         displayBase.textContent = basePrice.toFixed(2);

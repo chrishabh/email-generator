@@ -3,9 +3,14 @@
         <div class="container">
 
             <!-- Page Header -->
-            <div class="section-header text-center mb-5">
+            <div class="section-header text-center mb-4">
                 <h2 class="section-title">Plans & Pricing</h2>
                 <h6 class="pricing-sub-header">Choose Limited or Unlimited — No credit card required!</h6>
+            </div>
+
+            <!-- Promo Banner -->
+            <div class="alert alert-warning text-center shadow-sm border-0 rounded-pill py-3 mb-5" style="background: linear-gradient(90deg, #ffca28, #ffc107); color: #000;">
+                🎉 <strong>Special Offer!</strong> Use code <span class="fw-bold text-danger">BOUNCEE10</span> at checkout to get <strong>10% OFF</strong> your plan!
             </div>
 
             <!-- Tabs -->
@@ -58,8 +63,7 @@
                         ] as $plan)
                         <div class="col" style="padding: 10px;">
                             <div class="custom-card h-100 shadow-sm">
-                                <div class="card-header text-center btn-primary text-white fw-bold" style="
-    background: #007bff;">
+                                <div class="card-header text-center btn-primary text-white fw-bold" style="background: #007bff;">
                                     ₹{{ $plan['price'] }}
                                 </div>
                                 <div class="card-body d-flex flex-column justify-content-center align-items-center p-4 text-center">
@@ -76,7 +80,6 @@
                                         </button>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
                         @endforeach
@@ -102,7 +105,6 @@
 
                                     <form action="{{ url('/checkout') }}" method="POST" class="w-100 d-flex justify-content-center">
                                         @csrf
-                                        <!-- Hidden values sent in POST request -->
                                         <input type="hidden" name="price" value="{{ $plan['price'] }}">
                                         <input type="hidden" name="duration" value="{{ $plan['duration'] }}">
                                         <input type="hidden" name="plan_name" value="Unlimited">
@@ -112,7 +114,6 @@
                                         </button>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
                         @endforeach
@@ -124,5 +125,15 @@
     </div>
 </section>
 
-<!-- Make sure you have Bootstrap JS included -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+.alert-warning {
+    animation: pulse 2s infinite;
+}
+</style>
