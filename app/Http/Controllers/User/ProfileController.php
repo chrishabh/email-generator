@@ -16,36 +16,34 @@ class ProfileController extends Controller
 {
     //
     function getProfilePage(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
-            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            // if(!empty($data)){
-            //     $creditPoint =$data->credits;
+            if(!empty($data)){
+                $creditPoint =$data->credits;
                 
-            // }
+            }
             $userData  = Auth::user();
         }
             
-        $headerData['creditPoint'] = $creditPoint;  
+        $headerData['creditPoint'] = $creditPoint??0;  
         return view('personal.profile')->with(compact('headerData','userData'));
     }
 
     function getSettingPage(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
-            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-            // if(!empty($data)){
-            //     $creditPoint =$data->credits;
+            if(!empty($data)){
+                $creditPoint =$data->credits;
                 
-            // }
+            }
             $userData  = Auth::user();
         }
             
-        $headerData['creditPoint'] = $creditPoint;  
+        $headerData['creditPoint'] = $creditPoint??0;  
         return view('personal.settings')->with(compact('headerData','userData'));
     }
 
@@ -263,9 +261,9 @@ class ProfileController extends Controller
     {
         // try{
             $credits                 = UserCredits::join('users', 'users.id', '=','user_id')->whereNull('users.deleted_at')->get(); 
-            $totalCredits            = "Free";;//$credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
+            $totalCredits            = $credits->whereNull('user_credits.deleted_at')->sum('credits'); // Sum of all credits
             $usedCredits             = UserCredits::getUsedCredits()??0; // Soft deleted credits
-            $availableCredits        = "Free";  //$totalCredits
+            $availableCredits        = $totalCredits; - $usedCredits; // Available credits
             $creditAvailableOfAdmin  = 0;
             if(env('API_PLATFORM')=='debouncee'){
                 $creditAvailableOfAdmin = getDebounceCreditBalance();

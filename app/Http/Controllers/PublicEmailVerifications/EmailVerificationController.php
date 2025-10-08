@@ -44,7 +44,7 @@ class EmailVerificationController extends Controller
             "success"=>"true",
             "code" =>200,
             "credits_info"=>[
-                "credits_remaining" => $creditPoints,
+                "credits_remaining" => $creditPoints??0,
             ],
                 
         ],200);

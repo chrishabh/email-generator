@@ -28,12 +28,12 @@ class Order extends Model
         return Order::insert($data);
     }
 
-    public static function updateOrderStatus($order_id,$user_id,$credits)
+    public static function updateOrderStatus($order_id,$user_id,$credits,$plan_type)
     {
         $return = Order::whereNull('deleted_at')->where('order_id',$order_id)->where('user_id',$user_id)->update(['status'=>'Paid']);
 
         if($return){
-            if(UserCredits::updateCredits($order_id,$user_id,$credits)){
+            if(UserCredits::updateCredits($order_id,$user_id,$credits,$plan_type)){
                 notifyCreditBalance($credits,Auth::User()->name);
                 return 1;
             }
@@ -54,5 +54,10 @@ class Order extends Model
     public static function getInvoiceData($id)
     {
         return Order::join('users','orders.user_id', '=','users.id')->whereNull('users.deleted_at')->whereNull('orders.deleted_at')->where('orders.id',$id)->first();
+    }
+
+    public static function getOrderById($id)
+    {
+        return Order::whereNull('deleted_at')->where('order_id',$id)->first();
     }
 }

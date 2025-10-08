@@ -12,9 +12,9 @@ class UserCredits extends Model
 {
     use HasFactory,SoftDeletes;
 
-    public static function updateCredits($order_id,$user_id,$credits){
+    public static function updateCredits($order_id,$user_id,$credits,$plan_type){
 
-        if(UserCredits::whereNull('deleted_at')->where('user_id',$user_id)->exists())
+        if(UserCredits::whereNull('deleted_at')->where('user_id',$user_id)->exists() && $plan_type == 'Limited')
         {
             // Fetch existing credits
             $old_credits = UserCredits::whereNull('deleted_at')->where('user_id',$user_id)->first()->credits;
@@ -26,7 +26,8 @@ class UserCredits extends Model
             return UserCredits::insert([
                 'order_id' => $order_id,
                 'user_id' => $user_id,
-                'credits' => ($credits+$old_credits)
+                'credits' => ($credits+$old_credits),
+                'plan_type' => $plan_type
             ]);
 
         }else{
@@ -34,7 +35,8 @@ class UserCredits extends Model
             return UserCredits::insert([
                 'order_id' => $order_id,
                 'user_id' => $user_id,
-                'credits' => $credits
+                'credits' => $credits,
+                'plan_type' => $plan_type
             ]);
         }
     }
@@ -45,6 +47,11 @@ class UserCredits extends Model
 
 
     public static function updateCreditsWhenEmailGetsVerify($user_id,$credits){
+        
+
+        if(self::where('plan_type','Unlimited')->where('user_id',$user_id)->whereNull('deleted_at')->orderBy('id', 'desc')->exists()){
+            return true;
+        }
         $oldData = self::getCreditPoint($user_id);
         if($oldData){
             // deleted old order credits
@@ -53,7 +60,8 @@ class UserCredits extends Model
             return UserCredits::insert([
                 'order_id' => $oldData->order_id,
                 'user_id' => $user_id,
-                'credits' => ($oldData->credits-$credits)
+                'credits' => ($oldData->credits-$credits),
+                'plan_type' => $oldData->plan_type
             ]);
         }
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Integration;
 use App\Models\IntegrationTool;
 use App\Models\singleVerification;
+use App\Models\UserCredits;
 use Exception;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
@@ -16,9 +17,14 @@ class IntegrationController extends Controller
 {
     public function index()
     {   
-        $creditPoint ='Free';
+        $userId               = Auth::user()->id;
+        $data                 = UserCredits::getCreditPoint($userId); 
+        if(!empty($data)){
+            $creditPoint =$data->credits;
+            
+        }
         $integrated = Integration::with('tool')->where('status','verified')->whereNull('deleted_at')->paginate(10); 
-        $headerData['creditPoint']         = $creditPoint;
+        $headerData['creditPoint']         = $creditPoint??0;
         $sessionData = session()->all();
 
         // Log session data for debugging
@@ -126,9 +132,14 @@ class IntegrationController extends Controller
 
 
     public static function getClayIntegration(){
-        $creditPoint ='Free';
+        $userId               = Auth::user()->id;
+        $data                 = UserCredits::getCreditPoint($userId); 
+        if(!empty($data)){
+            $creditPoint =$data->credits;
+            
+        }
         $integrated = Integration::with('tool')->where('status','verified')->whereNull('deleted_at')->paginate(10); 
-        $headerData['creditPoint']         = $creditPoint;
+        $headerData['creditPoint']         = $creditPoint??0;
         $sessionData = session()->all();
         return view('Integeration.clay')->with(compact('headerData')); 
 

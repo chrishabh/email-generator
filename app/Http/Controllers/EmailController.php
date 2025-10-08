@@ -145,8 +145,8 @@ class EmailController extends Controller
             $status                  = null;
             $isAbortAll              = false;
             $user_id                 = Auth::user()->id;
-            // $userCredit              = UserCredits::getCreditPoint($user_id);
-             $creditPoints            = "Free";//($userCredit) ? $userCredit->credits :0;
+            $userCredit              = UserCredits::getCreditPoint($user_id);
+             $creditPoints            = ($userCredit) ? $userCredit->credits :0;
             // if($creditPoints<1) return response()->json(['success'=>false,'error' =>'You should not have enough credit score to validate the email.'])->header('Content-Type', 'application/json; charset=UTF-8');
            
             if(!empty($data)){
@@ -181,7 +181,7 @@ class EmailController extends Controller
                     }
                 }  
 
-                return response()->json(['result'=>['creditPoint'=>$creditPoints,'status'=>$status,'isAbortAll' => $isAbortAll , 'emailId' => $emailId , 'fileId' =>$fileId ]])->header('Content-Type','application/json; charset=UTF-8');
+                return response()->json(['result'=>['creditPoint'=>$creditPoints??0,'status'=>$status,'isAbortAll' => $isAbortAll , 'emailId' => $emailId , 'fileId' =>$fileId ]])->header('Content-Type','application/json; charset=UTF-8');
             }
         }catch(\Exception $e){ 
             \Illuminate\Support\Facades\Log::error('lead finder error: ' . $e->getMessage());
@@ -298,7 +298,7 @@ class EmailController extends Controller
                 ];
             
                 // Insert log with null job_id
-                $logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
+                //$logId    = DB::table('bulk_api_request_response_logs')->insertGetId($logData);
             
                 $data = $response->json();
                 $log = [
@@ -328,22 +328,21 @@ class EmailController extends Controller
     }
 
     function bulkPage(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
         $fileData   = array();
         if(Auth::check()){ 
-            // $data = UserCredits::getCreditPoint(Auth::user()->id); 
-            // if($data){
-            //     $creditPoint =$data->credits;
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
+            if($data){
+                $creditPoint =$data->credits;
                 
-            // }
+            }
             // $data = BulkUploadEmailFileData::getBulkData(Auth::user()->id);
             $userid= Auth::user()->id;
 
            $fileData = self::getDataOfFileWithState('',$userid);
         }
           
-        $headerData['creditPoint'] = $creditPoint; 
+        $headerData['creditPoint'] = $creditPoint??0; 
         return view('verify.bulk')->with(compact('headerData','fileData'));
     }
     
@@ -522,37 +521,34 @@ class EmailController extends Controller
     }
 
     function singleEmailPage(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
-            // $data                 = UserCredits::getCreditPoint($userId); 
+            $data                 = UserCredits::getCreditPoint($userId); 
             $oldVerificationData  = singleVerification::where('user_id', $userId)->orderBy('id', 'desc')->get()->toArray();
-            // if(!empty($data)){
-            //     $creditPoint =$data->credits;
+            if(!empty($data)){
+                $creditPoint =$data->credits;
                 
-            // }
+            }
         }
-        //    pp( $oldVerificationData ); 
-        $headerData['creditPoint']         = $creditPoint; 
+        $headerData['creditPoint']         = $creditPoint??0; 
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
     }
 
 
     function leadFinder(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
-        // if(Auth::check()){ 
-        //     $data = UserCredits::getCreditPoint(Auth::user()->id); 
+        if(Auth::check()){ 
+            $data = UserCredits::getCreditPoint(Auth::user()->id); 
            
-        //     if(!empty($data)){
-        //         $creditPoint =$data->credits;
+            if(!empty($data)){
+                $creditPoint =$data->credits;
                 
-        //     }
-        // }
+            }
+        }
             
-        $headerData['creditPoint'] = $creditPoint; 
+        $headerData['creditPoint'] = $creditPoint??0; 
         return view('verify.leadFindler')->with(compact('headerData'));   
     }
 
@@ -692,7 +688,7 @@ class EmailController extends Controller
     }
 
     function checkEmailIsValidInvalid(Request $request){
-        try {
+        // try {
             $rules = [
                 'domain'   => 'required|email'
             ];
@@ -714,9 +710,9 @@ class EmailController extends Controller
             return redirect()->back()->with(compact('validEmails'))->withInput(); 
            
 
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors($e->getMessage())->withInput();
-        }
+        // } catch (\Exception $e) {
+        //     return redirect()->back()->withErrors($e->getMessage())->withInput();
+        // }
     }
 
     function checkEmailVerificationStatus(Request $request){

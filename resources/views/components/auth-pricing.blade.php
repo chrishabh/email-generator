@@ -62,10 +62,21 @@
     background: #007bff;">
                                     ₹{{ $plan['price'] }}
                                 </div>
-                                <div class="card-body text-center p-4">
-                                    <h5>{{ $plan['credits'] }} Credits</h5>
-                                    <a href="/create-order/limited/{{ $plan['price'] }}" class="btn btn-primary mt-3">Purchase</a>
+                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4 text-center">
+                                    <h5 class="mb-3">{{ $plan['credits'] }} Credits</h5>
+
+                                    <form action="{{ url('/checkout') }}" method="POST" class="w-100 d-flex justify-content-center">
+                                        @csrf
+                                        <input type="hidden" name="price" value="{{ $plan['price'] }}">
+                                        <input type="hidden" name="credits" value="{{ $plan['credits'] }}">
+                                        <input type="hidden" name="plan_name" value="Limited">
+
+                                        <button type="submit" class="btn btn-primary mt-2">
+                                            Purchase
+                                        </button>
+                                    </form>
                                 </div>
+
                             </div>
                         </div>
                         @endforeach
@@ -86,10 +97,22 @@
                                 <div class="card-header text-center bg-primary text-white fw-bold">
                                     ₹{{ $plan['price'] }}
                                 </div>
-                                <div class="card-body text-center p-4">
-                                    <h5>Unlimited for {{ $plan['duration'] }}</h5>
-                                    <a href="/create-order/unlimited/{{ $plan['price'] }}" class="btn btn-primary mt-3">Purchase</a>
+                                <div class="card-body d-flex flex-column justify-content-center align-items-center p-4 text-center">
+                                    <h5 class="mb-3">Unlimited for {{ $plan['duration'] }}</h5>
+
+                                    <form action="{{ url('/checkout') }}" method="POST" class="w-100 d-flex justify-content-center">
+                                        @csrf
+                                        <!-- Hidden values sent in POST request -->
+                                        <input type="hidden" name="price" value="{{ $plan['price'] }}">
+                                        <input type="hidden" name="duration" value="{{ $plan['duration'] }}">
+                                        <input type="hidden" name="plan_name" value="Unlimited">
+
+                                        <button type="submit" class="btn btn-primary mt-2">
+                                            Purchase
+                                        </button>
+                                    </form>
                                 </div>
+
                             </div>
                         </div>
                         @endforeach

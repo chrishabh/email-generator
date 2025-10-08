@@ -15,19 +15,18 @@ class GenerateCustomEndpointController extends Controller
 {
     //
     public static function renderApiGenerateKeyPage(Request $request){
-        $creditPoint ='Free';
         $headerData = array(); 
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
-            // $data                 = UserCredits::getCreditPoint($userId); 
-            // $apiKeys              = ApiKeys::where('user_id', $userId)->where('is_deleted','0')->WhereNull('deleted_at')->orderBy('id','DESC')->paginate(5);
-            // if(!empty($data)){
-            //     $creditPoint =$data->credits;
+            $data                 = UserCredits::getCreditPoint($userId); 
+            $apiKeys              = ApiKeys::where('user_id', $userId)->where('is_deleted','0')->WhereNull('deleted_at')->orderBy('id','DESC')->paginate(5);
+            if(!empty($data)){
+                $creditPoint =$data->credits;
                 
-            // }
+            }
         }
         $apiKeys=[];  
-        $headerData['creditPoint']         = $creditPoint;
+        $headerData['creditPoint']         = $creditPoint??0;
         return view('ApiKey.generate-api-endpoint')->with(compact('headerData','apiKeys'));
     }
 

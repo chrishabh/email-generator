@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\UserCredits;
 use Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +34,17 @@ class BlogController extends Controller
     public function create()
     {
 
-        $creditPoint ='Free';
+       
         $headerData = array(); 
         if(Auth::check()){ 
             $userData  = Auth::user();
         }
+        $userCredit              = UserCredits::getCreditPoint($userData ->id);
+        $creditPoint            = ($userCredit) ? $userCredit->credits :0;
         $posts = Post::latest()->get();
         
             
-        $headerData['creditPoint'] = $creditPoint; 
+        $headerData['creditPoint'] = $creditPoint??0; 
         return view('create-post')->with(compact('headerData','userData','posts'));
     }
 

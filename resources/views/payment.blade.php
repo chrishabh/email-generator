@@ -106,13 +106,13 @@
             </tr>
            
                 <tr class="item">
-                    <td>{{number_format($credits)}} Verifications</td>
-                    <td>${{ number_format($amount/100, 2) }}</td>
+                    <td>{{$credits}} Verifications</td>
+                    <td>{{$currency}} {{ number_format($amount/100, 2) }}</td>
                 </tr>
            
             <tr class="total">
                 <td></td>
-                <td>Total: ${{ number_format($amount/100, 2) }}</td>
+                <td>Total: {{$currency}} {{ number_format($amount/100, 2) }}</td>
             </tr>
             
         </table>

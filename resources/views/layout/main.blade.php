@@ -1,5 +1,5 @@
 
-@if(request()->is('tools') || request()->is('clay') || request()->path()=='Api' || request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history' ||request()->path()=='settings' || request()->path()=='posts')
+@if(request()->is('tools') || request()->is('clay') || request()->path()=='Api' || request()->path()=='single' || request()->path()=='bulk' || request()->path()=='pricing' ||request()->path()=='lead-finder'||request()->path()=='profile' ||request()->path()=='payment-history' ||request()->path()=='settings' || request()->path()=='posts' || request()->path()=='checkout')
     @include('layout.header1',['headerData' =>$headerData??null])
 @elseif(request()->is('reference/*'))
     @include('layout.header2',['headerData' =>$headerData??null])
