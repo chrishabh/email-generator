@@ -190,7 +190,7 @@ class PaymentController extends Controller
         }
             
         $headerData['creditPoint'] = $creditPoint??0; 
-        $location_details = getCurrency('182.69.181.56');
+        $location_details = getCurrency($request->ip());
         $ip_currency = $location_details['currency'] ?? 'USD';
         $ip_country_code = $location_details['country_code'] ?? 'US';
         $converted_details = getConvertedAmount($request->price,$ip_currency);
