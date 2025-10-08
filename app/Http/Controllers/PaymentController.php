@@ -246,7 +246,7 @@ class PaymentController extends Controller
         $plan = $request->plan_name;
         $timestamp = Carbon::now()->timestamp;
         $receipt = "bouncee_".$timestamp;
-        $location_details = getCurrency('182.69.181.56');
+        $location_details = getCurrency($request->ip());
         $ip_currency = $location_details['currency'] ?? 'USD';
         $ip_country_code = $location_details['country_code'] ?? 'US';
         $converted_details = getConvertedAmount($request->price,$ip_currency);
