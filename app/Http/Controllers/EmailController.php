@@ -592,7 +592,7 @@ class EmailController extends Controller
         if(!(UserCredits::where('plan_type','Unlimited')->where('user_id',$userId)->whereNull('deleted_at')->orderBy('id', 'desc')->exists())){
             $userCredit   = UserCredits::getCreditPoint($userId);
             $creditPoints = ($userCredit) ? $userCredit->credits :0;
-            if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+            if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You don’t have enough credits to validate '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
 
         }
         VerifyEmailsJob::dispatch($request['fileId'],$userId);
