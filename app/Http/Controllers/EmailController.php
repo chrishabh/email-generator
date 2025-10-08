@@ -587,10 +587,14 @@ class EmailController extends Controller
             return response()->json(['error' => $validator])->header('Content-Type', 'application/json; charset=UTF-8');
         }
         $userId       = Auth::user()->id;
-        // $totalEmails  = BulkUploadEmailFileData::getCountOfEmails($request['fileId'],$userId);
-        // $userCredit   = UserCredits::getCreditPoint($userId);
-        // $creditPoints = ($userCredit) ? $userCredit->credits :0;
-        // if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+        $totalEmails  = BulkUploadEmailFileData::getCountOfEmails($request['fileId'],$userId);
+       
+        if(!(UserCredits::where('plan_type','Unlimited')->where('user_id',$userId)->whereNull('deleted_at')->orderBy('id', 'desc')->exists())){
+            $userCredit   = UserCredits::getCreditPoint($userId);
+            $creditPoints = ($userCredit) ? $userCredit->credits :0;
+            if($creditPoints<$totalEmails) return response()->json(['success'=>false,'message' =>'You should not have enough credit score to validate the '. $totalEmails.' email.'])->header('Content-Type', 'application/json; charset=UTF-8');
+
+        }
         VerifyEmailsJob::dispatch($request['fileId'],$userId);
         return response()->json(['sucess'=>true,'status'=>200,'data'=>self::getDataOfFileWithState($request['fileId'],$userId)],200)->header('Content-Type', 'application/json; charset=UTF-8');
 
