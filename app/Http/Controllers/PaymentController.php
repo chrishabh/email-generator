@@ -562,7 +562,7 @@ class PaymentController extends Controller
             '129'   => '3 Months',
             '249'   => '6 Months',
         ];
-
+pp($payment_data);
 
         foreach($payment_data as &$value)
         {
