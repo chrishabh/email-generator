@@ -768,7 +768,7 @@ class PaymentController extends Controller
             ];
 pp($binded_data);
             // Load a view and pass the data
-            $pdf = Pdf::loadView('invoice-pdf', $binded_data)->setOption('enable-external-links', true);
+            //$pdf = Pdf::loadView('invoice-pdf', $binded_data)->setOption('enable-external-links', true);
 
             // Return the PDF as a download
             //return $pdf->download('invoice-pdf');
