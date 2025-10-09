@@ -20,7 +20,7 @@
                 Swal.fire({
                     title: 'Low Credits!',
                     html: `<p>You have <strong>{{ $headerData['creditPoint'] }}</strong> credits left.</p>
-                        <p>Please recharge to continue verifying emails seamlessly.</p>`,
+                        <p>Please buy credits to continue verifying emails seamlessly.</p>`,
                     icon: 'warning',
                     confirmButtonText: 'Add Credits',
                     confirmButtonColor: '#3085d6',
