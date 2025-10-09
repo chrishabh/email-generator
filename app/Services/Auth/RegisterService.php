@@ -20,7 +20,7 @@ class RegisterService{
             'password'                 => Hash::make($request->password),
             'role'                     => $request->role??'user',
             'no_of_email_verification' => $request->no_of_email_verification,
-            'email_verified'           => '1',
+            'email_verified'           => '0',
         ]); 
         
         // Update the log with the user_id and status as successful
@@ -40,14 +40,14 @@ class RegisterService{
           'created_at' =>  Carbon::now(),
         ];
         $link = url("/bouncee-verification")."/".$token;
-        //if(UserVerification::createVerificationToken($verification_link)){
-            //Notification::route('mail', $request->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$request->name,'verification_link'=>$link],'verification-template'));
+        if(UserVerification::createVerificationToken($verification_link)){
+            Notification::route('mail', $request->email)->notify(new ConfirmationCode('Bouncee Verification',['User'=>$request->name,'verification_link'=>$link],'verification-template'));
             UserCredits::initialFreeCredit(User::getUserId($request->email));
 
             Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('New Account Notification',['User'=>$request->name,'account_email' => $request->email,'account_creation_date'=>Carbon::now()],'new-account'));
             return redirect()->route('thankyou');
 
-        //}
+        }
         
         return redirect()->route('signin')->with('success', 'Something went wrong! Please try again.');
     }
