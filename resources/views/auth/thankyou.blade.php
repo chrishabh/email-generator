@@ -47,7 +47,7 @@
     </a>
 
     <h2 class="text-2xl font-semibold mb-4">Thank you for signing up!</h2>
-    <p class="text-slate-600 mb-8">You can now log in and start using bouncee’s services.</p>
+    <p class="text-slate-600 mb-8">A verification email has been sent to your registered address. Please check your inbox or spam/junk folder, verify your email, and then log in to start using bouncee’s services.</p>
 
     <a href="/signin"
        class="flex items-center justify-center w-full px-5 py-3 rounded-lg bg-black text-white font-medium shadow hover:bg-slate-800">
