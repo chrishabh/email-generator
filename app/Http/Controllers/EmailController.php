@@ -522,17 +522,19 @@ class EmailController extends Controller
 
     function singleEmailPage(Request $request){
         $headerData = array(); 
+        $plan_type = null;
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
             $data                 = UserCredits::getCreditPoint($userId); 
             $oldVerificationData  = singleVerification::where('user_id', $userId)->orderBy('id', 'desc')->get()->toArray();
             if(!empty($data)){
                 $creditPoint =$data->credits;
+                $plan_type   =$data->plan_type;
                 
             }
         }
         $headerData['creditPoint']         = $creditPoint??0; 
-        $headerData['lowCredits']         = $creditPoint<101?true:false;
+        $headerData['lowCredits']         = ($plan_type == 'Limited')?($creditPoint<101?true:false):false;
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
     }
