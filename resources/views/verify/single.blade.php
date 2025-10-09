@@ -13,6 +13,44 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="{{ asset('verify/single/script.js') }}" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @if ($headerData['lowCredits'])
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Low Credits!',
+                    html: `<p>You have <strong>{{ $headerData['creditPoint'] }}</strong> credits left.</p>
+                        <p>Please recharge to continue verifying emails seamlessly.</p>`,
+                    icon: 'warning',
+                    confirmButtonText: 'Add Credits',
+                    confirmButtonColor: '#3085d6',
+                    showCancelButton: true,
+                    cancelButtonText: 'Later',
+                    cancelButtonColor: '#aaa',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('pricing') }}"; // Replace with your pricing route
+                    }
+                });
+            });
+        </script>
+        <style>
+            .swal2-popup {
+                border-radius: 16px !important;
+                font-family: 'Poppins', sans-serif !important;
+            }
+            .swal2-title {
+                color: #1A1A1A !important;
+                font-weight: 600 !important;
+            }
+            .swal2-html-container p {
+                margin: 0;
+                color: #555;
+            }
+        </style>
+
+@endif
+
     @endpush
 
     @php

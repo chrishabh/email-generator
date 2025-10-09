@@ -532,6 +532,7 @@ class EmailController extends Controller
             }
         }
         $headerData['creditPoint']         = $creditPoint??0; 
+        $headerData['lowCredits']         = $creditPoint<101?true:false;
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
     }
