@@ -2,23 +2,18 @@
 <html>
 
 <head>
-    <title>Invoice | bouncee</title>
+    <title>Invoice | Bouncee</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 30px;
-            background: #f7f8fa;
-            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            color: #000;
+            font-size: 14px;
         }
 
         .invoice-box {
-            max-width: 850px;
-            margin: auto;
-            background: #fff;
-            padding: 40px 50px;
-            border: 1px solid #eee;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            width: 800px;
+            margin: 0 auto;
         }
 
         .header {
@@ -29,112 +24,109 @@
         }
 
         .company-info {
-            line-height: 1.5;
+            width: 60%;
+            line-height: 1.4;
         }
 
         .company-info h2 {
-            margin: 0;
-            color: #2b2b2b;
+            font-size: 20px;
+            margin: 0 0 5px 0;
         }
 
         .company-info p {
-            margin: 2px 0;
-            font-size: 14px;
+            margin: 0;
         }
 
         .invoice-meta {
+            width: 35%;
             text-align: right;
+            line-height: 1.4;
         }
 
         .invoice-meta h3 {
-            margin: 0;
-            color: #555;
+            margin: 0 0 5px 0;
+            font-size: 18px;
         }
 
         .invoice-meta p {
-            margin: 3px 0;
+            margin: 0;
+        }
+
+        .paid-stamp {
+            font-weight: bold;
             font-size: 14px;
+            margin-top: 5px;
         }
 
         .section {
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .section h4 {
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 8px;
-            color: #444;
+            font-size: 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 4px;
+            display: inline-block;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
+            margin-top: 12px;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px 8px;
+            border: 1px solid #000;
+            padding: 6px 8px;
+            text-align: left;
         }
 
         th {
-            background: #f5f5f5;
-            text-align: left;
+            font-weight: bold;
         }
 
         .total-section {
             text-align: right;
             margin-top: 20px;
-        }
-
-        .total-section p {
-            font-size: 15px;
-            margin: 3px 0;
-        }
-
-        .total-section strong {
-            font-size: 16px;
+            line-height: 1.6;
         }
 
         .footer {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
             font-size: 13px;
-            color: #666;
         }
 
-        .paid-stamp {
-            color: #fff;
-            background: #28a745;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 14px;
-            display: inline-block;
+        .spacer {
+            height: 15px;
         }
     </style>
 </head>
 
 <body>
     <div class="invoice-box">
+
         <div class="header">
             <div class="company-info">
                 <h2>Whizzleads Research Services</h2>
-                <p>56-A, R K Puram,<br>Govindpuram, Ghaziabad,<br>Uttar Pradesh - 201013</p>
+                <p>56-A, R K Puram, Govindpuram</p>
+                <p>Ghaziabad, Uttar Pradesh - 201013</p>
                 <p><strong>GST#:</strong> 09BCKPN6035K1Z5</p>
                 <p>India: +91-7798625750</p>
             </div>
+
             <div class="invoice-meta">
                 <h3>Invoice # {{ $order_number }}</h3>
-                <p><strong>Date:</strong> {{ $invoice_date }}</p>
-                <span class="paid-stamp">PAID</span>
+                <p>Date: {{ $invoice_date }}</p>
+                <p class="paid-stamp">PAID</p>
             </div>
         </div>
 
         <div class="section">
             <h4>INVOICE TO</h4>
             <p><strong>{{ $client }}</strong></p>
+            <p>{{ $client_email }}</p>
             <p><strong>GST#:</strong> {{ $client_gst }}</p>
         </div>
 
@@ -158,13 +150,13 @@
         </div>
 
         <div class="total-section">
-            <p>Subtotal: {{ $amount_currency }}{{ number_format($subtotal, 2) }}</p>
-            <p>GST @ {{ $gst }}{{ number_format($gst_amount, 2) }}</p>
-            <p><strong>Total: {{ $amount_currency }}{{ number_format($total, 2) }}</strong></p>
+            <p>SUBTOTAL: {{ $amount_currency }}{{ number_format($subtotal, 2) }}</p>
+            <p>GST @ {{ $gst }}%: {{ $amount_currency }}{{ number_format($gst_amount, 2) }}</p>
+            <p><strong>TOTAL: {{ $amount_currency }}{{ number_format($total, 2) }}</strong></p>
         </div>
 
         <div class="section">
-            <h4>Transaction Details</h4>
+            <h4>TRANSACTION DETAILS</h4>
             <table>
                 <thead>
                     <tr>
@@ -188,6 +180,7 @@
         <div class="footer">
             <p>This invoice was created on a computer and is valid without a signature or seal.</p>
         </div>
+
     </div>
 </body>
 
