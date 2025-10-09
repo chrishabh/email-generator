@@ -767,7 +767,7 @@ class PaymentController extends Controller
                 'transaction_id' => $data->order_id,
                 'invoice_date' => date('d M Y',Carbon::now()->timestamp),
                 'gst' => env('gst_percentage')??0,
-                'gst_number' => $data->gst_number??'N/A',
+                'client_gst' => $data->gst_number??'N/A',
                 'items' => [[
                     'description' =>  number_format($credit_points[$data->plan_amount])." Verifications",
                     'amount' => $data->amount - $data->gst_amount,
