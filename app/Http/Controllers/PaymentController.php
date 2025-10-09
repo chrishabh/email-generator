@@ -756,7 +756,7 @@ class PaymentController extends Controller
 
             $binded_data = [
                 'order_number' => $data->order_id,
-                'date' => date('d M Y',strtotime($data->created_at)),
+                'date' => date('d M Y',Carbon::parse($data->created_at)->timestamp),
                 'logo_url' => url("/assets/logo.png"),
                 'client' => $data->name,
                 'company' => "bouncee",
