@@ -22,7 +22,7 @@
             'header'=> 'background:#0E866D;font-weight:bold',
             'priceCss'=>"display:none;", // hide single price
             'features' => [
-                'Limited: $5 → 2,000 credits',
+                'Limited: $5 → 3,000 credits',
                 'Limited: $10 → 10,000 credits',
                 'Limited: $20 → 25,000 credits',
                 'Limited: $50 → 100,000 credits',

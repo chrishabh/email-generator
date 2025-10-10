@@ -317,7 +317,7 @@
             </thead>
             <tbody>
                 <tr class="wow fadeInDown" data-wow-delay="1.5s">
-                    <td class="verification credit">2,000 Verifications</td>
+                    <td class="verification credit">3,000 Verifications</td>
                     <td class="price starter">$5.00</td>
                     <td class="price basic">$16.00</td>
                     <td class="price standard">$20.00</td>
@@ -403,7 +403,7 @@ $plans = [
             'header'=> 'background:#0E866D;font-weight:bold',
             'priceCss'=>"display:none;", // hide single price
             'features' => [
-                'Limited: $5 → 2,000 credits',
+                'Limited: $5 → 3,000 credits',
                 'Limited: $10 → 10,000 credits',
                 'Limited: $20 → 25,000 credits',
                 'Limited: $50 → 100,000 credits',

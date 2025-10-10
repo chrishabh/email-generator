@@ -221,7 +221,7 @@ class PaymentController extends Controller
         //return view('notice');
 
         $verification_credits = [
-            '5'    => 2000,
+            '5'    => 3000,
             '10'   => 10000,
             '20'   => 25000,
             '50'   => 100000,
@@ -325,7 +325,7 @@ class PaymentController extends Controller
         ];
 
         $verification_credits = [
-            '5'    => 2000,
+            '5'    => 3000,
             '10'   => 10000,
             '20'   => 25000,
             '50'   => 100000,
@@ -548,7 +548,7 @@ class PaymentController extends Controller
         }
 
         $credit_points = [
-            '5'    => 2000,
+            '5'    => 3000,
             '9' => 5000,
             '14' => 10000,
             '28' => 25000,
@@ -746,7 +746,7 @@ class PaymentController extends Controller
             $data = Order::getInvoiceData($request->order_id);
 
             $credit_points = [
-                '5'    => 2000,
+                '5'    => 3000,
                 '9' => 5000,
                 '14' => 10000,
                 '28' => 25000,

@@ -50,7 +50,7 @@
                 <div class="tab-pane fade show active" id="limited" role="tabpanel" aria-labelledby="limited-tab">
                     <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
                         @foreach([
-                            ['price'=>'5', 'credits'=>'2,000'],
+                            ['price'=>'5', 'credits'=>'3,000'],
                             ['price'=>'10', 'credits'=>'10,000'],
                             ['price'=>'20', 'credits'=>'25,000'],
                             ['price'=>'50', 'credits'=>'100,000'],
