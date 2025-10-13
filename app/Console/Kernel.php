@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
 
      protected $commands = [
         \App\Console\Commands\VerificationActionRequired::class,
+        \App\Console\Commands\ExpireUnlimitedPlans::class,
      ];
     protected function schedule(Schedule $schedule)
     {
@@ -29,6 +30,14 @@ class Kernel extends ConsoleKernel
                 File::put($filePath, '');
             }
             $schedule->command('VerificationActionRequired')->cron($Verification_action->cron_timing)->appendOutputTo($filePath);
+        }
+        $Expire_unlimited_plans = CronTiming::getCronTiming('expire_unlimited_plans');
+        if (!empty($Expire_unlimited_plans)) {
+            $filePath = storage_path() . '/logs/batchLogs/ExpireUnlimitedPlans.log';
+            if (!file_exists($filePath)) {
+                File::put($filePath, '');
+            }
+            $schedule->command('ExpireUnlimitedPlans')->cron($Expire_unlimited_plans->cron_timing)->appendOutputTo($filePath);
         }
     }
 

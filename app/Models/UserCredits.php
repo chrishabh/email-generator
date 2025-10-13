@@ -94,4 +94,14 @@ class UserCredits extends Model
         return $totalUsedCredits;
     }
 
+    public static function getAllUnlimitedUsers()
+    {
+        return self::where('plan_type','Unlimited')->whereNull('deleted_at')->get();
+    }
+
+    public static function markExpiredUnlimitedPlan($user_id,$id)
+    {
+        return self::where('plan_type','Unlimited')->where('user_id',$user_id)->where('id', $id)->whereNull('deleted_at')->update(['deleted_at' => Carbon::now()]);
+    }
+
 }
