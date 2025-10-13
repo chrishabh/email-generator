@@ -149,8 +149,8 @@ $headerData['whichPageRequest'] ='singlePage';
 
     <div class="container mx-auto px-4 py-12 md:py-16">
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-brand-dark-blue mb-4" style="margin-top: 4em;">Integrations</h1>
-            <p class="text-lg md:text-xl text-brand-gray">Bouncee allows effortless integration with web services of your choice</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-brand-dark-blue mb-4" style="margin-top: 4em;">Works Seamlessly with Your Tools</h1>
+            <p class="text-lg md:text-xl text-brand-gray">Connect Bouncee to Mailchimp, HubSpot, Google Sheets, WordPress, and more. Clean your data across platforms with minimal effort.</p>
         </div>
 
         <div class="row">

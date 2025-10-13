@@ -1,5 +1,4 @@
-  <!-- Features Section Start -->
-  <section id="features" class="section-padding">
+<section id="features" class="section-padding">
     <div class="container">
       <div class="section-header text-center">
         <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Awesome Features</h2>
@@ -13,9 +12,8 @@
                 <i class="lni-timer"></i>
               </span>
               <div class="text">
-                <h4>Real-time Email Verification</h4>
-                <p style="color: black;">Instantly verify email addresses as they are entered, ensuring that each
-                  address is accurate and deliverable before sending any communication.</p>
+                <h4>Unlimited Verifications</h4>
+                <p style="color: black;">Verify large volumes of emails. Choose plans that fit your needs for occasional checks or ongoing list maintenance.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.4s">
@@ -23,9 +21,8 @@
                 <i class="lni-check-mark-circle"></i>
               </span>
               <div class="text">
-                <h4>Detailed Validation Results</h4>
-                <p style="color: black;">Receive comprehensive reports that provide insights into the validity, risk
-                  level, and overall health of each email address.</p>
+                <h4>Bulk & Real-Time Verification</h4>
+                <p style="color: black;">Upload lists or integrate with your apps. Verify thousands of emails at once or use our real-time API.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.8s">
@@ -33,9 +30,8 @@
                 <i class="lni-ticket-alt"></i>
               </span>
               <div class="text">
-                <h4>Instant Feedback</h4>
-                <p style="color: black;">Get immediate notifications about the status of email addresses, including
-                  whether they are valid, invalid, or risky, allowing for quick decision-making.</p>
+                <h4>GDPR-Ready & Secure</h4>
+                <p style="color: black;">We prioritize data protection and delete records after verification. Your data stays private and secure.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.9s">
@@ -72,9 +68,8 @@
                 <i class="lni-layers"></i>
               </span>
               <div class="text">
-                <h4>99% Accuracy Rate</h4>
-                <p style="color: black;">Rely on a highly accurate verification system that ensures your email lists are
-                  free from invalid addresses, enhancing deliverability and campaign success rates.</p>
+                <h4>Industry-Leading Accuracy</h4>
+                <p style="color: black;">Our verification uses syntax, domain, MX, and SMTP checks plus AI risk scoring for 99%+ accuracy.</p>
               </div>
             </div>
             <div class="box-item wow fadeInRight" data-wow-delay="0.8s">
@@ -102,4 +97,3 @@
       </div>
     </div>
   </section>
-  <!-- Features Section End -->

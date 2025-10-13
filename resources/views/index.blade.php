@@ -7,10 +7,10 @@
 @section('main-section')
   @push('title')
    <!-- Meta Title -->
-  <title>Free Email Verification Tool | Clean & Verify Emails Fast</title>
+  <title>Best Email Verification Tool | Clean & Verify Emails Fast</title>
 
   <!-- Meta Description -->
-  <meta name="description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
+  <meta name="description" content="Bouncee offers real time bulk email verification checks, month—no credit card, Accurate, fast, and trusted by 1M users to reduce bounces and improve deliverability.">
 
   <!-- Keywords (for SEO) -->
   <meta name="keywords" content="email verification, email validation, bouncee, bulk email verifier, free email checker, clean email list, reduce bounces">
@@ -20,16 +20,16 @@
 
   <!-- Social Media Optimization -->
   <!-- Facebook Open Graph -->
-  <meta property="og:title" content="Free Email Verification Tool | Clean & Verify Emails Fast">
-  <meta property="og:description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
+  <meta property="og:title" content="Best Email Verification Tool | Clean & Verify Emails Fast">
+  <meta property="og:description" content="Bouncee offers real time bulk email verification checks, month—no credit card, Accurate, fast, and trusted by 1M users to reduce bounces and improve deliverability.">
   <meta property="og:image" content="https://bouncee.net/assets/img/logo.png">
   <meta property="og:url" content="https://bouncee.net/">
   <meta property="og:type" content="website">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Free Email Verification Tool | Clean & Verify Emails Fast">
-  <meta name="twitter:description" content="Bouncee offers real-time & bulk email verification with 100 free checks/month—no credit card. Accurate, fast, and trusted by 1M+ users to reduce bounces and improve deliverability.">
+  <meta name="twitter:title" content="Best Email Verification Tool | Clean & Verify Emails Fast">
+  <meta name="twitter:description" content="Bouncee offers real time bulk email verification checks, month—no credit card, Accurate, fast, and trusted by 1M users to reduce bounces and improve deliverability.">
   <meta name="twitter:image" content="https://bouncee.net/assets/img/logo.png">
 
   @endpush
@@ -39,12 +39,11 @@
         <div class="row">
           <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
             <div class="contents">
-              <h2 class="head-title">#1 Free Email Verification Tool<br>Effortless, Swift, & Precise</h2>
-              <p style="color: black; text-align:center">Over 1 Million users trust bouncee for their real-time email validation and email cleaning services. Prevent bounce backs, disposable addresses, spam traps, and deactivated emails from harming your sending reputation and wasting your resources.
-              Utilize a bulk email verification tool to ensure the quality and accuracy of your email list.</p>
+              <h2 class="head-title">Best Email Verification Tool<br>Accurate. Fast. Secure</h2>
+              <p style="color: black; text-align:center">Verify unlimited emails with Bouncee’s advanced email verification tool. Clean your list, protect your sender reputation, and increase deliverability.</p>
               @if(!auth()->check())
                 <div class="header-button">
-                  <a rel="nofollow" href="/signup" class="btn btn-home-common">Start For Free</a>
+                  <a rel="nofollow" href="/signup" class="btn btn-home-common">Get Started</a>
                 </div>
               @endif
             </div>
@@ -195,9 +194,8 @@
                 <i class="lni-timer"></i>
               </span>
               <div class="text">
-                <h4>Real-time Email Verification</h4>
-                <p style="color: black;">Instantly verify email addresses as they are entered, ensuring that each
-                  address is accurate and deliverable before sending any communication.</p>
+                <h4>Unlimited Verifications</h4>
+                <p style="color: black;">Verify large volumes of emails. Choose plans that fit your needs for occasional checks or ongoing list maintenance.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.4s">
@@ -205,9 +203,8 @@
                 <i class="lni-check-mark-circle"></i>
               </span>
               <div class="text">
-                <h4>Detailed Validation Results</h4>
-                <p style="color: black;">Receive comprehensive reports that provide insights into the validity, risk
-                  level, and overall health of each email address.</p>
+                <h4>Bulk & Real-Time Verification</h4>
+                <p style="color: black;">Upload lists or integrate with your apps. Verify thousands of emails at once or use our real-time API.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.8s">
@@ -215,9 +212,8 @@
                 <i class="lni-ticket-alt"></i>
               </span>
               <div class="text">
-                <h4>Instant Feedback</h4>
-                <p style="color: black;">Get immediate notifications about the status of email addresses, including
-                  whether they are valid, invalid, or risky, allowing for quick decision-making.</p>
+                <h4>GDPR-Ready & Secure</h4>
+                <p style="color: black;">We prioritize data protection and delete records after verification. Your data stays private and secure.</p>
               </div>
             </div>
             <div class="box-item wow fadeInLeft" data-wow-delay="0.9s">
@@ -254,9 +250,8 @@
                 <i class="lni-layers"></i>
               </span>
               <div class="text">
-                <h4>99% Accuracy Rate</h4>
-                <p style="color: black;">Rely on a highly accurate verification system that ensures your email lists are
-                  free from invalid addresses, enhancing deliverability and campaign success rates.</p>
+                <h4>Industry-Leading Accuracy</h4>
+                <p style="color: black;">Our verification uses syntax, domain, MX, and SMTP checks plus AI risk scoring for 99%+ accuracy.</p>
               </div>
             </div>
             <div class="box-item wow fadeInRight" data-wow-delay="0.8s">
@@ -1003,6 +998,7 @@
       </div>
     </div>
   </section>
+
 
   <!-- Cookie Consent (Bouncee) -->
 <div id="cc-banner" class="cc-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
