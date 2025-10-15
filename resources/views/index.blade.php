@@ -39,7 +39,7 @@
         <div class="row">
           <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
             <div class="contents">
-              <h2 class="head-title">Best Email Verification Tool<br>Accurate. Fast. Secure</h2>
+              <h1 class="head-title">Best Email Verification Tool<br>Accurate. Fast. Secure</h1>
               <p style="color: black; text-align:center">Verify unlimited emails with Bouncee’s advanced email verification tool. Clean your list, protect your sender reputation, and increase deliverability.</p>
               @if(!auth()->check())
                 <div class="header-button">
@@ -57,126 +57,6 @@
       </div>
     </div>
     <!-- Hero Area End -->
-  <section id="services" class="section-padding">
-    <div class="container">
-      <div class="section-header text-center">
-        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Our Services</h2>
-        <div class="shape wow fadeInDown" data-wow-delay="0.3s"></div>
-      </div>
-      <div class="row">
-        <!-- Services item -->
-        <div class="col-md-6 col-lg-6 col-xs-12">
-          <div class="services-item wow fadeInRight" data-wow-delay="0.3s">
-            <div class="icon">
-              <i class="lni-envelope"></i>
-            </div>
-            <div class="services-content">
-              <h3><a href="#">Single Email Verification</a></h3>
-              <p style="color: black;">Our single email verification service is designed for those who need to verify
-                individual email addresses on-the-go. Whether you're adding new contacts to your list or checking the
-                validity of an email address before sending an important message, our tool provides instant and accurate
-                results. Simply enter the email address, and our system will verify its validity in real-time.</p>
-            </div>
-          </div>
-        </div>
-        <!-- Services item -->
-        <div class="col-md-6 col-lg-6 col-xs-12">
-          <div class="services-item wow fadeInRight" data-wow-delay="0.6s">
-            <div class="icon">
-              <i class="lni-envelope"></i>
-            </div>
-            <div class="services-content">
-              <h3><a href="#">Bulk Email Verification</a></h3>
-              <p style="color: black;">Our bulk email verification service is ideal for businesses looking to clean and
-                verify large email lists quickly and efficiently. By uploading your entire email list to our secure
-                platform, you can eliminate invalid, bounce, disposable, spam-trap, and deactivated emails, ensuring
-                that your marketing campaigns reach their intended audience.</p>
-            </div>
-          </div>
-        </div>
-        <!-- Services item -->
-        <!-- <div class="col-md-6 col-lg-4 col-xs-12">
-            <div class="services-item wow fadeInRight" data-wow-delay="0.9s">
-              <div class="icon">
-                <i class="lni-users"></i>
-              </div>
-              <div class="services-content">
-                <h3><a href="#">Easy To Customize</a></h3>
-                <p>Ut maximus enim dolor. Aenean auctor risus eget tincidunt lobortis. Donec tincidunt bibendum gravida. </p>
-              </div>
-            </div>
-          </div> -->
-        <!-- Services item -->
-        <!-- <div class="col-md-6 col-lg-4 col-xs-12">
-            <div class="services-item wow fadeInRight" data-wow-delay="1.2s">
-              <div class="icon">
-                <i class="lni-layers"></i>
-              </div>
-              <div class="services-content">
-                <h3><a href="#">UI/UX Design</a></h3>
-                <p>Ut maximus enim dolor. Aenean auctor risus eget tincidunt lobortis. Donec tincidunt bibendum gravida. </p>
-              </div>
-            </div>
-          </div> -->
-        <!-- Services item -->
-        <!-- <div class="col-md-6 col-lg-4 col-xs-12">
-            <div class="services-item wow fadeInRight" data-wow-delay="1.5s">
-              <div class="icon">
-                <i class="lni-mobile"></i>
-              </div>
-              <div class="services-content">
-                <h3><a href="#">App Development</a></h3>
-                <p>Ut maximus enim dolor. Aenean auctor risus eget tincidunt lobortis. Donec tincidunt bibendum gravida. </p>
-              </div>
-            </div>
-          </div> -->
-        <!-- Services item -->
-        <!-- <div class="col-md-6 col-lg-4 col-xs-12">
-            <div class="services-item wow fadeInRight" data-wow-delay="1.8s">
-              <div class="icon">
-                <i class="lni-rocket"></i>
-              </div>
-              <div class="services-content">
-                <h3><a href="#">User Friendly interface</a></h3>
-                <p>Ut maximus enim dolor. Aenean auctor risus eget tincidunt lobortis. Donec tincidunt bibendum gravida. </p>
-              </div>
-            </div>
-          </div> -->
-      </div>
-    </div>
-  </section>
-  <!-- Services Section End -->
-
-  <!-- About Section start -->
-  <div class="about-area section-padding bg-gray">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 col-md-12 col-xs-12 info">
-          <div class="about-wrapper wow fadeInLeft" data-wow-delay="0.3s">
-            <div>
-              <div class="site-heading">
-                <p class="mb-3" style="color: black; text-align:center">Welcome to Your Trusted Email Verification Partner</p>
-                <h2 class="section-title">About Us</h2>
-              </div>
-              <div class="content">
-                <p style="color: black; text-align:center">
-                  At bouncee, we are dedicated to helping businesses enhance their email marketing efforts by ensuring
-                  their email lists are accurate, valid, and up-to-date. With years of experience and cutting-edge
-                  technology, we provide top-notch email verification services that help our clients protect their
-                  sender reputation, improve deliverability, and maximize their marketing ROI.
-                </p>
-                <!-- <a href="#" class="btn btn-common mt-3">Read More</a> -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-12 col-xs-12 wow fadeInRight" data-wow-delay="0.3s">
-          <img class="img-fluid" src="assets/about/img-1.png" alt="">
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- About Section End -->
 
   <!-- Features Section Start -->
   <x-features/>
@@ -533,152 +413,6 @@
   </section> -->
   <!-- Team Section End -->
 
-  <!-- Pricing section Start -->
-  {{-- <section id="pricing" class="section-padding">
-    <div class="container">
-      <div class="section-header text-center">
-        <h2 class="section-title wow fadeInDown" data-wow-delay="0.3s">Plans & Pricing</h2>
-        <h6 class="wow fadeInDown" data-wow-delay="0.4s" style="color:black">Try first, decide later, No credit card required!</h6>
-        <div class="shape wow fadeInDown" data-wow-delay="0.5s"></div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="1.2s">
-          <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img src="assets/pricing/Verification Credits.png" alt=""></h4>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img class="img-fluid" src="assets/pricing/Logo_55.png" alt=""></h4>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img class="img-fluid" src="assets/pricing/neverbounce-logo-black-new.png" alt=""></h4>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <h4 class="price-logo"><img class="img-fluid" style="margin-bottom: 1em;" src="assets/pricing/ZeroBounce_55.png" alt=""></h4>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="1.4s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 2em;">
-            <h5 style="color: black; ">5,000 Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 2em;">
-            <button class="btn btn-common" style="font-weight:bold">$9</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <button class="btn-comparision">$40</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 2em;">
-            <button class="btn-comparision">$45</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="1.6s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">10,000 Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$14</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$50</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$80</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown" data-wow-delay="1.8s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">25,000 Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$28</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$125</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$190</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown" data-wow-delay="2.0s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">50,000 Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$45</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$250</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$375</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="2.2s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">100K Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$75</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$400</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$425</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="2.4s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">200K Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <button class="btn btn-common">$125</button>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="margin-top: 1em;">
-            <button class="btn-comparision">$800</button>
-          </div>
-          <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6" style="margin-top: 1em;">
-            <button class="btn-comparision">$850</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="2.6s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">500K Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$250</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$1500</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$1800</button>
-          </div>
-      </div>
-      <div class="row wow fadeInDown"  data-wow-delay="2.6s">
-          <div class="col-lg-4 col-md-3 col-sm-3 col-xs-3 col-mb-6" style="margin-top: 1em;">
-            <h5 style="color: black;">1M Verifications</h5>
-            <div class="shape"></div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12" style="margin-top: 1em;">
-            <button class="btn btn-common">$450</button>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$3000</button>
-          </div>
-          <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12" style="margin-top: 1em;">
-            <button class="btn-comparision">$2750</button>
-          </div>
-      </div>
-    </div>
-  </section> --}}
-  <x-price /> 
-  <!-- Pricing Table Section End -->
   <!-- Testimonial Section Start -->
   <x-testimonial />
   {{-- <section id="testimonial" class="testimonial section-padding">
@@ -998,6 +732,14 @@
       </div>
     </div>
   </section>
+
+  <!-- Faq Section Start -->
+  <x-faq-section />
+  <!-- Faq Section End -->
+
+  <!--CTA Section Start -->
+  <x-final-cta-section />
+  <!--CTA Section End -->
 
 
   <!-- Cookie Consent (Bouncee) -->

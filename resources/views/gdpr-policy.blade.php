@@ -95,7 +95,8 @@
 
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h1 class=" display-5">GDPR Privacy Policy</h1>
+                <h1 class=" display-5">Your Data, Protected</h1>
+                <h5 class="mb-3">Bouncee follows GDPR best practices, encrypts data in transit and at rest, and auto-deletes lists after verification. Your privacy is our priority.</h5>
                 <p class=""><i>Last updated: April 1, 2025</i></p>
             </div>
 
