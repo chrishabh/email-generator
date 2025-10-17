@@ -13,7 +13,7 @@
             <div class="col-lg-10">
                 <div class="Htw-main">
                     <div class="wow fadeInRight">
-                        <h2 class="hiw">How it works</h2>
+                        <h1 class="hiw">How it works</h1>
 
                         <p><span>1.</span> <span style="font-size: 1.04em; color: #fff; position: relative;">
                             Upload or Paste Emails — Add single addresses or upload a bulk list.

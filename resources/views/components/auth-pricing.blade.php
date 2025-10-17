@@ -4,7 +4,7 @@
 
             <!-- Page Header -->
             <div class="section-header text-center mb-4">
-                <h2 class="section-title">Plans & Pricing</h2>
+                <h1 class="section-title">Plans & Pricing</h1>
                 <h6 class="pricing-sub-header">Choose Limited or Unlimited — No credit card required!</h6>
             </div>
 

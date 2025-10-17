@@ -53,7 +53,7 @@
 </style>
 
 <section class="faq-section">
-    <h2>Frequently Asked Questions</h2>
+    <h1>Frequently Asked Questions</h1>
 
     @php
         $faqs = [

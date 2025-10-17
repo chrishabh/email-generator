@@ -3,9 +3,9 @@
   <div class="container">
   <div class="row justify-content-center mb-5">
   <div class="col-lg-8 col-md-10 text-center">
-    <h2 class="section-title wow fadeInUp" data-wow-delay="0.2s" style="font-weight:800; color:#ffffff;">
+    <h1 class="section-title wow fadeInUp" data-wow-delay="0.2s" style="font-weight:800; color:#ffffff;">
       Trusted by Marketers, Startups, and Developers
-    </h2>
+    </h1>
     <p class="wow fadeInUp mt-3" data-wow-delay="0.4s" style="font-size:1.05rem; color:#d9d9d9;">
       Join hundreds of businesses using <strong style="color:#00aaff;">Bouncee</strong> to reduce bounces, 
       protect deliverability, and save money.

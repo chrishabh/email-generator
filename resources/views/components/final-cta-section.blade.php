@@ -2,9 +2,9 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8 col-md-10">
-        <h2 class="fw-bold mb-3" style="font-size: 2.2rem;">
+        <h1 class="fw-bold mb-3" style="font-size: 2.2rem;">
           Start Using the #1 Email Verification Tool Today
-        </h2>
+        </h1>
         <p class="lead mb-4" style="font-size: 1.1rem;">
           Subscription plans available. Fast setup. Instant results.
         </p>

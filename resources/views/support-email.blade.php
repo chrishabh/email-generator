@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>📩 New Support Request</h2>
+        <h1>📩 New Support Request</h1>
 
         <p>You have received a new support message through the website.</p>
 

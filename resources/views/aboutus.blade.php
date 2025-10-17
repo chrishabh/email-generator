@@ -18,7 +18,7 @@
           <div class="about-wrapper wow fadeInLeft" data-wow-delay="0.3s">
             <div>
               <div class="site-heading">
-                <h2 class="section-title">🚀 About Bouncee</h2>
+                <h1 class="section-title">🚀 About Bouncee</h1>
               </div>
               <div class="content">
                 <p style="color: black; text-align:center">

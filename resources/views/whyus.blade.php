@@ -145,7 +145,7 @@
 </style>
 
 <div class="why-us">
-    <h2>Why Choose Bouncee?</h2>
+    <h1>Why Choose Bouncee?</h1>
     <p class="subtitle">
         Experience enterprise-grade accuracy, security, and performance — all in one simple and powerful email verification platform.
     </p>
