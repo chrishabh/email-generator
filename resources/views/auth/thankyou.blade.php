@@ -25,7 +25,7 @@
             <div class="sidebar-signup">
                 <div>
                     <div class="div-block-148">
-                        <h1>Welcome to bounce<br></h1>
+                        <h1>Welcome to bouncee<br></h1>
                         <p class="signup-intro" style="text-align: center;">Your account has been created successfully. You’re ready to experience smarter email verification and management.<br></p>
                     </div>
                     <div class="div-block-148">
