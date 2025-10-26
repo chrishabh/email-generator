@@ -113,6 +113,17 @@
 
                         <button class="btn fullwidth" type="submit" style="margin-top: 4em;" id="signIn">Login to your
                             account</button>
+                        <!-- New: OR divider -->
+                        <div style="text-align: center; margin: 20px 0; font-weight: 500; color: #666;">
+                        OR
+                        </div>
+
+                        <!-- New: Google Login Button -->
+                        <a href="{{ route('google.login') }}" class="btn fullwidth" 
+                        style="background-color: #fff; color: #444; border: 1px solid #ddd; display:flex; align-items:center; justify-content:center; gap:10px;">
+                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
+                            <span>Sign in with Google</span>
+                        </a>
                         <div class="sign-form--foot">
                             <a href="/recovery">Can’t login?</a> <a href="/signup"> Sign up for new user?</a><br>
                         </div>

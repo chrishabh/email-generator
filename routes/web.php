@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiKey\GenerateCustomEndpointController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -56,6 +57,8 @@ try{
         Route::get('/signup',[RegisterController::class,'showRegistrationForm'])->name('signup');
         Route::post('/signup',[RegisterController::class,'signup']); 
         Route::get('/signin',[LoginController::class,'showLoginForm'])->name('signin');
+        Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+        Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
         Route::get('/thankyou',[LoginController::class,'showThankyou'])->name('thankyou');
         Route::post('/signin',[LoginController::class,'login']);
         Route::get('/recovery',[LoginController::class,'showResetForm'])->name('recovery');
