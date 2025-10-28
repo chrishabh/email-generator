@@ -32,6 +32,7 @@ class SignInService{
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); 
             session(['lastActivityTime'=>time()]);
+            session(['showLowCreditPopup'=>true]);
             return  redirect()->intended('/single');
             // $otp = mt_rand(100000,999999);
             // $verification_data = [

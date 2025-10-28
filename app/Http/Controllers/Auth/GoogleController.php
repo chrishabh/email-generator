@@ -55,6 +55,7 @@ class GoogleController extends Controller
             Auth::login($user,true);
             request()->session()->regenerate(); 
             session(['lastActivityTime'=>time()]);
+            session(['showLowCreditPopup'=>true]);
             return  redirect()->intended('/single'); // change to wherever user should land
         } catch (Exception $e) {
             return redirect('/signin')->with('error', 'Google login failed, please try again.');

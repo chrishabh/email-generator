@@ -533,8 +533,10 @@ class EmailController extends Controller
                 
             }
         }
+        $showPopup = session('showLowCreditPopup', false);
+        session()->forget('showLowCreditPopup'); // clear flag immediately
         $headerData['creditPoint']         = $creditPoint??0; 
-        $headerData['lowCredits']         = ($plan_type == 'Unlimited')?false:($creditPoint<101?true:false);
+        $headerData['lowCredits']         = ($showPopup)?(($plan_type == 'Unlimited')?false:($creditPoint<101?true:false)):false;
         $headerData['oldVerificationData'] = $oldVerificationData; 
         return view('verify.single')->with(compact('headerData'));
     }
