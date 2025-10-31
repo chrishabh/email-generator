@@ -5,9 +5,12 @@ use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use App\Models\UserCredits;
+use App\Notifications\ConfirmationCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Exception;
+use Illuminate\Support\Facades\Notification;
 
 class GoogleController extends Controller
 {
@@ -49,6 +52,8 @@ class GoogleController extends Controller
                        'email_verified_at' => now(),
                    ]);
                    UserCredits::initialFreeCredit(User::getUserId($googleUser->email));
+                   Notification::route('mail', env('ADMIN_EMAIL'))->notify(new ConfirmationCode('New Account Notification',['User'=>$googleUser->name,'account_email' => $googleUser->email,'account_creation_date'=>Carbon::now()],'new-account'));
+
                 }
             }
 
