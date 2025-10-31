@@ -303,8 +303,8 @@ class SendBounceeNotificationEmails extends Command
             "alextrans19881988@gmail.com",
             "23-ee-5@students.uettaxila.edu.pk"
         ];
-        $template = env("NOTIFICATION_TEMPLATE");
-        $subject = env("NOTIFICATION_SUBJECT");
+        $template = envparam("NOTIFICATION_TEMPLATE");
+        $subject = envparam("NOTIFICATION_SUBJECT");
 
         if(env('NOTIFICATION_ACTION')){
            
