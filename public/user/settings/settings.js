@@ -115,7 +115,7 @@ function renderSettingHtmlPage(data, totalUsers, perPage,totalVerifiedUsers, cur
                 }else{
                     html+= `<tr>
                     <th scope="row">${startIndex+index+1}.</th>
-                    <td>${user.name} ${user.verified == '1' ? `<img class="verified-badge" src="assets/2614a027236645.56361cc2c40e4-removebg-preview.png" alt="Verified">` : ''}</td>
+                    <td>${user.name} ${user.signup_type == '1' ? `<img class="verified-badge" src="assets/google-logo.png" alt="Verified">` : user.verified == '1' ? `<img class="verified-badge" src="assets/2614a027236645.56361cc2c40e4-removebg-preview.png" alt="Verified">` : ''}</td>
                     <td> ${user.email}</td>
                     <td>${user.credits !== null ? user.credits + " credits" : 'No Credits'}</td>
                       <td>${user.used_credits !== null ? user.used_credits + " credits" : 'No Credits Used'}</td>

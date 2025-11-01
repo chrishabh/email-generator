@@ -120,6 +120,7 @@ class User extends Authenticatable
             u.gender, 
             uc.credits, 
             u.email_verified AS verified, 
+            case when u.google_id IS NOT NULL AND u.remember_token IS NOT NULL THEN '1' ELSE '0' END AS signup_type,
             COALESCE(evl.used_credits, 0) AS used_credits
         FROM users u
         LEFT JOIN (
@@ -154,7 +155,7 @@ class User extends Authenticatable
 
         $totalVerifiedUsersResult = DB::select($verified_count);
         $totalVerifiedUsers = $totalVerifiedUsersResult[0]->verified_user;
-    
+        
         $result = DB::select($query, [$offset, $perPage]);
     
         return [
