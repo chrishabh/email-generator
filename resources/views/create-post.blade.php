@@ -100,6 +100,24 @@
     </div>
 </section>
 
+<!-- TinyMCE Integration -->
+<script src="https://cdn.tiny.cloud/1/08q9dn1bp6stbnwidq91v2ci01pi53vgeo14mikkbcsv2zya/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+  selector: 'textarea#content',
+  height: 500,
+  menubar: true,
+  plugins: 'advlist autolink lists link image charmap preview anchor code table fullscreen',
+  toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code fullscreen',
+  valid_elements: '*[*]', // allows schema or any custom HTML
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+  branding: false
+});
+</script>
+
+
+
+
 @push('styles')
 <style>
     /* Background & Header */

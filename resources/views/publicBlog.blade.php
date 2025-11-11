@@ -1,14 +1,13 @@
 @extends('layout.main')
 
 @php
-    $headerData = array();
-    $headerData['whichPageRequest'] = 'blog';
+    $headerData = ['whichPageRequest' => 'blog'];
 @endphp
 
 @section('main-section')
-    @push('title')
-        <title>Blog | Bouncee</title>
-    @endpush
+@push('title')
+<title>Blog | Bouncee</title>
+@endpush
 
 <style>
     .blog-page {
@@ -36,7 +35,8 @@
     }
     .featured-left img {
         width: 100%;
-        height: 320px;
+        height: auto;
+        max-height: 380px;
         object-fit: cover;
     }
     .featured-content {
@@ -51,6 +51,7 @@
     .featured-content p {
         color: #444;
         margin-bottom: 20px;
+        line-height: 1.6;
     }
     .featured-content .btn {
         background: #5e2ced;
@@ -89,10 +90,13 @@
         border-radius: 8px;
         object-fit: cover;
     }
-    .sidebar-article a {
+    .sidebar-article button {
+        background: none;
+        border: none;
         color: #3d2b7a;
         font-weight: 600;
-        text-decoration: none;
+        cursor: pointer;
+        text-align: left;
     }
     .sidebar-article small {
         color: #777;
@@ -128,7 +132,7 @@
     }
     .blog-card img {
         width: 100%;
-        height: 200px;
+        height: 220px;
         object-fit: cover;
     }
     .blog-card-content {
@@ -158,57 +162,13 @@
         margin-top: 10px;
     }
 
-    /* Load More */
-    .load-more {
-        text-align: center;
-        margin-top: 50px;
-    }
-    .load-more button {
-        background: #5e2ced;
-        color: #fff;
-        border: none;
-        padding: 12px 35px;
-        border-radius: 30px;
-        font-weight: 600;
-        transition: background 0.3s ease;
-    }
-    .load-more button:hover {
-        background: #4a22c4;
-    }
-
-    /* Categories */
-    .categories {
-        margin-top: 70px;
-        text-align: center;
-    }
-    .categories h3 {
-        color: #3d2b7a;
-        font-weight: 700;
-        margin-bottom: 20px;
-    }
-    .categories .tags {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-    .categories .tags a {
-        background: #f5ecff;
-        color: #5e2ced;
-        padding: 8px 18px;
-        border-radius: 30px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background 0.3s ease;
-    }
-    .categories .tags a:hover {
-        background: #5e2ced;
-        color: #fff;
-    }
-
+    /* Responsive */
     @media(max-width: 992px) {
         .featured-section {
             grid-template-columns: 1fr;
+        }
+        .featured-left img {
+            max-height: 300px;
         }
     }
 </style>
@@ -219,11 +179,14 @@
         <!-- Featured Section -->
         <div class="featured-section">
             <div class="featured-left">
-                <img src="{{ $featured->image }}" alt="{{ $featured->title }}">
+                <img src="{{ asset($featured->image) }}" alt="{{ $featured->title }}">
                 <div class="featured-content">
                     <small>{{ $featured->category }}</small>
                     <h3>{{ $featured->title }}</h3>
-                    <p>{{ $featured->excerpt }}</p>
+
+                    {{-- ✅ Render formatted TinyMCE HTML --}}
+                    <div class="post-body">{!! $featured->excerpt !!}</div>
+
                     <form action="{{ route('blog.show') }}" method="POST">
                         @csrf
                         <input type="hidden" name="slug" value="{{ $featured->slug }}">
@@ -238,13 +201,10 @@
                         <img src="{{ asset($post->image) }}" alt="">
                         <div>
                             <small>{{ $post->category }}</small>
-                             <!-- POST form for sidebar link -->
-                            <form action="{{ route('blog.show') }}" method="POST" style="display:inline;">
+                            <form action="{{ route('blog.show') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="slug" value="{{ $post->slug }}">
-                                <button type="submit" style="background:none; border:none; padding:0; cursor:pointer; color:#3d2b7a; font-weight:600; text-decoration:underline;">
-                                    {{ $post->title }}
-                                </button>
+                                <button type="submit">{{ $post->title }}</button>
                             </form>
                         </div>
                     </div>
@@ -258,29 +218,25 @@
             <div class="blog-grid">
                 @foreach($recentPosts as $post)
                 <div class="blog-card">
-                    <img src="{{ $post->image }}" alt="">
+                    <img src="{{ asset($post->image) }}" alt="">
                     <div class="blog-card-content">
                         <small>{{ $post->category }}</small>
                         <h4>{{ $post->title }}</h4>
-                        <p>{{ $post->excerpt }}</p>
-                       <!-- POST form for Read Story -->
-                <form action="{{ route('blog.show') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="slug" value="{{ $post->slug }}">
-                    <button type="submit" class="read-more" style="background:none; border:none; padding:0; cursor:pointer; color:#5e2ced; font-weight:600;">
-                        Read Story →
-                    </button>
-                </form>
+
+                        {{-- ✅ Show formatted HTML --}}
+                        <div class="excerpt">{!! Str::limit(strip_tags($post->content), 150) !!}</div>
+
+                        <form action="{{ route('blog.show') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="slug" value="{{ $post->slug }}">
+                            <button type="submit" class="read-more">Read Story →</button>
+                        </form>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
 
-        <!-- Load More -->
-        <div class="load-more">
-            <button>Load More</button>
-        </div>
     </div>
 </div>
 @endsection

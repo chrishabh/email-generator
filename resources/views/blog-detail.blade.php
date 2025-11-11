@@ -123,7 +123,7 @@
     <h1>{{ $post->title }}</h1>
 
     <div class="content">
-        {!! nl2br(e($post->content)) !!}
+        {!! ($post->content) !!}
     </div>
 
     <div class="related-section">
