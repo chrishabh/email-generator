@@ -180,7 +180,9 @@
         <!-- TOTALS -->
         <div class="total-section">
             <p><strong>SUBTOTAL:</strong> {{ $amount_currency }}{{ number_format($subtotal, 2) }}</p>
+            @if($gst > 0)
             <p><strong>GST @  {{ $gst }}%:</strong> {{ $amount_currency }}{{ number_format($gst_amount, 2) }}</p>
+            @endif
             <p><strong>TOTAL:</strong> {{ $amount_currency }}{{ number_format($total, 2) }}</p>
         </div>
 

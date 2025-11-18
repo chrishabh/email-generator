@@ -195,7 +195,7 @@ class PaymentController extends Controller
         $ip_country_code = $location_details['country_code'] ?? 'US';
         $converted_details = getConvertedAmount($request->price,$ip_currency);
         $pack_amount = $converted_details['amount'];
-        $gst_amount = ($pack_amount*env('gst_percentage'))/100;
+        $gst_amount = 0;//($pack_amount*env('gst_percentage'))/100;
         
         $pack_amount = $pack_amount+$gst_amount;
         $currency =  $converted_details['currency'];
@@ -208,7 +208,7 @@ class PaymentController extends Controller
             'duration' => $request->duration,
             'base_price' => $converted_details['amount'],
             'gst' => env('gst_percentage')??0,
-            'gst_amount' => $gst_amount,
+            'gst_amount' => $gst_amount??0,
             'Total_amount' => $pack_amount,
             'currency' => $currencySymbols[$ip_currency].' ',
         ])->with(compact('headerData'));
@@ -251,7 +251,7 @@ class PaymentController extends Controller
         $ip_country_code = $location_details['country_code'] ?? 'US';
         $converted_details = getConvertedAmount($request->price,$ip_currency);
         $pack_amount = $converted_details['amount'];
-        $gst_amount = ($pack_amount*env('gst_percentage'))/100;
+        $gst_amount = 0;//($pack_amount*env('gst_percentage'))/100;
         $pack_amount = $pack_amount - ($pack_amount*($promo_code/100));
         $pack_amount = round($pack_amount+$gst_amount);
         $currency =  $converted_details['currency'];

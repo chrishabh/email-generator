@@ -50,10 +50,10 @@
                             <input type="hidden" name="duration" value="{{ $duration ?? '' }}">
                             <input type="hidden" name="plan_name" value="{{ $plan_name }}">
 
-                            <div class="mb-4">
+                            <!-- <div class="mb-4">
                                 <label class="form-label fw-semibold">GST Number (Optional)</label>
                                 <input type="text" style="border-radius: 10px;" class="form-control form-control-lg rounded-pill border-primary" name="gst_number" placeholder="Enter GST number">
-                            </div>
+                            </div> -->
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold" >Promo Code (Optional)</label>
@@ -69,10 +69,10 @@
                                     <span>Base Amount:</span>
                                     <span>{{$currency}}<span id="displayBase">{{ number_format($base_price, 2) }}</span></span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
+                                <!-- <div class="d-flex justify-content-between mb-2">
                                     <span>GST ({{$gst}}%):</span>
                                     <span>{{$currency}}<span id="displayGST">{{ number_format($gst_amount, 2) }}</span></span>
-                                </div>
+                                </div> -->
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Discount:</span>
                                     <span class="text-success">-{{$currency}}<span id="displayDiscount">0.00</span></span>
