@@ -523,6 +523,7 @@ class EmailController extends Controller
     function singleEmailPage(Request $request){
         $headerData = array(); 
         $plan_type = null;
+        $creditPoint = 0;
         if(Auth::check()){ 
             $userId               = Auth::user()->id;
             $data                 = UserCredits::getCreditPoint($userId); 
