@@ -160,82 +160,72 @@
     <div class="blog-container">
 
         <!-- Featured Section -->
-        <div class="featured-section">
-            <div class="featured-left">
-                <img src="{{ asset($featured->image) }}" alt="{{ $featured->title }}">
-                <div class="featured-content">
-                    <small>{{ $featured->category }}</small>
+<div class="featured-section">
 
-                    <h3>{{ $featured->title }}</h3>
+{{-- If featured post exists --}}
+@if($featured)
 
-                    <!-- ✔ NEW: Author + Updated -->
-                    <p class="meta">
-                        By <strong>{{ $featured->author }}</strong>  Updated on {{ $featured->updated_at->format('d M, Y') }}
-                    </p>
+    <div class="featured-left">
+        <img src="{{ asset($featured->image ?? 'images/default-placeholder.jpg') }}"
+             alt="{{ $featured->title ?? 'Featured Post' }}">
 
-                    <div class="post-body">{!! $featured->excerpt !!}</div>
+        <div class="featured-content">
+            <small>{{ $featured->category ?? 'Uncategorized' }}</small>
 
-                    <form action="{{ route('blog.show') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="slug" value="{{ $featured->slug }}">
-                        <button type="submit" class="read-more">Read Story →</button>
-                    </form>
-                </div>
+            <h3>{{ $featured->title ?? 'No Featured Title' }}</h3>
+
+            <p class="meta">
+                By <strong>{{ $featured->author ?? 'Admin' }}</strong>
+                Updated on {{ optional($featured->updated_at)->format('d M, Y') ?? '' }}
+            </p>
+
+            <div class="post-body">
+                {!! $featured->excerpt ?? '<i>No summary available.</i>' !!}
             </div>
 
-            <div class="sidebar">
-                @foreach($sidebarPosts as $post)
-                    <div class="sidebar-article">
-                        <img src="{{ asset($post->image) }}" alt="">
-                        <div>
-                            <small>{{ $post->category }}</small>
+            <form action="{{ route('blog.show') }}" method="POST">
+                @csrf
+                <input type="hidden" name="slug" value="{{ $featured->slug ?? '' }}">
+                <button type="submit" class="read-more">Read Story →</button>
+            </form>
+        </div>
+    </div>
 
-                            <!-- ✔ NEW: Author + Updated -->
-                            <small class="meta">
-                                {{ $post->author }}  {{ $post->updated_at->format('d M') }}
-                            </small>
+@else  
+    {{-- NO FEATURED POST FALLBACK UI --}}
 
-                            <form action="{{ route('blog.show') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="slug" value="{{ $post->slug }}">
-                                <button type="submit">{{ $post->title }}</button>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
+    <div class="featured-left" style="padding:40px;text-align:center;">
+        <h3 style="color:#888;">No Featured Post Available</h3>
+        <p style="color:#666;">Please add a post and mark it as featured.</p>
+    </div>
+
+@endif
+
+<!-- Sidebar (unchanged but safe) -->
+<div class="sidebar">
+    @forelse($sidebarPosts as $post)
+        <div class="sidebar-article">
+            <img src="{{ asset($post->image ?? 'images/default-small.jpg') }}" alt="">
+            <div>
+                <small>{{ $post->category ?? 'Uncategorized' }}</small>
+                <small class="meta">
+                    {{ $post->author ?? 'Admin' }}
+                    {{ optional($post->updated_at)->format('d M') }}
+                </small>
+
+                <form action="{{ route('blog.show') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="slug" value="{{ $post->slug ?? '' }}">
+                    <button type="submit">{{ $post->title ?? 'Untitled Post' }}</button>
+                </form>
             </div>
         </div>
+    @empty
+        <p>No sidebar posts available.</p>
+    @endforelse
+</div>
 
-        <!-- New Posts -->
-        <div class="new-posts">
-            <h2>New Blog Posts</h2>
-            <div class="blog-grid">
-                @foreach($recentPosts as $post)
-                <div class="blog-card">
-                    <img src="{{ asset($post->image) }}" alt="">
-                    <div class="blog-card-content">
-                        <small>{{ $post->category }}</small>
-
-                        <!-- ✔ NEW: Author + Updated -->
-                        <small class="meta">
-                            {{ $post->author }}  {{ $post->updated_at->format('d M, Y') }}
-                        </small>
-
-                        <h4>{{ $post->title }}</h4>
-
-                        <div class="excerpt">{!! Str::limit(strip_tags($post->content), 150) !!}</div>
-
-                        <form action="{{ route('blog.show') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="slug" value="{{ $post->slug }}">
-                            <button type="submit" class="read-more">Read Story →</button>
-                        </form>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-
+</div>
     </div>
 </div>
 @endsection
