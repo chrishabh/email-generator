@@ -17,6 +17,7 @@ use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sitemap\SitemapGenerator;
 use App\Http\Controllers\BlogController;
+use Symfony\Component\HttpFoundation\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -193,13 +194,30 @@ try{
             Route::get('/posts', [BlogController::class, 'create'])->name('posts.create');
             Route::post('/posts/store', [BlogController::class, 'store'])->name('posts.store');
             Route::delete('/posts/{id}', [BlogController::class, 'destroy'])->name('posts.destroy');
+
+            Route::post('/tinymce/upload', function (Request $request) {
+
+                if ($request->hasFile('file')) {
+                    $path = $request->file('file')->store('tinymce', 'public');
+            
+                    return response()->json([
+                        'location' => asset('storage/' . $path)
+                    ]);
+                }
+            
+                return response()->json(['error' => 'No file uploaded'], 422);
+            });
+            
       
         });
+
+        
          
         
         // Route::get('/profile',[ProfileController::class,'getProfilePage']);
 
     });
+   
 
     Route::get('/logout',[LogoutController::class,'logout'])->name('logout');
 

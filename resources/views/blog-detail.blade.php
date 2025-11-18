@@ -36,6 +36,13 @@
     margin-bottom: 20px;
 }
 
+.blog-detail .meta {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 15px;
+    display: block;
+}
+
 .blog-detail p {
     font-size: 17px;
     color: #374151;
@@ -99,6 +106,13 @@
     text-transform: uppercase;
 }
 
+.related-card-content .meta {
+    color: #888;
+    font-size: 12px;
+    display: block;
+    margin-top: 3px;
+}
+
 .related-card-content h4 {
     font-size: 18px;
     font-weight: 600;
@@ -118,9 +132,17 @@
 </style>
 
 <div class="blog-detail">
+
     <img src="{{ $post->image }}" alt="{{ $post->title }}" class="cover">
+
     <small>{{ $post->category }}</small>
+
     <h1>{{ $post->title }}</h1>
+
+    <!-- ✅ NEW: Author + Updated On -->
+    <span class="meta">
+        By: <strong>{{ $post->author }}</strong>  Updated on: {{ $post->updated_at->format('d M, Y') }}
+    </span>
 
     <div class="content">
         {!! ($post->content) !!}
@@ -134,6 +156,12 @@
                 <img src="{{ $rel->image }}" alt="{{ $rel->title }}">
                 <div class="related-card-content">
                     <small>{{ $rel->category }}</small>
+
+                    <!-- ✅ NEW: Author + Updated On -->
+                    <small class="meta">
+                        {{ $rel->author }}  {{ $rel->updated_at->format('d M') }}
+                    </small>
+
                     <h4>{{ $rel->title }}</h4>
                     <a href="{{ route('blog.show', $rel->slug) }}">Read Story →</a>
                 </div>

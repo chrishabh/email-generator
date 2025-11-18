@@ -1,26 +1,31 @@
 @extends('layout.main')
 
 @section('main-section')
+
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+    
 @push('title')
-    <title>Add & Manage Posts | Bouncee</title>
+<title>Add & Manage Posts | Bouncee</title>
 @endpush
 
 @php
-    $name = '';
-    if(!empty($userData)) {
-        $userData = $userData->toArray(); 
-        if(!empty($userData['name'])) {
-            $fullName = $userData['name'];
-            $nameParts = explode(' ', $fullName);
-            if(count($nameParts) < 2) {
-                $name = strtoupper($nameParts[0]);
-            } else {
-                $firstCapitalLetter = strtoupper($nameParts[0][0]);
-                $lastCapitalLetter = strtoupper($nameParts[count($nameParts)-1][0]);
-                $name = $firstCapitalLetter . $lastCapitalLetter;
-            }
+$name = '';
+if(!empty($userData)) {
+    $userData = $userData->toArray(); 
+    if(!empty($userData['name'])) {
+        $fullName = $userData['name'];
+        $nameParts = explode(' ', $fullName);
+        if(count($nameParts) < 2) {
+            $name = strtoupper($nameParts[0]);
+        } else {
+            $firstCapitalLetter = strtoupper($nameParts[0][0]);
+            $lastCapitalLetter = strtoupper($nameParts[count($nameParts)-1][0]);
+            $name = $firstCapitalLetter . $lastCapitalLetter;
         }
     }
+}
 @endphp
 
 <section id="posts-page">
@@ -58,6 +63,10 @@
             <input type="file" name="image" id="image">
             @error('image') <div class="error">{{ $message }}</div> @enderror
 
+            <label for="author">Author</label>
+            <input type="text" name="author" id="author" value="{{ old('author') }}">
+            @error('author') <div class="error">{{ $message }}</div> @enderror
+
             <button type="submit">Add Post</button>
         </form>
     </div>
@@ -84,7 +93,8 @@
                     <td>{{ $post->category ?? '-' }}</td>
                     <td>{{ $post->created_at->format('d M Y') }}</td>
                     <td>
-                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete this post?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="delete-btn">Delete</button>
@@ -100,28 +110,77 @@
     </div>
 </section>
 
-<!-- TinyMCE Integration -->
+<!-- TinyMCE -->
 <script src="https://cdn.tiny.cloud/1/08q9dn1bp6stbnwidq91v2ci01pi53vgeo14mikkbcsv2zya/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
 <script>
 tinymce.init({
-  selector: 'textarea#content',
-  height: 500,
-  menubar: true,
-  plugins: 'advlist autolink lists link image charmap preview anchor code table fullscreen',
-  toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code fullscreen',
-  valid_elements: '*[*]', // allows schema or any custom HTML
-  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-  branding: false
+    selector: 'textarea#content',
+    height: 500,
+    menubar: true,
+
+    plugins: 'advlist autolink lists link image charmap preview anchor code table fullscreen',
+    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code fullscreen',
+
+    branding: false,
+    content_style: 'body { font-family: Helvetica, Arial, sans-serif; font-size: 14px }',
+
+    automatic_uploads: true,
+
+    images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+        fetch('/tinymce/upload', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
+        })
+        .then(r => r.json())
+        .then(result => {
+            if (!result.location) {
+                reject("Upload failed");
+                return;
+            }
+            resolve(result.location);
+        })
+        .catch(() => reject("HTTP error"));
+    }),
+
+    file_picker_types: 'image',
+
+    file_picker_callback: (callback, value, meta) => {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = function () {
+            let file = this.files[0];
+            let formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/tinymce/upload', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(r => r.json())
+            .then(result => callback(result.location));
+        };
+
+        input.click();
+    }
 });
 </script>
 
-
-
-
 @push('styles')
 <style>
-    /* Background & Header */
-    #posts-page {
+  /* Background & Header */
+  #posts-page {
         min-height: 100vh;
         padding: 3rem 1rem;
         background: linear-gradient(61deg, #8993d4, #cecfd2);

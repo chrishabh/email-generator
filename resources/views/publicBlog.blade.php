@@ -45,13 +45,13 @@
     .featured-content h3 {
         font-size: 1.6rem;
         color: #3d2b7a;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         font-weight: 700;
     }
-    .featured-content p {
-        color: #444;
-        margin-bottom: 20px;
-        line-height: 1.6;
+    .featured-content p.meta {
+        color: #666;
+        font-size: 13px;
+        margin-bottom: 15px;
     }
     .featured-content .btn {
         background: #5e2ced;
@@ -90,18 +90,11 @@
         border-radius: 8px;
         object-fit: cover;
     }
-    .sidebar-article button {
-        background: none;
-        border: none;
-        color: #3d2b7a;
-        font-weight: 600;
-        cursor: pointer;
-        text-align: left;
-    }
-    .sidebar-article small {
-        color: #777;
+    .sidebar-article small.meta {
+        font-size: 12px;
+        color: #888;
         display: block;
-        margin-bottom: 3px;
+        margin-top: 2px;
     }
 
     /* New Posts Section */
@@ -138,21 +131,11 @@
     .blog-card-content {
         padding: 20px;
     }
-    .blog-card-content small {
-        color: #777;
-        font-weight: 500;
-    }
-    .blog-card-content h4 {
-        color: #3d2b7a;
-        margin-top: 10px;
-        margin-bottom: 8px;
-        font-size: 1.15rem;
-        font-weight: 600;
-    }
-    .blog-card-content p {
-        color: #555;
-        font-size: 0.95rem;
-        line-height: 1.6;
+    .blog-card-content small.meta {
+        font-size: 12px;
+        color: #888;
+        display: block;
+        margin-top: 3px;
     }
     .read-more {
         color: #5e2ced;
@@ -182,9 +165,14 @@
                 <img src="{{ asset($featured->image) }}" alt="{{ $featured->title }}">
                 <div class="featured-content">
                     <small>{{ $featured->category }}</small>
+
                     <h3>{{ $featured->title }}</h3>
 
-                    {{-- ✅ Render formatted TinyMCE HTML --}}
+                    <!-- ✔ NEW: Author + Updated -->
+                    <p class="meta">
+                        By <strong>{{ $featured->author }}</strong>  Updated on {{ $featured->updated_at->format('d M, Y') }}
+                    </p>
+
                     <div class="post-body">{!! $featured->excerpt !!}</div>
 
                     <form action="{{ route('blog.show') }}" method="POST">
@@ -201,6 +189,12 @@
                         <img src="{{ asset($post->image) }}" alt="">
                         <div>
                             <small>{{ $post->category }}</small>
+
+                            <!-- ✔ NEW: Author + Updated -->
+                            <small class="meta">
+                                {{ $post->author }}  {{ $post->updated_at->format('d M') }}
+                            </small>
+
                             <form action="{{ route('blog.show') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="slug" value="{{ $post->slug }}">
@@ -221,9 +215,14 @@
                     <img src="{{ asset($post->image) }}" alt="">
                     <div class="blog-card-content">
                         <small>{{ $post->category }}</small>
+
+                        <!-- ✔ NEW: Author + Updated -->
+                        <small class="meta">
+                            {{ $post->author }}  {{ $post->updated_at->format('d M, Y') }}
+                        </small>
+
                         <h4>{{ $post->title }}</h4>
 
-                        {{-- ✅ Show formatted HTML --}}
                         <div class="excerpt">{!! Str::limit(strip_tags($post->content), 150) !!}</div>
 
                         <form action="{{ route('blog.show') }}" method="POST">

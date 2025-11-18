@@ -64,6 +64,7 @@ class BlogController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'content' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'author' => 'nullable|string|max:255',
         ]);
 
         // Handle image upload
@@ -83,6 +84,7 @@ class BlogController extends Controller
             'excerpt' => $request->excerpt,
             'content' => $request->content,
             'image' => $imagePath,
+            'author' => $request->author,
         ]);
 
         return redirect()->route('posts.create')->with('success', 'Post created successfully!');
