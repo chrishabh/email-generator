@@ -13,6 +13,9 @@ class BlogController extends Controller
     public function index()
     {
         $featured = Post::latest()->first();
+        if(!$featured) {
+            return view('publicBlog', ['featured' => null, 'sidebarPosts' => collect(), 'recentPosts' => collect()]);
+        }
         $sidebarPosts = Post::where('id', '!=', $featured->id)->take(3)->get();
         $recentPosts = Post::latest()->skip(1)->take(8)->get();
 
