@@ -201,7 +201,7 @@ try{
                     $path = $request->file('file')->store('tinymce', 'public');
             
                     return response()->json([
-                        'location' => asset('storage/' . $path)
+                        'location' => asset('public/' . $path)
                     ]);
                 }
             
