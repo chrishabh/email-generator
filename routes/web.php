@@ -197,13 +197,24 @@ try{
 
             Route::post('/tinymce/upload', function (Request $request) {
 
-                if ($request->hasFile('file')) {
-                    $path = $request->file('file')->store('tinymce', 'public');
-            
-                    return response()->json([
-                        'location' => asset('public/' . $path)
-                    ]);
+                // Create folder if not exists
+                $uploadPath = public_path('tinymce');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
                 }
+
+                // Generate filename
+                $file = $request->file('file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+
+                // Move file to public/tinymce
+                $file->move($uploadPath, $filename);
+
+                // Return URL
+                return response()->json([
+                    'location' => asset('tinymce/' . $filename)
+                ]);
+            
             
                 return response()->json(['error' => 'No file uploaded'], 422);
             });
