@@ -5,10 +5,11 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-    
+
 @push('title')
-<title>Add & Manage Posts | Bouncee</title>
+<title>Edit Post | Bouncee</title>
 @endpush
+
 
 @php
 $name = '';
@@ -29,92 +30,47 @@ if(!empty($userData)) {
 @endphp
 
 <section id="posts-page">
-    <div class="posts-header">
-        <h1>Add/Manage Posts</h1>
-        <p>Welcome {{ $name ?? 'User' }}, fill in the details below to create a new post.</p>
+<div class="posts-header">
+        <h1>Update Posts</h1>
     </div>
 
-    <!-- Add Post Form -->
-    <div class="post-container">
-        @if(session('success'))
-            <div class="success">{{ session('success') }}</div>
+<div class="post-container">
+    <form action="{{ route('posts.update', ['id' => $post->id]) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <label>Title</label>
+        <input type="text" name="title" value="{{ old('title', $post->title) }}">
+
+        <label>Category</label>
+        <input type="text" name="category" value="{{ old('category', $post->category) }}">
+
+        <label>Excerpt</label>
+        <textarea name="excerpt">{{ old('excerpt', $post->excerpt) }}</textarea>
+
+        <label>Content</label>
+        <textarea name="content" id="content">
+            {{ old('content', $post->content) }}
+        </textarea>
+
+        @if($post->image)
+            <p>Current Image</p>
+            <img src="{{ asset('storage/'.$post->image) }}" width="150">
         @endif
 
-        <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+        <label>Change Image</label>
+        <input type="file" name="image">
 
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" value="{{ old('title') }}">
-            @error('title') <div class="error">{{ $message }}</div> @enderror
+        <label>Author</label>
+        <input type="text" name="author" value="{{ old('author', $post->author) }}">
 
-            <label for="category">Category</label>
-            <input type="text" name="category" id="category" value="{{ old('category') }}">
-            @error('category') <div class="error">{{ $message }}</div> @enderror
+        <button type="submit">Update Post</button>
+        <a href="{{ route('posts.create') }}" class="cancel-btn">Cancel</a>
+    </form>
+</div>
 
-            <label for="excerpt">Excerpt</label>
-            <textarea name="excerpt" id="excerpt" rows="3">{{ old('excerpt') }}</textarea>
-            @error('excerpt') <div class="error">{{ $message }}</div> @enderror
-
-            <label for="content">Content</label>
-            <textarea name="content" id="content" rows="6">{{ old('content') }}</textarea>
-            @error('content') <div class="error">{{ $message }}</div> @enderror
-
-            <label for="image">Image</label>
-            <input type="file" name="image" id="image">
-            @error('image') <div class="error">{{ $message }}</div> @enderror
-
-            <label for="author">Author</label>
-            <input type="text" name="author" id="author" value="{{ old('author') }}">
-            @error('author') <div class="error">{{ $message }}</div> @enderror
-
-            <button type="submit">Add Post</button>
-        </form>
-    </div>
-
-    <!-- Existing Posts List -->
-    <div class="posts-list-container">
-        <h2>Existing Posts</h2>
-        @if($posts->count() > 0)
-        <table class="posts-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($posts as $index => $post)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $post->title }}</td>
-                    <td>{{ $post->category ?? '-' }}</td>
-                    <td>{{ $post->created_at->format('d M Y') }}</td>
-                    <td>
-                    <div class="action-buttons">
-                    <form action="{{ route('posts.edit', $post->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="edit-btn">Edit</button>
-                    </form>
-
-                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="delete-btn">Delete</button>
-                        </form>
-                    </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @else
-            <p>No posts found.</p>
-        @endif
-    </div>
 </section>
+
 
 <!-- TinyMCE -->
 <script src="https://cdn.tiny.cloud/1/08q9dn1bp6stbnwidq91v2ci01pi53vgeo14mikkbcsv2zya/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -182,6 +138,7 @@ tinymce.init({
     }
 });
 </script>
+
 
 @push('styles')
 <style>
@@ -342,4 +299,5 @@ tinymce.init({
     }
 </style>
 @endpush
+
 @endsection

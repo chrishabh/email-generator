@@ -92,4 +92,40 @@ class BlogController extends Controller
 
         return redirect()->route('posts.create')->with('success', 'Post created successfully!');
     }
+
+    public function edit($id)
+    {
+        $headerData = array(); 
+        if(Auth::check()){ 
+            $userData  = Auth::user();
+        }
+        $userCredit              = UserCredits::getCreditPoint($userData ->id);
+        $creditPoint            = ($userCredit) ? $userCredit->credits :0;
+        $posts = Post::latest()->get();
+        
+            
+        $headerData['creditPoint'] = $creditPoint??0; 
+        $post = Post::findOrFail($id);
+        return view('edit-post', compact('headerData','userData','post'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $post = Post::findOrFail($id);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:100',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'nullable',
+            'author' => 'nullable|string|max:255',
+        ]);
+        
+        $post->update($request->only([
+            'title', 'category', 'excerpt', 'content', 'author'
+        ]));
+
+        return redirect()
+            ->route('posts.create')
+            ->with('success', 'Post updated successfully!');
+    }
 }

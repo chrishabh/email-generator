@@ -193,6 +193,8 @@ try{
             Route::post('/invoice-pdf', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
             Route::get('/posts', [BlogController::class, 'create'])->name('posts.create');
             Route::post('/posts/store', [BlogController::class, 'store'])->name('posts.store');
+            Route::post('{id}', [BlogController::class, 'edit'])->name('posts.edit');
+            Route::put('/posts/{id}', [BlogController::class, 'update'])->name('posts.update');
             Route::delete('/posts/{id}', [BlogController::class, 'destroy'])->name('posts.destroy');
 
             Route::post('/tinymce/upload', function (Request $request) {
