@@ -55,7 +55,7 @@ if(!empty($userData)) {
 
         @if($post->image)
             <p>Current Image</p>
-            <img src="{{ asset('storage/'.$post->image) }}" width="150">
+            <img src="{{ asset($post->image ?? 'images/default-small.jpg') }}" width="150">
         @endif
 
         <label>Change Image</label>
