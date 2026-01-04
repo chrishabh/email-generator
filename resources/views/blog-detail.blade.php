@@ -163,7 +163,11 @@
                     </small>
 
                     <h4>{{ $rel->title }}</h4>
-                    <a href="{{ route('blog.show', $rel->slug) }}">Read Story →</a>
+                    <form action="{{ route('blog.show') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="slug" value="{{ $rel->slug ?? '' }}">
+                        <button type="submit" class="read-more">Read Story →</button>
+                    </form>
                 </div>
             </div>
             @endforeach
