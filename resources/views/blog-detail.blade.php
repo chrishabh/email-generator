@@ -135,7 +135,7 @@
 
 <div class="blog-detail">
 
-    <img src="{{ $post->image }}" alt="{{ $post->title }}" class="cover">
+    <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" class="cover">
 
     <small>{{ $post->category }}</small>
 
