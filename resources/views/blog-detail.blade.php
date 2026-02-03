@@ -155,7 +155,7 @@
         <div class="related-grid">
             @foreach($related as $rel)
             <div class="related-card">
-                <img src="{{ $rel->image }}" alt="{{ $rel->title }}">
+                <img src="{{ asset($rel->image) }}" alt="{{ $rel->title }}">
                 <div class="related-card-content">
                     <small>{{ $rel->category }}</small>
 
