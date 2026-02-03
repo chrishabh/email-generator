@@ -125,8 +125,10 @@
     text-decoration: none;
     font-weight: 500;
     font-size: 15px;
+    transition: color 0.3s ease;
 }
 .related-card-content a:hover {
+    color: #5e2ced;
     text-decoration: underline;
 }
 </style>
@@ -163,11 +165,7 @@
                     </small>
 
                     <h4>{{ $rel->title }}</h4>
-                    <form action="{{ route('blog.show') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="slug" value="{{ $rel->slug ?? '' }}">
-                        <button type="submit" class="read-more">Read Story →</button>
-                    </form>
+                    <a href="{{ route('blog.show', $rel->slug) }}" class="read-more">Read Story →</a>
                 </div>
             </div>
             @endforeach

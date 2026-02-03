@@ -18,23 +18,23 @@
     @stack('title')
 
     @stack('styles')
-    <link rel="shortcut icon" href="assets/bouncee-logo.png" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('assets/bouncee-logo.png') }}" type="image/png">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <!-- Icon -->
-    <link rel="stylesheet" href="fonts/line-icons.css">
+    <link rel="stylesheet" href="{{ asset('fonts/line-icons.css') }}">
     <!-- Owl carousel -->
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.css">
+    <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/owl.theme.css') }}">
 
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/nivo-lightbox.css">
+    <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nivo-lightbox.css') }}">
     <!-- Animate -->
-    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <!-- Main Style -->
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <!-- Responsive Style -->
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 
     @stack('styles')
 </head>
@@ -47,7 +47,7 @@
         <nav class="navbar navbar-expand-md bg-inverse fixed-top scrolling-navbar">
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <a href="/" class="navbar-brand"><img src="assets/logo.png" alt=""></a>
+                <a href="/" class="navbar-brand"><img src="{{ asset('assets/logo.png') }}" alt=""></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="lni-menu"></i>

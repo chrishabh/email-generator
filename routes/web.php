@@ -33,14 +33,49 @@ try{
     
 
     Route::get('/generate-sitemap', function () {
-        SitemapGenerator::create(config('app.url'))
-            ->writeToFile(public_path('sitemap.xml'));
-
-        return 'Sitemap generated!';
+        $sitemap = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        
+        // Static pages
+        $staticPages = [
+            '/',
+            '/blog',
+            '/plans',
+            '/why-us',
+            '/faq',
+            '/about-us',
+            '/privacy',
+            '/term'
+        ];
+        
+        foreach ($staticPages as $page) {
+            $sitemap .= '  <url>' . "\n";
+            $sitemap .= '    <loc>' . config('app.url') . $page . '</loc>' . "\n";
+            $sitemap .= '    <changefreq>weekly</changefreq>' . "\n";
+            $sitemap .= '    <priority>0.8</priority>' . "\n";
+            $sitemap .= '  </url>' . "\n";
+        }
+        
+        // Dynamic blog pages
+        $posts = \App\Models\Post::all();
+        foreach ($posts as $post) {
+            $sitemap .= '  <url>' . "\n";
+            $sitemap .= '    <loc>' . config('app.url') . '/blog/' . $post->slug . '</loc>' . "\n";
+            $sitemap .= '    <lastmod>' . $post->updated_at->format('Y-m-d') . '</lastmod>' . "\n";
+            $sitemap .= '    <changefreq>monthly</changefreq>' . "\n";
+            $sitemap .= '    <priority>0.7</priority>' . "\n";
+            $sitemap .= '  </url>' . "\n";
+        }
+        
+        $sitemap .= '</urlset>';
+        
+        file_put_contents(public_path('sitemap.xml'), $sitemap);
+        
+        return 'Sitemap generated with ' . count($posts) . ' blog posts!';
     });
 
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-    Route::post('blog-details', [BlogController::class, 'show'])->name('blog.show');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->where('slug', '[a-zA-Z0-9\-_]+')->name('blog.show');
     Route::get('/bouncee-verification/{hash}', function() {})->middleware('user.email.verification');
     Route::middleware(['guest','session.timeout'])->group(function(){
 

@@ -22,12 +22,9 @@ class BlogController extends Controller
         return view('publicBlog', compact('featured', 'sidebarPosts', 'recentPosts'));
     }
 
-    public function show(Request $request)
+    public function show($slug)
     {
-        $request->validate([
-            'slug' => 'required|string|exists:posts,slug'
-        ]);
-        $post = Post::where('slug', $request->slug)->firstOrFail();
+        $post = Post::where('slug', $slug)->firstOrFail();
         $related = Post::where('id', '!=', $post->id)->take(3)->get();
 
         return view('blog-detail', compact('post', 'related'));

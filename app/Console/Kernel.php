@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
      protected $commands = [
         \App\Console\Commands\VerificationActionRequired::class,
         \App\Console\Commands\ExpireUnlimitedPlans::class,
+        \App\Console\Commands\GenerateSitemap::class,
      ];
     protected function schedule(Schedule $schedule)
     {
@@ -39,6 +40,9 @@ class Kernel extends ConsoleKernel
             }
             $schedule->command('ExpireUnlimitedPlans')->cron($Expire_unlimited_plans->cron_timing)->appendOutputTo($filePath);
         }
+        
+        // Generate sitemap daily at 2 AM
+        $schedule->command('sitemap:generate')->dailyAt('02:00');
     }
 
     /**

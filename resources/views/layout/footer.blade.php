@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-6 col-mb-12">
                     <div class="widget">
-                        <h3 class="footer-logo"><img  style="height: 40px; width: 120px;" src="assets/logo.png" alt=""></h3>
+                        <h3 class="footer-logo"><img  style="height: 40px; width: 120px;" src="{{ asset('assets/logo.png') }}" alt=""></h3>
                         <div class="textwidget">
                             <p>Ensure your emails reach the right inbox with our accurate and efficient validation
                                 services. Reduce bounce rates and enhance deliverability effortlessly.</p>
@@ -17,7 +17,7 @@
                             <a class="linkedin" href="https://www.linkedin.com/company/bouncee-net/"><i class="lni-linkedin-filled"></i></a>
                         </div>
                         <div>
-                            <p class="f_size_14 mb_5"><img src="assets/gdpr.png" alt="GDPR Compliant" title="GDPR Compliant"> GDPR Compliant</p>
+                            <p class="f_size_14 mb_5"><img src="{{ asset('assets/gdpr.png') }}" alt="GDPR Compliant" title="GDPR Compliant"> GDPR Compliant</p>
                         </div>
                     </div>
                 </div>
@@ -89,19 +89,19 @@
 <!-- End Preloader -->
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="js/jquery-min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/wow.js"></script>
-<script src="js/jquery.nav.js"></script>
-<script src="js/scrolling-nav.js"></script>
-<script src="js/jquery.easing.min.js"></script>
-<script src="js/jquery.counterup.min.js"></script>
-<script src="js/waypoints.min.js"></script>
-<script src="js/main.js"></script>
+<script src="{{ asset('js/jquery-min.js') }}"></script>
+<script src="{{ asset('js/popper.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('js/wow.js') }}"></script>
+<script src="{{ asset('js/jquery.nav.js') }}"></script>
+<script src="{{ asset('js/scrolling-nav.js') }}"></script>
+<script src="{{ asset('js/jquery.easing.min.js') }}"></script>
+<script src="{{ asset('js/jquery.counterup.min.js') }}"></script>
+<script src="{{ asset('js/waypoints.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
 <!-- <script src="js/slim.min.js"></script> -->
-<script src="js/three.min.js"></script>
+<script src="{{ asset('js/three.min.js') }}"></script>
 
 @yield('specificScript')
 </body>

@@ -143,6 +143,11 @@
         font-weight: 600;
         display: inline-block;
         margin-top: 10px;
+        transition: color 0.3s ease;
+    }
+    .read-more:hover {
+        color: #4a22c4;
+        text-decoration: underline;
     }
 
     /* Responsive */
@@ -183,11 +188,7 @@
                 {!! $featured->excerpt ?? '<i>No summary available.</i>' !!}
             </div>
 
-            <form action="{{ route('blog.show') }}" method="POST">
-                @csrf
-                <input type="hidden" name="slug" value="{{ $featured->slug ?? '' }}">
-                <button type="submit" class="read-more">Read Story →</button>
-            </form>
+            <a href="{{ route('blog.show', $featured->slug) }}" class="btn">Read Story →</a>
         </div>
     </div>
 
@@ -213,11 +214,7 @@
                     {{ optional($post->updated_at)->format('d M') }}
                 </small>
 
-                <form action="{{ route('blog.show') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="slug" value="{{ $post->slug ?? '' }}">
-                    <button type="submit">{{ $post->title ?? 'Untitled Post' }}</button>
-                </form>
+                <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title ?? 'Untitled Post' }}</a>
             </div>
         </div>
     @empty
@@ -226,6 +223,30 @@
 </div>
 
 </div>
+
+        <!-- Recent Posts Section -->
+        <div class="new-posts">
+            <h2>Recent Posts</h2>
+            <div class="blog-grid">
+                @forelse($recentPosts as $post)
+                    <div class="blog-card">
+                        <img src="{{ asset($post->image ?? 'images/default-placeholder.jpg') }}" alt="{{ $post->title }}">
+                        <div class="blog-card-content">
+                            <small>{{ $post->category ?? 'Uncategorized' }}</small>
+                            <small class="meta">
+                                {{ $post->author ?? 'Admin' }}
+                                {{ optional($post->updated_at)->format('d M') }}
+                            </small>
+                            <h4>{{ $post->title ?? 'Untitled Post' }}</h4>
+                            <p>{{ $post->excerpt ?? 'No excerpt available.' }}</p>
+                            <a href="{{ route('blog.show', $post->slug) }}" class="read-more">Read Story →</a>
+                        </div>
+                    </div>
+                @empty
+                    <p>No recent posts available.</p>
+                @endforelse
+            </div>
+        </div>
     </div>
 </div>
 @endsection
