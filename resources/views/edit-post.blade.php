@@ -35,7 +35,7 @@ if(!empty($userData)) {
     </div>
 
 <div class="post-container">
-    <form action="{{ route('posts.update', ['id' => $post->id]) }}" method="POST">
+    <form action="{{ route('posts.update', ['id' => $post->id]) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

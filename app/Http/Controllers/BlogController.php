@@ -114,15 +114,22 @@ class BlogController extends Controller
             'category' => 'nullable|string|max:100',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'author' => 'nullable|string|max:255',
         ]);
         
-        $post->update($request->only([
-            'title', 'category', 'excerpt', 'content', 'author'
-        ]));
+        $data = $request->only(['title', 'category', 'excerpt', 'content', 'author']);
+        $data['slug'] = Str::slug($request->title);
+        
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('assets/posts'), $filename);
+            $data['image'] = 'assets/posts/' . $filename;
+        }
+        
+        $post->update($data);
 
-        return redirect()
-            ->route('posts.create')
-            ->with('success', 'Post updated successfully!');
+        return redirect()->route('posts.create')->with('success', 'Post updated successfully!');
     }
 }
