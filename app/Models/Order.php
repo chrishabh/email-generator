@@ -12,7 +12,6 @@ class Order extends Model
     use HasFactory;
 
     protected $casts = [
-        'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
