@@ -792,12 +792,9 @@ class PaymentController extends Controller
                 ]],
                 'total' => $data->amount
             ];
+            pp($binded_data);
             return $binded_data;
-            // // Load a view and pass the data
-            // $pdf = Pdf::loadView('invoice-pdf', $binded_data)->setOption('encoding', 'UTF-8');
 
-            // // Return the PDF as a download
-            // return $pdf->download('invoice-pdf');
         }
     }
 }
