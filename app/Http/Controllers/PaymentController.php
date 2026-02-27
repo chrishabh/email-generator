@@ -769,7 +769,7 @@ class PaymentController extends Controller
                 '129'   => '3 Months',
                 '249'   => '6 Months',
             ];
-            
+
             $binded_data = [
                 'order_number' => $data->order_id,
                 'date' => Carbon::parse($data->order_created)->format('d M Y'),
@@ -792,8 +792,11 @@ class PaymentController extends Controller
                 ]],
                 'total' => $data->amount
             ];
-            pp($binded_data);
-            return $binded_data;
+              // // Load a view and pass the data
+            $pdf = Pdf::loadView('invoice-pdf', $binded_data)->setOption('encoding', 'UTF-8');
+
+            // // Return the PDF as a download
+            return $pdf->download('invoice-pdf');
 
         }
     }
