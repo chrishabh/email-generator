@@ -17,11 +17,6 @@ class Order extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    public function getCreatedAtAttribute($value)
-    {
-        return Carbon::parse($value)->format('d-m-Y H:m:s');
-    }
-
     public static function createOrder($data = [])
     {
         return Order::insert($data);
