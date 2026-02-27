@@ -781,7 +781,7 @@ class PaymentController extends Controller
                 'gst_amount' => $data->gst_amount,
                 'gateway' => 'Razorpay',
                 'transaction_id' => $data->order_id,
-                'invoice_date' => date('d M Y',Carbon::now()->timestamp),
+                'invoice_date' =>  Carbon::parse($data->order_created)->format('d M Y'),
                 'gst' => env('gst_percentage')??0,
                 'client_gst' => $data->gst_number??'N/A',
                 'client_email' => Auth::User()->email,
