@@ -769,10 +769,10 @@ class PaymentController extends Controller
                 '129'   => '3 Months',
                 '249'   => '6 Months',
             ];
-            print_r($data);
+            
             $binded_data = [
                 'order_number' => $data->order_id,
-                'date' => Carbon::parse($data->created_at)->format('d M Y'),
+                'date' => Carbon::parse($data->order_created)->format('d M Y'),
                 'logo_url' => url("/assets/logo.png"),
                 'client' => $data->name,
                 'company' => "bouncee",
