@@ -225,7 +225,7 @@ try{
             Route::get('/pricing', [PaymentController::class, 'getPricing'])->name('pricing');
             Route::get('/resend-code', [LoginController::class, 'resendCode'])->name('resend.code');
             Route::get('/payment-history', [PaymentController::class, 'getPaymentHistory'])->name('payment.history');
-            Route::post('/invoice-pdf', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
+            //Route::post('/invoice-pdf', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
             Route::get('/posts', [BlogController::class, 'create'])->name('posts.create');
             Route::post('/posts/store', [BlogController::class, 'store'])->name('posts.store');
             Route::post('{id}', [BlogController::class, 'edit'])->name('posts.edit');
