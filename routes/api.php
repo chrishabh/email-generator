@@ -54,4 +54,6 @@ Route::fallback(function (Request $request) {
 Route::post('email-generator',[EmailController::class, 'generateEmail'])->name('generateEmail');
 Route::get('test-api',[EmailController::class, 'testThirdPartyAPI'])->name('testThirdPartyAPI');
 Route::post('smtp-handshake',[EmailController::class, 'smtpHandshake'])->name('smtpHandshake');
+Route::post('/invoice-pdf-test', [PaymentController::class, 'getInvoicePdf'])->name('invoce-pdf');
+
 
