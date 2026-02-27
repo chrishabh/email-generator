@@ -52,7 +52,7 @@ class Order extends Model
 
     public static function getInvoiceData($id)
     {
-        return Order::select('orders.*','users.*')->join('users','orders.user_id', '=','users.id')->whereNull('users.deleted_at')->whereNull('orders.deleted_at')->where('orders.id',$id)->first();
+        return Order::select('orders.*','orders.created_at as order_created','users.*')->join('users','orders.user_id', '=','users.id')->whereNull('users.deleted_at')->whereNull('orders.deleted_at')->where('orders.id',$id)->first();
     }
 
     public static function getOrderById($id)
