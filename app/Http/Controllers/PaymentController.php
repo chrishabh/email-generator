@@ -574,7 +574,7 @@ class PaymentController extends Controller
 
         foreach($payment_data as &$value)
         {
-            $value['credit_points'] = ($payment_data['plan_type'] == 'Unlimited')?$value['plan_amount']:number_format($credit_points[$value['plan_amount']]);
+            $value['credit_points'] = ($value['plan_type'] == 'Unlimited')?$credit_points[$value['plan_amount']]:number_format($credit_points[$value['plan_amount']]);
             $value['amount'] = number_format($value['amount']);
             $value['amount_currency'] = $currencySymbols[$value['currency']].' ';
         }
