@@ -574,7 +574,7 @@ class PaymentController extends Controller
 
         foreach($payment_data as &$value)
         {
-            $value['credit_points'] = number_format($credit_points[$value['plan_amount']]);
+            $value['credit_points'] = ($payment_data['plan_type'] == 'Unlimited')?$value['plan_amount']:number_format($credit_points[$value['plan_amount']]);
             $value['amount'] = number_format($value['amount']);
             $value['amount_currency'] = $currencySymbols[$value['currency']].' ';
         }
@@ -786,7 +786,7 @@ class PaymentController extends Controller
                 'client_gst' => $data->gst_number??'N/A',
                 'client_email' => Auth::User()->email,
                 'items' => [[
-                    'description' =>  number_format($credit_points[$data->plan_amount])." Verifications",
+                    'description' =>  (number_format($credit_points[$data->plan_amount])." Verifications"),
                     'amount' => $data->amount - $data->gst_amount,
                     
                 ]],
