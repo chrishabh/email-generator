@@ -71,7 +71,7 @@ class LoginController extends Controller
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            
+            set_time_limit(300);
             $user_data = User::getUserdata($request->input('emailL'));
             $ip = $request->ip();
             if(!empty($user_data)){
