@@ -786,7 +786,7 @@ class PaymentController extends Controller
                 'client_gst' => $data->gst_number??'N/A',
                 'client_email' => Auth::User()->email,
                 'items' => [[
-                    'description' =>  (number_format($credit_points[$data->plan_amount])." Verifications"),
+                    'description' =>  ($data->plan_type == 'Unlimited')?$credit_points[$data->plan_amount]." Unlimited Verifications":(number_format($credit_points[$data->plan_amount])." Verifications"),
                     'amount' => $data->amount - $data->gst_amount,
                     
                 ]],
