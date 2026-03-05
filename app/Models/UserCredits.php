@@ -42,8 +42,18 @@ class UserCredits extends Model
     }
 
     public static function getCreditPoint($user_id){
-        return self::where('user_id',$user_id)->whereNull('deleted_at')->orderByRaw("FIELD(plan_type, 'Unlimited', 'Limited') ASC")->orderBy('id', 'desc')->first();
-    }
+        return self::where('user_id', $user_id)
+        ->whereNull('deleted_at')
+        ->orderByRaw("
+            CASE 
+                WHEN plan_type = 'Unlimited' THEN 1
+                WHEN plan_type = 'Limited' THEN 2
+                WHEN plan_type IS NULL THEN 3
+                ELSE 4
+            END
+        ")
+        ->orderBy('id', 'desc')
+        ->first();    }
 
 
     public static function updateCreditsWhenEmailGetsVerify($user_id,$credits){
