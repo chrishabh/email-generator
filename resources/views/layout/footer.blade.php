@@ -57,6 +57,9 @@
                         <li>
                             <a href="#"><i class="lni-envelope"></i> Email: support@bouncee.net</a>
                         </li>
+                        <li>
+                            <a href="#"><i class="lni-envelope"></i> Contact No: +91 935 551 5651</a>
+                        </li>
                     </ul>
                 </div>
             </div>
